@@ -1,6 +1,10 @@
+# Uncomment this line to define a global platform for your project
 platform :ios, '13.0'
 
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+flutter_export_environment = File.expand_path('../flutter_export_environment', __dir__)
+require flutter_export_environment if File.exist?(flutter_export_environment)
 
 project 'Runner', {
   'Debug' => :debug,
@@ -10,14 +14,13 @@ project 'Runner', {
 
 def flutter_root
   generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __dir__)
-  unless File.exist?(generated_xcode_build_settings_path)
-    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first."
+  if File.exist?(generated_xcode_build_settings_path)
+    File.foreach(generated_xcode_build_settings_path) do |line|
+      matches = line.match(/FLUTTER_ROOT\=(.*)/)
+      return matches[1].strip if matches
+    end
   end
-  File.foreach(generated_xcode_build_settings_path) do |line|
-    matches = line.match(/FLUTTER_ROOT\=(.*)/)
-    return matches[1].strip if matches
-  end
-  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting the file and running flutter pub get again."
+  return ENV['FLUTTER_ROOT'] || '../flutter' # fallback
 end
 
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
