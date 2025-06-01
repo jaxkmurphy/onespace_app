@@ -1,0 +1,21 @@
+workflows:
+  ios-debug:
+    name: iOS Debug Build
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Run Flutter pub get (fixes Generated.xcconfig issue)
+        script: flutter pub get
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios
+          pod install
+
+      - name: Build iOS app in debug mode (no codesign)
+        script: flutter build ios --debug --no-codesign
+
+    artifacts:
+      - build/ios/iphoneos/*.app
+      - build/ios/**/*.dSYM.zip
