@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/child_profile.dart';
 import 'calming_sounds_page.dart';
+import 'child_schedule_page.dart'; 
 
 class ChildProfileDashboard extends StatelessWidget {
   final ChildProfile profile;
@@ -56,15 +57,26 @@ class ChildProfileDashboard extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.schedule),
+              label: const Text('View Schedule'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ChildSchedulePage()),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CalmingSoundsPage()),
-              );
-            },
-            child: const Text('Calming Sounds'),
-          ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalmingSoundsPage()),
+                );
+              },
+              child: const Text('Calming Sounds'),
+            ),
           ],
         ),
       ),

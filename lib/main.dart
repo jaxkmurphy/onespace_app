@@ -14,6 +14,8 @@ import 'pages/staff_profile_dashboard.dart';
 import 'pages/child_profile_dashboard.dart';
 import 'pages/points_overview_page.dart';
 import 'pages/child_points_page.dart'; 
+import 'pages/staff_schedule_page.dart';
+import 'pages/child_schedule_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,8 @@ class MyApp extends StatelessWidget {
         '/profiles': (context) => ProfilesPage(),
         '/account-settings': (context) => const AccountSettingsPage(),
         '/add-profile': (context) => const AddProfilePage(),
+        '/staffSchedule': (context) => const StaffSchedulePage(),
+        '/childSchedule': (context) => const ChildSchedulePage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/zone-overview') {

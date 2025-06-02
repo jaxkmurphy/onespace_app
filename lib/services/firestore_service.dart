@@ -144,4 +144,42 @@ class FirestoreService {
     throw Exception('Failed to update child points: $e');
     }
   }
+
+  Future<void> addScheduleEntry(String teacherUid, String day, String entry) async {
+  final docRef = _db.collection('schedules').doc(teacherUid);
+  await _db.runTransaction((transaction) async {
+    final snapshot = await transaction.get(docRef);
+    final existingEntries = (snapshot.data()?[day] as List?)?.cast<String>() ?? [];
+    existingEntries.add(entry);
+    transaction.set(docRef, {day: existingEntries}, SetOptions(merge: true));
+  });
+}
+
+  Future<void> removeScheduleEntry(String teacherUid, String day, String entry) async {
+  final docRef = _db.collection('schedules').doc(teacherUid);
+  await _db.runTransaction((transaction) async {
+    final snapshot = await transaction.get(docRef);
+    final existingEntries = (snapshot.data()?[day] as List?)?.cast<String>() ?? [];
+    existingEntries.remove(entry);
+    transaction.set(docRef, {day: existingEntries}, SetOptions(merge: true));
+  });
+}
+
+  Future<Map<String, List<String>>> getSchedule(String teacherUid) async {
+  final doc = await _db.collection('schedules').doc(teacherUid).get();
+  final data = doc.data() ?? {};
+  return {
+    for (final day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
+      day: (data[day] as List?)?.cast<String>() ?? []
+  };
+}
+
+  Future<void> setScheduleForDay(String teacherUid, String day, List<String> entries) async {
+  try {
+    await _db.collection('schedules').doc(teacherUid).set({day: entries}, SetOptions(merge: true));
+  } catch (e) {
+    throw Exception('Failed to reorder schedule: $e');
+  }
+}
+
 }
