@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  // Teacher data
   Future<void> setTeacherInfo(Teacher teacher) async {
     await _db.collection('teachers').doc(teacher.uid).set(teacher.toMap(), SetOptions(merge: true));
   }
@@ -37,149 +38,127 @@ class FirestoreService {
     }
   }
 
+  // Staff profile methods
   Future<void> addStaffProfile(String teacherUid, StaffProfile profile) async {
-    try {
-      final docRef = _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc();
-      final profileWithId = profile.copyWith(id: docRef.id, teacherUid: teacherUid);
-      await docRef.set(profileWithId.toMap());
-    } catch (e) {
-      throw Exception('Failed to add staff profile: $e');
-    }
+    final docRef = _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc();
+    final profileWithId = profile.copyWith(id: docRef.id, teacherUid: teacherUid);
+    await docRef.set(profileWithId.toMap());
   }
 
   Stream<List<StaffProfile>> getStaffProfiles(String teacherUid) {
-    try {
-      return _db
-          .collection('teachers')
-          .doc(teacherUid)
-          .collection('staff_profiles')
-          .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => StaffProfile.fromMap(doc.id, doc.data()).copyWith(teacherUid: teacherUid))
-              .toList());
-    } catch (e) {
-      rethrow;
-    }
+    return _db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('staff_profiles')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => StaffProfile.fromMap(doc.id, doc.data()).copyWith(teacherUid: teacherUid))
+            .toList());
   }
 
+  // Child profile methods
   Future<void> addChildProfile(String teacherUid, ChildProfile profile) async {
-    try {
-      final docRef = _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc();
-      final profileWithId = profile.copyWith(id: docRef.id, teacherUid: teacherUid);
-      await docRef.set(profileWithId.toMap());
-    } catch (e) {
-      throw Exception('Failed to add child profile: $e');
-    }
+    final docRef = _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc();
+    final profileWithId = profile.copyWith(id: docRef.id, teacherUid: teacherUid);
+    await docRef.set(profileWithId.toMap());
   }
 
   Stream<List<ChildProfile>> getChildProfiles(String teacherUid) {
-    try {
-      return _db
-          .collection('teachers')
-          .doc(teacherUid)
-          .collection('child_profiles')
-          .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(teacherUid: teacherUid))
-              .toList());
-    } catch (e) {
-      rethrow;
-    }
+    return _db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('child_profiles')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(teacherUid: teacherUid))
+            .toList());
   }
 
   Future<void> updateStaffProfile(String teacherUid, StaffProfile profile) async {
-    try {
-      await _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc(profile.id).update(profile.toMap());
-    } catch (e) {
-      throw Exception('Failed to update staff profile: $e');
-    }
+    await _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc(profile.id).update(profile.toMap());
   }
 
   Future<void> deleteStaffProfile(String teacherUid, String profileId) async {
-    try {
-      await _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc(profileId).delete();
-    } catch (e) {
-      throw Exception('Failed to delete staff profile: $e');
-    }
+    await _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc(profileId).delete();
   }
 
   Future<void> updateChildProfile(String teacherUid, ChildProfile profile) async {
-    try {
-      await _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(profile.id).update(profile.toMap());
-    } catch (e) {
-      throw Exception('Failed to update child profile: $e');
-    }
+    await _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(profile.id).update(profile.toMap());
   }
 
   Future<void> deleteChildProfile(String teacherUid, String profileId) async {
-    try {
-      await _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(profileId).delete();
-    } catch (e) {
-      throw Exception('Failed to delete child profile: $e');
-    }
+    await _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(profileId).delete();
   }
 
+  // Zone + Points
   Future<void> setChildZone(String teacherUid, String childId, String zone) async {
-    try {
-      await _db
-          .collection('teachers')
-          .doc(teacherUid)
-          .collection('child_profiles')
-          .doc(childId)
-          .update({'zone': zone});
-    } catch (e) {
-      throw Exception('Failed to update child zone: $e');
-    }
+    await _db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('child_profiles')
+        .doc(childId)
+        .update({'zone': zone});
   }
 
   Future<void> setChildPoints(String teacherUid, String childId, int points) async {
-  try {
     await _db
         .collection('teachers')
         .doc(teacherUid)
         .collection('child_profiles')
         .doc(childId)
         .update({'points': points});
-  } catch (e) {
-    throw Exception('Failed to update child points: $e');
+  }
+
+  // 🗓 SCHEDULE MANAGEMENT
+
+  Future<Map<String, List<Map<String, dynamic>>>> getSchedule(String teacherUid) async {
+    final doc = await _db.collection('teachers').doc(teacherUid).get();
+    final data = doc.data();
+    if (data == null || !data.containsKey('schedule')) return {};
+
+    final schedule = Map<String, dynamic>.from(data['schedule']);
+    return schedule.map((day, entries) {
+      final list = List<Map<String, dynamic>>.from(entries);
+      return MapEntry(day, list);
+    });
+  }
+
+  Future<void> setScheduleForDay(String teacherUid, String day, List<Map<String, dynamic>> entries) async {
+    final docRef = _db.collection('teachers').doc(teacherUid);
+    await docRef.set({
+      'schedule': {day: entries}
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> addScheduleEntry(String teacherUid, String day, Map<String, dynamic> entry) async {
+    final schedule = await getSchedule(teacherUid);
+    final dayEntries = schedule[day] ?? [];
+    dayEntries.add(entry);
+    dayEntries.sort((a, b) => a['start']?.compareTo(b['start']) ?? 0);
+    await setScheduleForDay(teacherUid, day, dayEntries);
+  }
+
+  Future<void> removeScheduleEntry(String teacherUid, String day, Map<String, dynamic> entry) async {
+    final schedule = await getSchedule(teacherUid);
+    final dayEntries = schedule[day] ?? [];
+    dayEntries.removeWhere((e) =>
+        e['start'] == entry['start'] &&
+        e['end'] == entry['end'] &&
+        e['description'] == entry['description']);
+    await setScheduleForDay(teacherUid, day, dayEntries);
+  }
+
+  Future<void> updateScheduleEntry(String teacherUid, String day, Map<String, dynamic> oldEntry, Map<String, dynamic> newEntry) async {
+    final schedule = await getSchedule(teacherUid);
+    final dayEntries = schedule[day] ?? [];
+    final index = dayEntries.indexWhere((e) =>
+        e['start'] == oldEntry['start'] &&
+        e['end'] == oldEntry['end'] &&
+        e['description'] == oldEntry['description']);
+    if (index != -1) {
+      dayEntries[index] = newEntry;
+      dayEntries.sort((a, b) => a['start']?.compareTo(b['start']) ?? 0);
+      await setScheduleForDay(teacherUid, day, dayEntries);
     }
   }
-
-  Future<void> addScheduleEntry(String teacherUid, String day, String entry) async {
-  final docRef = _db.collection('schedules').doc(teacherUid);
-  await _db.runTransaction((transaction) async {
-    final snapshot = await transaction.get(docRef);
-    final existingEntries = (snapshot.data()?[day] as List?)?.cast<String>() ?? [];
-    existingEntries.add(entry);
-    transaction.set(docRef, {day: existingEntries}, SetOptions(merge: true));
-  });
-}
-
-  Future<void> removeScheduleEntry(String teacherUid, String day, String entry) async {
-  final docRef = _db.collection('schedules').doc(teacherUid);
-  await _db.runTransaction((transaction) async {
-    final snapshot = await transaction.get(docRef);
-    final existingEntries = (snapshot.data()?[day] as List?)?.cast<String>() ?? [];
-    existingEntries.remove(entry);
-    transaction.set(docRef, {day: existingEntries}, SetOptions(merge: true));
-  });
-}
-
-  Future<Map<String, List<String>>> getSchedule(String teacherUid) async {
-  final doc = await _db.collection('schedules').doc(teacherUid).get();
-  final data = doc.data() ?? {};
-  return {
-    for (final day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
-      day: (data[day] as List?)?.cast<String>() ?? []
-  };
-}
-
-  Future<void> setScheduleForDay(String teacherUid, String day, List<String> entries) async {
-  try {
-    await _db.collection('schedules').doc(teacherUid).set({day: entries}, SetOptions(merge: true));
-  } catch (e) {
-    throw Exception('Failed to reorder schedule: $e');
-  }
-}
-
 }

@@ -13,7 +13,7 @@ class _ChildSchedulePageState extends State<ChildSchedulePage> {
   final FirestoreService _firestoreService = FirestoreService();
   final _daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 
-  Map<String, List<String>> _schedule = {};
+  Map<String, List<Map<String, dynamic>>> _schedule = {};
   String? _teacherUid;
 
   @override
@@ -39,14 +39,20 @@ class _ChildSchedulePageState extends State<ChildSchedulePage> {
         padding: const EdgeInsets.all(16),
         children: _daysOfWeek.map((day) {
           final entries = _schedule[day] ?? [];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(day.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
-              ...entries.map((e) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text('- $e'),
-              )),
+              ...entries.map((entry) {
+                final start = entry['start'] ?? '';
+                final end = entry['end'] ?? '';
+                final desc = entry['description'] ?? '';
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text('- $start – $end : $desc'),
+                );
+              }),
               const SizedBox(height: 16),
             ],
           );
