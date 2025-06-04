@@ -61,33 +61,61 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton.icon(
-              icon: const Icon(Icons.palette),
-              label: const Text('Zones of Regulation'),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/zone-overview',
-                  arguments: {
-                    'teacherUid': widget.profile.teacherUid,
-                  },
+        ElevatedButton.icon(
+          icon: const Icon(Icons.palette),
+          label: const Text('Zones of Regulation'),
+          onPressed: () {
+        Navigator.pushNamed(
+          context,
+            '/zone-overview',
+          arguments: {
+            'teacherUid': widget.profile.teacherUid,
+          },
+        );
+      },
+    ),
+    const SizedBox(height: 20),
+
+        ElevatedButton.icon(
+          icon: const Icon(Icons.star),
+          label: const Text('Points Overview'),
+          onPressed: _navigateToPointsOverview,
+        ),
+    const SizedBox(height: 20),
+
+  ElevatedButton.icon(
+    icon: const Icon(Icons.schedule),
+    label: const Text('View Schedule'),
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const StaffSchedulePage()),
+      );
+    },
+  ),
+  const SizedBox(height: 20),
+  // <-- New Quiz Creation button
+      ElevatedButton.icon(
+        icon: const Icon(Icons.quiz),
+        label: const Text('Create Quiz'),
+        onPressed: () {
+      Navigator.pushNamed(
+        context,
+          '/quiz-create',
+        arguments: widget.profile,
                 );
               },
             ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.star),
-              label: const Text('Points Overview'),
-              onPressed: _navigateToPointsOverview,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.schedule),
-              label: const Text('View Schedule'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const StaffSchedulePage()),
+          const SizedBox(height: 20),
+          
+          ElevatedButton.icon(
+          icon: const Icon(Icons.quiz),
+          label: const Text('Manage Quizzes'),
+          onPressed: () {
+          Navigator.pushNamed(
+          context,
+          '/quiz-list',
+          arguments: widget.profile.teacherUid,
                 );
               },
             ),

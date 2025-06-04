@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/teacher.dart';
 import '../models/staff_profile.dart';
 import '../models/child_profile.dart';
+import '../models/quiz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -160,5 +161,44 @@ class FirestoreService {
       dayEntries.sort((a, b) => a['start']?.compareTo(b['start']) ?? 0);
       await setScheduleForDay(teacherUid, day, dayEntries);
     }
+  }
+
+   // Add a new quiz
+  Future<void> addQuiz(Quiz quiz) async {
+  await _db
+    .collection('teachers')
+    .doc(quiz.createdBy)  // teacher UID in quiz object
+    .collection('quizzes')
+    .doc(quiz.id)
+    .set(quiz.toMap());
+}
+
+Stream<List<Quiz>> getQuizzes(String teacherUid) {
+  return _db
+    .collection('quizzes') // top-level quizzes collection
+    .where('createdBy', isEqualTo: teacherUid)  // filter by teacherUid
+    .snapshots()
+    .map((snapshot) => snapshot.docs
+      .map((doc) => Quiz.fromMap(doc.id, doc.data()))
+      .toList());
+}
+
+  Future<void> assignQuizToChild(String teacherUid, String childId, String quizId) async {
+  final childRef = _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(childId);
+  await childRef.update({
+    'assignedQuizzes': FieldValue.arrayUnion([quizId]),
+  });
+}
+
+Future<void> submitQuiz(String teacherUid, String childId, String quizId, int score) async {
+  final childRef = _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(childId);
+  await childRef.set({
+    'completedQuizzes': {
+      quizId: {
+        'score': score,
+        'timestamp': FieldValue.serverTimestamp(),
+        }
+      }
+    }, SetOptions(merge: true));
   }
 }

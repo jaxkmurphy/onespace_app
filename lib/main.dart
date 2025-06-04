@@ -16,6 +16,8 @@ import 'pages/points_overview_page.dart';
 import 'pages/child_points_page.dart'; 
 import 'pages/staff_schedule_page.dart';
 import 'pages/child_schedule_page.dart';
+import 'pages/quiz_creation_page.dart';
+import 'pages/quiz_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,6 +106,20 @@ class MyApp extends StatelessWidget {
           if (args is ChildProfile) {
             return MaterialPageRoute(
               builder: (context) => ChildPointsPage(child: args),
+            );
+          }
+        } else if (settings.name == '/quiz-create') {
+          final args = settings.arguments;
+          if (args is StaffProfile) {
+            return MaterialPageRoute(
+              builder: (context) => QuizCreationPage(staffUid: args.teacherUid),
+            );
+          }
+        } else if (settings.name == '/quiz-list') {
+          final args = settings.arguments;
+          if (args is String) {  // teacherUid passed as String
+            return MaterialPageRoute(
+              builder: (context) => QuizListPage(teacherUid: args),
             );
           }
         }
