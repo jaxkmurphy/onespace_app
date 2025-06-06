@@ -22,14 +22,12 @@ class _StudentQuizListPageState extends State<StudentQuizListPage> {
   }
 
   void _onQuizSelected(Quiz quiz) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => QuizPlayPage(
-        quiz: quiz,
-        studentUid: 'example-student-uid',
-      ),
-    ),
+  Navigator.of(context).pushNamed(
+    '/quiz-play',
+    arguments: {
+      'quiz': quiz,
+      'studentUid': 'example-student-uid', // pass real student UID here
+    },
   );
 }
 
@@ -56,11 +54,17 @@ class _StudentQuizListPageState extends State<StudentQuizListPage> {
             itemCount: quizzes.length,
             itemBuilder: (context, index) {
               final quiz = quizzes[index];
-              return ListTile(
-                title: Text(quiz.title),
-                subtitle: Text('Created by: ${quiz.createdBy}'),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () => _onQuizSelected(quiz),
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _onQuizSelected(quiz),
+                  child: ListTile(
+                    title: Text(quiz.title),
+                    subtitle: Text('Created by: ${quiz.createdBy}'),
+                    trailing: const Icon(Icons.arrow_forward),
+                    onTap: null, // Disable ListTile's own onTap to avoid conflicts
+                  ),
+                ),
               );
             },
           );
