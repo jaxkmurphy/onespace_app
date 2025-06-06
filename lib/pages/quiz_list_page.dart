@@ -7,11 +7,10 @@ class QuizListPage extends StatefulWidget {
   final FirestoreService firestoreService;
 
   QuizListPage({
-    Key? key,
+    super.key,
     required this.teacherUid,
     FirestoreService? firestoreService,
-  })  : firestoreService = firestoreService ?? FirestoreService(),
-        super(key: key);
+  })  : firestoreService = firestoreService ?? FirestoreService();
 
   @override
   State<QuizListPage> createState() => _QuizListPageState();
