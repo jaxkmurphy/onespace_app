@@ -9,12 +9,11 @@ class Question {
     required this.correctAnswer,
   });
 
-  // From Firestore document data
   factory Question.fromMap(Map<String, dynamic> map) {
     return Question(
-      question: map['question'] as String,
-      options: List<String>.from(map['options']),
-      correctAnswer: map['correctAnswer'] as String,
+      question: map['question'] ?? '',
+      options: List<String>.from(map['options'] ?? []),
+      correctAnswer: map['correctAnswer'] ?? '',
     );
   }
 

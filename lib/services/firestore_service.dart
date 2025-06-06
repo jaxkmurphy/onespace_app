@@ -167,7 +167,7 @@ class FirestoreService {
   Future<void> addQuiz(Quiz quiz) async {
   await _db
     .collection('teachers')
-    .doc(quiz.createdBy)  // teacher UID in quiz object
+    .doc(quiz.createdBy)  
     .collection('quizzes')
     .doc(quiz.id)
     .set(quiz.toMap());
@@ -175,12 +175,13 @@ class FirestoreService {
 
 Stream<List<Quiz>> getQuizzes(String teacherUid) {
   return _db
-    .collection('quizzes') // top-level quizzes collection
-    .where('createdBy', isEqualTo: teacherUid)  // filter by teacherUid
-    .snapshots()
-    .map((snapshot) => snapshot.docs
-      .map((doc) => Quiz.fromMap(doc.id, doc.data()))
-      .toList());
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('quizzes')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Quiz.fromMap(doc.id, doc.data()))
+          .toList());
 }
 
   Future<void> assignQuizToChild(String teacherUid, String childId, String quizId) async {
@@ -201,4 +202,13 @@ Future<void> submitQuiz(String teacherUid, String childId, String quizId, int sc
       }
     }, SetOptions(merge: true));
   }
+
+  Stream<List<Quiz>> getAllQuizzes() {
+  return FirebaseFirestore.instance
+      .collection('quizzes')
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Quiz.fromFirestore(doc)).toList());
+  }
+
 }

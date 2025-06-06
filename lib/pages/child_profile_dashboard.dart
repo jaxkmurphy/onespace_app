@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/child_profile.dart';
 import 'calming_sounds_page.dart';
-import 'child_schedule_page.dart'; 
 
 class ChildProfileDashboard extends StatelessWidget {
   final ChildProfile profile;
@@ -22,32 +21,62 @@ class ChildProfileDashboard extends StatelessWidget {
             );
           },
         ),
-        title: Text('${profile.name} Dashboard'),
+        title: Text('${profile.name}\'s Dashboard'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              'Welcome, ${profile.name}!',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 24),
+
+            // Take a Quiz button
             ElevatedButton.icon(
-              icon: const Icon(Icons.palette),
-              label: const Text('Zones of Regulation'),
+              icon: const Icon(Icons.quiz),
+              label: const Text("Take a Quiz"),
               onPressed: () {
                 Navigator.pushNamed(
                   context,
-                  '/zone-select',
-                  arguments: {
-                    'teacherUid': profile.teacherUid,
-                    'child': profile,
-                  },
+                  '/quiz-list',
+                  arguments: profile.teacherUid,
                 );
               },
             ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 12),
+
+            // Calming Sounds button
+            ElevatedButton.icon(
+              icon: const Icon(Icons.music_note),
+              label: const Text("Calming Sounds"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalmingSoundsPage()),
+                );
+              },
+            ),
+
+            const SizedBox(height: 12),
+
+            // My Schedule button
+            ElevatedButton.icon(
+              icon: const Icon(Icons.schedule),
+              label: const Text("My Schedule"),
+              onPressed: () {
+                Navigator.pushNamed(context, '/childSchedule');
+              },
+            ),
+
+            const SizedBox(height: 12),
+
+            // Points button
             ElevatedButton.icon(
               icon: const Icon(Icons.star),
-              label: const Text('View My Points'),
+              label: const Text("My Points"),
               onPressed: () {
                 Navigator.pushNamed(
                   context,
@@ -56,26 +85,23 @@ class ChildProfileDashboard extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 12),
+
+            // Zones of Regulation button
             ElevatedButton.icon(
-              icon: const Icon(Icons.schedule),
-              label: const Text('View Schedule'),
+              icon: const Icon(Icons.color_lens),
+              label: const Text("Zones of Regulation"),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(builder: (_) => const ChildSchedulePage()),
+                  '/zone-select',
+                  arguments: {
+                  'teacherUid': profile.teacherUid,
+                  'child': profile,
+                  },
                 );
               },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CalmingSoundsPage()),
-                );
-              },
-              child: const Text('Calming Sounds'),
             ),
           ],
         ),

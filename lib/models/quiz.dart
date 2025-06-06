@@ -1,9 +1,10 @@
-import 'question.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'question.dart'; 
 
 class Quiz {
-  final String id; // Firestore document ID
+  final String id;
   final String title;
-  final String createdBy; // teacher UID
+  final String createdBy;
   final List<Question> questions;
 
   Quiz({
@@ -13,17 +14,26 @@ class Quiz {
     required this.questions,
   });
 
-  factory Quiz.fromMap(String id, Map<String, dynamic> map) {
-  return Quiz(
-    id: id,
-    title: map['title'] as String,
-    createdBy: map['createdBy'] as String,
-    questions: (map['questions'] as List<dynamic>? ?? [])
-        .map((q) => Question.fromMap(q as Map<String, dynamic>))
-        .toList(),
-  );
-}
+  /// For real-time Firestore streams
+  factory Quiz.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Quiz.fromMap(doc.id, data);
+  }
 
+  /// For manual fetching (getQuizzes)
+  factory Quiz.fromMap(String id, Map<String, dynamic> data) {
+    return Quiz(
+      id: id,
+      title: data['title'] ?? 'Untitled',
+      createdBy: data['createdBy'] ?? 'Unknown',
+      questions: (data['questions'] as List<dynamic>?)
+              ?.map((q) => Question.fromMap(q as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+
+  /// Used when saving a quiz (e.g. in addQuiz)
   Map<String, dynamic> toMap() {
     return {
       'title': title,
