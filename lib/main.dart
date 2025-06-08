@@ -18,7 +18,6 @@ import 'pages/staff_schedule_page.dart';
 import 'pages/child_schedule_page.dart';
 import 'pages/quiz_creation_page.dart';
 import 'pages/quiz_list_page.dart';
-import 'pages/quiz_play_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,22 +117,12 @@ class MyApp extends StatelessWidget {
           }
         } else if (settings.name == '/quiz-list') {
           final args = settings.arguments;
-          if (args is String) {  // teacherUid passed as String
+          if (args is String) {  
             return MaterialPageRoute(
               builder: (context) => QuizListPage(teacherUid: args),
             );
           }
-        } else if (settings.name == '/quiz-play') {
-          final args = settings.arguments;
-          if (args is Map<String, dynamic> && args['quiz'] != null && args['studentUid'] != null) {
-            return MaterialPageRoute(
-              builder: (context) => QuizPlayPage(
-              quiz: args['quiz'],
-              studentUid: args['studentUid'],
-              ),
-            );
-          }
-        }
+        } 
 
         // Fallback for unknown routes or missing arguments
         return MaterialPageRoute(

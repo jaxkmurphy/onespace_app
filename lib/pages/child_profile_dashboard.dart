@@ -38,6 +38,7 @@ class ChildProfileDashboard extends StatelessWidget {
               icon: const Icon(Icons.quiz),
               label: const Text("Take a Quiz"),
               onPressed: () {
+                print('Navigating to quiz list page');
                 Navigator.pushNamed(
                   context,
                   '/quiz-list',

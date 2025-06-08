@@ -202,13 +202,4 @@ Future<void> submitQuiz(String teacherUid, String childId, String quizId, int sc
       }
     }, SetOptions(merge: true));
   }
-
-  Stream<List<Quiz>> getAllQuizzes() {
-  return FirebaseFirestore.instance
-      .collection('quizzes')
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Quiz.fromFirestore(doc)).toList());
-  }
-
 }
