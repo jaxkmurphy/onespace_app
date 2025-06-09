@@ -6,10 +6,10 @@ class QuizPlayPage extends StatefulWidget {  // <-- StatefulWidget here
   final String studentUid;
 
   const QuizPlayPage({
-    Key? key,
+    super.key,
     required this.quiz,
     required this.studentUid,
-  }) : super(key: key);
+  });
 
   @override
   State<QuizPlayPage> createState() => _QuizPlayPageState();
@@ -63,7 +63,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
             ...question.options.map((option) => ElevatedButton(
               onPressed: () => _answer(option),
               child: Text(option),
-            )).toList(),
+            )),
           ],
         ),
       ),

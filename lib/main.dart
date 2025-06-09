@@ -18,6 +18,10 @@ import 'pages/staff_schedule_page.dart';
 import 'pages/child_schedule_page.dart';
 import 'pages/quiz_creation_page.dart';
 import 'pages/quiz_list_page.dart';
+import 'pages/quiz_play_page.dart';
+import 'pages/student_quiz_list_page.dart';
+import 'models/quiz.dart';
+import 'services/firestore_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,8 +89,12 @@ class MyApp extends StatelessWidget {
         } else if (settings.name == '/child-dashboard') {
           final args = settings.arguments;
           if (args is ChildProfile) {
+            final firestoreService = FirestoreService(); 
             return MaterialPageRoute(
-              builder: (context) => ChildProfileDashboard(profile: args),
+              builder: (context) => ChildProfileDashboard(
+                profile: args,
+                firestoreService: firestoreService, 
+              ),
             );
           }
         } else if (settings.name == '/points-overview') {
@@ -122,7 +130,33 @@ class MyApp extends StatelessWidget {
               builder: (context) => QuizListPage(teacherUid: args),
             );
           }
-        } 
+        } else if (settings.name == '/quiz-play') {
+          final args = settings.arguments;
+          if (args is Map<String, dynamic> &&
+            args['quiz'] is Quiz &&
+            args['studentUid'] is String) {
+            return MaterialPageRoute(
+              builder: (context) => QuizPlayPage(
+                quiz: args['quiz'],
+                studentUid: args['studentUid'],
+            ),
+          );
+        }
+      } else if (settings.name == '/student-quiz-list') {
+        final args = settings.arguments;
+        if (args is Map<String, dynamic>) {
+          final firestoreService = args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+          if (firestoreService != null && child != null) {
+            return MaterialPageRoute(
+              builder: (context) => StudentQuizListPage(
+              firestoreService: firestoreService,
+              child: child,
+              ),
+            );
+          }
+        }
+      }
 
         // Fallback for unknown routes or missing arguments
         return MaterialPageRoute(

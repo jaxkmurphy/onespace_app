@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/quiz.dart';
 import '../services/firestore_service.dart';
 import '../models/child_profile.dart';
-import 'quiz_play_page.dart';
 
-class StudentQuizListPage extends StatelessWidget {
+class StudentQuizListPage extends StatefulWidget {
   final FirestoreService firestoreService;
   final ChildProfile child;
 
@@ -15,11 +14,24 @@ class StudentQuizListPage extends StatelessWidget {
   });
 
   @override
+  State<StudentQuizListPage> createState() => _StudentQuizListPageState();
+}
+
+class _StudentQuizListPageState extends State<StudentQuizListPage> {
+  late Stream<List<Quiz>> _quizStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _quizStream = widget.firestoreService.getQuizzes(widget.child.teacherUid);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Available Quizzes')),
       body: StreamBuilder<List<Quiz>>(
-        stream: firestoreService.getQuizzes(child.teacherUid),
+        stream: _quizStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading quizzes'));
@@ -43,14 +55,13 @@ class StudentQuizListPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     debugPrint('Tapped quiz: ${quiz.title}');
-                    Navigator.push(
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => QuizPlayPage(
-                          quiz: quiz,
-                          studentUid: child.id,
-                        ),
-                      ),
+                      '/quiz-play',
+                      arguments: {
+                        'quiz': quiz,
+                        'studentUid': widget.child.id,
+                      },
                     );
                   },
                   child: Text(quiz.title),
