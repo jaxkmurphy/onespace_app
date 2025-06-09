@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/quiz.dart'; // Make sure this points to your Quiz model
-import '../services/firestore_service.dart'; // Your FirestoreService import
+import '../models/quiz.dart';
+import '../services/firestore_service.dart';
 
 class QuizListPage extends StatefulWidget {
   final String teacherUid;
@@ -10,7 +10,7 @@ class QuizListPage extends StatefulWidget {
     super.key,
     required this.teacherUid,
     FirestoreService? firestoreService,
-  })  : firestoreService = firestoreService ?? FirestoreService();
+  }) : firestoreService = firestoreService ?? FirestoreService();
 
   @override
   State<QuizListPage> createState() => _QuizListPageState();
@@ -18,15 +18,55 @@ class QuizListPage extends StatefulWidget {
 
 class _QuizListPageState extends State<QuizListPage> {
   Stream<List<Quiz>> _fetchQuizzes() {
-  return widget.firestoreService.getQuizzes(widget.teacherUid);
-}
+    return widget.firestoreService.getQuizzes(widget.teacherUid);
+  }
 
   void _onQuizTap(Quiz quiz) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Selected quiz: ${quiz.title}')),
+    // For staff, now we navigate to quiz play (staff preview mode)
+    Navigator.pushNamed(
+      context,
+      '/quiz-play',
+      arguments: {
+        'quiz': quiz,
+      },
     );
-    // TODO: Navigate to quiz play page or quiz details
-    // Navigator.pushNamed(context, '/quiz-play', arguments: quiz);
+  }
+
+  Future<void> _deleteQuiz(Quiz quiz) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Quiz'),
+        content: Text('Are you sure you want to delete "${quiz.title}"? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // Cancel
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true), // Confirm
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await widget.firestoreService.deleteQuiz(widget.teacherUid, quiz.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Quiz "${quiz.title}" deleted')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to delete quiz: $e')),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -54,7 +94,17 @@ class _QuizListPageState extends State<QuizListPage> {
               final quiz = quizzes[index];
               return ListTile(
                 title: Text(quiz.title),
-                trailing: const Icon(Icons.arrow_forward),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      tooltip: 'Delete Quiz',
+                      onPressed: () => _deleteQuiz(quiz),
+                    ),
+                    const Icon(Icons.arrow_forward),
+                  ],
+                ),
                 onTap: () => _onQuizTap(quiz),
               );
             },

@@ -202,4 +202,17 @@ Future<void> submitQuiz(String teacherUid, String childId, String quizId, int sc
       }
     }, SetOptions(merge: true));
   }
+
+  Future<void> deleteQuiz(String teacherUid, String quizId) async {
+    try {
+      await _db
+          .collection('teachers')
+          .doc(teacherUid)
+          .collection('quizzes')
+          .doc(quizId)
+          .delete();
+    } catch (e) {
+      throw Exception('Failed to delete quiz: $e');
+    }
+  }
 }

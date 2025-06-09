@@ -60,7 +60,7 @@ class _StudentQuizListPageState extends State<StudentQuizListPage> {
                       '/quiz-play',
                       arguments: {
                         'quiz': quiz,
-                        'studentUid': widget.child.id,
+                        'childProfile': widget.child,
                       },
                     );
                   },
