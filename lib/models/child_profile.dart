@@ -4,7 +4,8 @@ class ChildProfile {
   final int age;
   final String? zone;
   final String teacherUid;
-  final int points; 
+  final int points;
+  final String? backgroundColorHex; 
 
   ChildProfile({
     required this.id,
@@ -12,7 +13,8 @@ class ChildProfile {
     required this.age,
     required this.teacherUid,
     this.zone,
-    this.points = 0, 
+    this.points = 0,
+    this.backgroundColorHex, 
   });
 
   Map<String, dynamic> toMap() {
@@ -21,7 +23,8 @@ class ChildProfile {
       'age': age,
       'zone': zone,
       'teacherUid': teacherUid,
-      'points': points, 
+      'points': points,
+      'backgroundColorHex': backgroundColorHex, 
     };
   }
 
@@ -32,7 +35,8 @@ class ChildProfile {
       age: map['age'] ?? 0,
       zone: map['zone'],
       teacherUid: map['teacherUid'] ?? '',
-      points: map['points'] ?? 0, 
+      points: map['points'] ?? 0,
+      backgroundColorHex: map['backgroundColorHex'], 
     );
   }
 
@@ -42,7 +46,8 @@ class ChildProfile {
     int? age,
     String? zone,
     String? teacherUid,
-    int? points, 
+    int? points,
+    String? backgroundColorHex,  
   }) {
     return ChildProfile(
       id: id ?? this.id,
@@ -51,6 +56,7 @@ class ChildProfile {
       zone: zone ?? this.zone,
       teacherUid: teacherUid ?? this.teacherUid,
       points: points ?? this.points,
+      backgroundColorHex: backgroundColorHex ?? this.backgroundColorHex,
     );
   }
 }

@@ -215,4 +215,24 @@ Future<void> submitQuiz(String teacherUid, String childId, String quizId, int sc
       throw Exception('Failed to delete quiz: $e');
     }
   }
+
+  Future<void> updateChildBackgroundColor(String teacherUid, String childId, String colorHex) async {
+    await _db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('child_profiles')
+        .doc(childId)
+        .update({'backgroundColor': colorHex});
+  }
+
+  Stream<ChildProfile> getChildProfileStream(String teacherUid, String childId) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId)
+      .snapshots()
+      .map((doc) => ChildProfile.fromMap(doc.id, doc.data()!));
+}
+
 }

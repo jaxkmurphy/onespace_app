@@ -2,20 +2,48 @@ import 'package:flutter/material.dart';
 import '../models/child_profile.dart';
 import 'calming_sounds_page.dart';
 import '../services/firestore_service.dart';
+import 'background_color_picker_page.dart';
+import '../utils/hex_colour.dart';  
 
-class ChildProfileDashboard extends StatelessWidget {
+class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
-  final FirestoreService firestoreService; // Add this to constructor
+  final FirestoreService firestoreService;
 
   const ChildProfileDashboard({
     super.key,
     required this.profile,
-    required this.firestoreService,  // Receive FirestoreService instance here
+    required this.firestoreService,
   });
+
+  @override
+  State<ChildProfileDashboard> createState() => _ChildProfileDashboardState();
+}
+
+class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
+  late ChildProfile profile;
+  Color backgroundColor = Colors.white; // default color
+
+  @override
+  void initState() {
+    super.initState();
+    profile = widget.profile;
+
+    // Listen for real-time updates on the child's profile
+    widget.firestoreService
+        .getChildProfileStream(profile.teacherUid, profile.id)
+        .listen((updatedProfile) {
+      setState(() {
+        profile = updatedProfile;
+        // Parse the background color hex string, default to white if null
+        backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.home),
@@ -107,9 +135,28 @@ class ChildProfileDashboard extends StatelessWidget {
                   context,
                   '/student-quiz-list',
                   arguments: {
-                    'firestoreService': firestoreService,  // Use injected instance
+                    'firestoreService': widget.firestoreService,
                     'child': profile,
                   },
+                );
+              },
+            ),
+
+            const SizedBox(height: 12),
+
+            // Change Background Color button (6th)
+            ElevatedButton.icon(
+              icon: const Icon(Icons.format_paint),
+              label: const Text("Change Background Color"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BackgroundColorPickerPage(
+                      child: profile,
+                      firestoreService: widget.firestoreService,
+                    ),
+                  ),
                 );
               },
             ),
