@@ -22,6 +22,8 @@ import 'pages/quiz_play_page.dart';
 import 'pages/student_quiz_list_page.dart';
 import 'models/quiz.dart';
 import 'services/firestore_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,19 +41,52 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('en');
+
+  void _setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'OneSpace App',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      locale: _locale,
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ga'),
+      ],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        if (locale != null) {
+          for (var supported in supportedLocales) {
+            if (supported.languageCode == locale.languageCode) {
+              return supported;
+            }
+          }
+        }
+        return supportedLocales.first;
+      },
       initialRoute: '/',
       routes: {
-        '/': (context) => const AuthGate(),
-        '/profiles': (context) => ProfilesPage(),
-        '/account-settings': (context) => const AccountSettingsPage(),
+        '/': (context) => AuthGate(onLocaleChange: _setLocale),  
+        '/profiles': (context) => ProfilesPage(onLocaleChange: _setLocale),
+        '/account-settings': (context) => AccountSettingsPage(onLocaleChange: _setLocale),  
         '/add-profile': (context) => const AddProfilePage(),
         '/staffSchedule': (context) => const StaffSchedulePage(),
         '/childSchedule': (context) => const ChildSchedulePage(),
@@ -130,11 +165,11 @@ class MyApp extends StatelessWidget {
           }
         } else if (settings.name == '/quiz-play') {
           final args = settings.arguments;
-            if (args is Map<String, dynamic> && args['quiz'] is Quiz) {
-              return MaterialPageRoute(
+          if (args is Map<String, dynamic> && args['quiz'] is Quiz) {
+            return MaterialPageRoute(
               builder: (context) => QuizPlayPage(
                 quiz: args['quiz'],
-                childProfile: args['childProfile'] as ChildProfile?, // might be null
+                childProfile: args['childProfile'] as ChildProfile?,
               ),
             );
           }
@@ -154,7 +189,6 @@ class MyApp extends StatelessWidget {
           }
         }
 
-        // Fallback
         return MaterialPageRoute(
           builder: (context) => Scaffold(
             appBar: AppBar(title: const Text("Error")),

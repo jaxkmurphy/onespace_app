@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/teacher.dart';
 import '../services/firestore_service.dart';
+import '../l10n/app_localizations.dart';
 
 class AccountSettingsPage extends StatefulWidget {
-  const AccountSettingsPage({super.key});
+  final Function(Locale) onLocaleChange;
+
+  const AccountSettingsPage({super.key, required this.onLocaleChange});
 
   @override
   State<AccountSettingsPage> createState() => _AccountSettingsPageState();
@@ -17,6 +20,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
   late Teacher _teacher;
   bool _loading = true;
+
+  late Locale _selectedLocale;
+
+  @override
+    void didChangeDependencies() {
+      super.didChangeDependencies();
+      _selectedLocale = Localizations.localeOf(context);
+  }
 
   @override
   void initState() {
@@ -119,7 +130,27 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _savePin,
-              child: const Text('Save PIN'),
+              child: Text(AppLocalizations.of(context)!.savePin),
+            ),
+            const SizedBox(height: 40),
+
+            // Language selector dropdown
+            Text(AppLocalizations.of(context)!.selectLanguage, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 10),
+            DropdownButton<Locale>(
+              value: _selectedLocale,
+              items: const [
+                DropdownMenuItem(value: Locale('en'), child: Text('English')),
+                DropdownMenuItem(value: Locale('ga'), child: Text('Gaeilge')),
+              ],
+              onChanged: (locale) {
+                if (locale != null) {
+                  setState(() {
+                    _selectedLocale = locale;
+                  });
+                  widget.onLocaleChange(locale);
+                }
+              },
             ),
           ],
         ),

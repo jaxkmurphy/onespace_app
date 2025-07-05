@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "appTitle": "OneSpace App",
+  "settings": "Settings",
+  "language": "Language",
+  "selectLanguage": "Select Language",
+  "pinUpdated": "PIN updated",
+  "savePin": "Save PIN",
+  "newPin": "New PIN",
+  "confirmPin": "Confirm PIN",
+  "pinHint": "PINs must be 4 digits and match"
+}

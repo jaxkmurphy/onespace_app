@@ -6,7 +6,9 @@ import '../models/child_profile.dart';
 import '../widgets/pin_entry_dialog.dart';
 
 class ProfilesPage extends StatefulWidget {
-  const ProfilesPage({super.key});
+  final Function(Locale) onLocaleChange;
+
+  const ProfilesPage({super.key, required this.onLocaleChange});
 
   @override
   State<ProfilesPage> createState() => _ProfilesPageState();
@@ -57,7 +59,12 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (!mounted) return;
 
     if (pinOk) {
-      Navigator.pushNamed(context, '/account-settings');
+      // Pass onLocaleChange to AccountSettingsPage here
+      Navigator.pushNamed(
+        context,
+        '/account-settings',
+        arguments: widget.onLocaleChange,
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Access denied: incorrect PIN')),
@@ -66,30 +73,30 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _onStaffTap(StaffProfile profile) async {
-  final pinOk = await _checkPin();
-  if (pinOk) {
+    final pinOk = await _checkPin();
+    if (pinOk) {
+      if (!mounted) return;
+      Navigator.pushNamed(
+        context,
+        '/staff-dashboard',
+        arguments: profile,
+      );
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Access denied: incorrect PIN')),
+      );
+    }
+  }
+
+  Future<void> _onChildTap(ChildProfile profile) async {
     if (!mounted) return;
     Navigator.pushNamed(
       context,
-      '/staff-dashboard',
-      arguments: profile,  // pass the StaffProfile object
-    );
-  } else {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Access denied: incorrect PIN')),
+      '/child-dashboard',
+      arguments: profile,
     );
   }
-}
-
-  Future<void> _onChildTap(ChildProfile profile) async {
-  if (!mounted) return;
-  Navigator.pushNamed(
-    context,
-    '/child-dashboard',
-    arguments: profile,  // pass the ChildProfile object
-  );
-}
 
   Future<void> _onDeleteStaffProfile(String profileId) async {
     final confirmed = await _checkPin();
@@ -177,7 +184,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
                     return ListTile(
                       leading: const Icon(Icons.person),
                       title: Text(s.name),
-                      onTap: () => _onStaffTap(s), // Pass profile here!
+                      onTap: () => _onStaffTap(s),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _onDeleteStaffProfile(s.id),
@@ -214,7 +221,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
                       leading: const Icon(Icons.child_care),
                       title: Text(ch.name),
                       subtitle: Text('Age: ${ch.age}'),
-                      onTap: () => _onChildTap(ch), // Navigate directly
+                      onTap: () => _onChildTap(ch),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _onDeleteChildProfile(ch.id),

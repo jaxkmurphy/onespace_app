@@ -1,0 +1,12 @@
+{
+  "@@locale": "ga",
+  "appTitle": "Aip OneSpace",
+  "settings": "Socruithe",
+  "language": "Teanga",
+  "selectLanguage": "Roghnaigh Teanga",
+  "pinUpdated": "Athraíodh an PIN",
+  "savePin": "Sábháil PIN",
+  "newPin": "PIN Nua",
+  "confirmPin": "Dearbhaigh an PIN",
+  "pinHint": "Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna"
+}
