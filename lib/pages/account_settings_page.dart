@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/teacher.dart';
 import '../services/firestore_service.dart';
-import '../l10n/app_localizations.dart';
 
 class AccountSettingsPage extends StatefulWidget {
-  final Function(Locale) onLocaleChange;
+  final Locale locale;
+  final void Function(Locale) onLocaleChange;
 
-  const AccountSettingsPage({super.key, required this.onLocaleChange});
+  const AccountSettingsPage({
+    super.key,
+    required this.locale,
+    required this.onLocaleChange,
+  });
 
   @override
   State<AccountSettingsPage> createState() => _AccountSettingsPageState();
@@ -20,28 +24,24 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
   late Teacher _teacher;
   bool _loading = true;
-
   late Locale _selectedLocale;
-
-  @override
-    void didChangeDependencies() {
-      super.didChangeDependencies();
-      _selectedLocale = Localizations.localeOf(context);
-  }
 
   @override
   void initState() {
     super.initState();
     _loadTeacher();
+    _selectedLocale = widget.locale;
   }
 
   Future<void> _loadTeacher() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final t = await _firestore.getTeacherInfo(uid);
-    setState(() {
-      _teacher = t;
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _teacher = t;
+        _loading = false;
+      });
+    }
   }
 
   Future<void> _savePin() async {
@@ -51,7 +51,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     if (pin.length != 4 || !RegExp(r'^\d{4}$').hasMatch(pin) || pin != pin2) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PINs must be 4 digits and match')),
+        SnackBar(
+            content: Text(_selectedLocale.languageCode == 'ga'
+                ? 'Ní mór do na PIN a bheith ina 4 dhigit agus comhoiriúnach.'
+                : 'PINs must be 4 digits and match')),
       );
       return;
     }
@@ -60,16 +63,20 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Overwrite existing PIN?'),
-          content: const Text('This will replace your current PIN. Continue?'),
+          title: Text(_selectedLocale.languageCode == 'ga'
+              ? 'An PIN atá ann a athscríobh?'
+              : 'Overwrite existing PIN?'),
+          content: Text(_selectedLocale.languageCode == 'ga'
+              ? 'Athróidh sé seo do PIN reatha. Lean ort?'
+              : 'This will replace your current PIN. Continue?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
+              child: Text(_selectedLocale.languageCode == 'ga' ? 'Cealaigh' : 'Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('OK'),
+              child: Text(_selectedLocale.languageCode == 'ga' ? 'OK' : 'OK'),
             ),
           ],
         ),
@@ -83,7 +90,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('PIN updated')),
+      SnackBar(
+          content: Text(_selectedLocale.languageCode == 'ga'
+              ? 'PIN nuashonraithe'
+              : 'PIN updated')),
     );
 
     setState(() {
@@ -101,28 +111,32 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       );
     }
 
+    final isGa = _selectedLocale.languageCode == 'ga';
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Account Settings')),
+      appBar: AppBar(title: Text(isGa ? 'Socruithe Cuntais' : 'Account Settings')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              (_teacher.pin ?? '').isEmpty ? 'No PIN set' : 'PIN is set',
+              (_teacher.pin ?? '').isEmpty
+                  ? (isGa ? 'Níl PIN socraithe' : 'No PIN set')
+                  : (isGa ? 'Tá PIN socraithe' : 'PIN is set'),
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
             TextField(
               controller: _pinCtrl,
-              decoration: const InputDecoration(labelText: 'New PIN'),
+              decoration: InputDecoration(labelText: isGa ? 'PIN Nua' : 'New PIN'),
               obscureText: true,
               keyboardType: TextInputType.number,
               maxLength: 4,
             ),
             TextField(
               controller: _confirmCtrl,
-              decoration: const InputDecoration(labelText: 'Confirm PIN'),
+              decoration: InputDecoration(labelText: isGa ? 'Deimhnigh PIN' : 'Confirm PIN'),
               obscureText: true,
               keyboardType: TextInputType.number,
               maxLength: 4,
@@ -130,12 +144,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _savePin,
-              child: Text(AppLocalizations.of(context)!.savePin),
+              child: Text(isGa ? 'Sábháil PIN' : 'Save PIN'),
             ),
             const SizedBox(height: 40),
-
-            // Language selector dropdown
-            Text(AppLocalizations.of(context)!.selectLanguage, style: Theme.of(context).textTheme.titleMedium),
+            Text(isGa ? 'Roghnaigh Teanga' : 'Select Language',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 10),
             DropdownButton<Locale>(
               value: _selectedLocale,
@@ -145,9 +158,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               ],
               onChanged: (locale) {
                 if (locale != null) {
-                  setState(() {
-                    _selectedLocale = locale;
-                  });
+                  setState(() => _selectedLocale = locale);
                   widget.onLocaleChange(locale);
                 }
               },

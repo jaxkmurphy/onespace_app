@@ -33,5 +33,6 @@ class AppLocalizationsGa extends AppLocalizations {
   String get confirmPin => 'Dearbhaigh an PIN';
 
   @override
-  String get pinHint => 'Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna';
+  String get pinHint =>
+      'Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna';
 }

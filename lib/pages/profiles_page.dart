@@ -6,9 +6,7 @@ import '../models/child_profile.dart';
 import '../widgets/pin_entry_dialog.dart';
 
 class ProfilesPage extends StatefulWidget {
-  final Function(Locale) onLocaleChange;
-
-  const ProfilesPage({super.key, required this.onLocaleChange});
+  const ProfilesPage({super.key});
 
   @override
   State<ProfilesPage> createState() => _ProfilesPageState();
@@ -48,7 +46,8 @@ class _ProfilesPageState extends State<ProfilesPage> {
       Navigator.pushNamed(context, '/add-profile');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Access denied: incorrect PIN')),
+        SnackBar(
+            content: Text(_getText('Access denied: incorrect PIN'))),
       );
     }
   }
@@ -59,87 +58,78 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (!mounted) return;
 
     if (pinOk) {
-      // Pass onLocaleChange to AccountSettingsPage here
-      Navigator.pushNamed(
-        context,
-        '/account-settings',
-        arguments: widget.onLocaleChange,
-      );
+      Navigator.pushNamed(context, '/account-settings');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Access denied: incorrect PIN')),
+        SnackBar(
+            content: Text(_getText('Access denied: incorrect PIN'))),
       );
     }
   }
 
   Future<void> _onStaffTap(StaffProfile profile) async {
     final pinOk = await _checkPin();
-    if (pinOk) {
-      if (!mounted) return;
-      Navigator.pushNamed(
-        context,
-        '/staff-dashboard',
-        arguments: profile,
-      );
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Access denied: incorrect PIN')),
-      );
+    if (pinOk && mounted) {
+      Navigator.pushNamed(context, '/staff-dashboard', arguments: profile);
     }
   }
 
   Future<void> _onChildTap(ChildProfile profile) async {
-    if (!mounted) return;
-    Navigator.pushNamed(
-      context,
-      '/child-dashboard',
-      arguments: profile,
-    );
+    if (mounted) {
+      Navigator.pushNamed(context, '/child-dashboard', arguments: profile);
+    }
   }
 
   Future<void> _onDeleteStaffProfile(String profileId) async {
     final confirmed = await _checkPin();
     if (!confirmed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Access denied: incorrect PIN')),
-      );
+      _showSnack('Access denied: incorrect PIN');
       return;
     }
 
     final uid = FirebaseAuth.instance.currentUser!.uid;
     try {
       await firestoreService.deleteStaffProfile(uid, profileId);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Staff profile deleted')),
-      );
+      _showSnack('Staff profile deleted');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete staff profile: $e')),
-      );
+      _showSnack('Failed to delete staff profile: $e');
     }
   }
 
   Future<void> _onDeleteChildProfile(String profileId) async {
     final confirmed = await _checkPin();
     if (!confirmed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Access denied: incorrect PIN')),
-      );
+      _showSnack('Access denied: incorrect PIN');
       return;
     }
 
     final uid = FirebaseAuth.instance.currentUser!.uid;
     try {
       await firestoreService.deleteChildProfile(uid, profileId);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Child profile deleted')),
-      );
+      _showSnack('Child profile deleted');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete child profile: $e')),
-      );
+      _showSnack('Failed to delete child profile: $e');
     }
+  }
+
+  void _showSnack(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_getText(text))));
+  }
+
+  String _getText(String en) {
+    final isGa = Localizations.localeOf(context).languageCode == 'ga';
+    final map = {
+      'Profiles': 'Próifílí',
+      'No staff profiles found': 'Gan próifílí foirne',
+      'No child profiles found': 'Gan próifílí páistí',
+      'Age': 'Aois',
+      'Add Profile': 'Cuir Próifíl Leis',
+      'Access denied: incorrect PIN': 'Diúltaíodh rochtain: PIN mícheart',
+      'Staff profile deleted': 'Scriosadh próifíl an fhostaí',
+      'Child profile deleted': 'Scriosadh próifíl an pháiste',
+    };
+    return isGa && map.containsKey(en) ? map[en]! : en;
   }
 
   @override
@@ -150,7 +140,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profiles'),
+        title: Text(_getText('Profiles')),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -167,16 +157,13 @@ class _ProfilesPageState extends State<ProfilesPage> {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
                 if (snap.hasError) {
                   return Center(child: Text('Error loading staff: ${snap.error}'));
                 }
-
                 final list = snap.data ?? [];
                 if (list.isEmpty) {
-                  return const Center(child: Text('No staff profiles found'));
+                  return Center(child: Text(_getText('No staff profiles found')));
                 }
-
                 return ListView.builder(
                   itemCount: list.length,
                   itemBuilder: (context, i) {
@@ -203,16 +190,13 @@ class _ProfilesPageState extends State<ProfilesPage> {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
                 if (snap.hasError) {
                   return Center(child: Text('Error loading children: ${snap.error}'));
                 }
-
                 final list = snap.data ?? [];
                 if (list.isEmpty) {
-                  return const Center(child: Text('No child profiles found'));
+                  return Center(child: Text(_getText('No child profiles found')));
                 }
-
                 return ListView.builder(
                   itemCount: list.length,
                   itemBuilder: (context, i) {
@@ -220,7 +204,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
                     return ListTile(
                       leading: const Icon(Icons.child_care),
                       title: Text(ch.name),
-                      subtitle: Text('Age: ${ch.age}'),
+                      subtitle: Text('${_getText("Age")}: ${ch.age}'),
                       onTap: () => _onChildTap(ch),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
@@ -236,7 +220,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _goToAddProfile,
-        tooltip: 'Add Profile',
+        tooltip: _getText('Add Profile'),
         child: const Icon(Icons.add),
       ),
     );

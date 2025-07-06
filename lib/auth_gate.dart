@@ -4,9 +4,7 @@ import 'login_screen.dart';
 import 'pages/profiles_page.dart';
 
 class AuthGate extends StatelessWidget {
-  final Function(Locale) onLocaleChange;
-
-  const AuthGate({super.key, required this.onLocaleChange});
+  const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class AuthGate extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasData) {
-          return ProfilesPage(onLocaleChange: onLocaleChange);
+          return const ProfilesPage();
         } else {
           return const LoginScreen();
         }
