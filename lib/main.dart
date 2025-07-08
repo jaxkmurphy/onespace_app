@@ -86,12 +86,13 @@ class _MyAppState extends State<MyApp> {
             '/staffSchedule': (context) => const StaffSchedulePage(),
             '/childSchedule': (context) => const ChildSchedulePage(),
             '/child-dashboard': (context) {
-              final args = ModalRoute.of(context)!.settings.arguments;
-              if (args is ChildProfile) {
-                return ChildProfileDashboard(
-                  profile: args,
-                  firestoreService: FirestoreService(),
-                );
+            final args = ModalRoute.of(context)!.settings.arguments;
+            if (args is ChildProfile) {
+            return ChildProfileDashboard(
+              profile: args,
+              firestoreService: FirestoreService(),
+              localeNotifier: localeNotifier,
+            );
               }
               return const Scaffold(body: Center(child: Text('Missing child profile')));
             },
@@ -121,9 +122,12 @@ class _MyAppState extends State<MyApp> {
               }
             } else if (settings.name == '/staff-dashboard') {
               final args = settings.arguments;
-              if (args is StaffProfile) {
+                if (args is StaffProfile) {
                 return MaterialPageRoute(
-                  builder: (context) => StaffProfileDashboard(profile: args),
+                  builder: (context) => StaffProfileDashboard(
+                  profile: args,
+                  localeNotifier: localeNotifier,
+                  ),
                 );
               }
             } else if (settings.name == '/points-overview') {

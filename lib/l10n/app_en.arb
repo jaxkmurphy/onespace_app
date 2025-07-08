@@ -8,5 +8,16 @@
   "savePin": "Save PIN",
   "newPin": "New PIN",
   "confirmPin": "Confirm PIN",
-  "pinHint": "PINs must be 4 digits and match"
+  "pinHint": "PINs must be 4 digits and match",
+  "zones_regulation": "Zones of Regulation",
+  "points_overview": "Points Overview",
+  "view_schedule": "View Schedule",
+  "create_quiz": "Create Quiz",
+  "manage_quizzes": "Manage Quizzes",
+  "welcome": "Welcome",
+  "my_points": "My Points",
+  "my_schedule": "My Schedule",
+  "calming_sounds": "Calming Sounds",
+  "take_quiz": "Take a Quiz",
+  "change_background": "Change Background Color"
 }

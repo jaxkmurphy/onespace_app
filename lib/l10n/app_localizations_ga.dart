@@ -35,4 +35,37 @@ class AppLocalizationsGa extends AppLocalizations {
   @override
   String get pinHint =>
       'Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna';
+
+  @override
+  String get zones_regulation => 'Zóin Rialaithe';
+
+  @override
+  String get points_overview => 'Forbhreathnú Pointí';
+
+  @override
+  String get view_schedule => 'Féach ar an Sceideal';
+
+  @override
+  String get create_quiz => 'Cruthaigh Tástáil';
+
+  @override
+  String get manage_quizzes => 'Bainistigh Tástálacha';
+
+  @override
+  String get welcome => 'Fáilte';
+
+  @override
+  String get my_points => 'Mo Phointí';
+
+  @override
+  String get my_schedule => 'Mo Sceideal';
+
+  @override
+  String get calming_sounds => 'Fuaimeanna Ciúine';
+
+  @override
+  String get take_quiz => 'Glac Tráth na gCeist';
+
+  @override
+  String get change_background => 'Athraigh Dath an Chúlra';
 }

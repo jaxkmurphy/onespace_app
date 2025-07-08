@@ -8,5 +8,16 @@
   "savePin": "Sábháil PIN",
   "newPin": "PIN Nua",
   "confirmPin": "Dearbhaigh an PIN",
-  "pinHint": "Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna"
+  "pinHint": "Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna",
+  "zones_regulation": "Zóin Rialaithe",
+  "points_overview": "Forbhreathnú Pointí",
+  "view_schedule": "Féach ar an Sceideal",
+  "create_quiz": "Cruthaigh Tástáil",
+  "manage_quizzes": "Bainistigh Tástálacha",
+  "welcome": "Fáilte",
+  "my_points": "Mo Phointí",
+  "my_schedule": "Mo Sceideal",
+  "calming_sounds": "Fuaimeanna Ciúine",
+  "take_quiz": "Glac Tráth na gCeist",
+  "change_background": "Athraigh Dath an Chúlra"
 }

@@ -151,6 +151,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PINs must be 4 digits and match'**
   String get pinHint;
+
+  /// No description provided for @zones_regulation.
+  ///
+  /// In en, this message translates to:
+  /// **'Zones of Regulation'**
+  String get zones_regulation;
+
+  /// No description provided for @points_overview.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Overview'**
+  String get points_overview;
+
+  /// No description provided for @view_schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'View Schedule'**
+  String get view_schedule;
+
+  /// No description provided for @create_quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Quiz'**
+  String get create_quiz;
+
+  /// No description provided for @manage_quizzes.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Quizzes'**
+  String get manage_quizzes;
+
+  /// No description provided for @welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get welcome;
+
+  /// No description provided for @my_points.
+  ///
+  /// In en, this message translates to:
+  /// **'My Points'**
+  String get my_points;
+
+  /// No description provided for @my_schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'My Schedule'**
+  String get my_schedule;
+
+  /// No description provided for @calming_sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Calming Sounds'**
+  String get calming_sounds;
+
+  /// No description provided for @take_quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a Quiz'**
+  String get take_quiz;
+
+  /// No description provided for @change_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Background Color'**
+  String get change_background;
 }
 
 class _AppLocalizationsDelegate

@@ -34,4 +34,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinHint => 'PINs must be 4 digits and match';
+
+  @override
+  String get zones_regulation => 'Zones of Regulation';
+
+  @override
+  String get points_overview => 'Points Overview';
+
+  @override
+  String get view_schedule => 'View Schedule';
+
+  @override
+  String get create_quiz => 'Create Quiz';
+
+  @override
+  String get manage_quizzes => 'Manage Quizzes';
+
+  @override
+  String get welcome => 'Welcome';
+
+  @override
+  String get my_points => 'My Points';
+
+  @override
+  String get my_schedule => 'My Schedule';
+
+  @override
+  String get calming_sounds => 'Calming Sounds';
+
+  @override
+  String get take_quiz => 'Take a Quiz';
+
+  @override
+  String get change_background => 'Change Background Color';
 }
