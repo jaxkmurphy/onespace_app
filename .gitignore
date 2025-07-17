@@ -49,6 +49,8 @@ app.*.map.json
 
 # macOS specific
 *.DS_Store
+ios/Flutter/Generated.xcconfig
+
 
 # Flutter related
 .packages
