@@ -30,7 +30,7 @@ class VoiceLinesPage extends StatelessWidget {
     final localizations = SimpleLocalizations(Localizations.localeOf(context));
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.getString('voice_lines_title') ?? 'Voice Lines'),
+        title: Text(localizations.getString('voice_lines_title')),
       ),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
