@@ -6,7 +6,6 @@ import 'background_color_picker_page.dart';
 import '../utils/hex_colour.dart';
 import '../simple_localizations.dart';
 import '../locale_notifier.dart';
-import 'voice_lines_page.dart';
 
 class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
