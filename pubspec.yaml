@@ -20,7 +20,7 @@ dependencies:
   firebase_core: ^3.13.0
   firebase_auth: ^5.5.3
   cloud_firestore: ^5.6.7
-  audioplayers: ^6.4.0
+  audioplayers: ^6.5.0
 
 dev_dependencies:
   flutter_test:
@@ -34,3 +34,5 @@ flutter:
 
   assets:
     - assets/sounds/
+    - assets/audio/en/
+    - assets/audio/ga/

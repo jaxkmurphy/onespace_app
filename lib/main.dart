@@ -24,6 +24,7 @@ import 'models/quiz.dart';
 import 'services/firestore_service.dart';
 import 'locale_notifier.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'pages/voice_lines_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -171,6 +172,20 @@ class _MyAppState extends State<MyApp> {
                     childProfile: args['childProfile'] as ChildProfile?,
                   ),
                 );
+              }
+            } else if (settings.name == '/voice-lines') {
+              final args = settings.arguments;
+              if (args is Map<String, dynamic>) {
+              final firestoreService = args['firestoreService'] as FirestoreService?;
+              final child = args['child'] as ChildProfile?;
+                if (firestoreService != null && child != null) {
+                  return MaterialPageRoute(
+                    builder: (context) => VoiceLinesPage(
+                      firestoreService: firestoreService,
+                      child: child,
+                    ),
+                  );
+                }
               }
             } else if (settings.name == '/student-quiz-list') {
               final args = settings.arguments;

@@ -6,6 +6,7 @@ import 'background_color_picker_page.dart';
 import '../utils/hex_colour.dart';
 import '../simple_localizations.dart';
 import '../locale_notifier.dart';
+import 'voice_lines_page.dart';
 
 class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
@@ -131,6 +132,22 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                     Navigator.pushNamed(
                       context,
                       '/student-quiz-list',
+                      arguments: {
+                        'firestoreService': widget.firestoreService,
+                        'child': profile,
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                ElevatedButton.icon(
+                icon: const Icon(Icons.record_voice_over),
+                label: Text(loc.getString("voice_lines")), // Add this key to your translation files
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/voice-lines',
                       arguments: {
                         'firestoreService': widget.firestoreService,
                         'child': profile,
