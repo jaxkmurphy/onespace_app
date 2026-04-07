@@ -131,6 +131,19 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                     );
                   },
                 ),
+                const SizedBox(height: 20),
+
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.lock_reset),
+                  label: const Text('Icon Reset'),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/icon-reset',
+                      arguments: widget.profile.teacherUid,
+                    );
+                  },
+                ),
               ],
             ),
           ),

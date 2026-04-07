@@ -235,4 +235,20 @@ Future<void> submitQuiz(String teacherUid, String childId, String quizId, int sc
       .map((doc) => ChildProfile.fromMap(doc.id, doc.data()!));
 }
 
+  Future<void> updateChildIconSequence(
+  String teacherUid,
+  String childId,
+  List<String> iconSequence,
+) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId)
+      .update({
+    'accessMode': 'iconSequence',
+    'iconSequence': iconSequence,
+  });
+}
+
 }

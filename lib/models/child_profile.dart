@@ -5,7 +5,11 @@ class ChildProfile {
   final String? zone;
   final String teacherUid;
   final int points;
-  final String? backgroundColorHex; 
+  final String? backgroundColorHex;
+
+  // NEW
+  final String accessMode;
+  final List<String> iconSequence;
 
   ChildProfile({
     required this.id,
@@ -14,7 +18,9 @@ class ChildProfile {
     required this.teacherUid,
     this.zone,
     this.points = 0,
-    this.backgroundColorHex, 
+    this.backgroundColorHex,
+    this.accessMode = 'iconSequence',
+    this.iconSequence = const [],
   });
 
   Map<String, dynamic> toMap() {
@@ -24,7 +30,9 @@ class ChildProfile {
       'zone': zone,
       'teacherUid': teacherUid,
       'points': points,
-      'backgroundColorHex': backgroundColorHex, 
+      'backgroundColorHex': backgroundColorHex,
+      'accessMode': accessMode,
+      'iconSequence': iconSequence,
     };
   }
 
@@ -36,7 +44,9 @@ class ChildProfile {
       zone: map['zone'],
       teacherUid: map['teacherUid'] ?? '',
       points: map['points'] ?? 0,
-      backgroundColorHex: map['backgroundColorHex'], 
+      backgroundColorHex: map['backgroundColorHex'],
+      accessMode: map['accessMode'] ?? 'iconSequence',
+      iconSequence: List<String>.from(map['iconSequence'] ?? []),
     );
   }
 
@@ -47,7 +57,9 @@ class ChildProfile {
     String? zone,
     String? teacherUid,
     int? points,
-    String? backgroundColorHex,  
+    String? backgroundColorHex,
+    String? accessMode,
+    List<String>? iconSequence,
   }) {
     return ChildProfile(
       id: id ?? this.id,
@@ -57,6 +69,8 @@ class ChildProfile {
       teacherUid: teacherUid ?? this.teacherUid,
       points: points ?? this.points,
       backgroundColorHex: backgroundColorHex ?? this.backgroundColorHex,
+      accessMode: accessMode ?? this.accessMode,
+      iconSequence: iconSequence ?? this.iconSequence,
     );
   }
 }

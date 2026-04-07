@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/staff_profile.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../widgets/icon_sequence_picker.dart';
 
 class AddProfilePage extends StatefulWidget {
   const AddProfilePage({super.key});
@@ -15,86 +16,147 @@ class _AddProfilePageState extends State<AddProfilePage> {
   final FirestoreService firestoreService = FirestoreService();
   final _formKey = GlobalKey<FormState>();
 
-  bool isStaff = true; // Toggle state: true = Staff, false = Child
+  bool isStaff = true;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController roleController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
 
-  Future<void> _saveProfile() async {
-  if (!_formKey.currentState!.validate()) return;
+  List<String> childIconSequence = [];
+  List<String> childIconSequenceConfirm = [];
+  bool confirmingChildSequence = false;
+  int pickerResetVersion = 0;
 
-  final teacherUid = FirebaseAuth.instance.currentUser!.uid;
-  final name = nameController.text.trim();
-
-  try {
-    if (isStaff) {
-  final role = roleController.text.trim();
-  final profile = StaffProfile(
-    id: '', // Firestore will assign the ID
-    name: name,
-    role: role,
-    teacherUid: teacherUid, // ✅ Add this
-  );
-  await firestoreService.addStaffProfile(teacherUid, profile);
-} else {
-  final age = int.tryParse(ageController.text.trim()) ?? 0;
-  final profile = ChildProfile(
-    id: '', // Firestore will assign the ID
-    name: name,
-    age: age,
-    teacherUid: teacherUid, // ✅ Add this
-    zone: null, // Optional, can be omitted if default constructor handles it
-  );
-  await firestoreService.addChildProfile(teacherUid, profile);
-}
-
-    if (!mounted) return;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-        title: const Text('Success'),
-        content: Text('Profile "$name" created successfully.'),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-              Navigator.of(context).pop(); // Go back to previous screen
-          },
-        ),
-      ],
-    );
-  },
-);
-
-  } catch (e) {
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error saving profile: $e')),
-    );
+  bool _matches(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
-}
+
+  void _restartChildSequenceSetup() {
+    setState(() {
+      childIconSequence = [];
+      childIconSequenceConfirm = [];
+      confirmingChildSequence = false;
+      pickerResetVersion++;
+    });
+  }
+
+  Future<void> _saveProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final teacherUid = FirebaseAuth.instance.currentUser!.uid;
+    final name = nameController.text.trim();
+
+    try {
+      if (isStaff) {
+        final role = roleController.text.trim();
+        final profile = StaffProfile(
+          id: '',
+          name: name,
+          role: role,
+          teacherUid: teacherUid,
+        );
+        await firestoreService.addStaffProfile(teacherUid, profile);
+      } else {
+        if (childIconSequence.length != 3) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please choose a 3-icon unlock sequence')),
+          );
+          return;
+        }
+
+        if (!confirmingChildSequence) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please confirm the child unlock sequence')),
+          );
+          return;
+        }
+
+        if (childIconSequenceConfirm.length != 3) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please tap the same 3 icons again to confirm')),
+          );
+          return;
+        }
+
+        if (!_matches(childIconSequence, childIconSequenceConfirm)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Sequences did not match. Please try again.')),
+          );
+          _restartChildSequenceSetup();
+          return;
+        }
+
+        final age = int.tryParse(ageController.text.trim()) ?? 0;
+        final profile = ChildProfile(
+          id: '',
+          name: name,
+          age: age,
+          teacherUid: teacherUid,
+          zone: null,
+          accessMode: 'iconSequence',
+          iconSequence: childIconSequence,
+        );
+
+        await firestoreService.addChildProfile(teacherUid, profile);
+      }
+
+      if (!mounted) return;
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Success'),
+            content: Text('Profile "$name" created successfully.'),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving profile: $e')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    roleController.dispose();
+    ageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(isStaff ? 'Add Staff Profile' : 'Add Child Profile')),
+        title: Text(isStaff ? 'Add Staff Profile' : 'Add Child Profile'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
-              // Toggle Buttons for Staff / Child
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ChoiceChip(
-                    label: Text('Staff'),
+                    label: const Text('Staff'),
                     selected: isStaff,
                     onSelected: (selected) {
                       setState(() {
@@ -104,11 +166,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
                   ),
                   const SizedBox(width: 16),
                   ChoiceChip(
-                    label: Text('Child'),
+                    label: const Text('Child'),
                     selected: !isStaff,
                     onSelected: (selected) {
                       setState(() {
                         isStaff = false;
+                        _restartChildSequenceSetup();
                       });
                     },
                   ),
@@ -116,31 +179,25 @@ class _AddProfilePageState extends State<AddProfilePage> {
               ),
               const SizedBox(height: 24),
 
-              // Name input (common)
               TextFormField(
                 controller: nameController,
-                autofillHints: const [], // disable autofill
                 decoration: const InputDecoration(labelText: 'Name'),
                 validator: (val) =>
                     val == null || val.trim().isEmpty ? 'Name is required' : null,
               ),
               const SizedBox(height: 16),
 
-              // Role input if Staff
               if (isStaff)
                 TextFormField(
                   controller: roleController,
-                  autofillHints: const [],
                   decoration: const InputDecoration(labelText: 'Role'),
                   validator: (val) =>
                       val == null || val.trim().isEmpty ? 'Role is required' : null,
                 ),
 
-              // Age input if Child
-              if (!isStaff)
+              if (!isStaff) ...[
                 TextFormField(
                   controller: ageController,
-                  autofillHints: const [],
                   decoration: const InputDecoration(labelText: 'Age'),
                   keyboardType: TextInputType.number,
                   validator: (val) {
@@ -149,6 +206,65 @@ class _AddProfilePageState extends State<AddProfilePage> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 24),
+                Text(
+                  confirmingChildSequence
+                      ? 'Confirm Child Unlock Sequence'
+                      : 'Set Child Unlock Sequence',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  confirmingChildSequence
+                      ? 'Tap the same 3 icons again to confirm.'
+                      : 'Ask the child to pick 3 icons in order.',
+                ),
+                const SizedBox(height: 12),
+                IconSequencePicker(
+                  resetKey: ValueKey(pickerResetVersion),
+                  requiredLength: 3,
+                  onChanged: (sequence) {
+                    if (confirmingChildSequence) {
+                      childIconSequenceConfirm = List<String>.from(sequence);
+                    } else {
+                      childIconSequence = List<String>.from(sequence);
+                    }
+                  },
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: _restartChildSequenceSetup,
+                      child: const Text('Start Over'),
+                    ),
+                    const SizedBox(width: 8),
+                    if (!confirmingChildSequence)
+                      ElevatedButton(
+                        onPressed: () {
+                          if (childIconSequence.length != 3) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please choose 3 icons first'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() {
+                            confirmingChildSequence = true;
+                            childIconSequenceConfirm = [];
+                            pickerResetVersion++;
+                          });
+                        },
+                        child: const Text('Next'),
+                      ),
+                  ],
+                ),
+              ],
 
               const SizedBox(height: 24),
 

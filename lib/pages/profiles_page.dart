@@ -4,6 +4,7 @@ import '../services/firestore_service.dart';
 import '../models/staff_profile.dart';
 import '../models/child_profile.dart';
 import '../widgets/pin_entry_dialog.dart';
+import '../widgets/child_icon_unlock_dialog.dart';
 
 class ProfilesPage extends StatefulWidget {
   const ProfilesPage({super.key});
@@ -75,10 +76,25 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _onChildTap(ChildProfile profile) async {
-    if (mounted) {
-      Navigator.pushNamed(context, '/child-dashboard', arguments: profile);
-    }
+  bool allowed = false;
+
+  if (profile.accessMode == 'iconSequence') {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => ChildIconUnlockDialog(
+        childName: profile.name,
+        correctSequence: profile.iconSequence,
+      ),
+    );
+    allowed = ok == true;
+  } else {
+    allowed = true;
   }
+
+  if (allowed && mounted) {
+    Navigator.pushNamed(context, '/child-dashboard', arguments: profile);
+  }
+}
 
   Future<void> _onDeleteStaffProfile(String profileId) async {
     final confirmed = await _checkPin();

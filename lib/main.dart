@@ -25,6 +25,7 @@ import 'services/firestore_service.dart';
 import 'locale_notifier.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'pages/voice_lines_page.dart';
+import 'pages/icon_reset_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -201,6 +202,13 @@ class _MyAppState extends State<MyApp> {
                   );
                 }
               }
+            } else if (settings.name == '/icon-reset') {
+              final args = settings.arguments;
+              if (args is String) {
+                return MaterialPageRoute(
+                  builder: (context) => IconResetPage(teacherUid: args),
+                  );
+                }
             }
 
             return MaterialPageRoute(
