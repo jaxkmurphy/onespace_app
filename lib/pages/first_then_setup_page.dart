@@ -217,7 +217,7 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
                     labelText: loc.getString('select_child'),
                     border: const OutlineInputBorder(),
                   ),
-                  value: _singleChildId,
+                  initialValue: _singleChildId,
                   items: children.map((child) {
                     return DropdownMenuItem(
                       value: child.id,

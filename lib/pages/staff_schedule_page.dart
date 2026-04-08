@@ -115,7 +115,7 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedStartTime,
+                    initialValue: _selectedStartTime,
                     hint: const Text("Start Time"),
                     items: _timeOptions.map((time) => DropdownMenuItem(value: time, child: Text(time))).toList(),
                     onChanged: (value) => setState(() => _selectedStartTime = value),
@@ -124,7 +124,7 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedEndTime,
+                    initialValue: _selectedEndTime,
                     hint: const Text("End Time"),
                     items: _timeOptions.map((time) => DropdownMenuItem(value: time, child: Text(time))).toList(),
                     onChanged: (value) => setState(() => _selectedEndTime = value),
