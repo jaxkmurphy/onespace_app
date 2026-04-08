@@ -134,6 +134,19 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 const SizedBox(height: 20),
 
                 ElevatedButton.icon(
+                  icon: const Icon(Icons.view_kanban),
+                  label: Text(loc.getString("first_then_setup")),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/first-then-setup',
+                      arguments: widget.profile.teacherUid,
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                ElevatedButton.icon(
                   icon: const Icon(Icons.lock_reset),
                   label: const Text('Icon Reset'),
                   onPressed: () {

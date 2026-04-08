@@ -125,12 +125,37 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                 const SizedBox(height: 12),
 
                 ElevatedButton.icon(
+                  icon: const Icon(Icons.timer),
+                  label: Text(loc.getString("visual_timer")),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/visual-timer');
+                  },
+                ),     
+                const SizedBox(height: 12),
+
+                ElevatedButton.icon(
                   icon: const Icon(Icons.quiz),
                   label: Text(loc.getString("take_quiz")),
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
                       '/student-quiz-list',
+                      arguments: {
+                        'firestoreService': widget.firestoreService,
+                        'child': profile,
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.view_agenda),
+                  label: Text(loc.getString("first_then")),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/first-then-child',
                       arguments: {
                         'firestoreService': widget.firestoreService,
                         'child': profile,

@@ -26,6 +26,9 @@ import 'locale_notifier.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'pages/voice_lines_page.dart';
 import 'pages/icon_reset_page.dart';
+import 'pages/visual_timer_page.dart';
+import 'pages/first_then_setup_page.dart';
+import 'pages/first_then_child_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,6 +90,7 @@ class _MyAppState extends State<MyApp> {
             '/add-profile': (context) => const AddProfilePage(),
             '/staffSchedule': (context) => const StaffSchedulePage(),
             '/childSchedule': (context) => const ChildSchedulePage(),
+            '/visual-timer': (context) => const VisualTimerPage(),
             '/child-dashboard': (context) {
             final args = ModalRoute.of(context)!.settings.arguments;
             if (args is ChildProfile) {
@@ -209,6 +213,30 @@ class _MyAppState extends State<MyApp> {
                   builder: (context) => IconResetPage(teacherUid: args),
                   );
                 }
+            } else if (settings.name == '/first-then-setup') {
+              final args = settings.arguments;
+              if (args is String) {
+                return MaterialPageRoute(
+                  builder: (context) => FirstThenSetupPage(
+                    teacherUid: args,
+                  ),
+                );
+              }
+            } else if (settings.name == '/first-then-child') {
+              final args = settings.arguments;
+              if (args is Map<String, dynamic>) {
+                final firestoreService =
+                    args['firestoreService'] as FirestoreService?;
+                final child = args['child'] as ChildProfile?;
+                if (firestoreService != null && child != null) {
+                  return MaterialPageRoute(
+                    builder: (context) => FirstThenChildPage(
+                      firestoreService: firestoreService,
+                      child: child,
+                    ),
+                  );
+                }
+              }
             }
 
             return MaterialPageRoute(
