@@ -3,6 +3,7 @@ import '../models/teacher.dart';
 import '../models/staff_profile.dart';
 import '../models/child_profile.dart';
 import '../models/quiz.dart';
+import '../models/first_then_option.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -253,113 +254,201 @@ Future<void> submitQuiz(String teacherUid, String childId, String quizId, int sc
 
     // FIRST-THEN BOARD
 
-  Future<void> setFirstThenForChild({
-    required String teacherUid,
-    required String childId,
-    required String activity,
-    required List<String> rewards,
-  }) async {
-    await _db
+CollectionReference<Map<String, dynamic>> _firstThenOptionsRef({
+  required String teacherUid,
+  required String type,
+}) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('first_then_options')
+      .doc(type)
+      .collection('items');
+}
+
+Stream<List<FirstThenOption>> getFirstThenOptions({
+  required String teacherUid,
+  required String type,
+}) {
+  return _firstThenOptionsRef(
+    teacherUid: teacherUid,
+    type: type,
+  ).snapshots().map((snapshot) {
+    final options = snapshot.docs
+        .map((doc) => FirstThenOption.fromMap(doc.id, doc.data()))
+        .toList();
+
+    options.sort((a, b) => a.label.compareTo(b.label));
+    return options;
+  });
+}
+
+Future<void> addFirstThenOption({
+  required String teacherUid,
+  required String type,
+  required FirstThenOption option,
+}) async {
+  await _firstThenOptionsRef(
+    teacherUid: teacherUid,
+    type: type,
+  ).add(option.toMap());
+}
+
+Future<void> updateFirstThenOption({
+  required String teacherUid,
+  required String type,
+  required FirstThenOption option,
+}) async {
+  await _firstThenOptionsRef(
+    teacherUid: teacherUid,
+    type: type,
+  ).doc(option.id).update(option.toMap());
+}
+
+Future<void> deleteFirstThenOption({
+  required String teacherUid,
+  required String type,
+  required String optionId,
+}) async {
+  await _firstThenOptionsRef(
+    teacherUid: teacherUid,
+    type: type,
+  ).doc(optionId).delete();
+}
+
+Future<void> seedDefaultFirstThenOptions(String teacherUid) async {
+  final activitySnapshot = await _firstThenOptionsRef(
+    teacherUid: teacherUid,
+    type: 'activities',
+  ).limit(1).get();
+
+  final rewardSnapshot = await _firstThenOptionsRef(
+    teacherUid: teacherUid,
+    type: 'rewards',
+  ).limit(1).get();
+
+  if (activitySnapshot.docs.isEmpty) {
+    final defaults = [
+      FirstThenOption(id: '', label: 'Quiz', iconName: 'quiz'),
+      FirstThenOption(id: '', label: 'Homework', iconName: 'book'),
+      FirstThenOption(id: '', label: 'Clean Up', iconName: 'clean'),
+      FirstThenOption(id: '', label: 'Finish Work', iconName: 'task'),
+    ];
+
+    for (final option in defaults) {
+      await addFirstThenOption(
+        teacherUid: teacherUid,
+        type: 'activities',
+        option: option,
+      );
+    }
+  }
+
+  if (rewardSnapshot.docs.isEmpty) {
+    final defaults = [
+      FirstThenOption(id: '', label: 'Calming Sounds', iconName: 'music'),
+      FirstThenOption(id: '', label: 'Playtime', iconName: 'toys'),
+      FirstThenOption(id: '', label: 'Outside Time', iconName: 'outside'),
+      FirstThenOption(id: '', label: 'Break', iconName: 'break'),
+      FirstThenOption(id: '', label: 'Music', iconName: 'music'),
+    ];
+
+    for (final option in defaults) {
+      await addFirstThenOption(
+        teacherUid: teacherUid,
+        type: 'rewards',
+        option: option,
+      );
+    }
+  }
+}
+
+Future<void> setFirstThenForChildren({
+  required String teacherUid,
+  required List<String> childIds,
+  required FirstThenOption activity,
+  required List<FirstThenOption> rewards,
+}) async {
+  final batch = _db.batch();
+
+  for (final childId in childIds) {
+    final docRef = _db
         .collection('teachers')
         .doc(teacherUid)
         .collection('child_profiles')
-        .doc(childId)
-        .set({
+        .doc(childId);
+
+    batch.set(docRef, {
       'firstThen': {
-        'activity': activity,
-        'rewards': rewards,
-        'selectedReward': null,
+        'activity': activity.toFirstThenMap(),
+        'rewards': rewards.map((reward) => reward.toFirstThenMap()).toList(),
+        'selectedRewardId': null,
         'isActive': true,
       }
     }, SetOptions(merge: true));
   }
 
-  Future<void> setFirstThenForChildren({
-    required String teacherUid,
-    required List<String> childIds,
-    required String activity,
-    required List<String> rewards,
-  }) async {
-    final batch = _db.batch();
+  await batch.commit();
+}
 
-    for (final childId in childIds) {
-      final docRef = _db
-          .collection('teachers')
-          .doc(teacherUid)
-          .collection('child_profiles')
-          .doc(childId);
+Future<void> clearFirstThenForChild({
+  required String teacherUid,
+  required String childId,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId)
+      .set({
+    'firstThen': {
+      'activity': null,
+      'rewards': [],
+      'selectedRewardId': null,
+      'isActive': false,
+    }
+  }, SetOptions(merge: true));
+}
 
-      batch.set(docRef, {
-        'firstThen': {
-          'activity': activity,
-          'rewards': rewards,
-          'selectedReward': null,
-          'isActive': true,
-        }
-      }, SetOptions(merge: true));
+Future<void> selectFirstThenReward({
+  required String teacherUid,
+  required String childId,
+  required String rewardId,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId)
+      .update({
+    'firstThen.selectedRewardId': rewardId,
+  });
+}
+
+Stream<Map<String, dynamic>?> getFirstThenStream({
+  required String teacherUid,
+  required String childId,
+}) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId)
+      .snapshots()
+      .map((doc) {
+    final data = doc.data();
+    if (data == null) return null;
+
+    final firstThen = data['firstThen'];
+    if (firstThen is Map<String, dynamic>) {
+      return firstThen;
+    }
+    if (firstThen is Map) {
+      return Map<String, dynamic>.from(firstThen);
     }
 
-    await batch.commit();
-  }
-
-  Future<void> clearFirstThenForChild({
-    required String teacherUid,
-    required String childId,
-  }) async {
-    await _db
-        .collection('teachers')
-        .doc(teacherUid)
-        .collection('child_profiles')
-        .doc(childId)
-        .set({
-      'firstThen': {
-        'activity': null,
-        'rewards': [],
-        'selectedReward': null,
-        'isActive': false,
-      }
-    }, SetOptions(merge: true));
-  }
-
-  Future<void> selectFirstThenReward({
-    required String teacherUid,
-    required String childId,
-    required String reward,
-  }) async {
-    await _db
-        .collection('teachers')
-        .doc(teacherUid)
-        .collection('child_profiles')
-        .doc(childId)
-        .update({
-      'firstThen.selectedReward': reward,
-    });
-  }
-
-  Stream<Map<String, dynamic>?> getFirstThenStream({
-    required String teacherUid,
-    required String childId,
-  }) {
-    return _db
-        .collection('teachers')
-        .doc(teacherUid)
-        .collection('child_profiles')
-        .doc(childId)
-        .snapshots()
-        .map((doc) {
-      final data = doc.data();
-      if (data == null) return null;
-
-      final firstThen = data['firstThen'];
-      if (firstThen is Map<String, dynamic>) {
-        return firstThen;
-      }
-      if (firstThen is Map) {
-        return Map<String, dynamic>.from(firstThen);
-      }
-
-      return null;
-    });
-  }
+    return null;
+  });
+}
 
 }

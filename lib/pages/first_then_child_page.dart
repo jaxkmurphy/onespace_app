@@ -13,51 +13,30 @@ class FirstThenChildPage extends StatelessWidget {
     required this.firestoreService,
   });
 
-  String _labelForKey(SimpleLocalizations loc, String key) {
-    switch (key) {
-      case 'quiz':
-        return loc.getString('quiz');
-      case 'homework':
-        return loc.getString('homework');
-      case 'clean_up':
-        return loc.getString('clean_up');
-      case 'finish_work':
-        return loc.getString('finish_work');
-      case 'calming_sounds':
-        return loc.getString('calming_sounds');
-      case 'playtime':
-        return loc.getString('playtime');
-      case 'outside_time':
-        return loc.getString('outside_time');
-      case 'break':
-        return loc.getString('break');
-      case 'music':
-        return loc.getString('music');
-      default:
-        return key;
-    }
-  }
-
   IconData _iconForKey(String key) {
     switch (key) {
       case 'quiz':
         return Icons.quiz;
+      case 'book':
       case 'homework':
         return Icons.book;
+      case 'clean':
       case 'clean_up':
         return Icons.cleaning_services;
+      case 'task':
       case 'finish_work':
         return Icons.task_alt;
+      case 'music':
       case 'calming_sounds':
         return Icons.music_note;
+      case 'toys':
       case 'playtime':
         return Icons.toys;
+      case 'outside':
       case 'outside_time':
         return Icons.park;
       case 'break':
         return Icons.free_breakfast;
-      case 'music':
-        return Icons.library_music;
       default:
         return Icons.help_outline;
     }
@@ -77,14 +56,56 @@ class FirstThenChildPage extends StatelessWidget {
           childId: child.id,
         ),
         builder: (context, snapshot) {
-          final firstThen = snapshot.data;
-          final isActive = firstThen?['isActive'] == true;
-          final activity = firstThen?['activity'] as String?;
-          final rewards = (firstThen?['rewards'] as List?)
-                  ?.map((e) => e.toString())
-                  .toList() ??
-              [];
-          final selectedReward = firstThen?['selectedReward'] as String?;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+  return const Center(
+    child: CircularProgressIndicator(),
+  );
+}
+
+  if (snapshot.hasError) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          'Something went wrong loading First–Then.',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
+    );
+  }
+
+    final firstThen = snapshot.data;
+
+    if (firstThen == null || firstThen.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            loc.getString('no_active_first_then'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
+    );
+  }
+
+      final isActive = firstThen['isActive'] == true;
+
+      final rawActivity = firstThen['activity'];
+      final activity = rawActivity is Map
+        ? Map<String, dynamic>.from(rawActivity)
+        : null;
+
+      final rawRewards = firstThen['rewards'];
+      final rewards = rawRewards is List
+        ? rawRewards
+          .whereType<Map>()
+          .map((reward) => Map<String, dynamic>.from(reward))
+          .toList()
+        : <Map<String, dynamic>>[];
+
+      final selectedRewardId = firstThen['selectedRewardId'] as String?;
 
           if (!isActive || activity == null || rewards.isEmpty) {
             return Center(
@@ -99,6 +120,9 @@ class FirstThenChildPage extends StatelessWidget {
             );
           }
 
+          final activityLabel = activity['label'] ?? '';
+          final activityIcon = activity['iconName'] ?? 'task';
+
           return Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -108,6 +132,7 @@ class FirstThenChildPage extends StatelessWidget {
                   loc.getString('first'),
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
+
                 const SizedBox(height: 12),
 
                 Card(
@@ -115,11 +140,12 @@ class FirstThenChildPage extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        Icon(_iconForKey(activity), size: 48),
+                        Icon(_iconForKey(activityIcon), size: 48),
                         const SizedBox(height: 10),
                         Text(
-                          _labelForKey(loc, activity),
+                          activityLabel,
                           style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
@@ -133,6 +159,7 @@ class FirstThenChildPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
+
                 const SizedBox(height: 16),
 
                 Wrap(
@@ -140,17 +167,23 @@ class FirstThenChildPage extends StatelessWidget {
                   runSpacing: 12,
                   alignment: WrapAlignment.center,
                   children: rewards.map((reward) {
-                    final isSelected = reward == selectedReward;
-                    final locked = selectedReward != null;
+                    final rewardId = reward['id'] as String? ?? '';
+                    final rewardLabel = reward['label'] ?? '';
+                    final rewardIcon = reward['iconName'] ?? 'task';
+
+                    final isSelected = rewardId == selectedRewardId;
+                    final locked = selectedRewardId != null;
 
                     return SizedBox(
                       width: 160,
                       child: ElevatedButton.icon(
                         icon: Icon(
-                          isSelected ? Icons.check_circle : _iconForKey(reward),
+                          isSelected
+                              ? Icons.check_circle
+                              : _iconForKey(rewardIcon),
                         ),
                         label: Text(
-                          _labelForKey(loc, reward),
+                          rewardLabel,
                           textAlign: TextAlign.center,
                         ),
                         onPressed: locked
@@ -159,7 +192,7 @@ class FirstThenChildPage extends StatelessWidget {
                                 await firestoreService.selectFirstThenReward(
                                   teacherUid: child.teacherUid,
                                   childId: child.id,
-                                  reward: reward,
+                                  rewardId: rewardId,
                                 );
                               },
                       ),
@@ -169,13 +202,20 @@ class FirstThenChildPage extends StatelessWidget {
 
                 const SizedBox(height: 28),
 
-                if (selectedReward != null)
+                if (selectedRewardId != null)
                   Column(
                     children: [
-                      Icon(Icons.check_circle, size: 56, color: Colors.green.shade600),
+                      Icon(
+                        Icons.check_circle,
+                        size: 56,
+                        color: Colors.green.shade600,
+                      ),
                       const SizedBox(height: 10),
                       Text(
-                        '${loc.getString('then')}: ${_labelForKey(loc, selectedReward)}',
+                        '${loc.getString('then')}: ${rewards.firstWhere(
+                          (reward) => reward['id'] == selectedRewardId,
+                          orElse: () => {'label': ''},
+                        )['label']}',
                         style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
                       ),
