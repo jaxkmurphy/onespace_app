@@ -6,6 +6,8 @@ import '../models/quiz.dart';
 import '../models/first_then_option.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../models/staff_handover_document.dart';
+import '../models/handover_quick_note.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -449,6 +451,134 @@ Stream<Map<String, dynamic>?> getFirstThenStream({
 
     return null;
   });
+}
+
+  // HANDOVER HUB
+
+Stream<String> getHandoverOverview(String teacherUid) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('handover_overview')
+      .doc('main')
+      .snapshots()
+      .map((doc) {
+    final data = doc.data();
+    return data?['content'] ?? '';
+  });
+}
+
+Future<void> updateHandoverOverview({
+  required String teacherUid,
+  required String content,
+  required String updatedByName,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('handover_overview')
+      .doc('main')
+      .set({
+    'content': content,
+    'updatedByName': updatedByName,
+    'updatedAt': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+}
+
+Stream<StaffHandoverDocument> getStaffHandoverDocument({
+  required String teacherUid,
+  required StaffProfile staff,
+}) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('staff_handover_documents')
+      .doc(staff.id)
+      .snapshots()
+      .map((doc) {
+    if (!doc.exists || doc.data() == null) {
+      return StaffHandoverDocument.empty(
+        staffProfileId: staff.id,
+        staffName: staff.name,
+      );
+    }
+
+    return StaffHandoverDocument.fromMap(doc.id, doc.data()!);
+  });
+}
+
+Future<void> updateStaffHandoverDocument({
+  required String teacherUid,
+  required StaffHandoverDocument document,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('staff_handover_documents')
+      .doc(document.staffProfileId)
+      .set(document.toMap(), SetOptions(merge: true));
+}
+
+Stream<List<HandoverQuickNote>> getHandoverQuickNotes(String teacherUid) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('handover_quick_notes')
+      .orderBy('updatedAt', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Future<void> addHandoverQuickNote({
+  required String teacherUid,
+  required String title,
+  required String content,
+  required StaffProfile createdBy,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('handover_quick_notes')
+      .add({
+    'title': title,
+    'content': content,
+    'createdByStaffId': createdBy.id,
+    'createdByName': createdBy.name,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> updateHandoverQuickNote({
+  required String teacherUid,
+  required String noteId,
+  required String title,
+  required String content,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('handover_quick_notes')
+      .doc(noteId)
+      .update({
+    'title': title,
+    'content': content,
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> deleteHandoverQuickNote({
+  required String teacherUid,
+  required String noteId,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('handover_quick_notes')
+      .doc(noteId)
+      .delete();
 }
 
 }

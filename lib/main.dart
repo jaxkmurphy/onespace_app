@@ -29,6 +29,7 @@ import 'pages/icon_reset_page.dart';
 import 'pages/visual_timer_page.dart';
 import 'pages/first_then_setup_page.dart';
 import 'pages/first_then_child_page.dart';
+import 'pages/handover_hub_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -237,7 +238,16 @@ class _MyAppState extends State<MyApp> {
                   );
                 }
               }
+            } else if (settings.name == '/handover-hub') {
+              final args = settings.arguments;
+              if (args is StaffProfile) {
+                return MaterialPageRoute(
+                  builder: (context) => HandoverHubPage(
+                  currentStaff: args,
+                ),
+              );
             }
+          }
 
             return MaterialPageRoute(
               builder: (context) => Scaffold(

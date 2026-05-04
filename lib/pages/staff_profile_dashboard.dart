@@ -157,6 +157,19 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                     );
                   },
                 ),
+                const SizedBox(height: 20),
+
+                ElevatedButton.icon(
+                icon: const Icon(Icons.description),
+                label: const Text('Handover Hub'),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/handover-hub',
+                    arguments: widget.profile,
+                    );
+                  },
+                ),
               ],
             ),
           ),
