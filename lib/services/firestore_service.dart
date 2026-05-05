@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/staff_handover_document.dart';
 import '../models/handover_quick_note.dart';
+import '../models/incident_log_entry.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -578,6 +579,45 @@ Future<void> deleteHandoverQuickNote({
       .doc(teacherUid)
       .collection('handover_quick_notes')
       .doc(noteId)
+      .delete();
+}
+
+  // INCIDENT LOG
+
+Future<void> addIncidentLogEntry({
+  required String teacherUid,
+  required IncidentLogEntry entry,
+}) async {
+  final docRef = _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('incident_logs')
+      .doc();
+
+  await docRef.set(entry.toMap());
+}
+
+Stream<List<IncidentLogEntry>> getIncidentLogEntries(String teacherUid) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('incident_logs')
+      .orderBy('timestamp', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => IncidentLogEntry.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Future<void> deleteIncidentLogEntry({
+  required String teacherUid,
+  required String incidentId,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('incident_logs')
+      .doc(incidentId)
       .delete();
 }
 

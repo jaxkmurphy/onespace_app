@@ -5,6 +5,7 @@ import '../models/child_profile.dart';
 import 'staff_schedule_page.dart';
 import '../simple_localizations.dart';
 import '../locale_notifier.dart';
+import 'incident_log_page.dart';
 
 class StaffProfileDashboard extends StatefulWidget {
   final StaffProfile profile;
@@ -158,6 +159,22 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                   },
                 ),
                 const SizedBox(height: 20),
+                
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.event_note),
+                  label: const Text('Incident Log'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                        MaterialPageRoute(
+                          builder: (_) => IncidentLogPage(
+                            staffProfile: widget.profile,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
 
                 ElevatedButton.icon(
                 icon: const Icon(Icons.description),
@@ -170,6 +187,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                     );
                   },
                 ),
+
               ],
             ),
           ),
