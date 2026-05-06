@@ -25,7 +25,6 @@ class _CircleTimePageState extends State<CircleTimePage> {
   bool get isChildMode => widget.childProfile != null;
 
   static const double circleSize = 90;
-  static const double spacing = 8;
 
   @override
   Widget build(BuildContext context) {
