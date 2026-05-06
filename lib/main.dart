@@ -30,6 +30,7 @@ import 'pages/visual_timer_page.dart';
 import 'pages/first_then_setup_page.dart';
 import 'pages/first_then_child_page.dart';
 import 'pages/handover_hub_page.dart';
+import 'pages/circle_time_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -238,7 +239,21 @@ class _MyAppState extends State<MyApp> {
                   );
                 }
               }
-            } else if (settings.name == '/handover-hub') {
+            } else if (settings.name == '/circle-time') {
+              final args = settings.arguments;
+              if (args is Map<String, dynamic>) {
+              final teacherUid = args['teacherUid'] as String?;
+              final child = args['child'] as ChildProfile?;
+              if (teacherUid != null) {
+                return MaterialPageRoute(
+                  builder: (context) => CircleTimePage(
+                    teacherUid: teacherUid,
+                    childProfile: child,
+                    ),
+                  );
+                }
+              } 
+            }else if (settings.name == '/handover-hub') {
               final args = settings.arguments;
               if (args is StaffProfile) {
                 return MaterialPageRoute(

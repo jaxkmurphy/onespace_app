@@ -7,9 +7,13 @@ class ChildProfile {
   final int points;
   final String? backgroundColorHex;
 
-  // NEW
   final String accessMode;
   final List<String> iconSequence;
+
+  // Circle Time
+  final double circleTimeX;
+  final double circleTimeY;
+  final String circleTimeSide;
 
   ChildProfile({
     required this.id,
@@ -21,6 +25,9 @@ class ChildProfile {
     this.backgroundColorHex,
     this.accessMode = 'iconSequence',
     this.iconSequence = const [],
+    this.circleTimeX = 0.25,
+    this.circleTimeY = 0.5,
+    this.circleTimeSide = 'home',
   });
 
   Map<String, dynamic> toMap() {
@@ -33,6 +40,9 @@ class ChildProfile {
       'backgroundColorHex': backgroundColorHex,
       'accessMode': accessMode,
       'iconSequence': iconSequence,
+      'circleTimeX': circleTimeX,
+      'circleTimeY': circleTimeY,
+      'circleTimeSide': circleTimeSide,
     };
   }
 
@@ -47,6 +57,9 @@ class ChildProfile {
       backgroundColorHex: map['backgroundColorHex'],
       accessMode: map['accessMode'] ?? 'iconSequence',
       iconSequence: List<String>.from(map['iconSequence'] ?? []),
+      circleTimeX: (map['circleTimeX'] ?? 0.25).toDouble(),
+      circleTimeY: (map['circleTimeY'] ?? 0.5).toDouble(),
+      circleTimeSide: map['circleTimeSide'] ?? 'home',
     );
   }
 
@@ -60,6 +73,9 @@ class ChildProfile {
     String? backgroundColorHex,
     String? accessMode,
     List<String>? iconSequence,
+    double? circleTimeX,
+    double? circleTimeY,
+    String? circleTimeSide,
   }) {
     return ChildProfile(
       id: id ?? this.id,
@@ -71,6 +87,9 @@ class ChildProfile {
       backgroundColorHex: backgroundColorHex ?? this.backgroundColorHex,
       accessMode: accessMode ?? this.accessMode,
       iconSequence: iconSequence ?? this.iconSequence,
+      circleTimeX: circleTimeX ?? this.circleTimeX,
+      circleTimeY: circleTimeY ?? this.circleTimeY,
+      circleTimeSide: circleTimeSide ?? this.circleTimeSide,
     );
   }
 }

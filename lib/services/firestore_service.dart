@@ -80,20 +80,78 @@ class FirestoreService {
   }
 
   Future<void> updateStaffProfile(String teacherUid, StaffProfile profile) async {
-    await _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc(profile.id).update(profile.toMap());
-  }
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('staff_profiles')
+      .doc(profile.id)
+      .update(profile.toMap());
+}
 
-  Future<void> deleteStaffProfile(String teacherUid, String profileId) async {
-    await _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc(profileId).delete();
-  }
+Future<void> updateStaffCircleTimePosition({
+  required String teacherUid,
+  required String staffId,
+  required double x,
+  required double y,
+  required String side,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('staff_profiles')
+      .doc(staffId)
+      .update({
+    'circleTimeX': x,
+    'circleTimeY': y,
+    'circleTimeSide': side,
+  });
+}
 
-  Future<void> updateChildProfile(String teacherUid, ChildProfile profile) async {
-    await _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(profile.id).update(profile.toMap());
-  }
+Future<void> deleteStaffProfile(String teacherUid, String profileId) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('staff_profiles')
+      .doc(profileId)
+      .delete();
+}
 
-  Future<void> deleteChildProfile(String teacherUid, String profileId) async {
-    await _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(profileId).delete();
-  }
+Future<void> updateChildProfile(String teacherUid, ChildProfile profile) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(profile.id)
+      .update(profile.toMap());
+}
+
+Future<void> updateChildCircleTimePosition({
+  required String teacherUid,
+  required String childId,
+  required double x,
+  required double y,
+  required String side,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId)
+      .update({
+    'circleTimeX': x,
+    'circleTimeY': y,
+    'circleTimeSide': side,
+  });
+}
+
+Future<void> deleteChildProfile(String teacherUid, String profileId) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(profileId)
+      .delete();
+}
 
   // Zone + Points
   Future<void> setChildZone(String teacherUid, String childId, String zone) async {

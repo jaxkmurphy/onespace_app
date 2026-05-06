@@ -159,6 +159,20 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                   },
                 ),
                 const SizedBox(height: 20),
+
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.transfer_within_a_station),
+                  label: const Text('Circle Time'),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/circle-time',
+                      arguments: {'teacherUid': widget.profile.teacherUid,
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
                 
                 ElevatedButton.icon(
                   icon: const Icon(Icons.event_note),

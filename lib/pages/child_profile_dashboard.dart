@@ -6,6 +6,7 @@ import 'background_color_picker_page.dart';
 import '../utils/hex_colour.dart';
 import '../simple_localizations.dart';
 import '../locale_notifier.dart';
+import 'dart:async';
 
 class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
@@ -26,21 +27,31 @@ class ChildProfileDashboard extends StatefulWidget {
 class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   late ChildProfile profile;
   Color backgroundColor = Colors.white;
+  StreamSubscription<ChildProfile>? _profileSubscription;
 
   @override
   void initState() {
-    super.initState();
-    profile = widget.profile;
+  super.initState();
+  profile = widget.profile;
+  backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
 
-    widget.firestoreService
-        .getChildProfileStream(profile.teacherUid, profile.id)
-        .listen((updatedProfile) {
-      setState(() {
-        profile = updatedProfile;
-        backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
-      });
+  _profileSubscription = widget.firestoreService
+      .getChildProfileStream(profile.teacherUid, profile.id)
+      .listen((updatedProfile) {
+    if (!mounted) return;
+
+    setState(() {
+      profile = updatedProfile;
+      backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
     });
-  }
+  });
+}
+
+  @override
+  void dispose() {
+  _profileSubscription?.cancel();
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +82,22 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                 Text(
                   '${loc.getString("welcome")}, ${profile.name}!',
                   style: const TextStyle(fontSize: 24),
+                ),
+                const SizedBox(height: 20),
+
+                ElevatedButton.icon(
+                icon: const Icon(Icons.transfer_within_a_station),
+                label: const Text('Circle Time'),
+                onPressed: () {
+                  Navigator.pushNamed(
+                  context,
+                  '/circle-time',
+                  arguments: {
+                    'teacherUid': profile.teacherUid,
+                    'child': profile,
+                      },
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
 
