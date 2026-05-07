@@ -9,6 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/staff_handover_document.dart';
 import '../models/handover_quick_note.dart';
 import '../models/incident_log_entry.dart';
+import '../models/word_pack.dart';
+import '../models/word_item.dart';
+import '../models/word_attempt.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -171,6 +174,25 @@ Future<void> deleteChildProfile(String teacherUid, String profileId) async {
         .doc(childId)
         .update({'points': points});
   }
+
+  Future<List<ChildProfile>> getChildProfilesOnce(
+  String teacherUid,
+) async {
+  final snapshot = await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .get();
+
+  return snapshot.docs
+      .map(
+        (doc) => ChildProfile.fromMap(
+          doc.id,
+          doc.data(),
+        ),
+      )
+      .toList();
+}
 
   // 🗓 SCHEDULE MANAGEMENT
 
@@ -677,6 +699,196 @@ Future<void> deleteIncidentLogEntry({
       .collection('incident_logs')
       .doc(incidentId)
       .delete();
+}
+
+    // WORD LEARNING
+
+  CollectionReference<Map<String, dynamic>> _wordPacksRef(String teacherUid) {
+    return _db.collection('teachers').doc(teacherUid).collection('word_packs');
+  }
+
+  CollectionReference<Map<String, dynamic>> _wordItemsRef({
+    required String teacherUid,
+    required String packId,
+  }) {
+    return _wordPacksRef(teacherUid).doc(packId).collection('words');
+  }
+
+  Stream<List<WordPack>> getWordPacks(String teacherUid) {
+    return _wordPacksRef(teacherUid)
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => WordPack.fromMap(doc.id, doc.data()))
+          .toList();
+    });
+  }
+
+  Future<String> addWordPack({
+    required String teacherUid,
+    required WordPack pack,
+  }) async {
+    final docRef = _wordPacksRef(teacherUid).doc();
+
+    await docRef.set({
+      ...pack.copyWith(id: docRef.id).toMap(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    return docRef.id;
+  }
+
+  Future<void> updateWordPack({
+    required String teacherUid,
+    required WordPack pack,
+  }) async {
+    await _wordPacksRef(teacherUid).doc(pack.id).update({
+      ...pack.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> deleteWordPack({
+    required String teacherUid,
+    required String packId,
+  }) async {
+    final wordsSnapshot = await _wordItemsRef(
+      teacherUid: teacherUid,
+      packId: packId,
+    ).get();
+
+    final batch = _db.batch();
+
+    for (final doc in wordsSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+
+    batch.delete(_wordPacksRef(teacherUid).doc(packId));
+
+    await batch.commit();
+  }
+
+  Stream<List<WordItem>> getWordItems({
+    required String teacherUid,
+    required String packId,
+  }) {
+    return _wordItemsRef(
+      teacherUid: teacherUid,
+      packId: packId,
+    ).snapshots().map((snapshot) {
+      final words = snapshot.docs
+          .map((doc) => WordItem.fromMap(doc.id, doc.data()))
+          .toList();
+
+      words.sort((a, b) => a.text.toLowerCase().compareTo(b.text.toLowerCase()));
+      return words;
+    });
+  }
+
+  Future<void> addWordItem({
+    required String teacherUid,
+    required String packId,
+    required WordItem word,
+  }) async {
+    final docRef = _wordItemsRef(
+      teacherUid: teacherUid,
+      packId: packId,
+    ).doc();
+
+    await docRef.set(word.copyWith(id: docRef.id).toMap());
+
+    await _wordPacksRef(teacherUid).doc(packId).update({
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> updateWordItem({
+    required String teacherUid,
+    required String packId,
+    required WordItem word,
+  }) async {
+    await _wordItemsRef(
+      teacherUid: teacherUid,
+      packId: packId,
+    ).doc(word.id).update(word.toMap());
+
+    await _wordPacksRef(teacherUid).doc(packId).update({
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> deleteWordItem({
+    required String teacherUid,
+    required String packId,
+    required String wordId,
+  }) async {
+    await _wordItemsRef(
+      teacherUid: teacherUid,
+      packId: packId,
+    ).doc(wordId).delete();
+
+    await _wordPacksRef(teacherUid).doc(packId).update({
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Stream<List<WordPack>>
+    getAssignedWordPacks({
+  required String teacherUid,
+  required String childId,
+}) {
+  return _wordPacksRef(
+    teacherUid,
+  ).snapshots().map((snapshot) {
+    return snapshot.docs
+        .map(
+          (doc) => WordPack.fromMap(
+            doc.id,
+            doc.data(),
+          ),
+        )
+        .where(
+          (pack) => pack
+              .assignedChildIds
+              .contains(childId),
+        )
+        .toList();
+  });
+}
+
+Future<void> addWordAttempt({
+  required String teacherUid,
+  required WordAttempt attempt,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('word_attempts')
+      .add({
+    ...attempt.toMap(),
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Stream<List<WordAttempt>> getWordAttemptsForChild({
+  required String teacherUid,
+  required String childId,
+}) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('word_attempts')
+      .where('childId', isEqualTo: childId)
+      .snapshots()
+      .map((snapshot) {
+    final attempts = snapshot.docs
+        .map((doc) => WordAttempt.fromMap(doc.id, doc.data()))
+        .toList();
+
+    return attempts;
+  });
 }
 
 }
