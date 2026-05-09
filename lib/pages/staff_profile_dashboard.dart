@@ -221,6 +221,22 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                         const SizedBox(height: 20),
 
                         ElevatedButton.icon(
+                          icon: const Icon(Icons.health_and_safety),
+                          label: const Text('Body Check Reports'),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/body-check-overview',
+                              arguments: {
+                                'firestoreService': _firestoreService,
+                                'teacherUid': widget.profile.teacherUid,
+                                },
+                              );
+                            },
+                          ),
+                        const SizedBox(height: 12),
+
+                        ElevatedButton.icon(
                           icon: const Icon(Icons.description),
                           label: const Text('Handover Hub'),
                           onPressed: () {

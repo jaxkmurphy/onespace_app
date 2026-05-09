@@ -208,6 +208,22 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                         const SizedBox(height: 12),
 
                         ElevatedButton.icon(
+                          icon: const Icon(Icons.accessibility_new),
+                          label: const Text('Body Check'),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/body-check',
+                              arguments: {
+                                'firestoreService': widget.firestoreService,
+                                'child': profile,
+                                },
+                              );
+                            },
+                          ),
+                        const SizedBox(height: 12),
+
+                        ElevatedButton.icon(
                           icon: const Icon(Icons.view_agenda),
                           label: Text(loc.getString("first_then")),
                           onPressed: () {

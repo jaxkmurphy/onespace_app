@@ -12,6 +12,7 @@ import '../models/incident_log_entry.dart';
 import '../models/word_pack.dart';
 import '../models/word_item.dart';
 import '../models/word_attempt.dart';
+import '../models/body_check_report.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -889,6 +890,45 @@ Stream<List<WordAttempt>> getWordAttemptsForChild({
 
     return attempts;
   });
+}
+
+  // BODY CHECK
+
+Future<void> addBodyCheckReport({
+  required String teacherUid,
+  required BodyCheckReport report,
+}) async {
+  final docRef = _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('body_check_reports')
+      .doc();
+
+  await docRef.set(report.toMap());
+}
+
+Stream<List<BodyCheckReport>> getBodyCheckReports(String teacherUid) {
+  return _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('body_check_reports')
+      .orderBy('timestamp', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => BodyCheckReport.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Future<void> markBodyCheckReportChecked({
+  required String teacherUid,
+  required String reportId,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('body_check_reports')
+      .doc(reportId)
+      .update({'checked': true});
 }
 
 }

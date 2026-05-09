@@ -31,6 +31,8 @@ import 'pages/first_then_setup_page.dart';
 import 'pages/first_then_child_page.dart';
 import 'pages/handover_hub_page.dart';
 import 'pages/circle_time_page.dart';
+import 'pages/body_check_page.dart';
+import 'pages/body_check_overview_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -262,7 +264,37 @@ class _MyAppState extends State<MyApp> {
                 ),
               );
             }
-          }
+          } else if (settings.name == '/body-check') {
+              final args = settings.arguments;
+              if (args is Map<String, dynamic>) {
+                final firestoreService = args['firestoreService'] as FirestoreService?;
+                final child = args['child'] as ChildProfile?;
+
+              if (firestoreService != null && child != null) {
+                return MaterialPageRoute(
+                  builder: (context) => BodyCheckPage(
+                    firestoreService: firestoreService,
+                    child: child,
+                    ),
+                  );
+                }
+              }
+            } else if (settings.name == '/body-check-overview') {
+                final args = settings.arguments;
+                if (args is Map<String, dynamic>) {
+                  final firestoreService = args['firestoreService'] as FirestoreService?;
+                  final teacherUid = args['teacherUid'] as String?;
+
+                if (firestoreService != null && teacherUid != null) {
+                  return MaterialPageRoute(
+                    builder: (context) => BodyCheckOverviewPage(
+                      firestoreService: firestoreService,
+                      teacherUid: teacherUid,
+                      ),
+                    );
+                  }
+                }
+              }
 
             return MaterialPageRoute(
               builder: (context) => Scaffold(
