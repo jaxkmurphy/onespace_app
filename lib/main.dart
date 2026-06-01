@@ -33,6 +33,7 @@ import 'pages/handover_hub_page.dart';
 import 'pages/circle_time_page.dart';
 import 'pages/body_check_page.dart';
 import 'pages/body_check_overview_page.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,6 +74,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, locale, child) {
         return MaterialApp(
       title: 'OneSpace App',
+      theme: AppTheme.lightTheme,
       locale: locale,
       supportedLocales: const [
         Locale('en'), 
