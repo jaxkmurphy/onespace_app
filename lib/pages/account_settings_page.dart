@@ -29,32 +29,38 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadTeacher();
     _selectedLocale = widget.locale;
+    _loadTeacher();
   }
 
   Future<void> _loadTeacher() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final t = await _firestore.getTeacherInfo(uid);
-    if (mounted) {
-      setState(() {
-        _teacher = t;
-        _loading = false;
-      });
-    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _teacher = t;
+      _loading = false;
+    });
   }
 
   Future<void> _savePin() async {
     final pin = _pinCtrl.text.trim();
     final pin2 = _confirmCtrl.text.trim();
+    final isGa = _selectedLocale.languageCode == 'ga';
 
     if (pin.length != 4 || !RegExp(r'^\d{4}$').hasMatch(pin) || pin != pin2) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(_selectedLocale.languageCode == 'ga'
+          content: Text(
+            isGa
                 ? 'Ní mór do na PIN a bheith ina 4 dhigit agus comhoiriúnach.'
-                : 'PINs must be 4 digits and match')),
+                : 'PINs must be 4 digits and match.',
+          ),
+        ),
       );
       return;
     }
@@ -63,20 +69,22 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text(_selectedLocale.languageCode == 'ga'
-              ? 'An PIN atá ann a athscríobh?'
-              : 'Overwrite existing PIN?'),
-          content: Text(_selectedLocale.languageCode == 'ga'
-              ? 'Athróidh sé seo do PIN reatha. Lean ort?'
-              : 'This will replace your current PIN. Continue?'),
+          title: Text(
+            isGa ? 'An PIN atá ann a athscríobh?' : 'Overwrite existing PIN?',
+          ),
+          content: Text(
+            isGa
+                ? 'Athróidh sé seo do PIN reatha. Lean ort?'
+                : 'This will replace your current PIN. Continue?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: Text(_selectedLocale.languageCode == 'ga' ? 'Cealaigh' : 'Cancel'),
+              child: Text(isGa ? 'Cealaigh' : 'Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: Text(_selectedLocale.languageCode == 'ga' ? 'OK' : 'OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -89,11 +97,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     await _firestore.setTeacherInfo(updated);
 
     if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(_selectedLocale.languageCode == 'ga'
-              ? 'PIN nuashonraithe'
-              : 'PIN updated')),
+        content: Text(isGa ? 'PIN nuashonraithe' : 'PIN updated'),
+      ),
     );
 
     setState(() {
@@ -101,6 +109,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       _pinCtrl.clear();
       _confirmCtrl.clear();
     });
+  }
+
+  String _text(String en, String ga) {
+    return _selectedLocale.languageCode == 'ga' ? ga : en;
+  }
+
+  @override
+  void dispose() {
+    _pinCtrl.dispose();
+    _confirmCtrl.dispose();
+    super.dispose();
   }
 
   @override
@@ -111,59 +130,326 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       );
     }
 
-    final isGa = _selectedLocale.languageCode == 'ga';
+    final colourScheme = Theme.of(context).colorScheme;
+    final pinIsSet = (_teacher.pin ?? '').isNotEmpty;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isGa ? 'Socruithe Cuntais' : 'Account Settings')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              (_teacher.pin ?? '').isEmpty
-                  ? (isGa ? 'Níl PIN socraithe' : 'No PIN set')
-                  : (isGa ? 'Tá PIN socraithe' : 'PIN is set'),
-              style: const TextStyle(fontSize: 16),
+      appBar: AppBar(
+        title: Text(
+          _text('Account Settings', 'Socruithe Cuntais'),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(18),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Card(
+                    elevation: 3,
+                    margin: EdgeInsets.zero,
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 78,
+                            height: 78,
+                            decoration: BoxDecoration(
+                              color: colourScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(26),
+                            ),
+                            child: Icon(
+                              Icons.settings_rounded,
+                              size: 44,
+                              color: colourScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            _text(
+                              'Manage your account',
+                              'Bainistigh do chuntas',
+                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _text(
+                              'Set your PIN and choose the app language.',
+                              'Socraigh do PIN agus roghnaigh teanga an aip.',
+                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Card(
+                    elevation: 2,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 58,
+                            height: 58,
+                            decoration: BoxDecoration(
+                              color: pinIsSet
+                                  ? Colors.green.withOpacity(0.14)
+                                  : Colors.orange.withOpacity(0.14),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: Icon(
+                              pinIsSet
+                                  ? Icons.lock_rounded
+                                  : Icons.lock_open_rounded,
+                              color: pinIsSet ? Colors.green : Colors.orange,
+                              size: 32,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  pinIsSet
+                                      ? _text(
+                                          'PIN is set',
+                                          'Tá PIN socraithe',
+                                        )
+                                      : _text(
+                                          'No PIN set',
+                                          'Níl PIN socraithe',
+                                        ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _text(
+                                    'The account PIN protects staff-only areas.',
+                                    'Cosnaíonn PIN an chuntais limistéir don fhoireann amháin.',
+                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Card(
+                    elevation: 2,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            _text('Change PIN', 'Athraigh PIN'),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _text(
+                              'Enter a new 4-digit PIN.',
+                              'Cuir PIN nua 4 dhigit isteach.',
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _pinCtrl,
+                            decoration: InputDecoration(
+                              labelText: _text('New PIN', 'PIN Nua'),
+                              prefixIcon: const Icon(Icons.pin_outlined),
+                              border: const OutlineInputBorder(),
+                            ),
+                            obscureText: true,
+                            keyboardType: TextInputType.number,
+                            maxLength: 4,
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            controller: _confirmCtrl,
+                            decoration: InputDecoration(
+                              labelText:
+                                  _text('Confirm PIN', 'Deimhnigh PIN'),
+                              prefixIcon:
+                                  const Icon(Icons.verified_user_outlined),
+                              border: const OutlineInputBorder(),
+                            ),
+                            obscureText: true,
+                            keyboardType: TextInputType.number,
+                            maxLength: 4,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: _savePin,
+                            icon: const Icon(Icons.save_rounded),
+                            label: Text(_text('Save PIN', 'Sábháil PIN')),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Card(
+                    elevation: 2,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            _text('Language', 'Teanga'),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _text(
+                              'Choose the app language.',
+                              'Roghnaigh teanga an aip.',
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _LanguageOption(
+                            label: 'English',
+                            icon: Icons.language,
+                            selected: _selectedLocale.languageCode == 'en',
+                            onTap: () {
+                              const locale = Locale('en');
+                              setState(() => _selectedLocale = locale);
+                              widget.onLocaleChange(locale);
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _LanguageOption(
+                            label: 'Gaeilge',
+                            icon: Icons.translate,
+                            selected: _selectedLocale.languageCode == 'ga',
+                            onTap: () {
+                              const locale = Locale('ga');
+                              setState(() => _selectedLocale = locale);
+                              widget.onLocaleChange(locale);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _pinCtrl,
-              decoration: InputDecoration(labelText: isGa ? 'PIN Nua' : 'New PIN'),
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              maxLength: 4,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageOption extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _LanguageOption({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color: selected
+          ? colourScheme.primary.withOpacity(0.14)
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: selected ? colourScheme.primary : Theme.of(context).dividerColor,
+              width: selected ? 2 : 1,
             ),
-            TextField(
-              controller: _confirmCtrl,
-              decoration: InputDecoration(labelText: isGa ? 'Deimhnigh PIN' : 'Confirm PIN'),
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _savePin,
-              child: Text(isGa ? 'Sábháil PIN' : 'Save PIN'),
-            ),
-            const SizedBox(height: 40),
-            Text(isGa ? 'Roghnaigh Teanga' : 'Select Language',
-                style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 10),
-            DropdownButton<Locale>(
-              value: _selectedLocale,
-              items: const [
-                DropdownMenuItem(value: Locale('en'), child: Text('English')),
-                DropdownMenuItem(value: Locale('ga'), child: Text('Gaeilge')),
-              ],
-              onChanged: (locale) {
-                if (locale != null) {
-                  setState(() => _selectedLocale = locale);
-                  widget.onLocaleChange(locale);
-                }
-              },
-            ),
-          ],
+          ),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                color: selected ? colourScheme.primary : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight:
+                            selected ? FontWeight.bold : FontWeight.normal,
+                        color: selected ? colourScheme.primary : null,
+                      ),
+                ),
+              ),
+              if (selected)
+                Icon(
+                  Icons.check_circle,
+                  color: colourScheme.primary,
+                ),
+            ],
+          ),
         ),
       ),
     );
