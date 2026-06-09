@@ -5,7 +5,6 @@ import 'auth_gate.dart';
 import 'pages/profiles_page.dart';
 import 'pages/account_settings_page.dart';
 import 'pages/add_profile_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pages/zones_overview_page.dart';
 import 'pages/zone_selection_page.dart';
 import 'models/staff_profile.dart';
@@ -34,15 +33,13 @@ import 'pages/circle_time_page.dart';
 import 'pages/body_check_page.dart';
 import 'pages/body_check_overview_page.dart';
 import 'theme/app_theme.dart';
+import 'pages/today_overview_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   try {
-    await FirebaseFirestore.instance.clearPersistence();
-    await FirebaseFirestore.instance.disableNetwork();
-    await FirebaseFirestore.instance.enableNetwork();
     debugPrint("Firestore cache cleared and network reset.");
   } catch (e) {
     debugPrint("Error during Firestore prep: $e");
@@ -162,12 +159,19 @@ class _MyAppState extends State<MyApp> {
               }
             } else if (settings.name == '/quiz-create') {
               final args = settings.arguments;
+
               if (args is StaffProfile) {
                 return MaterialPageRoute(
                   builder: (context) => QuizCreationPage(staffUid: args.teacherUid),
                 );
               }
-            } else if (settings.name == '/quiz-list') {
+
+              if (args is String) {
+                return MaterialPageRoute(
+                  builder: (context) => QuizCreationPage(staffUid: args),
+                  );
+                }
+              } else if (settings.name == '/quiz-list') {
               final args = settings.arguments;
               if (args is String) {
                 return MaterialPageRoute(
@@ -295,6 +299,16 @@ class _MyAppState extends State<MyApp> {
                       ),
                     );
                   }
+                }
+              } else if (settings.name == '/today-overview') {
+                  final args = settings.arguments;
+
+                    if (args is StaffProfile) {
+                      return MaterialPageRoute(
+                        builder: (context) => TodayOverviewPage(
+                        staffProfile: args,
+                    ),
+                  );
                 }
               }
 

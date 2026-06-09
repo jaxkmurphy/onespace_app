@@ -9,6 +9,7 @@ class IncidentLogEntry {
   final String actionTaken;
   final String staffId;
   final String staffName;
+  final String severity;
 
   IncidentLogEntry({
     required this.id,
@@ -19,6 +20,7 @@ class IncidentLogEntry {
     required this.actionTaken,
     required this.staffId,
     required this.staffName,
+    this.severity = 'Low',
   });
 
   Map<String, dynamic> toMap() {
@@ -30,6 +32,7 @@ class IncidentLogEntry {
       'actionTaken': actionTaken,
       'staffId': staffId,
       'staffName': staffName,
+      'severity': severity,
     };
   }
 
@@ -47,6 +50,7 @@ class IncidentLogEntry {
       actionTaken: map['actionTaken'] ?? '',
       staffId: map['staffId'] ?? '',
       staffName: map['staffName'] ?? '',
+      severity: map['severity'] ?? 'Low',
     );
   }
 }

@@ -922,13 +922,30 @@ Stream<List<BodyCheckReport>> getBodyCheckReports(String teacherUid) {
 Future<void> markBodyCheckReportChecked({
   required String teacherUid,
   required String reportId,
+  String checkedNote = '',
 }) async {
   await _db
       .collection('teachers')
       .doc(teacherUid)
       .collection('body_check_reports')
       .doc(reportId)
-      .update({'checked': true});
+      .update({
+    'checked': true,
+    'checkedNote': checkedNote,
+    'checkedAt': Timestamp.now(),
+  });
+}
+
+Future<void> deleteBodyCheckReport({
+  required String teacherUid,
+  required String reportId,
+}) async {
+  await _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('body_check_reports')
+      .doc(reportId)
+      .delete();
 }
 
 }

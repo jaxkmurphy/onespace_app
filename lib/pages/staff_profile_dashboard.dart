@@ -26,7 +26,7 @@ class StaffProfileDashboard extends StatefulWidget {
 class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
   final FirestoreService _firestoreService = FirestoreService();
 
-  void _navigateToPointsOverview() async {
+  Future<void> _navigateToPointsOverview() async {
     try {
       final List<ChildProfile> children = await _firestoreService
           .getChildProfiles(widget.profile.teacherUid)
@@ -43,8 +43,10 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
         },
       );
     } catch (e) {
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load children profiles: $e')),
+        SnackBar(content: Text('Failed to load child profiles: $e')),
       );
     }
   }
@@ -68,7 +70,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
-            title: Text('${widget.profile.name} Dashboard'),
+            title: Text('${widget.profile.name} Hub'),
           ),
           body: SafeArea(
             child: LayoutBuilder(
@@ -81,174 +83,242 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                     ),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 760),
+                        constraints: const BoxConstraints(maxWidth: 820),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            StaffDashboardFeatureCard(
-                              icon: Icons.palette,
-                              title: loc.getString("zones_regulation"),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/zone-overview',
-                                  arguments: {
-                                    'teacherUid': widget.profile.teacherUid,
+                            Text(
+                              'Staff Feature Hub',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Choose a tool for today\'s classroom support.',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+
+                            _HubSection(
+                              title: 'Daily Tools',
+                              children: [
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.dashboard,
+                                  title: 'Today Overview',
+                                  subtitle: 'See zones, reports, schedule and incidents at a glance.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/today-overview',
+                                      arguments: widget.profile,
+                                    );
                                   },
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.star,
-                              title: loc.getString("points_overview"),
-                              onTap: _navigateToPointsOverview,
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.schedule,
-                              title: loc.getString("view_schedule"),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const StaffSchedulePage(),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.quiz,
-                              title: loc.getString("create_quiz"),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/quiz-create',
-                                  arguments: widget.profile,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.fact_check,
-                              title: loc.getString("manage_quizzes"),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/quiz-list',
-                                  arguments: widget.profile.teacherUid,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.view_kanban,
-                              title: loc.getString("first_then_setup"),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/first-then-setup',
-                                  arguments: widget.profile.teacherUid,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.lock_reset,
-                              title: 'Icon Reset',
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/icon-reset',
-                                  arguments: widget.profile.teacherUid,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.transfer_within_a_station,
-                              title: 'Circle Time',
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/circle-time',
-                                  arguments: {
-                                    'teacherUid': widget.profile.teacherUid,
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.palette,
+                                  title: loc.getString('zones_regulation'),
+                                  subtitle: 'View children\'s current zones.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/zone-overview',
+                                      arguments: {
+                                        'teacherUid':
+                                            widget.profile.teacherUid,
+                                      },
+                                    );
                                   },
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.event_note,
-                              title: 'Incident Log',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => IncidentLogPage(
-                                      staffProfile: widget.profile,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.menu_book,
-                              title: 'Word Learning',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => WordLearningPage(
-                                      firestoreService: _firestoreService,
-                                      teacherUid: widget.profile.teacherUid,
-                                      staffId: widget.profile.id,
-                                      staffName: widget.profile.name,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 14),
-
-                            StaffDashboardFeatureCard(
-                              icon: Icons.health_and_safety,
-                              title: 'Body Check Reports',
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/body-check-overview',
-                                  arguments: {
-                                    'firestoreService': _firestoreService,
-                                    'teacherUid': widget.profile.teacherUid,
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.star,
+                                  title: loc.getString('points_overview'),
+                                  subtitle: 'View and update child points.',
+                                  onTap: _navigateToPointsOverview,
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.schedule,
+                                  title: loc.getString('view_schedule'),
+                                  subtitle: 'Create and edit the daily schedule.',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const StaffSchedulePage(),
+                                      ),
+                                    );
                                   },
-                                );
-                              },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.view_kanban,
+                                  title: loc.getString('first_then_setup'),
+                                  subtitle:
+                                      'Assign First-Then tasks and rewards.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/first-then-setup',
+                                      arguments: widget.profile.teacherUid,
+                                    );
+                                  },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.timer,
+                                  title: 'Visual Timer',
+                                  subtitle: 'Open the classroom timer.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/visual-timer',
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 14),
 
-                            StaffDashboardFeatureCard(
-                              icon: Icons.description,
-                              title: 'Handover Hub',
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/handover-hub',
-                                  arguments: widget.profile,
-                                );
-                              },
+                            _HubSection(
+                              title: 'Communication',
+                              children: [
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.health_and_safety,
+                                  title: 'Body Check Reports',
+                                  subtitle:
+                                      'Review body check messages from children.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/body-check-overview',
+                                      arguments: {
+                                        'firestoreService': _firestoreService,
+                                        'teacherUid':
+                                            widget.profile.teacherUid,
+                                      },
+                                    );
+                                  },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.transfer_within_a_station,
+                                  title: 'Circle Time',
+                                  subtitle:
+                                      'Move children between home and school.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/circle-time',
+                                      arguments: {
+                                        'teacherUid':
+                                            widget.profile.teacherUid,
+                                      },
+                                    );
+                                  },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.record_voice_over,
+                                  title: 'Voice Lines',
+                                  subtitle:
+                                      'Open communication voice buttons.',
+                                  onTap: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Voice Lines is currently child-facing.',
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+
+                            _HubSection(
+                              title: 'Learning',
+                              children: [
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.quiz,
+                                  title: 'Quizzes',
+                                  subtitle:
+                                      'Create, preview and manage quizzes.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/quiz-list',
+                                      arguments: widget.profile.teacherUid,
+                                    );
+                                  },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.menu_book,
+                                  title: 'Word Learning',
+                                  subtitle:
+                                      'Create word packs and view progress.',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => WordLearningPage(
+                                          firestoreService: _firestoreService,
+                                          teacherUid:
+                                              widget.profile.teacherUid,
+                                          staffId: widget.profile.id,
+                                          staffName: widget.profile.name,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+
+                            _HubSection(
+                              title: 'Staff / Admin',
+                              children: [
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.event_note,
+                                  title: 'Incident Log',
+                                  subtitle:
+                                      'Record and review classroom incidents.',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => IncidentLogPage(
+                                          staffProfile: widget.profile,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.description,
+                                  title: 'Handover Hub',
+                                  subtitle:
+                                      'View overview notes and staff documents.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/handover-hub',
+                                      arguments: widget.profile,
+                                    );
+                                  },
+                                ),
+                                StaffDashboardFeatureCard(
+                                  icon: Icons.lock_reset,
+                                  title: 'Icon Reset',
+                                  subtitle:
+                                      'View or reset child profile unlock icons.',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/icon-reset',
+                                      arguments: widget.profile.teacherUid,
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -261,6 +331,41 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
           ),
         );
       },
+    );
+  }
+}
+
+class _HubSection extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _HubSection({
+    required this.title,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 26),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 10),
+          ...children.expand(
+            (child) => [
+              child,
+              const SizedBox(height: 12),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

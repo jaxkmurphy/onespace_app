@@ -9,6 +9,8 @@ class BodyCheckReport {
   final String painType;
   final DateTime timestamp;
   final bool checked;
+  final String checkedNote;
+  final DateTime? checkedAt;
 
   BodyCheckReport({
     required this.id,
@@ -19,6 +21,8 @@ class BodyCheckReport {
     required this.painType,
     required this.timestamp,
     this.checked = false,
+    this.checkedNote = '',
+    this.checkedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,11 +34,14 @@ class BodyCheckReport {
       'painType': painType,
       'timestamp': Timestamp.fromDate(timestamp),
       'checked': checked,
+      'checkedNote': checkedNote,
+      'checkedAt': checkedAt == null ? null : Timestamp.fromDate(checkedAt!),
     };
   }
 
   factory BodyCheckReport.fromMap(String id, Map<String, dynamic> map) {
     final rawTimestamp = map['timestamp'];
+    final rawCheckedAt = map['checkedAt'];
 
     return BodyCheckReport(
       id: id,
@@ -47,6 +54,8 @@ class BodyCheckReport {
           ? rawTimestamp.toDate()
           : DateTime.now(),
       checked: map['checked'] ?? false,
+      checkedNote: map['checkedNote'] ?? '',
+      checkedAt: rawCheckedAt is Timestamp ? rawCheckedAt.toDate() : null,
     );
   }
 }
