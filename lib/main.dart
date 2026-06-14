@@ -34,6 +34,8 @@ import 'pages/body_check_page.dart';
 import 'pages/body_check_overview_page.dart';
 import 'theme/app_theme.dart';
 import 'pages/today_overview_page.dart';
+import 'pages/admin_dashboard_page.dart';
+import 'pages/create_classroom_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,6 +96,19 @@ class _MyAppState extends State<MyApp> {
             '/staffSchedule': (context) => const StaffSchedulePage(),
             '/childSchedule': (context) => const ChildSchedulePage(),
             '/visual-timer': (context) => const VisualTimerPage(),
+            '/create-classroom': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments;
+            if (args is Map<String, dynamic> && args['schoolId'] is String) {
+            return CreateClassroomPage(
+              schoolId: args['schoolId'] as String,
+              );
+            }
+            return const Scaffold(
+              body: Center(
+                child: Text('Missing school ID'),
+                ),
+              );
+            },
             '/child-dashboard': (context) {
             final args = ModalRoute.of(context)!.settings.arguments;
             if (args is ChildProfile) {
@@ -107,7 +122,19 @@ class _MyAppState extends State<MyApp> {
             },
           },
           onGenerateRoute: (settings) {
-            if (settings.name == '/zone-overview') {
+            if (settings.name == '/admin-dashboard') {
+            final args = settings.arguments;
+            if (args is Map<String, dynamic> &&
+              args['schoolId'] is String &&
+              args['schoolName'] is String) {
+            return MaterialPageRoute(
+              builder: (context) => AdminDashboardPage(
+              schoolId: args['schoolId'] as String,
+              schoolName: args['schoolName'] as String,
+                  ),
+                );
+              }
+            } else if (settings.name == '/zone-overview') {
               final args = settings.arguments;
               if (args is Map<String, dynamic> && args['teacherUid'] != null) {
                 final teacherUid = args['teacherUid'] as String;

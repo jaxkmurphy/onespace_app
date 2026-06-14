@@ -13,9 +13,242 @@ import '../models/word_pack.dart';
 import '../models/word_item.dart';
 import '../models/word_attempt.dart';
 import '../models/body_check_report.dart';
+import '../models/school.dart';
+import '../models/classroom.dart';
+import '../models/school_member.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+    // SCHOOL / ADMIN STRUCTURE
+
+  Future<String> createSchool({
+    required String name,
+    required String schoolCode,
+    required String adminUid,
+    required String adminEmail,
+    int classroomLimit = 3,
+  }) async {
+    final schoolRef = _db.collection('schools').doc();
+
+    final school = School(
+      id: schoolRef.id,
+      name: name.trim(),
+      schoolCode: schoolCode.trim().toUpperCase(),
+      classroomLimit: classroomLimit,
+      active: true,
+      createdAt: DateTime.now(),
+    );
+
+    final member = SchoolMember(
+      uid: adminUid,
+      schoolId: schoolRef.id,
+      email: adminEmail,
+      role: 'schoolAdmin',
+      active: true,
+      createdAt: DateTime.now(),
+    );
+
+    final batch = _db.batch();
+
+    batch.set(schoolRef, school.toMap());
+
+    batch.set(
+    schoolRef.collection('members').doc(adminUid),
+    member.toMap(),
+    );
+
+    batch.set(
+      _db.collection('account_lookup').doc(adminUid),
+      {
+        'schoolId': schoolRef.id,
+        'role': 'schoolAdmin',
+        'email': adminEmail,
+        'active': true,
+        'createdAt': DateTime.now(),
+      },
+    );
+
+    await batch.commit();
+
+    return schoolRef.id;
+  }
+
+  Future<School?> getSchool(String schoolId) async {
+    final doc = await _db.collection('schools').doc(schoolId).get();
+
+    if (!doc.exists || doc.data() == null) {
+      return null;
+    }
+
+    return School.fromMap(doc.id, doc.data()!);
+  }
+
+  Future<School?> getSchoolByCode(String schoolCode) async {
+    final query = await _db
+        .collection('schools')
+        .where('schoolCode', isEqualTo: schoolCode.trim().toUpperCase())
+        .limit(1)
+        .get();
+
+    if (query.docs.isEmpty) {
+      return null;
+    }
+
+    final doc = query.docs.first;
+    return School.fromMap(doc.id, doc.data());
+  }
+
+  Future<SchoolMember?> getSchoolMember({
+    required String schoolId,
+    required String uid,
+  }) async {
+    final doc = await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('members')
+        .doc(uid)
+        .get();
+
+    if (!doc.exists || doc.data() == null) {
+      return null;
+    }
+
+    return SchoolMember.fromMap(doc.id, doc.data()!);
+  }
+
+  Future<SchoolMember?> getSchoolMemberByUid(String uid) async {
+  try {
+    final lookupDoc = await _db.collection('account_lookup').doc(uid).get();
+
+    if (!lookupDoc.exists || lookupDoc.data() == null) {
+      return null;
+    }
+
+    final lookupData = lookupDoc.data()!;
+    final schoolId = lookupData['schoolId'] as String?;
+
+    if (schoolId == null || schoolId.isEmpty) {
+      return null;
+    }
+
+    final memberDoc = await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('members')
+        .doc(uid)
+        .get();
+
+    if (!memberDoc.exists || memberDoc.data() == null) {
+      return null;
+    }
+
+    return SchoolMember.fromMap(memberDoc.id, memberDoc.data()!);
+  } catch (e) {
+    debugPrint('Could not check school member: $e');
+    return null;
+  }
+}
+
+  Future<void> createClassroom({
+    required String schoolId,
+    required String name,
+    required String classroomCode,
+    required String pin,
+  }) async {
+    final classroomRef = _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc();
+
+    final classroom = Classroom(
+      id: classroomRef.id,
+      schoolId: schoolId,
+      name: name.trim(),
+      classroomCode: classroomCode.trim().toUpperCase(),
+      pin: pin.trim(),
+      active: true,
+      createdAt: DateTime.now(),
+    );
+
+    await classroomRef.set(classroom.toMap());
+  }
+
+  Stream<List<Classroom>> getClassrooms(String schoolId) {
+    return _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .orderBy('name')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Classroom.fromMap(doc.id, doc.data()))
+            .toList());
+  }
+
+  Future<List<Classroom>> getClassroomsOnce(String schoolId) async {
+    final snapshot = await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .orderBy('name')
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Classroom.fromMap(doc.id, doc.data()))
+        .toList();
+  }
+
+  Future<Classroom?> getClassroomByCode({
+    required String schoolId,
+    required String classroomCode,
+  }) async {
+    final query = await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .where(
+          'classroomCode',
+          isEqualTo: classroomCode.trim().toUpperCase(),
+        )
+        .limit(1)
+        .get();
+
+    if (query.docs.isEmpty) {
+      return null;
+    }
+
+    final doc = query.docs.first;
+    return Classroom.fromMap(doc.id, doc.data());
+  }
+
+  Future<Classroom?> verifyClassroomLogin({
+    required String schoolCode,
+    required String classroomCode,
+    required String pin,
+  }) async {
+    final school = await getSchoolByCode(schoolCode);
+
+    if (school == null || !school.active) {
+      return null;
+    }
+
+    final classroom = await getClassroomByCode(
+      schoolId: school.id,
+      classroomCode: classroomCode,
+    );
+
+    if (classroom == null || !classroom.active) {
+      return null;
+    }
+
+    if (classroom.pin.trim() != pin.trim()) {
+      return null;
+    }
+
+    return classroom;
+  }
 
   // Teacher data
   Future<void> setTeacherInfo(Teacher teacher) async {

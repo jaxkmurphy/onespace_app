@@ -38,6 +38,37 @@ class _ProfilesPageState extends State<ProfilesPage> {
     }
   }
 
+  Future<void> _logout() async {
+  final shouldLogout = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Logout'),
+      content: const Text('Are you sure you want to logout?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Logout'),
+        ),
+      ],
+    ),
+  );
+
+  if (shouldLogout != true) return;
+
+  await FirebaseAuth.instance.signOut();
+
+  if (!mounted) return;
+
+  Navigator.of(context).pushNamedAndRemoveUntil(
+    '/',
+    (route) => false,
+  );
+}
+
   Future<void> _goToAddProfile() async {
     final pinOk = await _checkPin();
     if (!mounted) return;
@@ -159,8 +190,60 @@ class _ProfilesPageState extends State<ProfilesPage> {
     final childStream = firestoreService.getChildProfiles(uid);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_getText('Profiles')),
+    appBar: AppBar(
+    title: const Text('Profiles'),
+    actions: [
+      IconButton(
+        icon: const Icon(Icons.admin_panel_settings),
+        tooltip: 'Admin Dashboard',
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            '/admin-dashboard',
+            arguments: {
+              'schoolId': 'YOUR_SCHOOL_ID_HERE',
+              'schoolName': 'Test School',
+            },
+          );
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.logout),
+        tooltip: 'Logout',
+        onPressed: () async {
+          final shouldLogout = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Logout'),
+              content: const Text(
+                'Are you sure you want to logout?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Logout'),
+                ),
+              ],
+            ),
+          );
+
+          if (shouldLogout == true) {
+            await FirebaseAuth.instance.signOut();
+
+              if (!context.mounted) return;
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/',
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: StreamBuilder<List<StaffProfile>>(
