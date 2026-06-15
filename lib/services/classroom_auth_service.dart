@@ -1,32 +1,63 @@
-import 'package:cloud_functions/cloud_functions.dart';
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:http/http.dart' as http;
 
 class ClassroomAuthService {
-  final FirebaseFunctions _functions = FirebaseFunctions.instance;
-
   Future<Map<String, String>> login({
     required String schoolCode,
     required String classroomCode,
     required String pin,
   }) async {
-    final callable = _functions.httpsCallable('loginClassroomWithCode');
+    final projectId = Firebase.app().options.projectId;
 
-    final result = await callable.call({
-      'schoolCode': schoolCode,
-      'classroomCode': classroomCode,
-      'pin': pin,
-    });
+    if (projectId == null || projectId.isEmpty) {
+      throw Exception('Missing Firebase project ID.');
+    }
 
-    final rawData = result.data;
+    final uri = Uri.parse(
+      'https://us-central1-$projectId.cloudfunctions.net/loginClassroomWithCode',
+    );
 
-    if (rawData is! Map) {
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'data': {
+          'schoolCode': schoolCode,
+          'classroomCode': classroomCode,
+          'pin': pin,
+        },
+      }),
+    );
+
+    final decoded = jsonDecode(response.body);
+
+    if (response.statusCode != 200) {
+      throw Exception('Classroom login failed.');
+    }
+
+    if (decoded is! Map<String, dynamic>) {
       throw Exception('Invalid classroom login response.');
     }
 
-    final token = rawData['token']?.toString();
-    final schoolId = rawData['schoolId']?.toString();
-    final classroomId = rawData['classroomId']?.toString();
-    final classroomName = rawData['classroomName']?.toString();
+    if (decoded['error'] != null) {
+      throw Exception('Classroom login details are incorrect.');
+    }
+
+    final result = decoded['result'];
+
+    if (result is! Map<String, dynamic>) {
+      throw Exception('Invalid classroom login result.');
+    }
+
+    final token = result['token']?.toString();
+    final schoolId = result['schoolId']?.toString();
+    final classroomId = result['classroomId']?.toString();
+    final classroomName = result['classroomName']?.toString();
 
     if (token == null ||
         schoolId == null ||
