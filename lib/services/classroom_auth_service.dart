@@ -12,7 +12,7 @@ class ClassroomAuthService {
   }) async {
     final projectId = Firebase.app().options.projectId;
 
-    if (projectId == null || projectId.isEmpty) {
+    if (projectId.isEmpty) {
       throw Exception('Missing Firebase project ID.');
     }
 
