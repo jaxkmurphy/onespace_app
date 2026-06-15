@@ -250,6 +250,54 @@ class FirestoreService {
     return classroom;
   }
 
+  Future<bool> isSchoolCodeAvailable({
+  required String schoolCode,
+  String? currentSchoolId,
+}) async {
+  final query = await _db
+      .collection('schools')
+      .where('schoolCode', isEqualTo: schoolCode.trim().toUpperCase())
+      .limit(1)
+      .get();
+
+  if (query.docs.isEmpty) {
+    return true;
+  }
+
+  if (currentSchoolId != null && query.docs.first.id == currentSchoolId) {
+    return true;
+  }
+
+  return false;
+}
+
+Future<void> updateSchool({
+  required String schoolId,
+  required String name,
+  required String schoolCode,
+  required int classroomLimit,
+  required bool active,
+}) async {
+  final formattedSchoolCode = schoolCode.trim().toUpperCase();
+
+  final codeAvailable = await isSchoolCodeAvailable(
+    schoolCode: formattedSchoolCode,
+    currentSchoolId: schoolId,
+  );
+
+  if (!codeAvailable) {
+    throw Exception('That school code is already in use.');
+  }
+
+  await _db.collection('schools').doc(schoolId).update({
+    'name': name.trim(),
+    'schoolCode': formattedSchoolCode,
+    'classroomLimit': classroomLimit,
+    'active': active,
+    'updatedAt': DateTime.now(),
+  });
+}
+
   // Teacher data
   Future<void> setTeacherInfo(Teacher teacher) async {
     await _db.collection('teachers').doc(teacher.uid).set(teacher.toMap(), SetOptions(merge: true));

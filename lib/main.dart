@@ -36,6 +36,7 @@ import 'theme/app_theme.dart';
 import 'pages/today_overview_page.dart';
 import 'pages/admin_dashboard_page.dart';
 import 'pages/create_classroom_page.dart';
+import 'pages/school_settings_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -119,6 +120,20 @@ class _MyAppState extends State<MyApp> {
             );
               }
               return const Scaffold(body: Center(child: Text('Missing child profile')));
+            },
+            '/school-settings': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments;
+            if (args is Map<String, dynamic> && args['schoolId'] is String) {
+            return SchoolSettingsPage(
+              schoolId: args['schoolId'] as String,
+              );
+            }
+
+            return const Scaffold(
+              body: Center(
+                child: Text('Missing school ID'),
+                ),
+              );
             },
           },
           onGenerateRoute: (settings) {

@@ -19,33 +19,52 @@ class AdminDashboardPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-  title: Text('$schoolName Admin'),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.logout),
-      tooltip: 'Logout',
-      onPressed: () async {
-        final shouldLogout = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Logout'),
-            content: const Text(
-              'Are you sure you want to logout?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Logout'),
-              ),
-            ],
+      title: Text('$schoolName Admin'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.settings),
+          tooltip: 'School Settings',
+          onPressed: () async {
+            await Navigator.pushNamed(
+              context,
+              '/school-settings',
+                arguments: {
+                'schoolId': schoolId,
+                },
+              );
+            },
           ),
-        );
-              if (shouldLogout == true) {
-                await FirebaseAuth.instance.signOut();
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () async {
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancel'),
+                      ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Logout'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (shouldLogout == true) {
+                  await FirebaseAuth.instance.signOut();
+
+                if (!context.mounted) return;
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                '/',
+                (route) => false,
+                );
               }
             },
           ),
