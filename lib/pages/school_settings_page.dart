@@ -19,6 +19,11 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
   final _nameController = TextEditingController();
   final _schoolCodeController = TextEditingController();
   final _classroomLimitController = TextEditingController();
+  final _principalNameController = TextEditingController();
+  final _vicePrincipalNameController = TextEditingController();
+  final _schoolEmailController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _addressController = TextEditingController();
 
   final _firestoreService = FirestoreService();
 
@@ -52,6 +57,11 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
         _nameController.text = school.name;
         _schoolCodeController.text = school.schoolCode;
         _classroomLimitController.text = school.classroomLimit.toString();
+        _principalNameController.text = school.principalName;
+        _vicePrincipalNameController.text = school.vicePrincipalName;
+        _schoolEmailController.text = school.schoolEmail;
+        _phoneNumberController.text = school.phoneNumber;
+        _addressController.text = school.address;
         _active = school.active;
         _isLoading = false;
       });
@@ -82,6 +92,11 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
         schoolCode: _schoolCodeController.text,
         classroomLimit: int.parse(_classroomLimitController.text.trim()),
         active: _active,
+        principalName: _principalNameController.text,
+        vicePrincipalName: _vicePrincipalNameController.text,
+        schoolEmail: _schoolEmailController.text,
+        phoneNumber: _phoneNumberController.text,
+        address: _addressController.text,
       );
 
       if (!mounted) return;
@@ -111,6 +126,11 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
     _nameController.dispose();
     _schoolCodeController.dispose();
     _classroomLimitController.dispose();
+    _principalNameController.dispose();
+    _vicePrincipalNameController.dispose();
+    _schoolEmailController.dispose();
+    _phoneNumberController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -148,7 +168,7 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
                                 ),
                                 const SizedBox(height: 8),
                                 const Text(
-                                  'These details control how the school appears and how classrooms log in.',
+                                  'These details control the school account and classroom login.',
                                 ),
                                 const SizedBox(height: 22),
 
@@ -227,6 +247,83 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
                                     return null;
                                   },
                                 ),
+
+                                const SizedBox(height: 24),
+
+                                const Divider(),
+
+                                const SizedBox(height: 16),
+
+                                const Text(
+                                  'Contact Details',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                TextFormField(
+                                  controller: _principalNameController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Principal Name',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.person_outline),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                TextFormField(
+                                  controller: _vicePrincipalNameController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Vice Principal Name',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.person_outline),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                TextFormField(
+                                  controller: _schoolEmailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: const InputDecoration(
+                                    labelText: 'School Email',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.email_outlined),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                TextFormField(
+                                  controller: _phoneNumberController,
+                                  keyboardType: TextInputType.phone,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Phone Number',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.phone_outlined),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                TextFormField(
+                                  controller: _addressController,
+                                  minLines: 2,
+                                  maxLines: 4,
+                                  decoration: const InputDecoration(
+                                    labelText: 'School Address',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.location_on_outlined),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                const Divider(),
 
                                 const SizedBox(height: 16),
 

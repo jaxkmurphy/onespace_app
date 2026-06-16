@@ -6,6 +6,12 @@ class School {
   final bool active;
   final DateTime? createdAt;
 
+  final String principalName;
+  final String vicePrincipalName;
+  final String schoolEmail;
+  final String phoneNumber;
+  final String address;
+
   School({
     required this.id,
     required this.name,
@@ -13,6 +19,11 @@ class School {
     required this.classroomLimit,
     required this.active,
     this.createdAt,
+    this.principalName = '',
+    this.vicePrincipalName = '',
+    this.schoolEmail = '',
+    this.phoneNumber = '',
+    this.address = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +33,11 @@ class School {
       'classroomLimit': classroomLimit,
       'active': active,
       'createdAt': createdAt,
+      'principalName': principalName,
+      'vicePrincipalName': vicePrincipalName,
+      'schoolEmail': schoolEmail,
+      'phoneNumber': phoneNumber,
+      'address': address,
     };
   }
 
@@ -33,6 +49,11 @@ class School {
       classroomLimit: map['classroomLimit'] ?? 3,
       active: map['active'] ?? true,
       createdAt: map['createdAt']?.toDate(),
+      principalName: map['principalName'] ?? '',
+      vicePrincipalName: map['vicePrincipalName'] ?? '',
+      schoolEmail: map['schoolEmail'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
+      address: map['address'] ?? '',
     );
   }
 
@@ -43,6 +64,11 @@ class School {
     int? classroomLimit,
     bool? active,
     DateTime? createdAt,
+    String? principalName,
+    String? vicePrincipalName,
+    String? schoolEmail,
+    String? phoneNumber,
+    String? address,
   }) {
     return School(
       id: id ?? this.id,
@@ -51,6 +77,11 @@ class School {
       classroomLimit: classroomLimit ?? this.classroomLimit,
       active: active ?? this.active,
       createdAt: createdAt ?? this.createdAt,
+      principalName: principalName ?? this.principalName,
+      vicePrincipalName: vicePrincipalName ?? this.vicePrincipalName,
+      schoolEmail: schoolEmail ?? this.schoolEmail,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address: address ?? this.address,
     );
   }
 }

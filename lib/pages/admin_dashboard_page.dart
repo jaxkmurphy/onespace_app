@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/classroom.dart';
+import '../models/school.dart';
 import '../services/firestore_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class AdminDashboardPage extends StatelessWidget {
   final String schoolId;
@@ -16,20 +17,21 @@ class AdminDashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firestoreService = FirestoreService();
+    final schoolFuture = firestoreService.getSchool(schoolId);
 
     return Scaffold(
       appBar: AppBar(
-      title: Text('$schoolName Admin'),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.settings),
-          tooltip: 'School Settings',
-          onPressed: () async {
-            await Navigator.pushNamed(
-              context,
-              '/school-settings',
+        title: Text('$schoolName Admin'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'School Settings',
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                '/school-settings',
                 arguments: {
-                'schoolId': schoolId,
+                  'schoolId': schoolId,
                 },
               );
             },
@@ -47,23 +49,23 @@ class AdminDashboardPage extends StatelessWidget {
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
                       child: const Text('Cancel'),
-                      ),
+                    ),
                     ElevatedButton(
                       onPressed: () => Navigator.pop(context, true),
                       child: const Text('Logout'),
-                      ),
-                    ],
-                  ),
-                );
+                    ),
+                  ],
+                ),
+              );
 
-                if (shouldLogout == true) {
-                  await FirebaseAuth.instance.signOut();
+              if (shouldLogout == true) {
+                await FirebaseAuth.instance.signOut();
 
                 if (!context.mounted) return;
 
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                '/',
-                (route) => false,
+                  '/',
+                  (route) => false,
                 );
               }
             },
@@ -74,16 +76,52 @@ class AdminDashboardPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Card(
-              child: ListTile(
-                title: Text(
-                  schoolName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: const Text('School administration dashboard'),
-                leading: const Icon(Icons.school),
-              ),
+            FutureBuilder<School?>(
+              future: schoolFuture,
+              builder: (context, schoolSnapshot) {
+                final school = schoolSnapshot.data;
+
+                return StreamBuilder<List<Classroom>>(
+                  stream: firestoreService.getClassrooms(schoolId),
+                  builder: (context, classroomSnapshot) {
+                    final classrooms = classroomSnapshot.data ?? [];
+                    final classroomLimit = school?.classroomLimit ?? 3;
+                    final usedClassrooms = classrooms.length;
+
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              school?.name ?? schoolName,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'School Code: ${school?.schoolCode ?? "Loading..."}',
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Classrooms Used: $usedClassrooms / $classroomLimit',
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Status: ${(school?.active ?? true) ? "Active" : "Inactive"}',
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
+
             const SizedBox(height: 16),
 
             Expanded(
@@ -96,7 +134,9 @@ class AdminDashboardPage extends StatelessWidget {
 
                   if (snapshot.hasError) {
                     return Center(
-                      child: Text('Error loading classrooms: ${snapshot.error}'),
+                      child: Text(
+                        'Error loading classrooms: ${snapshot.error}',
+                      ),
                     );
                   }
 
@@ -125,7 +165,14 @@ class AdminDashboardPage extends StatelessWidget {
                           ),
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () {
-                            Navigator.pushNamed(context, '/profiles');
+                            Navigator.pushNamed(
+                              context,
+                              '/classroom-details',
+                              arguments: {
+                                'schoolId': schoolId,
+                                'classroomId': classroom.id,
+                              },
+                            );
                           },
                         ),
                       );

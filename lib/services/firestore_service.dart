@@ -151,29 +151,52 @@ class FirestoreService {
 }
 
   Future<void> createClassroom({
-    required String schoolId,
-    required String name,
-    required String classroomCode,
-    required String pin,
-  }) async {
-    final classroomRef = _db
-        .collection('schools')
-        .doc(schoolId)
-        .collection('classrooms')
-        .doc();
+  required String schoolId,
+  required String name,
+  required String classroomCode,
+  required String pin,
+}) async {
+  final school = await getSchool(schoolId);
 
-    final classroom = Classroom(
-      id: classroomRef.id,
-      schoolId: schoolId,
-      name: name.trim(),
-      classroomCode: classroomCode.trim().toUpperCase(),
-      pin: pin.trim(),
-      active: true,
-      createdAt: DateTime.now(),
-    );
-
-    await classroomRef.set(classroom.toMap());
+  if (school == null) {
+    throw Exception('School not found.');
   }
+
+  final existingClassrooms = await getClassroomsOnce(schoolId);
+
+  if (existingClassrooms.length >= school.classroomLimit) {
+    throw Exception(
+      'Classroom limit reached. Increase the classroom limit in School Settings.',
+    );
+  }
+
+  final codeAvailable = await isClassroomCodeAvailable(
+    schoolId: schoolId,
+    classroomCode: classroomCode,
+  );
+
+  if (!codeAvailable) {
+    throw Exception('That classroom code is already in use.');
+  }
+
+  final classroomRef = _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc();
+
+  final classroom = Classroom(
+    id: classroomRef.id,
+    schoolId: schoolId,
+    name: name.trim(),
+    classroomCode: classroomCode.trim().toUpperCase(),
+    pin: pin.trim(),
+    active: true,
+    createdAt: DateTime.now(),
+  );
+
+  await classroomRef.set(classroom.toMap());
+}
 
   Stream<List<Classroom>> getClassrooms(String schoolId) {
     return _db
@@ -250,6 +273,94 @@ class FirestoreService {
     return classroom;
   }
 
+  Future<bool> isClassroomCodeAvailable({
+  required String schoolId,
+  required String classroomCode,
+  String? currentClassroomId,
+}) async {
+  final query = await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .where('classroomCode', isEqualTo: classroomCode.trim().toUpperCase())
+      .limit(1)
+      .get();
+
+  if (query.docs.isEmpty) {
+    return true;
+  }
+
+  if (currentClassroomId != null && query.docs.first.id == currentClassroomId) {
+    return true;
+  }
+
+  return false;
+}
+
+Future<Classroom?> getClassroom({
+  required String schoolId,
+  required String classroomId,
+}) async {
+  final doc = await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .get();
+
+  if (!doc.exists || doc.data() == null) {
+    return null;
+  }
+
+  return Classroom.fromMap(doc.id, doc.data()!);
+}
+
+Future<void> updateClassroom({
+  required String schoolId,
+  required String classroomId,
+  required String name,
+  required String classroomCode,
+  required String pin,
+  required bool active,
+}) async {
+  final formattedClassroomCode = classroomCode.trim().toUpperCase();
+
+  final codeAvailable = await isClassroomCodeAvailable(
+    schoolId: schoolId,
+    classroomCode: formattedClassroomCode,
+    currentClassroomId: classroomId,
+  );
+
+  if (!codeAvailable) {
+    throw Exception('That classroom code is already in use.');
+  }
+
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .update({
+    'name': name.trim(),
+    'classroomCode': formattedClassroomCode,
+    'pin': pin.trim(),
+    'active': active,
+    'updatedAt': DateTime.now(),
+  });
+}
+
+  Future<void> deleteClassroom({
+    required String schoolId,
+    required String classroomId,
+  }) async {
+    await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .delete();
+  }
+
   Future<bool> isSchoolCodeAvailable({
   required String schoolCode,
   String? currentSchoolId,
@@ -277,6 +388,11 @@ Future<void> updateSchool({
   required String schoolCode,
   required int classroomLimit,
   required bool active,
+  String principalName = '',
+  String vicePrincipalName = '',
+  String schoolEmail = '',
+  String phoneNumber = '',
+  String address = '',
 }) async {
   final formattedSchoolCode = schoolCode.trim().toUpperCase();
 
@@ -294,6 +410,11 @@ Future<void> updateSchool({
     'schoolCode': formattedSchoolCode,
     'classroomLimit': classroomLimit,
     'active': active,
+    'principalName': principalName.trim(),
+    'vicePrincipalName': vicePrincipalName.trim(),
+    'schoolEmail': schoolEmail.trim(),
+    'phoneNumber': phoneNumber.trim(),
+    'address': address.trim(),
     'updatedAt': DateTime.now(),
   });
 }

@@ -37,6 +37,7 @@ import 'pages/today_overview_page.dart';
 import 'pages/admin_dashboard_page.dart';
 import 'pages/create_classroom_page.dart';
 import 'pages/school_settings_page.dart';
+import 'pages/classroom_details_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -120,6 +121,23 @@ class _MyAppState extends State<MyApp> {
             );
               }
               return const Scaffold(body: Center(child: Text('Missing child profile')));
+            },
+            '/classroom-details': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments;
+            if (args is Map<String, dynamic> &&
+                args['schoolId'] is String &&
+                args['classroomId'] is String) {
+                  return ClassroomDetailsPage(
+                    schoolId: args['schoolId'] as String,
+                    classroomId: args['classroomId'] as String,
+                    );
+                  }
+
+            return const Scaffold(
+              body: Center(
+                child: Text('Missing classroom details'),
+                ),
+              );
             },
             '/school-settings': (context) {
             final args = ModalRoute.of(context)!.settings.arguments;
