@@ -14,12 +14,18 @@ class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
   final FirestoreService firestoreService;
   final LocaleNotifier localeNotifier;
+  final String? schoolId;
+  final String? classroomId;
+  final String? classroomName;
 
   const ChildProfileDashboard({
     super.key,
     required this.profile,
     required this.firestoreService,
     required this.localeNotifier,
+    this.schoolId,
+    this.classroomId,
+    this.classroomName,
   });
 
   @override
@@ -73,6 +79,11 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                   context,
                   '/profiles',
                   (route) => false,
+                  arguments: {
+                    'schoolId': widget.schoolId,
+                    'classroomId': widget.classroomId,
+                    'classroomName': widget.classroomName,
+                  },
                 );
               },
             ),

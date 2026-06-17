@@ -12,11 +12,17 @@ import 'word_learning_page.dart';
 class StaffProfileDashboard extends StatefulWidget {
   final StaffProfile profile;
   final LocaleNotifier localeNotifier;
+  final String? schoolId;
+  final String? classroomId;
+  final String? classroomName;
 
   const StaffProfileDashboard({
     super.key,
     required this.profile,
     required this.localeNotifier,
+    this.schoolId,
+    this.classroomId,
+    this.classroomName,
   });
 
   @override
@@ -67,6 +73,11 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                   context,
                   '/profiles',
                   (route) => false,
+                  arguments: {
+                    'schoolId': widget.schoolId,
+                    'classroomId': widget.classroomId,
+                    'classroomName': widget.classroomName,
+                  },
                 );
               },
             ),

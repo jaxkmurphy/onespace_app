@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'models/school.dart';
 import 'models/school_member.dart';
 import 'services/classroom_auth_service.dart';
 import 'services/firestore_service.dart';
+import 'services/classroom_session_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -122,14 +122,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      Navigator.pushReplacementNamed(
-        context,
-        '/profiles',
-        arguments: {
-          'schoolId': result['schoolId'],
-          'classroomId': result['classroomId'],
-          'classroomName': result['classroomName'],
-          'isClassroomLogin': true,
+      ClassroomSessionService.instance.setSession(
+        schoolId: result['schoolId']!,
+        classroomId: result['classroomId']!,
+        classroomName: result['classroomName']!,
+  );
+
+  Navigator.pushReplacementNamed(
+    context,
+    '/profiles',
+    arguments: {
+      'schoolId': result['schoolId'],
+      'classroomId': result['classroomId'],
+      'classroomName': result['classroomName'],
+      'isClassroomLogin': true,
         },
       );
     } catch (e) {

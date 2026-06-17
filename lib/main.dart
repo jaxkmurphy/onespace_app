@@ -92,12 +92,32 @@ class _MyAppState extends State<MyApp> {
           initialRoute: '/',
           routes: {
             '/': (context) => const AuthGate(),
-            '/profiles': (context) => const ProfilesPage(),
             '/account-settings': (context) => AccountSettingsPage(locale: locale,onLocaleChange: localeNotifier.changeLocale,),
-            '/add-profile': (context) => const AddProfilePage(),
             '/staffSchedule': (context) => const StaffSchedulePage(),
             '/childSchedule': (context) => const ChildSchedulePage(),
             '/visual-timer': (context) => const VisualTimerPage(),
+            '/profiles': (context) {
+              final args = ModalRoute.of(context)!.settings.arguments;
+              if (args is Map<String, dynamic>) {
+                return ProfilesPage(
+                  schoolId: args['schoolId'] as String?,
+                  classroomId: args['classroomId'] as String?,
+                  classroomName: args['classroomName'] as String?,
+                );
+              }
+              return const ProfilesPage();
+            },
+            '/add-profile': (context) {
+              final args = ModalRoute.of(context)!.settings.arguments;
+              if (args is Map<String, dynamic>) {
+                return AddProfilePage(
+                  schoolId: args['schoolId'] as String?,
+                  classroomId: args['classroomId'] as String?,
+                  classroomName: args['classroomName'] as String?,
+                );
+              }
+              return const AddProfilePage();
+            },
             '/create-classroom': (context) {
             final args = ModalRoute.of(context)!.settings.arguments;
             if (args is Map<String, dynamic> && args['schoolId'] is String) {
@@ -112,15 +132,27 @@ class _MyAppState extends State<MyApp> {
               );
             },
             '/child-dashboard': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments;
-            if (args is ChildProfile) {
-            return ChildProfileDashboard(
-              profile: args,
-              firestoreService: FirestoreService(),
-              localeNotifier: localeNotifier,
-            );
+              final args = ModalRoute.of(context)!.settings.arguments;
+              if (args is Map<String, dynamic> && args['profile'] is ChildProfile) {
+                return ChildProfileDashboard(
+                  profile: args['profile'] as ChildProfile,
+                  firestoreService: FirestoreService(),
+                  localeNotifier: localeNotifier,
+                  schoolId: args['schoolId'] as String?,
+                  classroomId: args['classroomId'] as String?,
+                  classroomName: args['classroomName'] as String?,
+                );
               }
-              return const Scaffold(body: Center(child: Text('Missing child profile')));
+              if (args is ChildProfile) {
+                return ChildProfileDashboard(
+                  profile: args,
+                  firestoreService: FirestoreService(),
+                  localeNotifier: localeNotifier,
+                );
+              }
+              return const Scaffold(
+                body: Center(child: Text('Missing child profile')),
+              );
             },
             '/classroom-details': (context) {
             final args = ModalRoute.of(context)!.settings.arguments;
@@ -191,11 +223,22 @@ class _MyAppState extends State<MyApp> {
               }
             } else if (settings.name == '/staff-dashboard') {
               final args = settings.arguments;
-                if (args is StaffProfile) {
+              if (args is Map<String, dynamic> && args['profile'] is StaffProfile) {
                 return MaterialPageRoute(
                   builder: (context) => StaffProfileDashboard(
-                  profile: args,
-                  localeNotifier: localeNotifier,
+                    profile: args['profile'] as StaffProfile,
+                    localeNotifier: localeNotifier,
+                    schoolId: args['schoolId'] as String?,
+                    classroomId: args['classroomId'] as String?,
+                    classroomName: args['classroomName'] as String?,
+                  ),
+                );
+              }
+              if (args is StaffProfile) {
+                return MaterialPageRoute(
+                  builder: (context) => StaffProfileDashboard(
+                    profile: args,
+                    localeNotifier: localeNotifier,
                   ),
                 );
               }

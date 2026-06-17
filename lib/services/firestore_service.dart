@@ -449,6 +449,124 @@ Future<void> updateSchool({
     }
   }
 
+    // Classroom staff/child profile methods
+
+  Future<void> addClassroomStaffProfile({
+    required String schoolId,
+    required String classroomId,
+    required StaffProfile profile,
+  }) async {
+    final docRef = _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('staff_profiles')
+        .doc();
+
+    final profileWithId = profile.copyWith(
+      id: docRef.id,
+      teacherUid: classroomId,
+    );
+
+    await docRef.set(profileWithId.toMap());
+  }
+
+  Stream<List<StaffProfile>> getClassroomStaffProfiles({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('staff_profiles')
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => StaffProfile.fromMap(doc.id, doc.data()).copyWith(
+                  teacherUid: classroomId,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Future<void> deleteClassroomStaffProfile({
+    required String schoolId,
+    required String classroomId,
+    required String profileId,
+  }) async {
+    await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('staff_profiles')
+        .doc(profileId)
+        .delete();
+  }
+
+  Future<void> addClassroomChildProfile({
+    required String schoolId,
+    required String classroomId,
+    required ChildProfile profile,
+  }) async {
+    final docRef = _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('child_profiles')
+        .doc();
+
+    final profileWithId = profile.copyWith(
+      id: docRef.id,
+      teacherUid: classroomId,
+    );
+
+    await docRef.set(profileWithId.toMap());
+  }
+
+  Stream<List<ChildProfile>> getClassroomChildProfiles({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('child_profiles')
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(
+                  teacherUid: classroomId,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Future<void> deleteClassroomChildProfile({
+    required String schoolId,
+    required String classroomId,
+    required String profileId,
+  }) async {
+    await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('child_profiles')
+        .doc(profileId)
+        .delete();
+  }
+
   // Staff profile methods
   Future<void> addStaffProfile(String teacherUid, StaffProfile profile) async {
     final docRef = _db.collection('teachers').doc(teacherUid).collection('staff_profiles').doc();

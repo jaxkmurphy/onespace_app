@@ -6,9 +6,19 @@ import '../models/child_profile.dart';
 import '../widgets/pin_entry_dialog.dart';
 import '../widgets/child_icon_unlock_dialog.dart';
 import '../widgets/profile_selection_card.dart';
+import '../services/classroom_session_service.dart';
 
 class ProfilesPage extends StatefulWidget {
-  const ProfilesPage({super.key});
+  final String? schoolId;
+  final String? classroomId;
+  final String? classroomName;
+
+  const ProfilesPage({
+    super.key,
+    this.schoolId,
+    this.classroomId,
+    this.classroomName,
+  });
 
   @override
   State<ProfilesPage> createState() => _ProfilesPageState();
@@ -17,23 +27,37 @@ class ProfilesPage extends StatefulWidget {
 class _ProfilesPageState extends State<ProfilesPage> {
   final firestoreService = FirestoreService();
 
+  bool get _isClassroomMode =>
+      widget.schoolId != null && widget.classroomId != null;
+
   Future<bool> _checkPin() async {
     try {
-      final uid = FirebaseAuth.instance.currentUser!.uid;
-      final teacher = await firestoreService.getTeacherInfo(uid);
-      final pin = teacher.pin;
+      String? pin;
+
+      if (_isClassroomMode) {
+        final classroom = await firestoreService.getClassroom(
+          schoolId: widget.schoolId!,
+          classroomId: widget.classroomId!,
+        );
+
+        pin = classroom?.pin;
+      } else {
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+        final teacher = await firestoreService.getTeacherInfo(uid);
+        pin = teacher.pin;
+      }
 
       if (pin == null || pin.isEmpty) return true;
       if (!mounted) return false;
 
       final ok = await showDialog<bool>(
         context: context,
-        builder: (_) => PinEntryDialog(correctPin: pin),
+        builder: (_) => PinEntryDialog(correctPin: pin!),
       );
 
       return ok == true;
     } catch (e) {
-      print('PIN check failed: $e');
+      debugPrint('PIN check failed: $e');
       return false;
     }
   }
@@ -43,13 +67,26 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (!mounted) return;
 
     if (pinOk) {
-      Navigator.pushNamed(context, '/add-profile');
+      Navigator.pushNamed(
+        context,
+        '/add-profile',
+        arguments: {
+          'schoolId': widget.schoolId,
+          'classroomId': widget.classroomId,
+          'classroomName': widget.classroomName,
+        },
+      );
     } else {
       _showSnack('Access denied: incorrect PIN');
     }
   }
 
   Future<void> _goToSettings() async {
+    if (_isClassroomMode) {
+      _showSnack('Classroom settings are managed by the school admin.');
+      return;
+    }
+
     final pinOk = await _checkPin();
     if (!mounted) return;
 
@@ -61,11 +98,21 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _onStaffTap(StaffProfile profile) async {
-    final pinOk = await _checkPin();
-    if (pinOk && mounted) {
-      Navigator.pushNamed(context, '/staff-dashboard', arguments: profile);
-    }
+  final pinOk = await _checkPin();
+
+  if (pinOk && mounted) {
+    Navigator.pushNamed(
+      context,
+      '/staff-dashboard',
+      arguments: {
+        'profile': profile,
+        'schoolId': widget.schoolId,
+        'classroomId': widget.classroomId,
+        'classroomName': widget.classroomName,
+      },
+    );
   }
+}
 
   Future<void> _onChildTap(ChildProfile profile) async {
     bool allowed = false;
@@ -84,7 +131,16 @@ class _ProfilesPageState extends State<ProfilesPage> {
     }
 
     if (allowed && mounted) {
-      Navigator.pushNamed(context, '/child-dashboard', arguments: profile);
+      Navigator.pushNamed(
+        context,
+        '/child-dashboard',
+        arguments: {
+          'profile': profile,
+          'schoolId': widget.schoolId,
+          'classroomId': widget.classroomId,
+          'classroomName': widget.classroomName,
+        },
+      );
     }
   }
 
@@ -95,9 +151,18 @@ class _ProfilesPageState extends State<ProfilesPage> {
       return;
     }
 
-    final uid = FirebaseAuth.instance.currentUser!.uid;
     try {
-      await firestoreService.deleteStaffProfile(uid, profileId);
+      if (_isClassroomMode) {
+        await firestoreService.deleteClassroomStaffProfile(
+          schoolId: widget.schoolId!,
+          classroomId: widget.classroomId!,
+          profileId: profileId,
+        );
+      } else {
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+        await firestoreService.deleteStaffProfile(uid, profileId);
+      }
+
       _showSnack('Staff profile deleted');
     } catch (e) {
       _showSnack('Failed to delete staff profile: $e');
@@ -111,13 +176,80 @@ class _ProfilesPageState extends State<ProfilesPage> {
       return;
     }
 
-    final uid = FirebaseAuth.instance.currentUser!.uid;
     try {
-      await firestoreService.deleteChildProfile(uid, profileId);
+      if (_isClassroomMode) {
+        await firestoreService.deleteClassroomChildProfile(
+          schoolId: widget.schoolId!,
+          classroomId: widget.classroomId!,
+          profileId: profileId,
+        );
+      } else {
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+        await firestoreService.deleteChildProfile(uid, profileId);
+      }
+
       _showSnack('Child profile deleted');
     } catch (e) {
       _showSnack('Failed to delete child profile: $e');
     }
+  }
+
+  Future<void> _logout() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text(
+          'Are you sure you want to logout?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true) {
+      await FirebaseAuth.instance.signOut();
+      ClassroomSessionService.instance.clearSession();
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/',
+        (route) => false,
+      );
+    }
+  }
+
+  Stream<List<StaffProfile>> _staffProfilesStream() {
+    if (_isClassroomMode) {
+      return firestoreService.getClassroomStaffProfiles(
+        schoolId: widget.schoolId!,
+        classroomId: widget.classroomId!,
+      );
+    }
+
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    return firestoreService.getStaffProfiles(uid);
+  }
+
+  Stream<List<ChildProfile>> _childProfilesStream() {
+    if (_isClassroomMode) {
+      return firestoreService.getClassroomChildProfiles(
+        schoolId: widget.schoolId!,
+        classroomId: widget.classroomId!,
+      );
+    }
+
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    return firestoreService.getChildProfiles(uid);
   }
 
   void _showSnack(String text) {
@@ -142,75 +274,37 @@ class _ProfilesPageState extends State<ProfilesPage> {
       'Age': 'Aois',
       'Add Profile': 'Cuir Próifíl Leis',
       'Account Settings': 'Socruithe Cuntais',
+      'Classroom Settings': 'Socruithe Seomra Ranga',
       'Admin Actions': 'Gníomhartha Riaracháin',
       'Create staff or child profiles': 'Cruthaigh próifílí foirne nó páistí',
       'Manage PIN and account options': 'Bainistigh PIN agus roghanna cuntais',
+      'Managed by school admin': 'Bainistithe ag riarthóir na scoile',
       'Access denied: incorrect PIN': 'Diúltaíodh rochtain: PIN mícheart',
       'Staff profile deleted': 'Scriosadh próifíl an fhostaí',
       'Child profile deleted': 'Scriosadh próifíl an pháiste',
+      'Classroom settings are managed by the school admin.':
+          'Tá socruithe an tseomra ranga á mbainistiú ag riarthóir na scoile.',
     };
     return isGa && map.containsKey(en) ? map[en]! : en;
   }
 
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final staffStream = firestoreService.getStaffProfiles(uid);
-    final childStream = firestoreService.getChildProfiles(uid);
+    final staffStream = _staffProfilesStream();
+    final childStream = _childProfilesStream();
+
+    final title = widget.classroomName == null || widget.classroomName!.isEmpty
+        ? _getText('Profiles')
+        : widget.classroomName!;
 
     return Scaffold(
-    appBar: AppBar(
-    title: const Text('Profiles'),
-    actions: [
-      IconButton(
-        icon: const Icon(Icons.admin_panel_settings),
-        tooltip: 'Admin Dashboard',
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            '/admin-dashboard',
-            arguments: {
-              'schoolId': 'YOUR_SCHOOL_ID_HERE',
-              'schoolName': 'Test School',
-            },
-          );
-        },
-      ),
-      IconButton(
-        icon: const Icon(Icons.logout),
-        tooltip: 'Logout',
-        onPressed: () async {
-          final shouldLogout = await showDialog<bool>(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Logout'),
-              content: const Text(
-                'Are you sure you want to logout?',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Logout'),
-                ),
-              ],
-            ),
-          );
-
-          if (shouldLogout == true) {
-            await FirebaseAuth.instance.signOut();
-
-              if (!context.mounted) return;
-
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/',
-                  (route) => false,
-                );
-              }
-            },
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: _logout,
           ),
         ],
       ),
@@ -277,9 +371,20 @@ class _ProfilesPageState extends State<ProfilesPage> {
                                       ),
                                   textAlign: TextAlign.center,
                                 ),
+                                if (_isClassroomMode &&
+                                    widget.classroomName != null) ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    widget.classroomName!,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ],
                             ),
                           ),
+
                           const SizedBox(height: 24),
 
                           Text(
@@ -371,10 +476,14 @@ class _ProfilesPageState extends State<ProfilesPage> {
                               );
 
                               final settingsCard = ProfileSelectionCard(
-                                name: _getText('Account Settings'),
-                                subtitle: _getText(
-                                  'Manage PIN and account options',
-                                ),
+                                name: _isClassroomMode
+                                    ? _getText('Classroom Settings')
+                                    : _getText('Account Settings'),
+                                subtitle: _isClassroomMode
+                                    ? _getText('Managed by school admin')
+                                    : _getText(
+                                        'Manage PIN and account options',
+                                      ),
                                 icon: Icons.settings,
                                 color: Colors.grey,
                                 onTap: _goToSettings,

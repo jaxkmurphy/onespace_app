@@ -6,7 +6,16 @@ import '../services/firestore_service.dart';
 import '../widgets/icon_sequence_picker.dart';
 
 class AddProfilePage extends StatefulWidget {
-  const AddProfilePage({super.key});
+  final String? schoolId;
+  final String? classroomId;
+  final String? classroomName;
+
+  const AddProfilePage({
+    super.key,
+    this.schoolId,
+    this.classroomId,
+    this.classroomName,
+  });
 
   @override
   State<AddProfilePage> createState() => _AddProfilePageState();
@@ -26,6 +35,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
   List<String> childIconSequenceConfirm = [];
   bool confirmingChildSequence = false;
   int pickerResetVersion = 0;
+
+  bool get _isClassroomMode =>
+      widget.schoolId != null && widget.classroomId != null;
 
   bool _matches(List<String> a, List<String> b) {
     if (a.length != b.length) return false;
@@ -49,7 +61,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final teacherUid = FirebaseAuth.instance.currentUser!.uid;
     final name = nameController.text.trim();
 
     try {
@@ -60,10 +71,21 @@ class _AddProfilePageState extends State<AddProfilePage> {
           id: '',
           name: name,
           role: role,
-          teacherUid: teacherUid,
+          teacherUid: _isClassroomMode
+              ? widget.classroomId!
+              : FirebaseAuth.instance.currentUser!.uid,
         );
 
-        await firestoreService.addStaffProfile(teacherUid, profile);
+        if (_isClassroomMode) {
+          await firestoreService.addClassroomStaffProfile(
+            schoolId: widget.schoolId!,
+            classroomId: widget.classroomId!,
+            profile: profile,
+          );
+        } else {
+          final teacherUid = FirebaseAuth.instance.currentUser!.uid;
+          await firestoreService.addStaffProfile(teacherUid, profile);
+        }
       } else {
         if (childIconSequence.length != 3) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -108,13 +130,24 @@ class _AddProfilePageState extends State<AddProfilePage> {
           id: '',
           name: name,
           age: age,
-          teacherUid: teacherUid,
+          teacherUid: _isClassroomMode
+              ? widget.classroomId!
+              : FirebaseAuth.instance.currentUser!.uid,
           zone: null,
           accessMode: 'iconSequence',
           iconSequence: childIconSequence,
         );
 
-        await firestoreService.addChildProfile(teacherUid, profile);
+        if (_isClassroomMode) {
+          await firestoreService.addClassroomChildProfile(
+            schoolId: widget.schoolId!,
+            classroomId: widget.classroomId!,
+            profile: profile,
+          );
+        } else {
+          final teacherUid = FirebaseAuth.instance.currentUser!.uid;
+          await firestoreService.addChildProfile(teacherUid, profile);
+        }
       }
 
       if (!mounted) return;
@@ -157,6 +190,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
+    final classroomName = widget.classroomName;
 
     return Scaffold(
       appBar: AppBar(
@@ -173,6 +207,20 @@ class _AddProfilePageState extends State<AddProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (_isClassroomMode && classroomName != null) ...[
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          leading: const Icon(Icons.meeting_room_outlined),
+                          title: Text(classroomName),
+                          subtitle: const Text(
+                            'New profiles will be saved to this classroom.',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                    ],
+
                     Card(
                       elevation: 3,
                       margin: EdgeInsets.zero,
@@ -217,7 +265,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                             const SizedBox(height: 6),
                             Text(
                               isStaff
-                                  ? 'Staff profiles use the account PIN for access.'
+                                  ? 'Staff profiles use the account or classroom PIN for access.'
                                   : 'Child profiles can use a simple 3-icon unlock sequence.',
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
@@ -332,8 +380,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                 controller: ageController,
                                 decoration: const InputDecoration(
                                   labelText: 'Age',
-                                  prefixIcon:
-                                      Icon(Icons.cake_outlined),
+                                  prefixIcon: Icon(Icons.cake_outlined),
                                   border: OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
