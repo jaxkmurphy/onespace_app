@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../locale_notifier.dart';
-import '../models/child_profile.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
 import '../simple_localizations.dart';
