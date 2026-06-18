@@ -3,12 +3,12 @@ import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
 
 class ZoneSelectionPage extends StatefulWidget {
-  final String teacherUid;
+  final String? teacherUid;
   final ChildProfile child;
 
   const ZoneSelectionPage({
     super.key,
-    required this.teacherUid,
+    this.teacherUid,
     required this.child,
   });
 
@@ -17,6 +17,8 @@ class ZoneSelectionPage extends StatefulWidget {
 }
 
 class _ZoneSelectionPageState extends State<ZoneSelectionPage> {
+  final FirestoreService _firestoreService = FirestoreService();
+
   bool _colorFilled = false;
   Color _selectedColor = Colors.white;
 
@@ -35,8 +37,18 @@ class _ZoneSelectionPageState extends State<ZoneSelectionPage> {
       _colorFilled = true;
     });
 
-    final updatedProfile = widget.child.copyWith(zone: zone);
-    await FirestoreService().updateChildProfile(widget.teacherUid, updatedProfile);
+    try {
+      await _firestoreService.setCurrentChildZone(
+        childId: widget.child.id,
+        zone: zone,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update zone: $e')),
+      );
+    }
 
     await Future.delayed(const Duration(seconds: 2));
 
@@ -60,7 +72,7 @@ class _ZoneSelectionPageState extends State<ZoneSelectionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: zoneColors.entries.map((entry) {
                 return Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(12),
                   child: GestureDetector(
                     onTap: () => _selectZone(entry.key),
                     child: Container(
@@ -70,7 +82,11 @@ class _ZoneSelectionPageState extends State<ZoneSelectionPage> {
                       alignment: Alignment.center,
                       child: Text(
                         entry.key.toUpperCase(),
-                        style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

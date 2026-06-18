@@ -19,8 +19,6 @@ class HandoverHubPage extends StatefulWidget {
 class _HandoverHubPageState extends State<HandoverHubPage> {
   final FirestoreService _firestoreService = FirestoreService();
 
-  String get teacherUid => widget.currentStaff.teacherUid;
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -39,17 +37,14 @@ class _HandoverHubPageState extends State<HandoverHubPage> {
         body: TabBarView(
           children: [
             _StartHereTab(
-              teacherUid: teacherUid,
               currentStaff: widget.currentStaff,
               firestoreService: _firestoreService,
             ),
             _StaffDocumentsTab(
-              teacherUid: teacherUid,
               currentStaff: widget.currentStaff,
               firestoreService: _firestoreService,
             ),
             _QuickNotesTab(
-              teacherUid: teacherUid,
               currentStaff: widget.currentStaff,
               firestoreService: _firestoreService,
             ),
@@ -61,12 +56,10 @@ class _HandoverHubPageState extends State<HandoverHubPage> {
 }
 
 class _StartHereTab extends StatelessWidget {
-  final String teacherUid;
   final StaffProfile currentStaff;
   final FirestoreService firestoreService;
 
   const _StartHereTab({
-    required this.teacherUid,
     required this.currentStaff,
     required this.firestoreService,
   });
@@ -94,8 +87,7 @@ class _StartHereTab extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                await firestoreService.updateHandoverOverview(
-                  teacherUid: teacherUid,
+                await firestoreService.updateCurrentHandoverOverview(
                   content: controller.text.trim(),
                   updatedByName: currentStaff.name,
                 );
@@ -113,7 +105,7 @@ class _StartHereTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<String>(
-      stream: firestoreService.getHandoverOverview(teacherUid),
+      stream: firestoreService.getCurrentHandoverOverview(),
       builder: (context, snapshot) {
         final content = snapshot.data ?? '';
 
@@ -155,12 +147,10 @@ class _StartHereTab extends StatelessWidget {
 }
 
 class _StaffDocumentsTab extends StatelessWidget {
-  final String teacherUid;
   final StaffProfile currentStaff;
   final FirestoreService firestoreService;
 
   const _StaffDocumentsTab({
-    required this.teacherUid,
     required this.currentStaff,
     required this.firestoreService,
   });
@@ -168,7 +158,7 @@ class _StaffDocumentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<StaffProfile>>(
-      stream: firestoreService.getStaffProfiles(teacherUid),
+      stream: firestoreService.getCurrentStaffProfiles(),
       builder: (context, snapshot) {
         final staffProfiles = snapshot.data ?? [];
 
@@ -195,7 +185,6 @@ class _StaffDocumentsTab extends StatelessWidget {
                     final canEdit = staff.id == currentStaff.id;
 
                     return _StaffDocumentView(
-                      teacherUid: teacherUid,
                       staff: staff,
                       canEdit: canEdit,
                       firestoreService: firestoreService,
@@ -212,13 +201,11 @@ class _StaffDocumentsTab extends StatelessWidget {
 }
 
 class _StaffDocumentView extends StatelessWidget {
-  final String teacherUid;
   final StaffProfile staff;
   final bool canEdit;
   final FirestoreService firestoreService;
 
   const _StaffDocumentView({
-    required this.teacherUid,
     required this.staff,
     required this.canEdit,
     required this.firestoreService,
@@ -272,8 +259,7 @@ class _StaffDocumentView extends StatelessWidget {
                   otherNotes: otherController.text.trim(),
                 );
 
-                await firestoreService.updateStaffHandoverDocument(
-                  teacherUid: teacherUid,
+                await firestoreService.updateCurrentStaffHandoverDocument(
                   document: updatedDoc,
                 );
 
@@ -310,9 +296,13 @@ class _StaffDocumentView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style:
-                    const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               content.isEmpty ? 'Nothing added yet.' : content,
@@ -327,8 +317,7 @@ class _StaffDocumentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<StaffHandoverDocument>(
-      stream: firestoreService.getStaffHandoverDocument(
-        teacherUid: teacherUid,
+      stream: firestoreService.getCurrentStaffHandoverDocument(
         staff: staff,
       ),
       builder: (context, snapshot) {
@@ -378,9 +367,13 @@ class _StaffDocumentView extends StatelessWidget {
                       _readSection('What Works Well', doc.whatWorksWell),
                       _readSection('Common Triggers', doc.commonTriggers),
                       _readSection(
-                          'Successful Strategies', doc.successfulStrategies),
+                        'Successful Strategies',
+                        doc.successfulStrategies,
+                      ),
                       _readSection(
-                          'Communication Tips', doc.communicationTips),
+                        'Communication Tips',
+                        doc.communicationTips,
+                      ),
                       _readSection('Other Notes', doc.otherNotes),
                     ],
                   ),
@@ -395,12 +388,10 @@ class _StaffDocumentView extends StatelessWidget {
 }
 
 class _QuickNotesTab extends StatelessWidget {
-  final String teacherUid;
   final StaffProfile currentStaff;
   final FirestoreService firestoreService;
 
   const _QuickNotesTab({
-    required this.teacherUid,
     required this.currentStaff,
     required this.firestoreService,
   });
@@ -449,15 +440,13 @@ class _QuickNotesTab extends StatelessWidget {
                 if (title.isEmpty && content.isEmpty) return;
 
                 if (isEditing) {
-                  await firestoreService.updateHandoverQuickNote(
-                    teacherUid: teacherUid,
+                  await firestoreService.updateCurrentHandoverQuickNote(
                     noteId: note.id,
                     title: title,
                     content: content,
                   );
                 } else {
-                  await firestoreService.addHandoverQuickNote(
-                    teacherUid: teacherUid,
+                  await firestoreService.addCurrentHandoverQuickNote(
                     title: title,
                     content: content,
                     createdBy: currentStaff,
@@ -499,10 +488,7 @@ class _QuickNotesTab extends StatelessWidget {
     );
 
     if (shouldDelete == true) {
-      await firestoreService.deleteHandoverQuickNote(
-        teacherUid: teacherUid,
-        noteId: note.id,
-      );
+      await firestoreService.deleteCurrentHandoverQuickNote(note.id);
     }
   }
 
@@ -510,7 +496,7 @@ class _QuickNotesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<List<HandoverQuickNote>>(
-        stream: firestoreService.getHandoverQuickNotes(teacherUid),
+        stream: firestoreService.getCurrentHandoverQuickNotes(),
         builder: (context, snapshot) {
           final notes = snapshot.data ?? [];
 

@@ -138,9 +138,6 @@ class _MyAppState extends State<MyApp> {
                   profile: args['profile'] as ChildProfile,
                   firestoreService: FirestoreService(),
                   localeNotifier: localeNotifier,
-                  schoolId: args['schoolId'] as String?,
-                  classroomId: args['classroomId'] as String?,
-                  classroomName: args['classroomName'] as String?,
                 );
               }
               if (args is ChildProfile) {
@@ -201,59 +198,57 @@ class _MyAppState extends State<MyApp> {
               }
             } else if (settings.name == '/zone-overview') {
               final args = settings.arguments;
-              if (args is Map<String, dynamic> && args['teacherUid'] != null) {
-                final teacherUid = args['teacherUid'] as String;
+              if (args is Map<String, dynamic> && args['teacherUid'] is String) {
                 return MaterialPageRoute(
-                  builder: (context) => ZoneOverviewPage(teacherUid: teacherUid),
-                );
-              }
-            } else if (settings.name == '/zone-select') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic> &&
-                  args['teacherUid'] != null &&
-                  args['child'] is ChildProfile) {
-                final teacherUid = args['teacherUid'] as String;
-                final child = args['child'] as ChildProfile;
+                  builder: (context) => ZoneOverviewPage(
+                  teacherUid: args['teacherUid'] as String,
+                ),
+              );
+            }
+            return MaterialPageRoute(
+              builder: (context) => const ZoneOverviewPage(),
+            );
+          } else if (settings.name == '/zone-select') {
+            final args = settings.arguments;
+            if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
+              return MaterialPageRoute(
+                builder: (context) => ZoneSelectionPage(
+                  teacherUid: args['teacherUid'] as String?,
+                  child: args['child'] as ChildProfile,
+                ),
+              );
+            }
+          } else if (settings.name == '/staff-dashboard') {
+                final args = settings.arguments;
+                if (args is Map<String, dynamic> && args['profile'] is StaffProfile) {
+                  return MaterialPageRoute(
+                    builder: (context) => StaffProfileDashboard(
+                      profile: args['profile'] as StaffProfile,
+                      localeNotifier: localeNotifier,
+                    ),
+                  );
+                }
+                if (args is StaffProfile) {
+                  return MaterialPageRoute(
+                    builder: (context) => StaffProfileDashboard(
+                      profile: args,
+                      localeNotifier: localeNotifier,
+                    ),
+                  );
+                }
+              } else if (settings.name == '/points-overview') {
+                final args = settings.arguments;
+                if (args is Map<String, dynamic> && args['teacherUid'] is String) {
+                  return MaterialPageRoute(
+                    builder: (context) => PointsOverviewPage(
+                      teacherUid: args['teacherUid'] as String,
+                    ),
+                  );
+                }
                 return MaterialPageRoute(
-                  builder: (context) => ZoneSelectionPage(
-                    teacherUid: teacherUid,
-                    child: child,
-                  ),
+                  builder: (context) => const PointsOverviewPage(),
                 );
-              }
-            } else if (settings.name == '/staff-dashboard') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic> && args['profile'] is StaffProfile) {
-                return MaterialPageRoute(
-                  builder: (context) => StaffProfileDashboard(
-                    profile: args['profile'] as StaffProfile,
-                    localeNotifier: localeNotifier,
-                    schoolId: args['schoolId'] as String?,
-                    classroomId: args['classroomId'] as String?,
-                    classroomName: args['classroomName'] as String?,
-                  ),
-                );
-              }
-              if (args is StaffProfile) {
-                return MaterialPageRoute(
-                  builder: (context) => StaffProfileDashboard(
-                    profile: args,
-                    localeNotifier: localeNotifier,
-                  ),
-                );
-              }
-            } else if (settings.name == '/points-overview') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic> &&
-                  args['teacherUid'] != null &&
-                  args['children'] is List) {
-                return MaterialPageRoute(
-                  builder: (context) => PointsOverviewPage(
-                    teacherUid: args['teacherUid'],
-                  ),
-                );
-              }
-            } else if (settings.name == '/child-points') {
+              } else if (settings.name == '/child-points') {
               final args = settings.arguments;
               if (args is ChildProfile) {
                 return MaterialPageRoute(

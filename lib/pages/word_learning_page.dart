@@ -64,10 +64,7 @@ class _WordLearningPageState extends State<WordLearningPage> {
       assignedChildIds: [],
     );
 
-    await widget.firestoreService.addWordPack(
-      teacherUid: widget.teacherUid,
-      pack: newPack,
-    );
+    await widget.firestoreService.addCurrentWordPack(newPack);
   }
 
   Future<void> _deletePack(WordPack pack) async {
@@ -95,10 +92,7 @@ class _WordLearningPageState extends State<WordLearningPage> {
 
     if (confirmed != true) return;
 
-    await widget.firestoreService.deleteWordPack(
-      teacherUid: widget.teacherUid,
-      packId: pack.id,
-    );
+    await widget.firestoreService.deleteCurrentWordPack(pack.id);
   }
 
   @override
@@ -129,9 +123,7 @@ class _WordLearningPageState extends State<WordLearningPage> {
         child: const Icon(Icons.add),
       ),
       body: StreamBuilder<List<WordPack>>(
-        stream: widget.firestoreService.getWordPacks(
-          widget.teacherUid,
-        ),
+        stream: widget.firestoreService.getCurrentWordPacks(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
@@ -158,25 +150,25 @@ class _WordLearningPageState extends State<WordLearningPage> {
               return Card(
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => WordPackEditorPage(
-                        firestoreService: widget.firestoreService,
-                        teacherUid: widget.teacherUid,
-                        pack: pack,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WordPackEditorPage(
+                          firestoreService: widget.firestoreService,
+                          teacherUid: widget.teacherUid,
+                          pack: pack,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                title: Text(pack.name),
-                subtitle: Text(
-                  'Created by ${pack.createdByStaffName}',
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => _deletePack(pack),
+                    );
+                  },
+                  title: Text(pack.name),
+                  subtitle: Text(
+                    'Created by ${pack.createdByStaffName}',
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _deletePack(pack),
                   ),
                 ),
               );

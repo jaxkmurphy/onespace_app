@@ -23,38 +23,48 @@ class _StudentQuizListPageState extends State<StudentQuizListPage> {
   @override
   void initState() {
     super.initState();
-    _quizStream = widget.firestoreService.getQuizzes(widget.child.teacherUid);
+    _quizStream = widget.firestoreService.getCurrentQuizzes();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Available Quizzes')),
+      appBar: AppBar(
+        title: const Text('Available Quizzes'),
+      ),
       body: StreamBuilder<List<Quiz>>(
         stream: _quizStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading quizzes'));
+            return const Center(
+              child: Text('Error loading quizzes'),
+            );
           }
+
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           final quizzes = snapshot.data!;
+
           if (quizzes.isEmpty) {
-            return const Center(child: Text('No quizzes available.'));
+            return const Center(
+              child: Text('No quizzes available.'),
+            );
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             itemCount: quizzes.length,
             itemBuilder: (context, index) {
               final quiz = quizzes[index];
+
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ElevatedButton(
                   onPressed: () {
-                    debugPrint('Tapped quiz: ${quiz.title}');
                     Navigator.pushNamed(
                       context,
                       '/quiz-play',

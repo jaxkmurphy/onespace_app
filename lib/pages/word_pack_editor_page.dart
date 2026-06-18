@@ -16,12 +16,10 @@ class WordPackEditorPage extends StatefulWidget {
   });
 
   @override
-  State<WordPackEditorPage> createState() =>
-      _WordPackEditorPageState();
+  State<WordPackEditorPage> createState() => _WordPackEditorPageState();
 }
 
-class _WordPackEditorPageState
-    extends State<WordPackEditorPage> {
+class _WordPackEditorPageState extends State<WordPackEditorPage> {
   Future<void> _addWord() async {
     final wordController = TextEditingController();
     final emojiController = TextEditingController();
@@ -50,13 +48,11 @@ class _WordPackEditorPageState
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.pop(context, false),
+              onPressed: () => Navigator.pop(context, false),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () =>
-                  Navigator.pop(context, true),
+              onPressed: () => Navigator.pop(context, true),
               child: const Text('Save'),
             ),
           ],
@@ -65,128 +61,95 @@ class _WordPackEditorPageState
     );
 
     if (confirmed != true) return;
-
     if (wordController.text.trim().isEmpty) return;
 
     final word = WordItem(
       id: '',
       text: wordController.text.trim(),
       imageType: 'emoji',
-      imageValue:
-          emojiController.text.trim().isEmpty
-              ? '📚'
-              : emojiController.text.trim(),
+      imageValue: emojiController.text.trim().isEmpty
+          ? '📚'
+          : emojiController.text.trim(),
     );
 
-    await widget.firestoreService.addWordItem(
-      teacherUid: widget.teacherUid,
+    await widget.firestoreService.addCurrentWordItem(
       packId: widget.pack.id,
       word: word,
     );
   }
 
   Future<void> _deleteWord(WordItem word) async {
-    await widget.firestoreService.deleteWordItem(
-      teacherUid: widget.teacherUid,
+    await widget.firestoreService.deleteCurrentWordItem(
       packId: widget.pack.id,
       wordId: word.id,
     );
   }
 
   Future<void> _assignChildren() async {
-  final children = await widget.firestoreService
-      .getChildProfilesOnce(widget.teacherUid);
+    final children = await widget.firestoreService.getCurrentChildProfilesOnce();
 
-  if (!mounted) return;
+    if (!mounted) return;
 
-  final selectedChildren =
-      widget.pack.assignedChildIds.toSet();
+    final selectedChildren = widget.pack.assignedChildIds.toSet();
 
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (_) {
-      return StatefulBuilder(
-        builder: (context, setDialogState) {
-          return AlertDialog(
-            title: const Text(
-              'Assign Children',
-            ),
-            content: SizedBox(
-              width: 300,
-              child: ListView(
-                shrinkWrap: true,
-                children: children.map((child) {
-                  final isSelected =
-                      selectedChildren.contains(
-                    child.id,
-                  );
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Assign Children'),
+              content: SizedBox(
+                width: 300,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: children.map((child) {
+                    final isSelected = selectedChildren.contains(child.id);
 
-                  return CheckboxListTile(
-                    value: isSelected,
-                    title: Text(child.name),
-                    onChanged: (_) {
-                      setDialogState(() {
-                        if (isSelected) {
-                          selectedChildren.remove(
-                            child.id,
-                          );
-                        } else {
-                          selectedChildren.add(
-                            child.id,
-                          );
-                        }
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () =>
-                    Navigator.pop(
-                  context,
-                  false,
-                ),
-                child: const Text(
-                  'Cancel',
+                    return CheckboxListTile(
+                      value: isSelected,
+                      title: Text(child.name),
+                      onChanged: (_) {
+                        setDialogState(() {
+                          if (isSelected) {
+                            selectedChildren.remove(child.id);
+                          } else {
+                            selectedChildren.add(child.id);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () =>
-                    Navigator.pop(
-                  context,
-                  true,
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel'),
                 ),
-                child: const Text(
-                  'Save',
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Save'),
                 ),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
+              ],
+            );
+          },
+        );
+      },
+    );
 
-  if (confirmed != true) return;
+    if (confirmed != true) return;
 
-  final updatedPack =
-      widget.pack.copyWith(
-    assignedChildIds:
-        selectedChildren.toList(),
-  );
+    final updatedPack = widget.pack.copyWith(
+      assignedChildIds: selectedChildren.toList(),
+    );
 
-  await widget.firestoreService
-      .updateWordPack(
-    teacherUid: widget.teacherUid,
-    pack: updatedPack,
-  );
+    await widget.firestoreService.updateCurrentWordPack(updatedPack);
 
-  if (!mounted) return;
+    if (!mounted) return;
 
-  Navigator.pop(context);
-}
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,16 +168,11 @@ class _WordPackEditorPageState
         child: const Icon(Icons.add),
       ),
       body: StreamBuilder<List<WordItem>>(
-        stream:
-            widget.firestoreService.getWordItems(
-          teacherUid: widget.teacherUid,
-          packId: widget.pack.id,
-        ),
+        stream: widget.firestoreService.getCurrentWordItems(widget.pack.id),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
-              child:
-                  CircularProgressIndicator(),
+              child: CircularProgressIndicator(),
             );
           }
 
@@ -224,42 +182,29 @@ class _WordPackEditorPageState
             return const Center(
               child: Text(
                 'No words yet.\nTap + to add one.',
-                textAlign:
-                    TextAlign.center,
+                textAlign: TextAlign.center,
               ),
             );
           }
 
           return ListView.builder(
             itemCount: words.length,
-            itemBuilder: (
-              context,
-              index,
-            ) {
+            itemBuilder: (context, index) {
               final word = words[index];
 
               return Card(
-                margin:
-                    const EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 child: ListTile(
                   leading: Text(
                     word.imageValue,
-                    style:
-                        const TextStyle(
+                    style: const TextStyle(
                       fontSize: 28,
                     ),
                   ),
-                  title:
-                      Text(word.text),
-                  trailing:
-                      IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                    ),
-                    onPressed: () =>
-                        _deleteWord(
-                      word,
-                    ),
+                  title: Text(word.text),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _deleteWord(word),
                   ),
                 ),
               );

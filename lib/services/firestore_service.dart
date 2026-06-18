@@ -16,11 +16,226 @@ import '../models/body_check_report.dart';
 import '../models/school.dart';
 import '../models/classroom.dart';
 import '../models/school_member.dart';
+import 'classroom_session_service.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-    // SCHOOL / ADMIN STRUCTURE
+    // CURRENT CONTEXT HELPERS
+  // These methods decide whether the app should use:
+  // - classroom path: schools/{schoolId}/classrooms/{classroomId}
+  // - old teacher path: teachers/{uid}
+
+  ClassroomSessionService get _session => ClassroomSessionService.instance;
+
+  bool get hasClassroomSession => _session.hasClassroomSession;
+
+  String get currentTeacherUid {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      throw StateError('No logged-in Firebase user found.');
+    }
+
+    return user.uid;
+  }
+
+  Stream<List<StaffProfile>> getCurrentStaffProfiles() {
+    if (hasClassroomSession) {
+      return getClassroomStaffProfiles(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+      );
+    }
+
+    return getStaffProfiles(currentTeacherUid);
+  }
+
+  Stream<List<ChildProfile>> getCurrentChildProfiles() {
+    if (hasClassroomSession) {
+      return getClassroomChildProfiles(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+      );
+    }
+
+    return getChildProfiles(currentTeacherUid);
+  }
+
+  Future<List<ChildProfile>> getCurrentChildProfilesOnce() async {
+    if (hasClassroomSession) {
+      final snapshot = await _db
+          .collection('schools')
+          .doc(_session.requireSchoolId)
+          .collection('classrooms')
+          .doc(_session.requireClassroomId)
+          .collection('child_profiles')
+          .get();
+
+      return snapshot.docs
+          .map(
+            (doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(
+              teacherUid: _session.requireClassroomId,
+            ),
+          )
+          .toList();
+    }
+
+    return getChildProfilesOnce(currentTeacherUid);
+  }
+
+  Future<void> addCurrentStaffProfile(StaffProfile profile) async {
+    if (hasClassroomSession) {
+      await addClassroomStaffProfile(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+        profile: profile,
+      );
+      return;
+    }
+
+    await addStaffProfile(currentTeacherUid, profile);
+  }
+
+  Future<void> addCurrentChildProfile(ChildProfile profile) async {
+    if (hasClassroomSession) {
+      await addClassroomChildProfile(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+        profile: profile,
+      );
+      return;
+    }
+
+    await addChildProfile(currentTeacherUid, profile);
+  }
+
+  Future<void> updateCurrentChildProfile(ChildProfile profile) async {
+    if (hasClassroomSession) {
+      await updateClassroomChildProfile(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+        profile: profile,
+      );
+      return;
+    }
+
+    await updateChildProfile(currentTeacherUid, profile);
+  }
+
+  Future<void> updateCurrentStaffProfile(StaffProfile profile) async {
+    if (hasClassroomSession) {
+      await _db
+          .collection('schools')
+          .doc(_session.requireSchoolId)
+          .collection('classrooms')
+          .doc(_session.requireClassroomId)
+          .collection('staff_profiles')
+          .doc(profile.id)
+          .update(profile.toMap());
+      return;
+    }
+
+    await updateStaffProfile(currentTeacherUid, profile);
+  }
+
+  Future<void> deleteCurrentStaffProfile(String profileId) async {
+    if (hasClassroomSession) {
+      await deleteClassroomStaffProfile(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+        profileId: profileId,
+      );
+      return;
+    }
+
+    await deleteStaffProfile(currentTeacherUid, profileId);
+  }
+
+  Future<void> deleteCurrentChildProfile(String profileId) async {
+    if (hasClassroomSession) {
+      await deleteClassroomChildProfile(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+        profileId: profileId,
+      );
+      return;
+    }
+
+    await deleteChildProfile(currentTeacherUid, profileId);
+  }
+
+  Future<void> setCurrentChildZone({
+    required String childId,
+    required String zone,
+  }) async {
+    if (hasClassroomSession) {
+      await setClassroomChildZone(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+        childId: childId,
+        zone: zone,
+      );
+      return;
+    }
+
+    await setChildZone(currentTeacherUid, childId, zone);
+  }
+
+  Future<void> setCurrentChildPoints({
+    required String childId,
+    required int points,
+  }) async {
+    if (hasClassroomSession) {
+      await _db
+          .collection('schools')
+          .doc(_session.requireSchoolId)
+          .collection('classrooms')
+          .doc(_session.requireClassroomId)
+          .collection('child_profiles')
+          .doc(childId)
+          .update({'points': points});
+      return;
+    }
+
+    await setChildPoints(currentTeacherUid, childId, points);
+  }
+
+  Future<void> restoreClassroomSessionFromAuthIfNeeded() async {
+  if (_session.hasClassroomSession) return;
+
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  try {
+    final tokenResult = await user.getIdTokenResult(true);
+    final claims = tokenResult.claims ?? {};
+
+    if (claims['role'] == 'classroom' &&
+        claims['schoolId'] is String &&
+        claims['classroomId'] is String) {
+      final schoolId = claims['schoolId'] as String;
+      final classroomId = claims['classroomId'] as String;
+
+      final classroom = await getClassroom(
+        schoolId: schoolId,
+        classroomId: classroomId,
+      );
+
+      if (classroom != null && classroom.active) {
+        _session.setSession(
+          schoolId: schoolId,
+          classroomId: classroomId,
+          classroomName: classroom.name,
+        );
+      }
+    }
+  } catch (e) {
+    debugPrint('Could not restore classroom session: $e');
+  }
+}
+
+  // SCHOOL / ADMIN STRUCTURE
 
   Future<String> createSchool({
     required String name,
@@ -530,6 +745,55 @@ Future<void> updateSchool({
     await docRef.set(profileWithId.toMap());
   }
 
+  Future<void> updateClassroomChildProfile({
+  required String schoolId,
+  required String classroomId,
+  required ChildProfile profile,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(profile.id)
+      .update(profile.toMap());
+}
+
+    Future<void> setClassroomChildZone({
+      required String schoolId,
+      required String classroomId,
+      required String childId,
+      required String zone,
+    }) async {
+    await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId)
+      .update({'zone': zone});
+    }
+
+    Stream<ChildProfile> getClassroomChildProfileStream({
+      required String schoolId,
+      required String classroomId,
+      required String childId,
+    }) {
+      return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId)
+      .snapshots()
+      .map((doc) => ChildProfile.fromMap(doc.id, doc.data()!).copyWith(
+            teacherUid: classroomId,
+          ));
+  }
+
   Stream<List<ChildProfile>> getClassroomChildProfiles({
     required String schoolId,
     required String classroomId,
@@ -647,6 +911,110 @@ Future<void> updateChildProfile(String teacherUid, ChildProfile profile) async {
       .collection('child_profiles')
       .doc(profile.id)
       .update(profile.toMap());
+}
+
+  // CURRENT / CIRCLE TIME
+
+Future<void> updateClassroomStaffCircleTimePosition({
+  required String schoolId,
+  required String classroomId,
+  required String staffId,
+  required double x,
+  required double y,
+  required String side,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('staff_profiles')
+      .doc(staffId)
+      .update({
+    'circleTimeX': x,
+    'circleTimeY': y,
+    'circleTimeSide': side,
+  });
+}
+
+Future<void> updateClassroomChildCircleTimePosition({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+  required double x,
+  required double y,
+  required String side,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId)
+      .update({
+    'circleTimeX': x,
+    'circleTimeY': y,
+    'circleTimeSide': side,
+  });
+}
+
+Future<void> updateCurrentStaffCircleTimePosition({
+  required String staffId,
+  required double x,
+  required double y,
+  required String side,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomStaffCircleTimePosition(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      staffId: staffId,
+      x: x,
+      y: y,
+      side: side,
+    );
+    return;
+  }
+
+  await updateStaffCircleTimePosition(
+    teacherUid: currentTeacherUid,
+    staffId: staffId,
+    x: x,
+    y: y,
+    side: side,
+  );
+}
+
+Future<void> updateCurrentChildCircleTimePosition({
+  required String childId,
+  required double x,
+  required double y,
+  required String side,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomChildCircleTimePosition(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+      x: x,
+      y: y,
+      side: side,
+    );
+    return;
+  }
+
+  await updateChildCircleTimePosition(
+    teacherUid: currentTeacherUid,
+    childId: childId,
+    x: x,
+    y: y,
+    side: side,
+  );
 }
 
 Future<void> updateChildCircleTimePosition({
@@ -768,14 +1136,125 @@ Future<void> deleteChildProfile(String teacherUid, String profileId) async {
     }
   }
 
-   // Add a new quiz
-  Future<void> addQuiz(Quiz quiz) async {
+    // CURRENT / CLASSROOM SCHEDULE METHODS
+
+  Future<Map<String, List<Map<String, dynamic>>>> getClassroomSchedule({
+    required String schoolId,
+    required String classroomId,
+  }) async {
+    final doc = await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .get();
+
+    final data = doc.data();
+
+    if (data == null || !data.containsKey('schedule')) {
+      return {};
+    }
+
+    final schedule = Map<String, dynamic>.from(data['schedule']);
+
+    return schedule.map((day, entries) {
+      final list = List<Map<String, dynamic>>.from(entries);
+      return MapEntry(day, list);
+    });
+  }
+
+  Future<void> setClassroomScheduleForDay({
+    required String schoolId,
+    required String classroomId,
+    required String day,
+    required List<Map<String, dynamic>> entries,
+  }) async {
+    final docRef = _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId);
+
+    await docRef.set({
+      'schedule': {
+        day: entries,
+      },
+    }, SetOptions(merge: true));
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>> getCurrentSchedule() async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    return getClassroomSchedule(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+  }
+
+  return getSchedule(currentTeacherUid);
+}
+
+  Future<void> setCurrentScheduleForDay({
+  required String day,
+  required List<Map<String, dynamic>> entries,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await setClassroomScheduleForDay(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      day: day,
+      entries: entries,
+    );
+    return;
+  }
+
+  await setScheduleForDay(currentTeacherUid, day, entries);
+}
+
+  // QUIZZES
+
+Future<void> addQuiz(Quiz quiz) async {
   await _db
-    .collection('teachers')
-    .doc(quiz.createdBy)  
-    .collection('quizzes')
-    .doc(quiz.id)
-    .set(quiz.toMap());
+      .collection('teachers')
+      .doc(quiz.createdBy)
+      .collection('quizzes')
+      .doc(quiz.id)
+      .set(quiz.toMap());
+}
+
+Future<void> addClassroomQuiz({
+  required String schoolId,
+  required String classroomId,
+  required Quiz quiz,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('quizzes')
+      .doc(quiz.id)
+      .set(quiz.toMap());
+}
+
+Future<void> addCurrentQuiz(Quiz quiz) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomQuiz(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      quiz: quiz,
+    );
+    return;
+  }
+
+  await addQuiz(
+    quiz,
+  );
 }
 
 Stream<List<Quiz>> getQuizzes(String teacherUid) {
@@ -789,37 +1268,213 @@ Stream<List<Quiz>> getQuizzes(String teacherUid) {
           .toList());
 }
 
-  Future<void> assignQuizToChild(String teacherUid, String childId, String quizId) async {
-  final childRef = _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(childId);
+Stream<List<Quiz>> getClassroomQuizzes({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('quizzes')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Quiz.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Stream<List<Quiz>> getCurrentQuizzes() {
+  if (hasClassroomSession) {
+    return getClassroomQuizzes(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+  }
+
+  return getQuizzes(currentTeacherUid);
+}
+
+Future<void> assignQuizToChild(
+  String teacherUid,
+  String childId,
+  String quizId,
+) async {
+  final childRef = _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId);
+
   await childRef.update({
     'assignedQuizzes': FieldValue.arrayUnion([quizId]),
   });
 }
 
-Future<void> submitQuiz(String teacherUid, String childId, String quizId, int score) async {
-  final childRef = _db.collection('teachers').doc(teacherUid).collection('child_profiles').doc(childId);
+Future<void> assignClassroomQuizToChild({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+  required String quizId,
+}) async {
+  final childRef = _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId);
+
+  await childRef.update({
+    'assignedQuizzes': FieldValue.arrayUnion([quizId]),
+  });
+}
+
+Future<void> assignCurrentQuizToChild({
+  required String childId,
+  required String quizId,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await assignClassroomQuizToChild(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+      quizId: quizId,
+    );
+    return;
+  }
+
+  await assignQuizToChild(
+    currentTeacherUid,
+    childId,
+    quizId,
+  );
+}
+
+Future<void> submitQuiz(
+  String teacherUid,
+  String childId,
+  String quizId,
+  int score,
+) async {
+  final childRef = _db
+      .collection('teachers')
+      .doc(teacherUid)
+      .collection('child_profiles')
+      .doc(childId);
+
   await childRef.set({
     'completedQuizzes': {
       quizId: {
         'score': score,
         'timestamp': FieldValue.serverTimestamp(),
-        }
       }
-    }, SetOptions(merge: true));
+    }
+  }, SetOptions(merge: true));
+}
+
+Future<void> submitClassroomQuiz({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+  required String quizId,
+  required int score,
+}) async {
+  final childRef = _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId);
+
+  await childRef.set({
+    'completedQuizzes': {
+      quizId: {
+        'score': score,
+        'timestamp': FieldValue.serverTimestamp(),
+      }
+    }
+  }, SetOptions(merge: true));
+}
+
+Future<void> submitCurrentQuiz({
+  required String childId,
+  required String quizId,
+  required int score,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await submitClassroomQuiz(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+      quizId: quizId,
+      score: score,
+    );
+    return;
   }
 
-  Future<void> deleteQuiz(String teacherUid, String quizId) async {
-    try {
-      await _db
-          .collection('teachers')
-          .doc(teacherUid)
-          .collection('quizzes')
-          .doc(quizId)
-          .delete();
-    } catch (e) {
-      throw Exception('Failed to delete quiz: $e');
-    }
+  await submitQuiz(
+    currentTeacherUid,
+    childId,
+    quizId,
+    score,
+  );
+}
+
+Future<void> deleteQuiz(String teacherUid, String quizId) async {
+  try {
+    await _db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('quizzes')
+        .doc(quizId)
+        .delete();
+  } catch (e) {
+    throw Exception('Failed to delete quiz: $e');
   }
+}
+
+Future<void> deleteClassroomQuiz({
+  required String schoolId,
+  required String classroomId,
+  required String quizId,
+}) async {
+  try {
+    await _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('quizzes')
+        .doc(quizId)
+        .delete();
+  } catch (e) {
+    throw Exception('Failed to delete classroom quiz: $e');
+  }
+}
+
+Future<void> deleteCurrentQuiz(String quizId) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomQuiz(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      quizId: quizId,
+    );
+    return;
+  }
+
+  await deleteQuiz(
+    currentTeacherUid,
+    quizId,
+  );
+}
 
   Future<void> updateChildBackgroundColor(String teacherUid, String childId, String colorHex) async {
     await _db
@@ -870,6 +1525,21 @@ CollectionReference<Map<String, dynamic>> _firstThenOptionsRef({
       .collection('items');
 }
 
+CollectionReference<Map<String, dynamic>> _classroomFirstThenOptionsRef({
+  required String schoolId,
+  required String classroomId,
+  required String type,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('first_then_options')
+      .doc(type)
+      .collection('items');
+}
+
 Stream<List<FirstThenOption>> getFirstThenOptions({
   required String teacherUid,
   required String type,
@@ -887,6 +1557,42 @@ Stream<List<FirstThenOption>> getFirstThenOptions({
   });
 }
 
+Stream<List<FirstThenOption>> getClassroomFirstThenOptions({
+  required String schoolId,
+  required String classroomId,
+  required String type,
+}) {
+  return _classroomFirstThenOptionsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    type: type,
+  ).snapshots().map((snapshot) {
+    final options = snapshot.docs
+        .map((doc) => FirstThenOption.fromMap(doc.id, doc.data()))
+        .toList();
+
+    options.sort((a, b) => a.label.compareTo(b.label));
+    return options;
+  });
+}
+
+Stream<List<FirstThenOption>> getCurrentFirstThenOptions({
+  required String type,
+}) {
+  if (hasClassroomSession) {
+    return getClassroomFirstThenOptions(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      type: type,
+    );
+  }
+
+  return getFirstThenOptions(
+    teacherUid: currentTeacherUid,
+    type: type,
+  );
+}
+
 Future<void> addFirstThenOption({
   required String teacherUid,
   required String type,
@@ -896,6 +1602,42 @@ Future<void> addFirstThenOption({
     teacherUid: teacherUid,
     type: type,
   ).add(option.toMap());
+}
+
+Future<void> addClassroomFirstThenOption({
+  required String schoolId,
+  required String classroomId,
+  required String type,
+  required FirstThenOption option,
+}) async {
+  await _classroomFirstThenOptionsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    type: type,
+  ).add(option.toMap());
+}
+
+Future<void> addCurrentFirstThenOption({
+  required String type,
+  required FirstThenOption option,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomFirstThenOption(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      type: type,
+      option: option,
+    );
+    return;
+  }
+
+  await addFirstThenOption(
+    teacherUid: currentTeacherUid,
+    type: type,
+    option: option,
+  );
 }
 
 Future<void> updateFirstThenOption({
@@ -909,6 +1651,42 @@ Future<void> updateFirstThenOption({
   ).doc(option.id).update(option.toMap());
 }
 
+Future<void> updateClassroomFirstThenOption({
+  required String schoolId,
+  required String classroomId,
+  required String type,
+  required FirstThenOption option,
+}) async {
+  await _classroomFirstThenOptionsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    type: type,
+  ).doc(option.id).update(option.toMap());
+}
+
+Future<void> updateCurrentFirstThenOption({
+  required String type,
+  required FirstThenOption option,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomFirstThenOption(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      type: type,
+      option: option,
+    );
+    return;
+  }
+
+  await updateFirstThenOption(
+    teacherUid: currentTeacherUid,
+    type: type,
+    option: option,
+  );
+}
+
 Future<void> deleteFirstThenOption({
   required String teacherUid,
   required String type,
@@ -918,6 +1696,42 @@ Future<void> deleteFirstThenOption({
     teacherUid: teacherUid,
     type: type,
   ).doc(optionId).delete();
+}
+
+Future<void> deleteClassroomFirstThenOption({
+  required String schoolId,
+  required String classroomId,
+  required String type,
+  required String optionId,
+}) async {
+  await _classroomFirstThenOptionsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    type: type,
+  ).doc(optionId).delete();
+}
+
+Future<void> deleteCurrentFirstThenOption({
+  required String type,
+  required String optionId,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomFirstThenOption(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      type: type,
+      optionId: optionId,
+    );
+    return;
+  }
+
+  await deleteFirstThenOption(
+    teacherUid: currentTeacherUid,
+    type: type,
+    optionId: optionId,
+  );
 }
 
 Future<void> seedDefaultFirstThenOptions(String teacherUid) async {
@@ -967,6 +1781,74 @@ Future<void> seedDefaultFirstThenOptions(String teacherUid) async {
   }
 }
 
+Future<void> seedDefaultClassroomFirstThenOptions({
+  required String schoolId,
+  required String classroomId,
+}) async {
+  final activitySnapshot = await _classroomFirstThenOptionsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    type: 'activities',
+  ).limit(1).get();
+
+  final rewardSnapshot = await _classroomFirstThenOptionsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    type: 'rewards',
+  ).limit(1).get();
+
+  if (activitySnapshot.docs.isEmpty) {
+    final defaults = [
+      FirstThenOption(id: '', label: 'Quiz', iconName: 'quiz'),
+      FirstThenOption(id: '', label: 'Homework', iconName: 'book'),
+      FirstThenOption(id: '', label: 'Clean Up', iconName: 'clean'),
+      FirstThenOption(id: '', label: 'Finish Work', iconName: 'task'),
+    ];
+
+    for (final option in defaults) {
+      await addClassroomFirstThenOption(
+        schoolId: schoolId,
+        classroomId: classroomId,
+        type: 'activities',
+        option: option,
+      );
+    }
+  }
+
+  if (rewardSnapshot.docs.isEmpty) {
+    final defaults = [
+      FirstThenOption(id: '', label: 'Calming Sounds', iconName: 'music'),
+      FirstThenOption(id: '', label: 'Playtime', iconName: 'toys'),
+      FirstThenOption(id: '', label: 'Outside Time', iconName: 'outside'),
+      FirstThenOption(id: '', label: 'Break', iconName: 'break'),
+      FirstThenOption(id: '', label: 'Music', iconName: 'music'),
+    ];
+
+    for (final option in defaults) {
+      await addClassroomFirstThenOption(
+        schoolId: schoolId,
+        classroomId: classroomId,
+        type: 'rewards',
+        option: option,
+      );
+    }
+  }
+}
+
+Future<void> seedDefaultCurrentFirstThenOptions() async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await seedDefaultClassroomFirstThenOptions(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+    return;
+  }
+
+  await seedDefaultFirstThenOptions(currentTeacherUid);
+}
+
 Future<void> setFirstThenForChildren({
   required String teacherUid,
   required List<String> childIds,
@@ -995,6 +1877,63 @@ Future<void> setFirstThenForChildren({
   await batch.commit();
 }
 
+Future<void> setClassroomFirstThenForChildren({
+  required String schoolId,
+  required String classroomId,
+  required List<String> childIds,
+  required FirstThenOption activity,
+  required List<FirstThenOption> rewards,
+}) async {
+  final batch = _db.batch();
+
+  for (final childId in childIds) {
+    final docRef = _db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('child_profiles')
+        .doc(childId);
+
+    batch.set(docRef, {
+      'firstThen': {
+        'activity': activity.toFirstThenMap(),
+        'rewards': rewards.map((reward) => reward.toFirstThenMap()).toList(),
+        'selectedRewardId': null,
+        'isActive': true,
+      }
+    }, SetOptions(merge: true));
+  }
+
+  await batch.commit();
+}
+
+Future<void> setCurrentFirstThenForChildren({
+  required List<String> childIds,
+  required FirstThenOption activity,
+  required List<FirstThenOption> rewards,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await setClassroomFirstThenForChildren(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childIds: childIds,
+      activity: activity,
+      rewards: rewards,
+    );
+    return;
+  }
+
+  await setFirstThenForChildren(
+    teacherUid: currentTeacherUid,
+    childIds: childIds,
+    activity: activity,
+    rewards: rewards,
+  );
+}
+
 Future<void> clearFirstThenForChild({
   required String teacherUid,
   required String childId,
@@ -1014,6 +1953,46 @@ Future<void> clearFirstThenForChild({
   }, SetOptions(merge: true));
 }
 
+Future<void> clearClassroomFirstThenForChild({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId)
+      .set({
+    'firstThen': {
+      'activity': null,
+      'rewards': [],
+      'selectedRewardId': null,
+      'isActive': false,
+    }
+  }, SetOptions(merge: true));
+}
+
+Future<void> clearCurrentFirstThenForChild(String childId) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await clearClassroomFirstThenForChild(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+    );
+    return;
+  }
+
+  await clearFirstThenForChild(
+    teacherUid: currentTeacherUid,
+    childId: childId,
+  );
+}
+
 Future<void> selectFirstThenReward({
   required String teacherUid,
   required String childId,
@@ -1027,6 +2006,47 @@ Future<void> selectFirstThenReward({
       .update({
     'firstThen.selectedRewardId': rewardId,
   });
+}
+
+Future<void> selectClassroomFirstThenReward({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+  required String rewardId,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId)
+      .update({
+    'firstThen.selectedRewardId': rewardId,
+  });
+}
+
+Future<void> selectCurrentFirstThenReward({
+  required String childId,
+  required String rewardId,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await selectClassroomFirstThenReward(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+      rewardId: rewardId,
+    );
+    return;
+  }
+
+  await selectFirstThenReward(
+    teacherUid: currentTeacherUid,
+    childId: childId,
+    rewardId: rewardId,
+  );
 }
 
 Stream<Map<String, dynamic>?> getFirstThenStream({
@@ -1055,6 +2075,52 @@ Stream<Map<String, dynamic>?> getFirstThenStream({
   });
 }
 
+Stream<Map<String, dynamic>?> getClassroomFirstThenStream({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('child_profiles')
+      .doc(childId)
+      .snapshots()
+      .map((doc) {
+    final data = doc.data();
+    if (data == null) return null;
+
+    final firstThen = data['firstThen'];
+    if (firstThen is Map<String, dynamic>) {
+      return firstThen;
+    }
+    if (firstThen is Map) {
+      return Map<String, dynamic>.from(firstThen);
+    }
+
+    return null;
+  });
+}
+
+Stream<Map<String, dynamic>?> getCurrentFirstThenStream({
+  required String childId,
+}) {
+  if (hasClassroomSession) {
+    return getClassroomFirstThenStream(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+    );
+  }
+
+  return getFirstThenStream(
+    teacherUid: currentTeacherUid,
+    childId: childId,
+  );
+}
+
   // HANDOVER HUB
 
 Stream<String> getHandoverOverview(String teacherUid) {
@@ -1068,6 +2134,35 @@ Stream<String> getHandoverOverview(String teacherUid) {
     final data = doc.data();
     return data?['content'] ?? '';
   });
+}
+
+Stream<String> getClassroomHandoverOverview({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('handover_overview')
+      .doc('main')
+      .snapshots()
+      .map((doc) {
+    final data = doc.data();
+    return data?['content'] ?? '';
+  });
+}
+
+Stream<String> getCurrentHandoverOverview() {
+  if (hasClassroomSession) {
+    return getClassroomHandoverOverview(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+  }
+
+  return getHandoverOverview(currentTeacherUid);
 }
 
 Future<void> updateHandoverOverview({
@@ -1085,6 +2180,49 @@ Future<void> updateHandoverOverview({
     'updatedByName': updatedByName,
     'updatedAt': FieldValue.serverTimestamp(),
   }, SetOptions(merge: true));
+}
+
+Future<void> updateClassroomHandoverOverview({
+  required String schoolId,
+  required String classroomId,
+  required String content,
+  required String updatedByName,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('handover_overview')
+      .doc('main')
+      .set({
+    'content': content,
+    'updatedByName': updatedByName,
+    'updatedAt': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+}
+
+Future<void> updateCurrentHandoverOverview({
+  required String content,
+  required String updatedByName,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomHandoverOverview(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      content: content,
+      updatedByName: updatedByName,
+    );
+    return;
+  }
+
+  await updateHandoverOverview(
+    teacherUid: currentTeacherUid,
+    content: content,
+    updatedByName: updatedByName,
+  );
 }
 
 Stream<StaffHandoverDocument> getStaffHandoverDocument({
@@ -1109,6 +2247,48 @@ Stream<StaffHandoverDocument> getStaffHandoverDocument({
   });
 }
 
+Stream<StaffHandoverDocument> getClassroomStaffHandoverDocument({
+  required String schoolId,
+  required String classroomId,
+  required StaffProfile staff,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('staff_handover_documents')
+      .doc(staff.id)
+      .snapshots()
+      .map((doc) {
+    if (!doc.exists || doc.data() == null) {
+      return StaffHandoverDocument.empty(
+        staffProfileId: staff.id,
+        staffName: staff.name,
+      );
+    }
+
+    return StaffHandoverDocument.fromMap(doc.id, doc.data()!);
+  });
+}
+
+Stream<StaffHandoverDocument> getCurrentStaffHandoverDocument({
+  required StaffProfile staff,
+}) {
+  if (hasClassroomSession) {
+    return getClassroomStaffHandoverDocument(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      staff: staff,
+    );
+  }
+
+  return getStaffHandoverDocument(
+    teacherUid: currentTeacherUid,
+    staff: staff,
+  );
+}
+
 Future<void> updateStaffHandoverDocument({
   required String teacherUid,
   required StaffHandoverDocument document,
@@ -1121,6 +2301,41 @@ Future<void> updateStaffHandoverDocument({
       .set(document.toMap(), SetOptions(merge: true));
 }
 
+Future<void> updateClassroomStaffHandoverDocument({
+  required String schoolId,
+  required String classroomId,
+  required StaffHandoverDocument document,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('staff_handover_documents')
+      .doc(document.staffProfileId)
+      .set(document.toMap(), SetOptions(merge: true));
+}
+
+Future<void> updateCurrentStaffHandoverDocument({
+  required StaffHandoverDocument document,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomStaffHandoverDocument(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      document: document,
+    );
+    return;
+  }
+
+  await updateStaffHandoverDocument(
+    teacherUid: currentTeacherUid,
+    document: document,
+  );
+}
+
 Stream<List<HandoverQuickNote>> getHandoverQuickNotes(String teacherUid) {
   return _db
       .collection('teachers')
@@ -1131,6 +2346,34 @@ Stream<List<HandoverQuickNote>> getHandoverQuickNotes(String teacherUid) {
       .map((snapshot) => snapshot.docs
           .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
           .toList());
+}
+
+Stream<List<HandoverQuickNote>> getClassroomHandoverQuickNotes({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('handover_quick_notes')
+      .orderBy('updatedAt', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Stream<List<HandoverQuickNote>> getCurrentHandoverQuickNotes() {
+  if (hasClassroomSession) {
+    return getClassroomHandoverQuickNotes(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+  }
+
+  return getHandoverQuickNotes(currentTeacherUid);
 }
 
 Future<void> addHandoverQuickNote({
@@ -1153,6 +2396,55 @@ Future<void> addHandoverQuickNote({
   });
 }
 
+Future<void> addClassroomHandoverQuickNote({
+  required String schoolId,
+  required String classroomId,
+  required String title,
+  required String content,
+  required StaffProfile createdBy,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('handover_quick_notes')
+      .add({
+    'title': title,
+    'content': content,
+    'createdByStaffId': createdBy.id,
+    'createdByName': createdBy.name,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> addCurrentHandoverQuickNote({
+  required String title,
+  required String content,
+  required StaffProfile createdBy,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomHandoverQuickNote(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      title: title,
+      content: content,
+      createdBy: createdBy,
+    );
+    return;
+  }
+
+  await addHandoverQuickNote(
+    teacherUid: currentTeacherUid,
+    title: title,
+    content: content,
+    createdBy: createdBy,
+  );
+}
+
 Future<void> updateHandoverQuickNote({
   required String teacherUid,
   required String noteId,
@@ -1171,6 +2463,53 @@ Future<void> updateHandoverQuickNote({
   });
 }
 
+Future<void> updateClassroomHandoverQuickNote({
+  required String schoolId,
+  required String classroomId,
+  required String noteId,
+  required String title,
+  required String content,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('handover_quick_notes')
+      .doc(noteId)
+      .update({
+    'title': title,
+    'content': content,
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> updateCurrentHandoverQuickNote({
+  required String noteId,
+  required String title,
+  required String content,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomHandoverQuickNote(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      noteId: noteId,
+      title: title,
+      content: content,
+    );
+    return;
+  }
+
+  await updateHandoverQuickNote(
+    teacherUid: currentTeacherUid,
+    noteId: noteId,
+    title: title,
+    content: content,
+  );
+}
+
 Future<void> deleteHandoverQuickNote({
   required String teacherUid,
   required String noteId,
@@ -1181,6 +2520,39 @@ Future<void> deleteHandoverQuickNote({
       .collection('handover_quick_notes')
       .doc(noteId)
       .delete();
+}
+
+Future<void> deleteClassroomHandoverQuickNote({
+  required String schoolId,
+  required String classroomId,
+  required String noteId,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('handover_quick_notes')
+      .doc(noteId)
+      .delete();
+}
+
+Future<void> deleteCurrentHandoverQuickNote(String noteId) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomHandoverQuickNote(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      noteId: noteId,
+    );
+    return;
+  }
+
+  await deleteHandoverQuickNote(
+    teacherUid: currentTeacherUid,
+    noteId: noteId,
+  );
 }
 
   // INCIDENT LOG
@@ -1222,161 +2594,603 @@ Future<void> deleteIncidentLogEntry({
       .delete();
 }
 
+  Future<void> addClassroomIncidentLogEntry({
+  required String schoolId,
+  required String classroomId,
+  required IncidentLogEntry entry,
+}) async {
+  final docRef = _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('incident_logs')
+      .doc();
+
+  await docRef.set(entry.toMap());
+}
+
+Stream<List<IncidentLogEntry>> getClassroomIncidentLogEntries({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('incident_logs')
+      .orderBy('timestamp', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => IncidentLogEntry.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Future<void> deleteClassroomIncidentLogEntry({
+  required String schoolId,
+  required String classroomId,
+  required String incidentId,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('incident_logs')
+      .doc(incidentId)
+      .delete();
+}
+
+Future<void> addCurrentIncidentLogEntry(IncidentLogEntry entry) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomIncidentLogEntry(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      entry: entry,
+    );
+    return;
+  }
+
+  await addIncidentLogEntry(
+    teacherUid: currentTeacherUid,
+    entry: entry,
+  );
+}
+
+Stream<List<IncidentLogEntry>> getCurrentIncidentLogEntries() {
+  if (hasClassroomSession) {
+    return getClassroomIncidentLogEntries(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+  }
+
+  return getIncidentLogEntries(currentTeacherUid);
+}
+
+Future<void> deleteCurrentIncidentLogEntry(String incidentId) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomIncidentLogEntry(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      incidentId: incidentId,
+    );
+    return;
+  }
+
+  await deleteIncidentLogEntry(
+    teacherUid: currentTeacherUid,
+    incidentId: incidentId,
+  );
+}
+
     // WORD LEARNING
 
-  CollectionReference<Map<String, dynamic>> _wordPacksRef(String teacherUid) {
-    return _db.collection('teachers').doc(teacherUid).collection('word_packs');
+CollectionReference<Map<String, dynamic>> _wordPacksRef(String teacherUid) {
+  return _db.collection('teachers').doc(teacherUid).collection('word_packs');
+}
+
+CollectionReference<Map<String, dynamic>> _classroomWordPacksRef({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('word_packs');
+}
+
+CollectionReference<Map<String, dynamic>> _wordItemsRef({
+  required String teacherUid,
+  required String packId,
+}) {
+  return _wordPacksRef(teacherUid).doc(packId).collection('words');
+}
+
+CollectionReference<Map<String, dynamic>> _classroomWordItemsRef({
+  required String schoolId,
+  required String classroomId,
+  required String packId,
+}) {
+  return _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).doc(packId).collection('words');
+}
+
+Stream<List<WordPack>> getWordPacks(String teacherUid) {
+  return _wordPacksRef(teacherUid)
+      .orderBy('updatedAt', descending: true)
+      .snapshots()
+      .map((snapshot) {
+    return snapshot.docs
+        .map((doc) => WordPack.fromMap(doc.id, doc.data()))
+        .toList();
+  });
+}
+
+Stream<List<WordPack>> getClassroomWordPacks({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).orderBy('updatedAt', descending: true).snapshots().map((snapshot) {
+    return snapshot.docs
+        .map((doc) => WordPack.fromMap(doc.id, doc.data()))
+        .toList();
+  });
+}
+
+Stream<List<WordPack>> getCurrentWordPacks() {
+  if (hasClassroomSession) {
+    return getClassroomWordPacks(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
   }
 
-  CollectionReference<Map<String, dynamic>> _wordItemsRef({
-    required String teacherUid,
-    required String packId,
-  }) {
-    return _wordPacksRef(teacherUid).doc(packId).collection('words');
+  return getWordPacks(currentTeacherUid);
+}
+
+Future<String> addWordPack({
+  required String teacherUid,
+  required WordPack pack,
+}) async {
+  final docRef = _wordPacksRef(teacherUid).doc();
+
+  await docRef.set({
+    ...pack.copyWith(id: docRef.id).toMap(),
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
+  return docRef.id;
+}
+
+Future<String> addClassroomWordPack({
+  required String schoolId,
+  required String classroomId,
+  required WordPack pack,
+}) async {
+  final docRef = _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).doc();
+
+  await docRef.set({
+    ...pack.copyWith(id: docRef.id).toMap(),
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
+  return docRef.id;
+}
+
+Future<String> addCurrentWordPack(WordPack pack) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    return addClassroomWordPack(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      pack: pack,
+    );
   }
 
-  Stream<List<WordPack>> getWordPacks(String teacherUid) {
-    return _wordPacksRef(teacherUid)
-        .orderBy('updatedAt', descending: true)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => WordPack.fromMap(doc.id, doc.data()))
-          .toList();
-    });
+  return addWordPack(
+    teacherUid: currentTeacherUid,
+    pack: pack,
+  );
+}
+
+Future<void> updateWordPack({
+  required String teacherUid,
+  required WordPack pack,
+}) async {
+  await _wordPacksRef(teacherUid).doc(pack.id).update({
+    ...pack.toMap(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> updateClassroomWordPack({
+  required String schoolId,
+  required String classroomId,
+  required WordPack pack,
+}) async {
+  await _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).doc(pack.id).update({
+    ...pack.toMap(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> updateCurrentWordPack(WordPack pack) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomWordPack(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      pack: pack,
+    );
+    return;
   }
 
-  Future<String> addWordPack({
-    required String teacherUid,
-    required WordPack pack,
-  }) async {
-    final docRef = _wordPacksRef(teacherUid).doc();
+  await updateWordPack(
+    teacherUid: currentTeacherUid,
+    pack: pack,
+  );
+}
 
-    await docRef.set({
-      ...pack.copyWith(id: docRef.id).toMap(),
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
+Future<void> deleteWordPack({
+  required String teacherUid,
+  required String packId,
+}) async {
+  final wordsSnapshot = await _wordItemsRef(
+    teacherUid: teacherUid,
+    packId: packId,
+  ).get();
 
-    return docRef.id;
+  final batch = _db.batch();
+
+  for (final doc in wordsSnapshot.docs) {
+    batch.delete(doc.reference);
   }
 
-  Future<void> updateWordPack({
-    required String teacherUid,
-    required WordPack pack,
-  }) async {
-    await _wordPacksRef(teacherUid).doc(pack.id).update({
-      ...pack.toMap(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
+  batch.delete(_wordPacksRef(teacherUid).doc(packId));
+
+  await batch.commit();
+}
+
+Future<void> deleteClassroomWordPack({
+  required String schoolId,
+  required String classroomId,
+  required String packId,
+}) async {
+  final wordsSnapshot = await _classroomWordItemsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    packId: packId,
+  ).get();
+
+  final batch = _db.batch();
+
+  for (final doc in wordsSnapshot.docs) {
+    batch.delete(doc.reference);
   }
 
-  Future<void> deleteWordPack({
-    required String teacherUid,
-    required String packId,
-  }) async {
-    final wordsSnapshot = await _wordItemsRef(
-      teacherUid: teacherUid,
+  batch.delete(
+    _classroomWordPacksRef(
+      schoolId: schoolId,
+      classroomId: classroomId,
+    ).doc(packId),
+  );
+
+  await batch.commit();
+}
+
+Future<void> deleteCurrentWordPack(String packId) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomWordPack(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
       packId: packId,
-    ).get();
-
-    final batch = _db.batch();
-
-    for (final doc in wordsSnapshot.docs) {
-      batch.delete(doc.reference);
-    }
-
-    batch.delete(_wordPacksRef(teacherUid).doc(packId));
-
-    await batch.commit();
+    );
+    return;
   }
 
-  Stream<List<WordItem>> getWordItems({
-    required String teacherUid,
-    required String packId,
-  }) {
-    return _wordItemsRef(
-      teacherUid: teacherUid,
+  await deleteWordPack(
+    teacherUid: currentTeacherUid,
+    packId: packId,
+  );
+}
+
+Stream<List<WordItem>> getWordItems({
+  required String teacherUid,
+  required String packId,
+}) {
+  return _wordItemsRef(
+    teacherUid: teacherUid,
+    packId: packId,
+  ).snapshots().map((snapshot) {
+    final words = snapshot.docs
+        .map((doc) => WordItem.fromMap(doc.id, doc.data()))
+        .toList();
+
+    words.sort((a, b) => a.text.toLowerCase().compareTo(b.text.toLowerCase()));
+    return words;
+  });
+}
+
+Stream<List<WordItem>> getClassroomWordItems({
+  required String schoolId,
+  required String classroomId,
+  required String packId,
+}) {
+  return _classroomWordItemsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    packId: packId,
+  ).snapshots().map((snapshot) {
+    final words = snapshot.docs
+        .map((doc) => WordItem.fromMap(doc.id, doc.data()))
+        .toList();
+
+    words.sort((a, b) => a.text.toLowerCase().compareTo(b.text.toLowerCase()));
+    return words;
+  });
+}
+
+Stream<List<WordItem>> getCurrentWordItems(String packId) {
+  if (hasClassroomSession) {
+    return getClassroomWordItems(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
       packId: packId,
-    ).snapshots().map((snapshot) {
-      final words = snapshot.docs
-          .map((doc) => WordItem.fromMap(doc.id, doc.data()))
-          .toList();
-
-      words.sort((a, b) => a.text.toLowerCase().compareTo(b.text.toLowerCase()));
-      return words;
-    });
+    );
   }
 
-  Future<void> addWordItem({
-    required String teacherUid,
-    required String packId,
-    required WordItem word,
-  }) async {
-    final docRef = _wordItemsRef(
-      teacherUid: teacherUid,
+  return getWordItems(
+    teacherUid: currentTeacherUid,
+    packId: packId,
+  );
+}
+
+Future<void> addWordItem({
+  required String teacherUid,
+  required String packId,
+  required WordItem word,
+}) async {
+  final docRef = _wordItemsRef(
+    teacherUid: teacherUid,
+    packId: packId,
+  ).doc();
+
+  await docRef.set(word.copyWith(id: docRef.id).toMap());
+
+  await _wordPacksRef(teacherUid).doc(packId).update({
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> addClassroomWordItem({
+  required String schoolId,
+  required String classroomId,
+  required String packId,
+  required WordItem word,
+}) async {
+  final docRef = _classroomWordItemsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    packId: packId,
+  ).doc();
+
+  await docRef.set(word.copyWith(id: docRef.id).toMap());
+
+  await _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).doc(packId).update({
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> addCurrentWordItem({
+  required String packId,
+  required WordItem word,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomWordItem(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
       packId: packId,
-    ).doc();
-
-    await docRef.set(word.copyWith(id: docRef.id).toMap());
-
-    await _wordPacksRef(teacherUid).doc(packId).update({
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
+      word: word,
+    );
+    return;
   }
 
-  Future<void> updateWordItem({
-    required String teacherUid,
-    required String packId,
-    required WordItem word,
-  }) async {
-    await _wordItemsRef(
-      teacherUid: teacherUid,
+  await addWordItem(
+    teacherUid: currentTeacherUid,
+    packId: packId,
+    word: word,
+  );
+}
+
+Future<void> updateWordItem({
+  required String teacherUid,
+  required String packId,
+  required WordItem word,
+}) async {
+  await _wordItemsRef(
+    teacherUid: teacherUid,
+    packId: packId,
+  ).doc(word.id).update(word.toMap());
+
+  await _wordPacksRef(teacherUid).doc(packId).update({
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> updateClassroomWordItem({
+  required String schoolId,
+  required String classroomId,
+  required String packId,
+  required WordItem word,
+}) async {
+  await _classroomWordItemsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    packId: packId,
+  ).doc(word.id).update(word.toMap());
+
+  await _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).doc(packId).update({
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> updateCurrentWordItem({
+  required String packId,
+  required WordItem word,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await updateClassroomWordItem(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
       packId: packId,
-    ).doc(word.id).update(word.toMap());
-
-    await _wordPacksRef(teacherUid).doc(packId).update({
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
+      word: word,
+    );
+    return;
   }
 
-  Future<void> deleteWordItem({
-    required String teacherUid,
-    required String packId,
-    required String wordId,
-  }) async {
-    await _wordItemsRef(
-      teacherUid: teacherUid,
+  await updateWordItem(
+    teacherUid: currentTeacherUid,
+    packId: packId,
+    word: word,
+  );
+}
+
+Future<void> deleteWordItem({
+  required String teacherUid,
+  required String packId,
+  required String wordId,
+}) async {
+  await _wordItemsRef(
+    teacherUid: teacherUid,
+    packId: packId,
+  ).doc(wordId).delete();
+
+  await _wordPacksRef(teacherUid).doc(packId).update({
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> deleteClassroomWordItem({
+  required String schoolId,
+  required String classroomId,
+  required String packId,
+  required String wordId,
+}) async {
+  await _classroomWordItemsRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+    packId: packId,
+  ).doc(wordId).delete();
+
+  await _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).doc(packId).update({
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> deleteCurrentWordItem({
+  required String packId,
+  required String wordId,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomWordItem(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
       packId: packId,
-    ).doc(wordId).delete();
-
-    await _wordPacksRef(teacherUid).doc(packId).update({
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
+      wordId: wordId,
+    );
+    return;
   }
 
-  Stream<List<WordPack>>
-    getAssignedWordPacks({
+  await deleteWordItem(
+    teacherUid: currentTeacherUid,
+    packId: packId,
+    wordId: wordId,
+  );
+}
+
+Stream<List<WordPack>> getAssignedWordPacks({
   required String teacherUid,
   required String childId,
 }) {
-  return _wordPacksRef(
-    teacherUid,
-  ).snapshots().map((snapshot) {
+  return _wordPacksRef(teacherUid).snapshots().map((snapshot) {
     return snapshot.docs
-        .map(
-          (doc) => WordPack.fromMap(
-            doc.id,
-            doc.data(),
-          ),
-        )
-        .where(
-          (pack) => pack
-              .assignedChildIds
-              .contains(childId),
-        )
+        .map((doc) => WordPack.fromMap(doc.id, doc.data()))
+        .where((pack) => pack.assignedChildIds.contains(childId))
         .toList();
   });
+}
+
+Stream<List<WordPack>> getClassroomAssignedWordPacks({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+}) {
+  return _classroomWordPacksRef(
+    schoolId: schoolId,
+    classroomId: classroomId,
+  ).snapshots().map((snapshot) {
+    return snapshot.docs
+        .map((doc) => WordPack.fromMap(doc.id, doc.data()))
+        .where((pack) => pack.assignedChildIds.contains(childId))
+        .toList();
+  });
+}
+
+Stream<List<WordPack>> getCurrentAssignedWordPacks({
+  required String childId,
+}) {
+  if (hasClassroomSession) {
+    return getClassroomAssignedWordPacks(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+    );
+  }
+
+  return getAssignedWordPacks(
+    teacherUid: currentTeacherUid,
+    childId: childId,
+  );
 }
 
 Future<void> addWordAttempt({
@@ -1391,6 +3205,41 @@ Future<void> addWordAttempt({
     ...attempt.toMap(),
     'createdAt': FieldValue.serverTimestamp(),
   });
+}
+
+Future<void> addClassroomWordAttempt({
+  required String schoolId,
+  required String classroomId,
+  required WordAttempt attempt,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('word_attempts')
+      .add({
+    ...attempt.toMap(),
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+}
+
+Future<void> addCurrentWordAttempt(WordAttempt attempt) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomWordAttempt(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      attempt: attempt,
+    );
+    return;
+  }
+
+  await addWordAttempt(
+    teacherUid: currentTeacherUid,
+    attempt: attempt,
+  );
 }
 
 Stream<List<WordAttempt>> getWordAttemptsForChild({
@@ -1412,7 +3261,46 @@ Stream<List<WordAttempt>> getWordAttemptsForChild({
   });
 }
 
-  // BODY CHECK
+Stream<List<WordAttempt>> getClassroomWordAttemptsForChild({
+  required String schoolId,
+  required String classroomId,
+  required String childId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('word_attempts')
+      .where('childId', isEqualTo: childId)
+      .snapshots()
+      .map((snapshot) {
+    final attempts = snapshot.docs
+        .map((doc) => WordAttempt.fromMap(doc.id, doc.data()))
+        .toList();
+
+    return attempts;
+  });
+}
+
+Stream<List<WordAttempt>> getCurrentWordAttemptsForChild({
+  required String childId,
+}) {
+  if (hasClassroomSession) {
+    return getClassroomWordAttemptsForChild(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      childId: childId,
+    );
+  }
+
+  return getWordAttemptsForChild(
+    teacherUid: currentTeacherUid,
+    childId: childId,
+  );
+}
+
+ // BODY CHECK
 
 Future<void> addBodyCheckReport({
   required String teacherUid,
@@ -1466,6 +3354,148 @@ Future<void> deleteBodyCheckReport({
       .collection('body_check_reports')
       .doc(reportId)
       .delete();
+}
+
+// CLASSROOM / BODY CHECK
+
+Future<void> addClassroomBodyCheckReport({
+  required String schoolId,
+  required String classroomId,
+  required BodyCheckReport report,
+}) async {
+  final docRef = _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('body_check_reports')
+      .doc();
+
+  await docRef.set(report.toMap());
+}
+
+Stream<List<BodyCheckReport>> getClassroomBodyCheckReports({
+  required String schoolId,
+  required String classroomId,
+}) {
+  return _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('body_check_reports')
+      .orderBy('timestamp', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => BodyCheckReport.fromMap(doc.id, doc.data()))
+          .toList());
+}
+
+Future<void> markClassroomBodyCheckReportChecked({
+  required String schoolId,
+  required String classroomId,
+  required String reportId,
+  String checkedNote = '',
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('body_check_reports')
+      .doc(reportId)
+      .update({
+    'checked': true,
+    'checkedNote': checkedNote,
+    'checkedAt': Timestamp.now(),
+  });
+}
+
+Future<void> deleteClassroomBodyCheckReport({
+  required String schoolId,
+  required String classroomId,
+  required String reportId,
+}) async {
+  await _db
+      .collection('schools')
+      .doc(schoolId)
+      .collection('classrooms')
+      .doc(classroomId)
+      .collection('body_check_reports')
+      .doc(reportId)
+      .delete();
+}
+
+// CURRENT / BODY CHECK
+
+Future<void> addCurrentBodyCheckReport(BodyCheckReport report) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await addClassroomBodyCheckReport(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      report: report,
+    );
+    return;
+  }
+
+  await addBodyCheckReport(
+    teacherUid: currentTeacherUid,
+    report: report,
+  );
+}
+
+Stream<List<BodyCheckReport>> getCurrentBodyCheckReports() {
+  if (hasClassroomSession) {
+    return getClassroomBodyCheckReports(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+    );
+  }
+
+  return getBodyCheckReports(currentTeacherUid);
+}
+
+Future<void> markCurrentBodyCheckReportChecked({
+  required String reportId,
+  String checkedNote = '',
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await markClassroomBodyCheckReportChecked(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      reportId: reportId,
+      checkedNote: checkedNote,
+    );
+    return;
+  }
+
+  await markBodyCheckReportChecked(
+    teacherUid: currentTeacherUid,
+    reportId: reportId,
+    checkedNote: checkedNote,
+  );
+}
+
+Future<void> deleteCurrentBodyCheckReport(String reportId) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (hasClassroomSession) {
+    await deleteClassroomBodyCheckReport(
+      schoolId: _session.requireSchoolId,
+      classroomId: _session.requireClassroomId,
+      reportId: reportId,
+    );
+    return;
+  }
+
+  await deleteBodyCheckReport(
+    teacherUid: currentTeacherUid,
+    reportId: reportId,
+  );
 }
 
 }

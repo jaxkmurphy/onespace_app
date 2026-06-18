@@ -5,6 +5,7 @@ import 'models/school.dart';
 import 'models/school_member.dart';
 import 'pages/admin_dashboard_page.dart';
 import 'pages/profiles_page.dart';
+import 'services/classroom_session_service.dart';
 import 'services/firestore_service.dart';
 
 class AuthGate extends StatelessWidget {
@@ -12,6 +13,32 @@ class AuthGate extends StatelessWidget {
 
   Future<Widget> _getStartPage(User user) async {
     final firestoreService = FirestoreService();
+    final session = ClassroomSessionService.instance;
+
+    final idTokenResult = await user.getIdTokenResult(true);
+    final claims = idTokenResult.claims ?? {};
+
+    if (claims['role'] == 'classroom' &&
+        claims['schoolId'] is String &&
+        claims['classroomId'] is String) {
+      final schoolId = claims['schoolId'] as String;
+      final classroomId = claims['classroomId'] as String;
+
+      final classroom = await firestoreService.getClassroom(
+        schoolId: schoolId,
+        classroomId: classroomId,
+      );
+
+      if (classroom != null && classroom.active) {
+        session.setSession(
+          schoolId: schoolId,
+          classroomId: classroomId,
+          classroomName: classroom.name,
+        );
+
+        return const ProfilesPage();
+      }
+    }
 
     final SchoolMember? member =
         await firestoreService.getSchoolMemberByUid(user.uid);
@@ -20,12 +47,16 @@ class AuthGate extends StatelessWidget {
       final School? school = await firestoreService.getSchool(member.schoolId);
 
       if (school != null && school.active) {
+        session.clearSession();
+
         return AdminDashboardPage(
           schoolId: school.id,
           schoolName: school.name,
         );
       }
     }
+
+    session.clearSession();
 
     return const ProfilesPage();
   }
@@ -44,6 +75,7 @@ class AuthGate extends StatelessWidget {
         final user = authSnapshot.data;
 
         if (user == null) {
+          ClassroomSessionService.instance.clearSession();
           return const LoginScreen();
         }
 
@@ -57,6 +89,7 @@ class AuthGate extends StatelessWidget {
             }
 
             if (pageSnapshot.hasError) {
+              ClassroomSessionService.instance.clearSession();
               return const ProfilesPage();
             }
 

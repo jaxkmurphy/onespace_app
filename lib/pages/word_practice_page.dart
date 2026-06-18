@@ -44,10 +44,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
 
   Future<void> _loadWords() async {
     final words = await widget.firestoreService
-        .getWordItems(
-          teacherUid: widget.teacherUid,
-          packId: widget.pack.id,
-        )
+        .getCurrentWordItems(widget.pack.id)
         .first;
 
     if (!mounted) return;
@@ -103,42 +100,41 @@ class _WordPracticePageState extends State<WordPracticePage> {
   }
 
   Future<void> _checkAnswer(String answer) async {
-  if (_currentWord == null) return;
+    if (_currentWord == null) return;
 
-  final isCorrect = answer == _currentWord!.text;
+    final isCorrect = answer == _currentWord!.text;
 
-  await widget.firestoreService.addWordAttempt(
-    teacherUid: widget.teacherUid,
-    attempt: WordAttempt(
-      id: '',
-      childId: widget.childId,
-      packId: widget.pack.id,
-      wordId: _currentWord!.id,
-      wordText: _currentWord!.text,
-      selectedAnswer: answer,
-      isCorrect: isCorrect,
-    ),
-  );
-
-  if (!mounted) return;
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(
-        isCorrect ? 'Great job!' : 'Try again',
+    await widget.firestoreService.addCurrentWordAttempt(
+      WordAttempt(
+        id: '',
+        childId: widget.childId,
+        packId: widget.pack.id,
+        wordId: _currentWord!.id,
+        wordText: _currentWord!.text,
+        selectedAnswer: answer,
+        isCorrect: isCorrect,
       ),
-      duration: const Duration(milliseconds: 700),
-    ),
-  );
+    );
 
-  if (!isCorrect) return;
+    if (!mounted) return;
 
-  setState(() {
-    _currentIndex++;
-  });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          isCorrect ? 'Great job!' : 'Try again',
+        ),
+        duration: const Duration(milliseconds: 700),
+      ),
+    );
 
-  _setCurrentQuestion();
-}
+    if (!isCorrect) return;
+
+    setState(() {
+      _currentIndex++;
+    });
+
+    _setCurrentQuestion();
+  }
 
   @override
   Widget build(BuildContext context) {

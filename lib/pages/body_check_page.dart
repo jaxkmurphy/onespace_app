@@ -82,10 +82,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
       checked: false,
     );
 
-    await widget.firestoreService.addBodyCheckReport(
-      teacherUid: widget.child.teacherUid,
-      report: report,
-    );
+    await widget.firestoreService.addCurrentBodyCheckReport(report);
 
     if (!mounted) return;
 

@@ -28,8 +28,7 @@ class _WordProgressPageState extends State<WordProgressPage> {
   }
 
   Future<void> _loadChildren() async {
-    final children =
-        await widget.firestoreService.getChildProfilesOnce(widget.teacherUid);
+    final children = await widget.firestoreService.getCurrentChildProfilesOnce();
 
     if (!mounted) return;
 
@@ -107,8 +106,8 @@ class _WordProgressPageState extends State<WordProgressPage> {
                 ),
                 Expanded(
                   child: StreamBuilder<List<WordAttempt>>(
-                    stream: widget.firestoreService.getWordAttemptsForChild(
-                      teacherUid: widget.teacherUid,
+                    stream: widget.firestoreService
+                        .getCurrentWordAttemptsForChild(
                       childId: selectedChild.id,
                     ),
                     builder: (context, snapshot) {

@@ -51,8 +51,7 @@ class FirstThenChildPage extends StatelessWidget {
         title: Text(loc.getString('first_then')),
       ),
       body: StreamBuilder<Map<String, dynamic>?>(
-        stream: firestoreService.getFirstThenStream(
-          teacherUid: child.teacherUid,
+        stream: firestoreService.getCurrentFirstThenStream(
           childId: child.id,
         ),
         builder: (context, snapshot) {
@@ -189,8 +188,7 @@ class FirstThenChildPage extends StatelessWidget {
                         onPressed: locked
                             ? null
                             : () async {
-                                await firestoreService.selectFirstThenReward(
-                                  teacherUid: child.teacherUid,
+                                await firestoreService.selectCurrentFirstThenReward(
                                   childId: child.id,
                                   rewardId: rewardId,
                                 );

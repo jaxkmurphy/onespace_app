@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import '../models/staff_profile.dart';
 import '../models/child_profile.dart';
 import '../widgets/pin_entry_dialog.dart';
 import '../widgets/child_icon_unlock_dialog.dart';
 import '../widgets/profile_selection_card.dart';
-import '../services/classroom_session_service.dart';
 
 class ProfilesPage extends StatefulWidget {
   final String? schoolId;
@@ -25,10 +26,83 @@ class ProfilesPage extends StatefulWidget {
 }
 
 class _ProfilesPageState extends State<ProfilesPage> {
-  final firestoreService = FirestoreService();
+  final FirestoreService firestoreService = FirestoreService();
+  final ClassroomSessionService session = ClassroomSessionService.instance;
 
-  bool get _isClassroomMode =>
-      widget.schoolId != null && widget.classroomId != null;
+  bool _isRestoringSession = true;
+
+  bool get _isClassroomMode => session.hasClassroomSession;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreSessionIfNeeded();
+  }
+
+  Future<void> _restoreSessionIfNeeded() async {
+    if (widget.schoolId != null &&
+        widget.classroomId != null &&
+        widget.classroomName != null) {
+      session.setSession(
+        schoolId: widget.schoolId!,
+        classroomId: widget.classroomId!,
+        classroomName: widget.classroomName!,
+      );
+
+      if (mounted) {
+        setState(() {
+          _isRestoringSession = false;
+        });
+      }
+      return;
+    }
+
+    if (session.hasClassroomSession) {
+      if (mounted) {
+        setState(() {
+          _isRestoringSession = false;
+        });
+      }
+      return;
+    }
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        final tokenResult = await user.getIdTokenResult(true);
+        final claims = tokenResult.claims ?? {};
+
+        if (claims['role'] == 'classroom' &&
+            claims['schoolId'] is String &&
+            claims['classroomId'] is String) {
+          final schoolId = claims['schoolId'] as String;
+          final classroomId = claims['classroomId'] as String;
+
+          final classroom = await firestoreService.getClassroom(
+            schoolId: schoolId,
+            classroomId: classroomId,
+          );
+
+          if (classroom != null && classroom.active) {
+            session.setSession(
+              schoolId: schoolId,
+              classroomId: classroomId,
+              classroomName: classroom.name,
+            );
+          }
+        }
+      } catch (e) {
+        debugPrint('Could not restore classroom session: $e');
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _isRestoringSession = false;
+      });
+    }
+  }
 
   Future<bool> _checkPin() async {
     try {
@@ -36,8 +110,8 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
       if (_isClassroomMode) {
         final classroom = await firestoreService.getClassroom(
-          schoolId: widget.schoolId!,
-          classroomId: widget.classroomId!,
+          schoolId: session.requireSchoolId,
+          classroomId: session.requireClassroomId,
         );
 
         pin = classroom?.pin;
@@ -67,15 +141,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (!mounted) return;
 
     if (pinOk) {
-      Navigator.pushNamed(
-        context,
-        '/add-profile',
-        arguments: {
-          'schoolId': widget.schoolId,
-          'classroomId': widget.classroomId,
-          'classroomName': widget.classroomName,
-        },
-      );
+      Navigator.pushNamed(context, '/add-profile');
     } else {
       _showSnack('Access denied: incorrect PIN');
     }
@@ -98,21 +164,18 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _onStaffTap(StaffProfile profile) async {
-  final pinOk = await _checkPin();
+    final pinOk = await _checkPin();
 
-  if (pinOk && mounted) {
-    Navigator.pushNamed(
-      context,
-      '/staff-dashboard',
-      arguments: {
-        'profile': profile,
-        'schoolId': widget.schoolId,
-        'classroomId': widget.classroomId,
-        'classroomName': widget.classroomName,
-      },
-    );
+    if (pinOk && mounted) {
+      Navigator.pushNamed(
+        context,
+        '/staff-dashboard',
+        arguments: {
+          'profile': profile,
+        },
+      );
+    }
   }
-}
 
   Future<void> _onChildTap(ChildProfile profile) async {
     bool allowed = false;
@@ -136,9 +199,6 @@ class _ProfilesPageState extends State<ProfilesPage> {
         '/child-dashboard',
         arguments: {
           'profile': profile,
-          'schoolId': widget.schoolId,
-          'classroomId': widget.classroomId,
-          'classroomName': widget.classroomName,
         },
       );
     }
@@ -146,23 +206,14 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
   Future<void> _onDeleteStaffProfile(String profileId) async {
     final confirmed = await _checkPin();
+
     if (!confirmed) {
       _showSnack('Access denied: incorrect PIN');
       return;
     }
 
     try {
-      if (_isClassroomMode) {
-        await firestoreService.deleteClassroomStaffProfile(
-          schoolId: widget.schoolId!,
-          classroomId: widget.classroomId!,
-          profileId: profileId,
-        );
-      } else {
-        final uid = FirebaseAuth.instance.currentUser!.uid;
-        await firestoreService.deleteStaffProfile(uid, profileId);
-      }
-
+      await firestoreService.deleteCurrentStaffProfile(profileId);
       _showSnack('Staff profile deleted');
     } catch (e) {
       _showSnack('Failed to delete staff profile: $e');
@@ -171,23 +222,14 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
   Future<void> _onDeleteChildProfile(String profileId) async {
     final confirmed = await _checkPin();
+
     if (!confirmed) {
       _showSnack('Access denied: incorrect PIN');
       return;
     }
 
     try {
-      if (_isClassroomMode) {
-        await firestoreService.deleteClassroomChildProfile(
-          schoolId: widget.schoolId!,
-          classroomId: widget.classroomId!,
-          profileId: profileId,
-        );
-      } else {
-        final uid = FirebaseAuth.instance.currentUser!.uid;
-        await firestoreService.deleteChildProfile(uid, profileId);
-      }
-
+      await firestoreService.deleteCurrentChildProfile(profileId);
       _showSnack('Child profile deleted');
     } catch (e) {
       _showSnack('Failed to delete child profile: $e');
@@ -216,8 +258,9 @@ class _ProfilesPageState extends State<ProfilesPage> {
     );
 
     if (shouldLogout == true) {
+      session.clearSession();
+
       await FirebaseAuth.instance.signOut();
-      ClassroomSessionService.instance.clearSession();
 
       if (!mounted) return;
 
@@ -229,27 +272,11 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Stream<List<StaffProfile>> _staffProfilesStream() {
-    if (_isClassroomMode) {
-      return firestoreService.getClassroomStaffProfiles(
-        schoolId: widget.schoolId!,
-        classroomId: widget.classroomId!,
-      );
-    }
-
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    return firestoreService.getStaffProfiles(uid);
+    return firestoreService.getCurrentStaffProfiles();
   }
 
   Stream<List<ChildProfile>> _childProfilesStream() {
-    if (_isClassroomMode) {
-      return firestoreService.getClassroomChildProfiles(
-        schoolId: widget.schoolId!,
-        classroomId: widget.classroomId!,
-      );
-    }
-
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    return firestoreService.getChildProfiles(uid);
+    return firestoreService.getCurrentChildProfiles();
   }
 
   void _showSnack(String text) {
@@ -285,17 +312,24 @@ class _ProfilesPageState extends State<ProfilesPage> {
       'Classroom settings are managed by the school admin.':
           'Tá socruithe an tseomra ranga á mbainistiú ag riarthóir na scoile.',
     };
+
     return isGa && map.containsKey(en) ? map[en]! : en;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isRestoringSession) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final staffStream = _staffProfilesStream();
     final childStream = _childProfilesStream();
 
-    final title = widget.classroomName == null || widget.classroomName!.isEmpty
-        ? _getText('Profiles')
-        : widget.classroomName!;
+    final title = _isClassroomMode
+        ? session.currentClassroomName
+        : _getText('Profiles');
 
     return Scaffold(
       appBar: AppBar(
@@ -371,11 +405,10 @@ class _ProfilesPageState extends State<ProfilesPage> {
                                       ),
                                   textAlign: TextAlign.center,
                                 ),
-                                if (_isClassroomMode &&
-                                    widget.classroomName != null) ...[
+                                if (_isClassroomMode) ...[
                                   const SizedBox(height: 8),
                                   Text(
-                                    widget.classroomName!,
+                                    session.currentClassroomName,
                                     style:
                                         Theme.of(context).textTheme.titleMedium,
                                     textAlign: TextAlign.center,

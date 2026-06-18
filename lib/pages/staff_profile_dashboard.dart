@@ -32,29 +32,8 @@ class StaffProfileDashboard extends StatefulWidget {
 class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
   final FirestoreService _firestoreService = FirestoreService();
 
-  Future<void> _navigateToPointsOverview() async {
-    try {
-      final List<ChildProfile> children = await _firestoreService
-          .getChildProfiles(widget.profile.teacherUid)
-          .first;
-
-      if (!mounted) return;
-
-      Navigator.pushNamed(
-        context,
-        '/points-overview',
-        arguments: {
-          'teacherUid': widget.profile.teacherUid,
-          'children': children,
-        },
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load child profiles: $e')),
-      );
-    }
+  void _navigateToPointsOverview() {
+    Navigator.pushNamed(context, '/points-overview');
   }
 
   @override
@@ -73,11 +52,6 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                   context,
                   '/profiles',
                   (route) => false,
-                  arguments: {
-                    'schoolId': widget.schoolId,
-                    'classroomId': widget.classroomId,
-                    'classroomName': widget.classroomName,
-                  },
                 );
               },
             ),
@@ -134,14 +108,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                                   title: loc.getString('zones_regulation'),
                                   subtitle: 'View children\'s current zones.',
                                   onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/zone-overview',
-                                      arguments: {
-                                        'teacherUid':
-                                            widget.profile.teacherUid,
-                                      },
-                                    );
+                                    Navigator.pushNamed(context, '/zone-overview');
                                   },
                                 ),
                                 StaffDashboardFeatureCard(

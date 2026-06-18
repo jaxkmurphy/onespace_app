@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart'; 
+import 'package:uuid/uuid.dart';
 import '../models/question.dart';
 import '../models/quiz.dart';
 import '../services/firestore_service.dart';
@@ -7,10 +7,13 @@ import '../services/firestore_service.dart';
 class QuizCreationPage extends StatefulWidget {
   final String staffUid;
 
-  const QuizCreationPage({super.key, required this.staffUid});
+  const QuizCreationPage({
+    super.key,
+    required this.staffUid,
+  });
 
   @override
-  _QuizCreationPageState createState() => _QuizCreationPageState();
+  State<QuizCreationPage> createState() => _QuizCreationPageState();
 }
 
 class _QuizCreationPageState extends State<QuizCreationPage> {
@@ -38,32 +41,38 @@ class _QuizCreationPageState extends State<QuizCreationPage> {
       return;
     }
 
-    // Validate each question form
-    for (var qf in _questionForms) {
+    for (final qf in _questionForms) {
       if (!qf.isValid()) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please fill all question fields properly')),
+          const SnackBar(
+            content: Text('Please fill all question fields properly'),
+          ),
         );
         return;
       }
     }
 
-    // Build the quiz object
-    var quizId = Uuid().v4();
-    List<Question> questions = _questionForms.map((qf) => qf.toQuestion()).toList();
+    final quizId = const Uuid().v4();
 
-    var quiz = Quiz(
+    final questions = _questionForms
+        .map((qf) => qf.toQuestion())
+        .toList();
+
+    final quiz = Quiz(
       id: quizId,
       title: _quizTitleController.text.trim(),
       createdBy: widget.staffUid,
       questions: questions,
     );
 
-    // Save to Firestore
-    await _firestoreService.addQuiz(quiz);
+    await _firestoreService.addCurrentQuiz(quiz);
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Quiz saved successfully!')),
+      const SnackBar(
+        content: Text('Quiz saved successfully!'),
+      ),
     );
 
     Navigator.pop(context);
@@ -79,17 +88,19 @@ class _QuizCreationPageState extends State<QuizCreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create New Quiz'),
+        title: const Text('Create New Quiz'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
               TextFormField(
                 controller: _quizTitleController,
-                decoration: InputDecoration(labelText: 'Quiz Title'),
+                decoration: const InputDecoration(
+                  labelText: 'Quiz Title',
+                ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter a quiz title';
@@ -97,28 +108,37 @@ class _QuizCreationPageState extends State<QuizCreationPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: _questionForms.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     child: Padding(
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Question ${index + 1}', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                'Question ${index + 1}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               if (_questionForms.length > 1)
                                 IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
                                   onPressed: () => _removeQuestion(index),
-                                )
+                                ),
                             ],
                           ),
                           _questionForms[index],
@@ -128,17 +148,17 @@ class _QuizCreationPageState extends State<QuizCreationPage> {
                   );
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _addQuestion,
-                icon: Icon(Icons.add),
-                label: Text('Add Question'),
+                icon: const Icon(Icons.add),
+                label: const Text('Add Question'),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _saveQuiz,
-                child: Text('Save Quiz'),
-              )
+                child: const Text('Save Quiz'),
+              ),
             ],
           ),
         ),
@@ -147,38 +167,50 @@ class _QuizCreationPageState extends State<QuizCreationPage> {
   }
 }
 
-// Widget to handle question inputs
 class QuestionForm extends StatefulWidget {
   final _QuestionFormState _state = _QuestionFormState();
 
-  QuestionForm({super.key});
+  QuestionForm({
+    super.key,
+  });
 
   bool isValid() => _state.validate();
 
   Question toQuestion() => _state.toQuestion();
 
   @override
-  _QuestionFormState createState() => _state;
+  State<QuestionForm> createState() => _state;
 }
 
 class _QuestionFormState extends State<QuestionForm> {
   final _questionController = TextEditingController();
-  final List<TextEditingController> _optionControllers = List.generate(4, (_) => TextEditingController());
+
+  final List<TextEditingController> _optionControllers =
+      List.generate(4, (_) => TextEditingController());
+
   int _correctOptionIndex = 0;
 
   bool validate() {
     if (_questionController.text.trim().isEmpty) return false;
-    for (var c in _optionControllers) {
-      if (c.text.trim().isEmpty) return false;
+
+    for (final controller in _optionControllers) {
+      if (controller.text.trim().isEmpty) return false;
     }
-    if (_correctOptionIndex < 0 || _correctOptionIndex >= _optionControllers.length) return false;
+
+    if (_correctOptionIndex < 0 ||
+        _correctOptionIndex >= _optionControllers.length) {
+      return false;
+    }
+
     return true;
   }
 
   Question toQuestion() {
     return Question(
       question: _questionController.text.trim(),
-      options: _optionControllers.map((c) => c.text.trim()).toList(),
+      options: _optionControllers
+          .map((controller) => controller.text.trim())
+          .toList(),
       correctAnswer: _optionControllers[_correctOptionIndex].text.trim(),
     );
   }
@@ -186,9 +218,11 @@ class _QuestionFormState extends State<QuestionForm> {
   @override
   void dispose() {
     _questionController.dispose();
-    for (var c in _optionControllers) {
-      c.dispose();
+
+    for (final controller in _optionControllers) {
+      controller.dispose();
     }
+
     super.dispose();
   }
 
@@ -199,7 +233,9 @@ class _QuestionFormState extends State<QuestionForm> {
       children: [
         TextFormField(
           controller: _questionController,
-          decoration: InputDecoration(labelText: 'Question'),
+          decoration: const InputDecoration(
+            labelText: 'Question',
+          ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return 'Please enter a question';
@@ -207,7 +243,7 @@ class _QuestionFormState extends State<QuestionForm> {
             return null;
           },
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         ...List.generate(_optionControllers.length, (index) {
           return RadioListTile<int>(
             value: index,
@@ -219,7 +255,9 @@ class _QuestionFormState extends State<QuestionForm> {
             },
             title: TextFormField(
               controller: _optionControllers[index],
-              decoration: InputDecoration(labelText: 'Option ${index + 1}'),
+              decoration: InputDecoration(
+                labelText: 'Option ${index + 1}',
+              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter option ${index + 1}';

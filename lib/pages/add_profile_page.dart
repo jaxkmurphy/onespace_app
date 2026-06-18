@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/staff_profile.dart';
 import '../models/child_profile.dart';
+import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import '../widgets/icon_sequence_picker.dart';
 
@@ -23,6 +24,7 @@ class AddProfilePage extends StatefulWidget {
 
 class _AddProfilePageState extends State<AddProfilePage> {
   final FirestoreService firestoreService = FirestoreService();
+  final ClassroomSessionService session = ClassroomSessionService.instance;
   final _formKey = GlobalKey<FormState>();
 
   bool isStaff = true;
@@ -36,8 +38,22 @@ class _AddProfilePageState extends State<AddProfilePage> {
   bool confirmingChildSequence = false;
   int pickerResetVersion = 0;
 
-  bool get _isClassroomMode =>
-      widget.schoolId != null && widget.classroomId != null;
+  bool get _isClassroomMode => session.hasClassroomSession;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.schoolId != null &&
+        widget.classroomId != null &&
+        widget.classroomName != null) {
+      session.setSession(
+        schoolId: widget.schoolId!,
+        classroomId: widget.classroomId!,
+        classroomName: widget.classroomName!,
+      );
+    }
+  }
 
   bool _matches(List<String> a, List<String> b) {
     if (a.length != b.length) return false;
@@ -72,20 +88,11 @@ class _AddProfilePageState extends State<AddProfilePage> {
           name: name,
           role: role,
           teacherUid: _isClassroomMode
-              ? widget.classroomId!
+              ? session.requireClassroomId
               : FirebaseAuth.instance.currentUser!.uid,
         );
 
-        if (_isClassroomMode) {
-          await firestoreService.addClassroomStaffProfile(
-            schoolId: widget.schoolId!,
-            classroomId: widget.classroomId!,
-            profile: profile,
-          );
-        } else {
-          final teacherUid = FirebaseAuth.instance.currentUser!.uid;
-          await firestoreService.addStaffProfile(teacherUid, profile);
-        }
+        await firestoreService.addCurrentStaffProfile(profile);
       } else {
         if (childIconSequence.length != 3) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -131,23 +138,14 @@ class _AddProfilePageState extends State<AddProfilePage> {
           name: name,
           age: age,
           teacherUid: _isClassroomMode
-              ? widget.classroomId!
+              ? session.requireClassroomId
               : FirebaseAuth.instance.currentUser!.uid,
           zone: null,
           accessMode: 'iconSequence',
           iconSequence: childIconSequence,
         );
 
-        if (_isClassroomMode) {
-          await firestoreService.addClassroomChildProfile(
-            schoolId: widget.schoolId!,
-            classroomId: widget.classroomId!,
-            profile: profile,
-          );
-        } else {
-          final teacherUid = FirebaseAuth.instance.currentUser!.uid;
-          await firestoreService.addChildProfile(teacherUid, profile);
-        }
+        await firestoreService.addCurrentChildProfile(profile);
       }
 
       if (!mounted) return;
@@ -190,7 +188,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
-    final classroomName = widget.classroomName;
+    final classroomName = session.classroomName;
 
     return Scaffold(
       appBar: AppBar(
@@ -220,7 +218,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
                       ),
                       const SizedBox(height: 18),
                     ],
-
                     Card(
                       elevation: 3,
                       margin: EdgeInsets.zero,
@@ -274,9 +271,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 18),
-
                     Card(
                       elevation: 2,
                       margin: EdgeInsets.zero,
@@ -319,9 +314,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 18),
-
                     Card(
                       elevation: 2,
                       margin: EdgeInsets.zero,
@@ -341,7 +334,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 16),
-
                             TextFormField(
                               controller: nameController,
                               decoration: const InputDecoration(
@@ -356,9 +348,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                 return null;
                               },
                             ),
-
                             const SizedBox(height: 16),
-
                             if (isStaff)
                               TextFormField(
                                 controller: roleController,
@@ -374,7 +364,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                   return null;
                                 },
                               ),
-
                             if (!isStaff) ...[
                               TextFormField(
                                 controller: ageController,
@@ -396,9 +385,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                   return null;
                                 },
                               ),
-
                               const SizedBox(height: 22),
-
                               Container(
                                 padding: const EdgeInsets.all(18),
                                 decoration: BoxDecoration(
@@ -500,9 +487,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 22),
-
                     ElevatedButton.icon(
                       onPressed: _saveProfile,
                       icon: const Icon(Icons.save_rounded),

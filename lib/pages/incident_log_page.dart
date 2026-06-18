@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/child_profile.dart';
 import '../models/incident_log_entry.dart';
 import '../models/staff_profile.dart';
+import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 
 enum IncidentLogMode {
@@ -23,6 +24,7 @@ class IncidentLogPage extends StatefulWidget {
 
 class _IncidentLogPageState extends State<IncidentLogPage> {
   final FirestoreService _firestoreService = FirestoreService();
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _actionTakenController = TextEditingController();
 
@@ -34,8 +36,6 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
   String _selectedChildFilter = 'All';
   DateTime? _selectedDateTime;
   bool _isSaving = false;
-
-  String get _teacherUid => widget.staffProfile.teacherUid;
 
   @override
   void dispose() {
@@ -145,10 +145,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
         severity: _selectedSeverity,
       );
 
-      await _firestoreService.addIncidentLogEntry(
-        teacherUid: _teacherUid,
-        entry: entry,
-      );
+      await _firestoreService.addCurrentIncidentLogEntry(entry);
 
       if (!mounted) return;
 
@@ -205,10 +202,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 
     if (shouldDelete != true) return;
 
-    await _firestoreService.deleteIncidentLogEntry(
-      teacherUid: _teacherUid,
-      incidentId: incident.id,
-    );
+    await _firestoreService.deleteCurrentIncidentLogEntry(incident.id);
 
     if (!mounted) return;
 
@@ -222,7 +216,8 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
       final matchesSeverity =
           _severityFilter == 'All' || incident.severity == _severityFilter;
 
-      final matchesChild = _selectedChildFilter == 'All' ||
+      final matchesChild =
+          _selectedChildFilter == 'All' ||
           incident.childName == _selectedChildFilter;
 
       return matchesSeverity && matchesChild;
@@ -263,9 +258,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
         const SizedBox(height: 16),
-
         DropdownButtonFormField<String>(
           initialValue: _selectedChildId,
           decoration: const InputDecoration(
@@ -284,9 +277,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             });
           },
         ),
-
         const SizedBox(height: 16),
-
         DropdownButtonFormField<String>(
           initialValue: _selectedSeverity,
           decoration: const InputDecoration(
@@ -314,9 +305,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             });
           },
         ),
-
         const SizedBox(height: 16),
-
         OutlinedButton.icon(
           icon: const Icon(Icons.calendar_today),
           label: Text(
@@ -326,7 +315,6 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
           ),
           onPressed: _pickDateTime,
         ),
-
         if (_selectedDateTime != null) ...[
           const SizedBox(height: 8),
           TextButton.icon(
@@ -339,9 +327,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             label: const Text('Reset to current time'),
           ),
         ],
-
         const SizedBox(height: 16),
-
         TextField(
           controller: _descriptionController,
           maxLines: 4,
@@ -350,9 +336,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             border: OutlineInputBorder(),
           ),
         ),
-
         const SizedBox(height: 16),
-
         TextField(
           controller: _actionTakenController,
           maxLines: 3,
@@ -361,9 +345,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             border: OutlineInputBorder(),
           ),
         ),
-
         const SizedBox(height: 20),
-
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -378,7 +360,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 
   Widget _buildViewIncidentsSection() {
     return StreamBuilder<List<IncidentLogEntry>>(
-      stream: _firestoreService.getIncidentLogEntries(_teacherUid),
+      stream: _firestoreService.getCurrentIncidentLogEntries(),
       builder: (context, incidentSnapshot) {
         if (incidentSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -418,9 +400,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 16),
-
             SegmentedButton<String>(
               segments: const [
                 ButtonSegment(
@@ -451,9 +431,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                 });
               },
             ),
-
             const SizedBox(height: 12),
-
             DropdownButtonFormField<String>(
               initialValue: childFilterItems.contains(_selectedChildFilter)
                   ? _selectedChildFilter
@@ -475,16 +453,12 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                 });
               },
             ),
-
             const SizedBox(height: 16),
-
             Text(
               '${filteredIncidents.length} incident(s) shown',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-
             const SizedBox(height: 12),
-
             if (filteredIncidents.isEmpty)
               const Padding(
                 padding: EdgeInsets.only(top: 32),
@@ -546,9 +520,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                 ),
               ],
             ),
-
             const SizedBox(height: 8),
-
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -571,18 +543,14 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                 ),
               ],
             ),
-
             const SizedBox(height: 12),
-
             const Text(
               'Description',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             Text(incident.description),
-
             const SizedBox(height: 12),
-
             const Text(
               'Action Taken',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -597,13 +565,17 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 
   @override
   Widget build(BuildContext context) {
+    final title = _session.hasClassroomSession
+        ? '${_session.currentClassroomName} Incident Log'
+        : 'Incident Log';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FF),
       appBar: AppBar(
-        title: const Text('Incident Log'),
+        title: Text(title),
       ),
       body: StreamBuilder<List<ChildProfile>>(
-        stream: _firestoreService.getChildProfiles(_teacherUid),
+        stream: _firestoreService.getCurrentChildProfiles(),
         builder: (context, childSnapshot) {
           if (childSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

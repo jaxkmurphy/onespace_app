@@ -32,7 +32,7 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
   @override
   void initState() {
     super.initState();
-    _firestoreService.seedDefaultFirstThenOptions(widget.teacherUid);
+    _firestoreService.seedDefaultCurrentFirstThenOptions();
   }
 
   Future<void> _apply(
@@ -88,8 +88,7 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
     }
 
     try {
-      await _firestoreService.setFirstThenForChildren(
-        teacherUid: widget.teacherUid,
+      await _firestoreService.setCurrentFirstThenForChildren(
         childIds: targetChildIds,
         activity: _selectedActivity!,
         rewards: selectedRewards,
@@ -250,14 +249,12 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
     if (result == null) return;
 
     if (isEditing) {
-      await _firestoreService.updateFirstThenOption(
-        teacherUid: widget.teacherUid,
+      await _firestoreService.updateCurrentFirstThenOption(
         type: type,
         option: result,
       );
     } else {
-      await _firestoreService.addFirstThenOption(
-        teacherUid: widget.teacherUid,
+      await _firestoreService.addCurrentFirstThenOption(
         type: type,
         option: result,
       );
@@ -290,8 +287,7 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
 
     if (shouldDelete != true) return;
 
-    await _firestoreService.deleteFirstThenOption(
-      teacherUid: widget.teacherUid,
+    await _firestoreService.deleteCurrentFirstThenOption(
       type: type,
       optionId: option.id,
     );
@@ -299,21 +295,19 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
 
   Widget _buildAssignTab(SimpleLocalizations loc) {
     return StreamBuilder<List<ChildProfile>>(
-      stream: _firestoreService.getChildProfiles(widget.teacherUid),
+      stream: _firestoreService.getCurrentChildProfiles(),
       builder: (context, childSnapshot) {
         final children = childSnapshot.data ?? [];
 
         return StreamBuilder<List<FirstThenOption>>(
-          stream: _firestoreService.getFirstThenOptions(
-            teacherUid: widget.teacherUid,
+          stream: _firestoreService.getCurrentFirstThenOptions(
             type: 'activities',
           ),
           builder: (context, activitySnapshot) {
             final activities = activitySnapshot.data ?? [];
 
             return StreamBuilder<List<FirstThenOption>>(
-              stream: _firestoreService.getFirstThenOptions(
-                teacherUid: widget.teacherUid,
+              stream: _firestoreService.getCurrentFirstThenOptions(
                 type: 'rewards',
               ),
               builder: (context, rewardSnapshot) {
@@ -506,8 +500,7 @@ class _FirstThenSetupPageState extends State<FirstThenSetupPage> {
     required String type,
   }) {
     return StreamBuilder<List<FirstThenOption>>(
-      stream: _firestoreService.getFirstThenOptions(
-        teacherUid: widget.teacherUid,
+      stream: _firestoreService.getCurrentFirstThenOptions(
         type: type,
       ),
       builder: (context, snapshot) {

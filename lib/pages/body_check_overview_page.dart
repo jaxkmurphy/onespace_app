@@ -107,8 +107,7 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
 
     if (note == null) return;
 
-    await widget.firestoreService.markBodyCheckReportChecked(
-      teacherUid: widget.teacherUid,
+    await widget.firestoreService.markCurrentBodyCheckReportChecked(
       reportId: report.id,
       checkedNote: note,
     );
@@ -142,10 +141,7 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
 
     if (confirmed != true) return;
 
-    await widget.firestoreService.deleteBodyCheckReport(
-      teacherUid: widget.teacherUid,
-      reportId: report.id,
-    );
+    await widget.firestoreService.deleteCurrentBodyCheckReport(report.id);
   }
 
   Widget _buildFilters(List<BodyCheckReport> reports) {
@@ -308,7 +304,7 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
         title: const Text('Body Check Reports'),
       ),
       body: StreamBuilder<List<BodyCheckReport>>(
-        stream: widget.firestoreService.getBodyCheckReports(widget.teacherUid),
+        stream: widget.firestoreService.getCurrentBodyCheckReports(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(

@@ -3,9 +3,10 @@ import '../models/body_check_report.dart';
 import '../models/child_profile.dart';
 import '../models/incident_log_entry.dart';
 import '../models/staff_profile.dart';
+import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
-import 'staff_schedule_page.dart';
 import 'incident_log_page.dart';
+import 'staff_schedule_page.dart';
 
 class TodayOverviewPage extends StatefulWidget {
   final StaffProfile staffProfile;
@@ -21,8 +22,20 @@ class TodayOverviewPage extends StatefulWidget {
 
 class _TodayOverviewPageState extends State<TodayOverviewPage> {
   final FirestoreService _firestoreService = FirestoreService();
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
 
   String get _teacherUid => widget.staffProfile.teacherUid;
+
+  Stream<List<ChildProfile>> _childrenStream() {
+    if (_session.hasClassroomSession) {
+      return _firestoreService.getClassroomChildProfiles(
+        schoolId: _session.requireSchoolId,
+        classroomId: _session.requireClassroomId,
+      );
+    }
+
+    return _firestoreService.getChildProfiles(_teacherUid);
+  }
 
   String _todayKey() {
     switch (DateTime.now().weekday) {
@@ -92,68 +105,62 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
   }
 
   Widget _buildQuickActions() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      ElevatedButton.icon(
-        icon: const Icon(Icons.health_and_safety),
-        label: const Text('View Body Check Reports'),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            '/body-check-overview',
-            arguments: {
-              'firestoreService': _firestoreService,
-              'teacherUid': _teacherUid,
-            },
-          );
-        },
-      ),
-      const SizedBox(height: 10),
-      ElevatedButton.icon(
-        icon: const Icon(Icons.event_note),
-        label: const Text('Open Incident Log'),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => IncidentLogPage(
-                staffProfile: widget.staffProfile,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ElevatedButton.icon(
+          icon: const Icon(Icons.health_and_safety),
+          label: const Text('View Body Check Reports'),
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              '/body-check-overview',
+              arguments: {
+                'firestoreService': _firestoreService,
+                'teacherUid': _teacherUid,
+              },
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton.icon(
+          icon: const Icon(Icons.event_note),
+          label: const Text('Open Incident Log'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => IncidentLogPage(
+                  staffProfile: widget.staffProfile,
+                ),
               ),
-            ),
-          );
-        },
-      ),
-      const SizedBox(height: 10),
-      ElevatedButton.icon(
-        icon: const Icon(Icons.schedule),
-        label: const Text('Open Schedule'),
-        onPressed: () {
-          Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const StaffSchedulePage(),
-            ),
-          );
-        },
-      ),
-      const SizedBox(height: 10),
-      ElevatedButton.icon(
-        icon: const Icon(Icons.palette),
-        label: const Text('Open Zones Overview'),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            '/zone-overview',
-            arguments: {
-              'teacherUid': _teacherUid,
-            },
-          );
-        },
-      ),
-    ],
-  );
-}
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton.icon(
+          icon: const Icon(Icons.schedule),
+          label: const Text('Open Schedule'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const StaffSchedulePage(),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton.icon(
+          icon: const Icon(Icons.palette),
+          label: const Text('Open Zones Overview'),
+          onPressed: () {
+            Navigator.pushNamed(context, '/zone-overview');
+          },
+        ),
+      ],
+    );
+  }
 
   Widget _summaryCard({
     required IconData icon,
@@ -208,8 +215,9 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
   }
 
   Widget _buildChildrenSummary(List<ChildProfile> children) {
-    final childrenWithZones =
-        children.where((child) => child.zone != null && child.zone!.isNotEmpty).length;
+    final childrenWithZones = children
+        .where((child) => child.zone != null && child.zone!.isNotEmpty)
+        .length;
 
     return Column(
       children: [
@@ -252,7 +260,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
 
   Widget _buildBodyCheckSummary() {
     return StreamBuilder<List<BodyCheckReport>>(
-      stream: _firestoreService.getBodyCheckReports(_teacherUid),
+      stream: _firestoreService.getCurrentBodyCheckReports(),
       builder: (context, snapshot) {
         final reports = snapshot.data ?? [];
         final unchecked = reports.where((report) => !report.checked).toList();
@@ -402,7 +410,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
         title: const Text('Today Overview'),
       ),
       body: StreamBuilder<List<ChildProfile>>(
-        stream: _firestoreService.getChildProfiles(_teacherUid),
+        stream: _childrenStream(),
         builder: (context, snapshot) {
           final children = snapshot.data ?? [];
 
@@ -424,21 +432,15 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-
                 _sectionTitle('Quick Actions'),
                 _buildQuickActions(),
-
                 _buildChildrenSummary(children),
-
                 _sectionTitle('Zones Snapshot'),
                 _buildZoneSnapshot(children),
-
                 _sectionTitle('Body Check Attention'),
                 _buildBodyCheckSummary(),
-
                 _sectionTitle('Today\'s Schedule'),
                 _buildTodaySchedule(),
-
                 _sectionTitle('Recent / Important Incidents'),
                 _buildRecentIncidents(),
               ],

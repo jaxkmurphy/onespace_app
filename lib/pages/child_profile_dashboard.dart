@@ -79,11 +79,6 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                   context,
                   '/profiles',
                   (route) => false,
-                  arguments: {
-                    'schoolId': widget.schoolId,
-                    'classroomId': widget.classroomId,
-                    'classroomName': widget.classroomName,
-                  },
                 );
               },
             ),
@@ -160,7 +155,6 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                                   context,
                                   '/zone-select',
                                   arguments: {
-                                    'teacherUid': profile.teacherUid,
                                     'child': profile,
                                   },
                                 );

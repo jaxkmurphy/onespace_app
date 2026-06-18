@@ -35,9 +35,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
         ),
       ),
       body: StreamBuilder<List<ChildProfile>>(
-        stream: _firestoreService.getChildProfiles(
-          widget.teacherUid,
-        ),
+        stream: _firestoreService.getCurrentChildProfiles(),
         builder: (context, childSnapshot) {
           if (!childSnapshot.hasData) {
             return const Center(
@@ -45,15 +43,12 @@ class _CircleTimePageState extends State<CircleTimePage> {
             );
           }
 
-          List<ChildProfile> children =
-              childSnapshot.data!;
+          List<ChildProfile> children = childSnapshot.data!;
 
           if (isChildMode) {
             children = children
                 .where(
-                  (child) =>
-                      child.id ==
-                      widget.childProfile!.id,
+                  (child) => child.id == widget.childProfile!.id,
                 )
                 .toList();
 
@@ -64,23 +59,17 @@ class _CircleTimePageState extends State<CircleTimePage> {
           }
 
           return StreamBuilder<List<StaffProfile>>(
-            stream: _firestoreService
-                .getStaffProfiles(
-              widget.teacherUid,
-            ),
-            builder:
-                (context, staffSnapshot) {
+            stream: _firestoreService.getCurrentStaffProfiles(),
+            builder: (context, staffSnapshot) {
               if (!staffSnapshot.hasData) {
                 return const Center(
-                  child:
-                      CircularProgressIndicator(),
+                  child: CircularProgressIndicator(),
                 );
               }
 
               return _buildBoard(
                 children: children,
-                staff:
-                    staffSnapshot.data!,
+                staff: staffSnapshot.data!,
               );
             },
           );
@@ -95,83 +84,49 @@ class _CircleTimePageState extends State<CircleTimePage> {
   }) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final screenWidth =
-            constraints.maxWidth;
+        final screenWidth = constraints.maxWidth;
+        final screenHeight = constraints.maxHeight;
 
-        final screenHeight =
-            constraints.maxHeight;
-
-        final people =
-            <_CirclePerson>[
-          for (int i = 0;
-              i < children.length;
-              i++)
+        final people = <_CirclePerson>[
+          for (int i = 0; i < children.length; i++)
             _CirclePerson(
-              keyId:
-                  'child_${children[i].id}',
+              keyId: 'child_${children[i].id}',
               name: children[i].name,
               type: 'Child',
-              savedX:
-                  children[i]
-                      .circleTimeX,
-              savedY:
-                  children[i]
-                      .circleTimeY,
-              savedSide:
-                  children[i]
-                      .circleTimeSide,
+              savedX: children[i].circleTimeX,
+              savedY: children[i].circleTimeY,
+              savedSide: children[i].circleTimeSide,
               defaultIndex: i,
               onSave: ({
                 required double x,
                 required double y,
                 required String side,
               }) async {
-                await _firestoreService
-                    .updateChildCircleTimePosition(
-                  teacherUid:
-                      widget.teacherUid,
-                  childId:
-                      children[i].id,
+                await _firestoreService.updateCurrentChildCircleTimePosition(
+                  childId: children[i].id,
                   x: x,
                   y: y,
                   side: side,
                 );
               },
             ),
-
           if (!isChildMode)
-            for (int i = 0;
-                i < staff.length;
-                i++)
+            for (int i = 0; i < staff.length; i++)
               _CirclePerson(
-                keyId:
-                    'staff_${staff[i].id}',
-                name:
-                    staff[i].name,
+                keyId: 'staff_${staff[i].id}',
+                name: staff[i].name,
                 type: 'Staff',
-                savedX:
-                    staff[i]
-                        .circleTimeX,
-                savedY:
-                    staff[i]
-                        .circleTimeY,
-                savedSide:
-                    staff[i]
-                        .circleTimeSide,
-                defaultIndex:
-                    children.length +
-                        i,
+                savedX: staff[i].circleTimeX,
+                savedY: staff[i].circleTimeY,
+                savedSide: staff[i].circleTimeSide,
+                defaultIndex: children.length + i,
                 onSave: ({
                   required double x,
                   required double y,
                   required String side,
                 }) async {
-                  await _firestoreService
-                      .updateStaffCircleTimePosition(
-                    teacherUid:
-                        widget.teacherUid,
-                    staffId:
-                        staff[i].id,
+                  await _firestoreService.updateCurrentStaffCircleTimePosition(
+                    staffId: staff[i].id,
                     x: x,
                     y: y,
                     side: side,
@@ -186,31 +141,21 @@ class _CircleTimePageState extends State<CircleTimePage> {
               children: [
                 Expanded(
                   child: Container(
-                    color: Colors
-                        .orange
-                        .shade100,
-                    child:
-                        const Center(
+                    color: Colors.orange.shade100,
+                    child: const Center(
                       child: Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment
-                                .center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Icons.home,
                             size: 80,
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: 10),
                           Text(
                             'Home',
-                            style:
-                                TextStyle(
-                              fontSize:
-                                  28,
-                              fontWeight:
-                                  FontWeight.bold,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -220,31 +165,21 @@ class _CircleTimePageState extends State<CircleTimePage> {
                 ),
                 Expanded(
                   child: Container(
-                    color: Colors
-                        .blue
-                        .shade100,
-                    child:
-                        const Center(
+                    color: Colors.blue.shade100,
+                    child: const Center(
                       child: Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment
-                                .center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Icons.school,
                             size: 80,
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: 10),
                           Text(
                             'School',
-                            style:
-                                TextStyle(
-                              fontSize:
-                                  28,
-                              fontWeight:
-                                  FontWeight.bold,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -254,28 +189,21 @@ class _CircleTimePageState extends State<CircleTimePage> {
                 ),
               ],
             ),
-
             Positioned(
-              left:
-                  screenWidth / 2,
+              left: screenWidth / 2,
               top: 0,
               bottom: 0,
               child: Container(
                 width: 2,
-                color: Colors
-                    .black26,
+                color: Colors.black26,
               ),
             ),
-
-            for (final person
-                in people)
+            for (final person in people)
               _buildCircle(
                 person: person,
                 people: people,
-                screenWidth:
-                    screenWidth,
-                screenHeight:
-                    screenHeight,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
               ),
           ],
         );
@@ -285,174 +213,94 @@ class _CircleTimePageState extends State<CircleTimePage> {
 
   Widget _buildCircle({
     required _CirclePerson person,
-    required List<
-            _CirclePerson>
-        people,
-    required double
-        screenWidth,
-    required double
-        screenHeight,
+    required List<_CirclePerson> people,
+    required double screenWidth,
+    required double screenHeight,
   }) {
-    final savedPosition =
-        _getStartingPosition(
+    final savedPosition = _getStartingPosition(
       person: person,
-      screenWidth:
-          screenWidth,
-      screenHeight:
-          screenHeight,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
     );
 
-    final currentPosition =
-        _localPositions[
-                person.keyId] ??
-            savedPosition;
+    final currentPosition = _localPositions[person.keyId] ?? savedPosition;
 
     return Positioned(
-      left:
-          currentPosition.dx,
-      top:
-          currentPosition.dy,
+      left: currentPosition.dx,
+      top: currentPosition.dy,
       child: GestureDetector(
-        onPanUpdate:
-            (details) {
-          final current =
-              _localPositions[
-                      person
-                          .keyId] ??
-                  savedPosition;
+        onPanUpdate: (details) {
+          final current = _localPositions[person.keyId] ?? savedPosition;
 
-          final newLeft =
-              (current.dx +
-                      details
-                          .delta
-                          .dx)
-                  .clamp(
+          final newLeft = (current.dx + details.delta.dx).clamp(
             0.0,
-            screenWidth -
-                circleSize,
+            screenWidth - circleSize,
           );
 
-          final newTop =
-              (current.dy +
-                      details
-                          .delta
-                          .dy)
-                  .clamp(
+          final newTop = (current.dy + details.delta.dy).clamp(
             0.0,
-            screenHeight -
-                circleSize,
+            screenHeight - circleSize,
           );
 
           setState(() {
-            _localPositions[
-                    person
-                        .keyId] =
-                Offset(
+            _localPositions[person.keyId] = Offset(
               newLeft,
               newTop,
             );
           });
         },
-        onPanEnd:
-            (_) async {
-          final position =
-              _localPositions[
-                      person
-                          .keyId] ??
-                  savedPosition;
+        onPanEnd: (_) async {
+          final position = _localPositions[person.keyId] ?? savedPosition;
 
-          final adjusted =
-              _findNearestFreePosition(
-            movingKey:
-                person.keyId,
-            startPosition:
-                position,
+          final adjusted = _findNearestFreePosition(
+            movingKey: person.keyId,
+            startPosition: position,
             people: people,
-            screenWidth:
-                screenWidth,
-            screenHeight:
-                screenHeight,
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
           );
 
           setState(() {
-            _localPositions[
-                    person
-                        .keyId] =
-                adjusted;
+            _localPositions[person.keyId] = adjusted;
           });
 
-          final centerX =
-              adjusted.dx +
-                  (circleSize /
-                      2);
+          final centerX = adjusted.dx + (circleSize / 2);
+          final centerY = adjusted.dy + (circleSize / 2);
 
-          final centerY =
-              adjusted.dy +
-                  (circleSize /
-                      2);
+          final normalizedX = centerX / screenWidth;
+          final normalizedY = centerY / screenHeight;
 
-          final normalizedX =
-              centerX /
-                  screenWidth;
+          final side = normalizedX < 0.5 ? 'home' : 'school';
 
-          final normalizedY =
-              centerY /
-                  screenHeight;
-
-          final side =
-              normalizedX <
-                      0.5
-                  ? 'home'
-                  : 'school';
-
-          await person
-              .onSave(
-            x:
-                normalizedX,
-            y:
-                normalizedY,
+          await person.onSave(
+            x: normalizedX,
+            y: normalizedY,
             side: side,
           );
         },
         child: Container(
-          width:
-              circleSize,
-          height:
-              circleSize,
-          decoration:
-              BoxDecoration(
-            shape:
-                BoxShape
-                    .circle,
-            color: person
-                        .type ==
-                    'Staff'
-                ? Colors
-                    .purple
+          width: circleSize,
+          height: circleSize,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: person.type == 'Staff'
+                ? Colors.purple
                 : _getChildCircleColor(
                     currentPosition,
                     screenWidth,
                   ),
-            border:
-                Border.all(
-              color: Colors
-                  .white,
+            border: Border.all(
+              color: Colors.white,
               width: 3,
             ),
           ),
           child: Center(
             child: Text(
               person.name,
-              textAlign:
-                  TextAlign
-                      .center,
-              style:
-                  const TextStyle(
-                color: Colors
-                    .white,
-                fontWeight:
-                    FontWeight
-                        .bold,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -465,100 +313,59 @@ class _CircleTimePageState extends State<CircleTimePage> {
     Offset position,
     double screenWidth,
   ) {
-    final centerX =
-        position.dx +
-            (circleSize /
-                2);
+    final centerX = position.dx + (circleSize / 2);
 
-    return centerX <
-            screenWidth /
-                2
-        ? Colors.orange
-        : Colors.blue;
+    return centerX < screenWidth / 2 ? Colors.orange : Colors.blue;
   }
 
   Offset _getStartingPosition({
-    required _CirclePerson
-        person,
-    required double
-        screenWidth,
-    required double
-        screenHeight,
+    required _CirclePerson person,
+    required double screenWidth,
+    required double screenHeight,
   }) {
-    final savedLeft =
-        (person.savedX *
-                screenWidth) -
-            (circleSize /
-                2);
-
-    final savedTop =
-        (person.savedY *
-                screenHeight) -
-            (circleSize /
-                2);
+    final savedLeft = (person.savedX * screenWidth) - (circleSize / 2);
+    final savedTop = (person.savedY * screenHeight) - (circleSize / 2);
 
     return Offset(
       savedLeft.clamp(
         0.0,
-        screenWidth -
-            circleSize,
+        screenWidth - circleSize,
       ),
       savedTop.clamp(
         0.0,
-        screenHeight -
-            circleSize,
+        screenHeight - circleSize,
       ),
     );
   }
 
   Offset _findNearestFreePosition({
-    required String
-        movingKey,
-    required Offset
-        startPosition,
-    required List<
-            _CirclePerson>
-        people,
-    required double
-        screenWidth,
-    required double
-        screenHeight,
+    required String movingKey,
+    required Offset startPosition,
+    required List<_CirclePerson> people,
+    required double screenWidth,
+    required double screenHeight,
   }) {
-    Offset position =
-        startPosition;
+    Offset position = startPosition;
 
-    for (int i = 0;
-        i < 20;
-        i++) {
+    for (int i = 0; i < 20; i++) {
       if (!_wouldOverlap(
-        movingKey:
-            movingKey,
-        newPosition:
-            position,
+        movingKey: movingKey,
+        newPosition: position,
         people: people,
-        screenWidth:
-            screenWidth,
-        screenHeight:
-            screenHeight,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
       )) {
         return position;
       }
 
-      position =
-          Offset(
-        (position.dx +
-                18)
-            .clamp(
+      position = Offset(
+        (position.dx + 18).clamp(
           0.0,
-          screenWidth -
-              circleSize,
+          screenWidth - circleSize,
         ),
-        (position.dy +
-                18)
-            .clamp(
+        (position.dy + 18).clamp(
           0.0,
-          screenHeight -
-              circleSize,
+          screenHeight - circleSize,
         ),
       );
     }
@@ -567,58 +374,39 @@ class _CircleTimePageState extends State<CircleTimePage> {
   }
 
   bool _wouldOverlap({
-    required String
-        movingKey,
-    required Offset
-        newPosition,
-    required List<
-            _CirclePerson>
-        people,
-    required double
-        screenWidth,
-    required double
-        screenHeight,
+    required String movingKey,
+    required Offset newPosition,
+    required List<_CirclePerson> people,
+    required double screenWidth,
+    required double screenHeight,
   }) {
-    final newRect =
-        Rect.fromLTWH(
+    final newRect = Rect.fromLTWH(
       newPosition.dx,
       newPosition.dy,
       circleSize,
       circleSize,
     );
 
-    for (final person
-        in people) {
-      if (person.keyId ==
-          movingKey) {
+    for (final person in people) {
+      if (person.keyId == movingKey) {
         continue;
       }
 
-      final otherPosition =
-          _localPositions[
-                  person
-                      .keyId] ??
-              _getStartingPosition(
-                person:
-                    person,
-                screenWidth:
-                    screenWidth,
-                screenHeight:
-                    screenHeight,
-              );
+      final otherPosition = _localPositions[person.keyId] ??
+          _getStartingPosition(
+            person: person,
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+          );
 
-      final otherRect =
-          Rect.fromLTWH(
+      final otherRect = Rect.fromLTWH(
         otherPosition.dx,
         otherPosition.dy,
         circleSize,
         circleSize,
       );
 
-      if (newRect
-          .overlaps(
-        otherRect,
-      )) {
+      if (newRect.overlaps(otherRect)) {
         return true;
       }
     }
@@ -636,8 +424,7 @@ class _CirclePerson {
   final String savedSide;
   final int defaultIndex;
 
-  final Future<void>
-      Function({
+  final Future<void> Function({
     required double x,
     required double y,
     required String side,

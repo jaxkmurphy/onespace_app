@@ -18,7 +18,7 @@ class QuizListPage extends StatefulWidget {
 
 class _QuizListPageState extends State<QuizListPage> {
   Stream<List<Quiz>> _fetchQuizzes() {
-    return widget.firestoreService.getQuizzes(widget.teacherUid);
+    return widget.firestoreService.getCurrentQuizzes();
   }
 
   void _createQuiz() {
@@ -42,42 +42,48 @@ class _QuizListPageState extends State<QuizListPage> {
   Future<void> _deleteQuiz(Quiz quiz) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Quiz'),
-        content: Text(
-          'Are you sure you want to delete "${quiz.title}"? This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Quiz'),
+          content: Text(
+            'Are you sure you want to delete "${quiz.title}"? This action cannot be undone.',
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
             ),
-          ),
-        ],
-      ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
     );
 
     if (confirmed != true) return;
 
     try {
-      await widget.firestoreService.deleteQuiz(widget.teacherUid, quiz.id);
+      await widget.firestoreService.deleteCurrentQuiz(quiz.id);
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Quiz "${quiz.title}" deleted')),
+        SnackBar(
+          content: Text('Quiz "${quiz.title}" deleted'),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete quiz: $e')),
+        SnackBar(
+          content: Text('Failed to delete quiz: $e'),
+        ),
       );
     }
   }
@@ -103,7 +109,9 @@ class _QuizListPageState extends State<QuizListPage> {
           }
 
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           final quizzes = snapshot.data!;
@@ -129,7 +137,10 @@ class _QuizListPageState extends State<QuizListPage> {
                   title: Text(quiz.title),
                   subtitle: Text('${quiz.questions.length} question(s)'),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
                     tooltip: 'Delete Quiz',
                     onPressed: () => _deleteQuiz(quiz),
                   ),
