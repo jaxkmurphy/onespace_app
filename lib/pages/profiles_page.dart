@@ -148,20 +148,15 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _goToSettings() async {
-    if (_isClassroomMode) {
-      _showSnack('Classroom settings are managed by the school admin.');
-      return;
-    }
+  final pinOk = await _checkPin();
+  if (!mounted) return;
 
-    final pinOk = await _checkPin();
-    if (!mounted) return;
-
-    if (pinOk) {
-      Navigator.pushNamed(context, '/account-settings');
-    } else {
-      _showSnack('Access denied: incorrect PIN');
-    }
+  if (pinOk) {
+    Navigator.pushNamed(context, '/account-settings');
+  } else {
+    _showSnack('Access denied: incorrect PIN');
   }
+}
 
   Future<void> _onStaffTap(StaffProfile profile) async {
     final pinOk = await _checkPin();
@@ -293,7 +288,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
       'Staff Profiles': 'Próifílí Foirne',
       'Child Profiles': 'Próifílí Páistí',
       'Choose a profile to continue':
-          'Roghnaigh próifíl le leanúint ar aghaidh',
+      'Roghnaigh próifíl le leanúint ar aghaidh',
       'Staff profile': 'Próifíl foirne',
       'Child profile': 'Próifíl páiste',
       'No staff profiles found': 'Gan próifílí foirne',
@@ -310,7 +305,9 @@ class _ProfilesPageState extends State<ProfilesPage> {
       'Staff profile deleted': 'Scriosadh próifíl an fhostaí',
       'Child profile deleted': 'Scriosadh próifíl an pháiste',
       'Classroom settings are managed by the school admin.':
-          'Tá socruithe an tseomra ranga á mbainistiú ag riarthóir na scoile.',
+      'Tá socruithe an tseomra ranga á mbainistiú ag riarthóir na scoile.',
+      'App Settings': 'Socruithe Aipe',
+      'Language and app options': 'Teanga agus roghanna aipe',
     };
 
     return isGa && map.containsKey(en) ? map[en]! : en;
@@ -510,13 +507,11 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
                               final settingsCard = ProfileSelectionCard(
                                 name: _isClassroomMode
-                                    ? _getText('Classroom Settings')
-                                    : _getText('Account Settings'),
+                                  ? _getText('App Settings')
+                                  : _getText('Account Settings'),
                                 subtitle: _isClassroomMode
-                                    ? _getText('Managed by school admin')
-                                    : _getText(
-                                        'Manage PIN and account options',
-                                      ),
+                                  ? _getText('Language and app options')
+                                  : _getText('Manage PIN and account options'),
                                 icon: Icons.settings,
                                 color: Colors.grey,
                                 onTap: _goToSettings,

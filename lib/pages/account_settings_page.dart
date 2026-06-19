@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/teacher.dart';
+import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 
 class AccountSettingsPage extends StatefulWidget {
@@ -19,33 +20,51 @@ class AccountSettingsPage extends StatefulWidget {
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   final FirestoreService _firestore = FirestoreService();
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
+
   final _pinCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
 
-  late Teacher _teacher;
+  Teacher? _teacher;
   bool _loading = true;
   late Locale _selectedLocale;
+
+  bool get _isClassroomMode => _session.hasClassroomSession;
 
   @override
   void initState() {
     super.initState();
     _selectedLocale = widget.locale;
-    _loadTeacher();
+    _loadSettings();
   }
 
-  Future<void> _loadTeacher() async {
+  Future<void> _loadSettings() async {
+    if (_isClassroomMode) {
+      if (!mounted) return;
+
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    final t = await _firestore.getTeacherInfo(uid);
+    final teacher = await _firestore.getTeacherInfo(uid);
 
     if (!mounted) return;
 
     setState(() {
-      _teacher = t;
+      _teacher = teacher;
       _loading = false;
     });
   }
 
   Future<void> _savePin() async {
+    if (_isClassroomMode) return;
+
+    final teacher = _teacher;
+    if (teacher == null) return;
+
     final pin = _pinCtrl.text.trim();
     final pin2 = _confirmCtrl.text.trim();
     final isGa = _selectedLocale.languageCode == 'ga';
@@ -65,7 +84,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       return;
     }
 
-    if ((_teacher.pin ?? '').isNotEmpty) {
+    if ((teacher.pin ?? '').isNotEmpty) {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -93,7 +112,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       if (confirm != true) return;
     }
 
-    final updated = _teacher.copyWith(pin: pin);
+    final updated = teacher.copyWith(pin: pin);
     await _firestore.setTeacherInfo(updated);
 
     if (!mounted) return;
@@ -131,12 +150,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
 
     final colourScheme = Theme.of(context).colorScheme;
-    final pinIsSet = (_teacher.pin ?? '').isNotEmpty;
+    final teacher = _teacher;
+    final pinIsSet = (teacher?.pin ?? '').isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _text('Account Settings', 'Socruithe Cuntais'),
+          _isClassroomMode
+              ? _text('App Settings', 'Socruithe Aipe')
+              : _text('Account Settings', 'Socruithe Cuntais'),
         ),
       ),
       body: SafeArea(
@@ -174,10 +196,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                           ),
                           const SizedBox(height: 14),
                           Text(
-                            _text(
-                              'Manage your account',
-                              'Bainistigh do chuntas',
-                            ),
+                            _isClassroomMode
+                                ? _text(
+                                    'Manage app settings',
+                                    'Bainistigh socruithe na haipe',
+                                  )
+                                : _text(
+                                    'Manage your account',
+                                    'Bainistigh do chuntas',
+                                  ),
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall
@@ -186,10 +213,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            _text(
-                              'Set your PIN and choose the app language.',
-                              'Socraigh do PIN agus roghnaigh teanga an aip.',
-                            ),
+                            _isClassroomMode
+                                ? _text(
+                                    'Choose the app language and general app options.',
+                                    'Roghnaigh teanga na haipe agus roghanna ginearálta.',
+                                  )
+                                : _text(
+                                    'Set your PIN and choose the app language.',
+                                    'Socraigh do PIN agus roghnaigh teanga an aip.',
+                                  ),
                             style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.center,
                           ),
@@ -200,134 +232,139 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
                   const SizedBox(height: 18),
 
-                  Card(
-                    elevation: 2,
-                    margin: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 58,
-                            height: 58,
-                            decoration: BoxDecoration(
-                              color: pinIsSet
-                                  ? Colors.green.withOpacity(0.14)
-                                  : Colors.orange.withOpacity(0.14),
-                              borderRadius: BorderRadius.circular(18),
+                  if (!_isClassroomMode) ...[
+                    Card(
+                      elevation: 2,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 58,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: pinIsSet
+                                    ? Colors.green.withOpacity(0.14)
+                                    : Colors.orange.withOpacity(0.14),
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Icon(
+                                pinIsSet
+                                    ? Icons.lock_rounded
+                                    : Icons.lock_open_rounded,
+                                color: pinIsSet ? Colors.green : Colors.orange,
+                                size: 32,
+                              ),
                             ),
-                            child: Icon(
-                              pinIsSet
-                                  ? Icons.lock_rounded
-                                  : Icons.lock_open_rounded,
-                              color: pinIsSet ? Colors.green : Colors.orange,
-                              size: 32,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  pinIsSet
-                                      ? _text(
-                                          'PIN is set',
-                                          'Tá PIN socraithe',
-                                        )
-                                      : _text(
-                                          'No PIN set',
-                                          'Níl PIN socraithe',
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    pinIsSet
+                                        ? _text(
+                                            'PIN is set',
+                                            'Tá PIN socraithe',
+                                          )
+                                        : _text(
+                                            'No PIN set',
+                                            'Níl PIN socraithe',
+                                          ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _text(
-                                    'The account PIN protects staff-only areas.',
-                                    'Cosnaíonn PIN an chuntais limistéir don fhoireann amháin.',
                                   ),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _text(
+                                      'The account PIN protects staff-only areas.',
+                                      'Cosnaíonn PIN an chuntais limistéir don fhoireann amháin.',
+                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 18),
+                    const SizedBox(height: 18),
 
-                  Card(
-                    elevation: 2,
-                    margin: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            _text('Change PIN', 'Athraigh PIN'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            _text(
-                              'Enter a new 4-digit PIN.',
-                              'Cuir PIN nua 4 dhigit isteach.',
+                    Card(
+                      elevation: 2,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              _text('Change PIN', 'Athraigh PIN'),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          TextField(
-                            controller: _pinCtrl,
-                            decoration: InputDecoration(
-                              labelText: _text('New PIN', 'PIN Nua'),
-                              prefixIcon: const Icon(Icons.pin_outlined),
-                              border: const OutlineInputBorder(),
+                            const SizedBox(height: 6),
+                            Text(
+                              _text(
+                                'Enter a new 4-digit PIN.',
+                                'Cuir PIN nua 4 dhigit isteach.',
+                              ),
                             ),
-                            obscureText: true,
-                            keyboardType: TextInputType.number,
-                            maxLength: 4,
-                          ),
-                          const SizedBox(height: 8),
-                          TextField(
-                            controller: _confirmCtrl,
-                            decoration: InputDecoration(
-                              labelText:
-                                  _text('Confirm PIN', 'Deimhnigh PIN'),
-                              prefixIcon:
-                                  const Icon(Icons.verified_user_outlined),
-                              border: const OutlineInputBorder(),
+                            const SizedBox(height: 16),
+                            TextField(
+                              controller: _pinCtrl,
+                              decoration: InputDecoration(
+                                labelText: _text('New PIN', 'PIN Nua'),
+                                prefixIcon: const Icon(Icons.pin_outlined),
+                                border: const OutlineInputBorder(),
+                              ),
+                              obscureText: true,
+                              keyboardType: TextInputType.number,
+                              maxLength: 4,
                             ),
-                            obscureText: true,
-                            keyboardType: TextInputType.number,
-                            maxLength: 4,
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: _savePin,
-                            icon: const Icon(Icons.save_rounded),
-                            label: Text(_text('Save PIN', 'Sábháil PIN')),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: _confirmCtrl,
+                              decoration: InputDecoration(
+                                labelText:
+                                    _text('Confirm PIN', 'Deimhnigh PIN'),
+                                prefixIcon:
+                                    const Icon(Icons.verified_user_outlined),
+                                border: const OutlineInputBorder(),
+                              ),
+                              obscureText: true,
+                              keyboardType: TextInputType.number,
+                              maxLength: 4,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: _savePin,
+                              icon: const Icon(Icons.save_rounded),
+                              label: Text(_text('Save PIN', 'Sábháil PIN')),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 18),
+                    const SizedBox(height: 18),
+                  ],
 
                   Card(
                     elevation: 2,
@@ -422,7 +459,8 @@ class _LanguageOption extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected ? colourScheme.primary : Theme.of(context).dividerColor,
+              color:
+                  selected ? colourScheme.primary : Theme.of(context).dividerColor,
               width: selected ? 2 : 1,
             ),
           ),
