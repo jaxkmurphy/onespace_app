@@ -22,26 +22,33 @@ class _IconResetPageState extends State<IconResetPage> {
   Future<void> _resetSequence(ChildProfile child) async {
     final newSequence = await showDialog<List<String>>(
       context: context,
-      builder: (_) => ChildIconSequenceSetupDialog(childName: child.name),
+      builder: (_) => ChildIconSequenceSetupDialog(
+        childName: child.name,
+      ),
     );
 
     if (newSequence == null || newSequence.length != 3) return;
 
     try {
-      await firestoreService.updateChildIconSequence(
-        widget.teacherUid,
-        child.id,
-        newSequence,
+      await firestoreService.updateCurrentChildIconSequence(
+        childId: child.id,
+        iconSequence: newSequence,
       );
 
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Unlock sequence reset for ${child.name}')),
+        SnackBar(
+          content: Text('Unlock sequence reset for ${child.name}'),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to reset sequence: $e')),
+        SnackBar(
+          content: Text('Failed to reset sequence: $e'),
+        ),
       );
     }
   }
@@ -50,7 +57,8 @@ class _IconResetPageState extends State<IconResetPage> {
     return Wrap(
       spacing: 8,
       children: sequence.map((keyName) {
-        final match = profileUnlockIcons.where((icon) => icon.keyName == keyName);
+        final match =
+            profileUnlockIcons.where((icon) => icon.keyName == keyName);
         final option = match.isNotEmpty ? match.first : null;
 
         return Column(
@@ -75,10 +83,12 @@ class _IconResetPageState extends State<IconResetPage> {
         title: const Text('Icon Reset'),
       ),
       body: StreamBuilder<List<ChildProfile>>(
-        stream: firestoreService.getChildProfiles(widget.teacherUid),
+        stream: firestoreService.getCurrentChildProfiles(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           if (snapshot.hasError) {
@@ -121,15 +131,15 @@ class _IconResetPageState extends State<IconResetPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
                             _buildSequenceIcons(child.iconSequence),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      ElevatedButton(
+                      ElevatedButton.icon(
                         onPressed: () => _resetSequence(child),
-                        child: const Text('Reset'),
+                        icon: const Icon(Icons.lock_reset),
+                        label: const Text('Reset'),
                       ),
                     ],
                   ),

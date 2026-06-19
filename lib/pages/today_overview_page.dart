@@ -315,92 +315,92 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
   }
 
   Widget _buildTodaySchedule() {
-    final today = _todayKey();
+  final today = _todayKey();
 
-    return FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
-      future: _firestoreService.getSchedule(_teacherUid),
-      builder: (context, snapshot) {
-        final schedule = snapshot.data ?? {};
-        final entries = schedule[today] ?? [];
+  return FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+    future: _firestoreService.getCurrentSchedule(),
+    builder: (context, snapshot) {
+      final schedule = snapshot.data ?? {};
+      final entries = schedule[today] ?? [];
 
-        if (entries.isEmpty) {
+      if (entries.isEmpty) {
+        return Card(
+          child: ListTile(
+            leading: const Icon(Icons.schedule),
+            title: Text('No schedule entries for ${_prettyDay(today)}'),
+            subtitle: const Text('Nothing has been added for today yet.'),
+          ),
+        );
+      }
+
+      return Column(
+        children: entries.map((entry) {
+          final start = entry['start'] ?? '';
+          final end = entry['end'] ?? '';
+          final description = entry['description'] ?? '';
+
           return Card(
             child: ListTile(
               leading: const Icon(Icons.schedule),
-              title: Text('No schedule entries for ${_prettyDay(today)}'),
-              subtitle: const Text('Nothing has been added for today yet.'),
+              title: Text(description),
+              subtitle: Text('$start - $end'),
             ),
           );
-        }
-
-        return Column(
-          children: entries.map((entry) {
-            final start = entry['start'] ?? '';
-            final end = entry['end'] ?? '';
-            final description = entry['description'] ?? '';
-
-            return Card(
-              child: ListTile(
-                leading: const Icon(Icons.schedule),
-                title: Text(description),
-                subtitle: Text('$start - $end'),
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
+        }).toList(),
+      );
+    },
+  );
+}
 
   Widget _buildRecentIncidents() {
-    return StreamBuilder<List<IncidentLogEntry>>(
-      stream: _firestoreService.getIncidentLogEntries(_teacherUid),
-      builder: (context, snapshot) {
-        final incidents = snapshot.data ?? [];
+  return StreamBuilder<List<IncidentLogEntry>>(
+    stream: _firestoreService.getCurrentIncidentLogEntries(),
+    builder: (context, snapshot) {
+      final incidents = snapshot.data ?? [];
 
-        final importantIncidents = incidents
-            .where(
-              (incident) =>
-                  _isToday(incident.timestamp) ||
-                  incident.severity == 'High' ||
-                  incident.severity == 'Medium',
-            )
-            .take(4)
-            .toList();
+      final importantIncidents = incidents
+          .where(
+            (incident) =>
+                _isToday(incident.timestamp) ||
+                incident.severity == 'High' ||
+                incident.severity == 'Medium',
+          )
+          .take(4)
+          .toList();
 
-        if (importantIncidents.isEmpty) {
-          return const Card(
+      if (importantIncidents.isEmpty) {
+        return const Card(
+          child: ListTile(
+            leading: Icon(Icons.check_circle),
+            title: Text('No important recent incidents'),
+            subtitle: Text('No medium/high incidents found for review.'),
+          ),
+        );
+      }
+
+      return Column(
+        children: importantIncidents.map((incident) {
+          return Card(
             child: ListTile(
-              leading: Icon(Icons.check_circle),
-              title: Text('No important recent incidents'),
-              subtitle: Text('No medium/high incidents found for review.'),
+              leading: CircleAvatar(
+                backgroundColor: _severityColor(incident.severity),
+                child: const Icon(
+                  Icons.event_note,
+                  color: Colors.white,
+                ),
+              ),
+              title: Text(incident.childName),
+              subtitle: Text(
+                '${incident.severity} • ${_formatDate(incident.timestamp)}\n${incident.description}',
+              ),
+              isThreeLine: true,
             ),
           );
-        }
-
-        return Column(
-          children: importantIncidents.map((incident) {
-            return Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: _severityColor(incident.severity),
-                  child: const Icon(
-                    Icons.event_note,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text(incident.childName),
-                subtitle: Text(
-                  '${incident.severity} • ${_formatDate(incident.timestamp)}\n${incident.description}',
-                ),
-                isThreeLine: true,
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
+        }).toList(),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {

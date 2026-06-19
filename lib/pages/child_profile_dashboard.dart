@@ -45,8 +45,8 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
     backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
 
     _profileSubscription = widget.firestoreService
-        .getChildProfileStream(profile.teacherUid, profile.id)
-        .listen((updatedProfile) {
+    .getCurrentChildProfileStream(profile.id)
+    .listen((updatedProfile) {
       if (!mounted) return;
 
       setState(() {

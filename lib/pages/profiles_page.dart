@@ -164,7 +164,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (pinOk && mounted) {
       Navigator.pushNamed(
         context,
-        '/staff-dashboard',
+        '/staff-dashboard/${profile.id}',
         arguments: {
           'profile': profile,
         },
@@ -191,7 +191,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (allowed && mounted) {
       Navigator.pushNamed(
         context,
-        '/child-dashboard',
+        '/child-dashboard/${profile.id}',
         arguments: {
           'profile': profile,
         },

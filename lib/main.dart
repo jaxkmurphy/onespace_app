@@ -1,59 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'auth_gate.dart';
-import 'pages/profiles_page.dart';
+import 'firebase_options.dart';
+import 'locale_notifier.dart';
+import 'models/child_profile.dart';
+import 'models/quiz.dart';
+import 'models/staff_profile.dart';
 import 'pages/account_settings_page.dart';
 import 'pages/add_profile_page.dart';
-import 'pages/zones_overview_page.dart';
-import 'pages/zone_selection_page.dart';
-import 'models/staff_profile.dart';
-import 'models/child_profile.dart';
-import 'pages/staff_profile_dashboard.dart';
-import 'pages/child_profile_dashboard.dart';
-import 'pages/points_overview_page.dart';
+import 'pages/admin_dashboard_page.dart';
+import 'pages/body_check_overview_page.dart';
+import 'pages/body_check_page.dart';
 import 'pages/child_points_page.dart';
-import 'pages/staff_schedule_page.dart';
+import 'pages/child_profile_dashboard.dart';
 import 'pages/child_schedule_page.dart';
+import 'pages/circle_time_page.dart';
+import 'pages/classroom_details_page.dart';
+import 'pages/create_classroom_page.dart';
+import 'pages/first_then_child_page.dart';
+import 'pages/first_then_setup_page.dart';
+import 'pages/handover_hub_page.dart';
+import 'pages/icon_reset_page.dart';
+import 'pages/points_overview_page.dart';
+import 'pages/profiles_page.dart';
 import 'pages/quiz_creation_page.dart';
 import 'pages/quiz_list_page.dart';
 import 'pages/quiz_play_page.dart';
-import 'pages/student_quiz_list_page.dart';
-import 'models/quiz.dart';
-import 'services/firestore_service.dart';
-import 'locale_notifier.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'pages/voice_lines_page.dart';
-import 'pages/icon_reset_page.dart';
-import 'pages/visual_timer_page.dart';
-import 'pages/first_then_setup_page.dart';
-import 'pages/first_then_child_page.dart';
-import 'pages/handover_hub_page.dart';
-import 'pages/circle_time_page.dart';
-import 'pages/body_check_page.dart';
-import 'pages/body_check_overview_page.dart';
-import 'theme/app_theme.dart';
-import 'pages/today_overview_page.dart';
-import 'pages/admin_dashboard_page.dart';
-import 'pages/create_classroom_page.dart';
 import 'pages/school_settings_page.dart';
-import 'pages/classroom_details_page.dart';
+import 'pages/staff_profile_dashboard.dart';
+import 'pages/staff_schedule_page.dart';
+import 'pages/student_quiz_list_page.dart';
+import 'pages/today_overview_page.dart';
+import 'pages/visual_timer_page.dart';
+import 'pages/voice_lines_page.dart';
+import 'pages/zone_selection_page.dart';
+import 'pages/zones_overview_page.dart';
+import 'services/firestore_service.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   try {
-    debugPrint("Firestore cache cleared and network reset.");
+    debugPrint('Firestore cache cleared and network reset.');
   } catch (e) {
-    debugPrint("Error during Firestore prep: $e");
+    debugPrint('Error during Firestore prep: $e');
   }
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+  });
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -68,36 +71,399 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
+  MaterialPageRoute<dynamic> _page(Widget page) {
+    return MaterialPageRoute<dynamic>(
+      builder: (_) => page,
+    );
+  }
+
+  MaterialPageRoute<dynamic> _errorPage(String message) {
+    return MaterialPageRoute<dynamic>(
+      builder: (_) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Error'),
+        ),
+        body: Center(
+          child: Text(message),
+        ),
+      ),
+    );
+  }
+
+  StaffProfile? _staffFromArgs(Object? args) {
+    if (args is StaffProfile) {
+      return args;
+    }
+
+    if (args is Map<String, dynamic> && args['profile'] is StaffProfile) {
+      return args['profile'] as StaffProfile;
+    }
+
+    return null;
+  }
+
+  ChildProfile? _childFromArgs(Object? args) {
+    if (args is ChildProfile) {
+      return args;
+    }
+
+    if (args is Map<String, dynamic> && args['profile'] is ChildProfile) {
+      return args['profile'] as ChildProfile;
+    }
+
+    if (args is Map<String, dynamic> && args['childProfile'] is ChildProfile) {
+      return args['childProfile'] as ChildProfile;
+    }
+
+    return null;
+  }
+
+  Route<dynamic> _onGenerateRoute(RouteSettings settings) {
+    final routeName = settings.name ?? '';
+    final args = settings.arguments;
+
+    if (routeName.startsWith('/staff-dashboard/')) {
+      final staffId = routeName.split('/').last;
+      final profile = _staffFromArgs(args);
+
+      if (profile != null) {
+        return _page(
+          StaffProfileDashboard(
+            profile: profile,
+            localeNotifier: localeNotifier,
+          ),
+        );
+      }
+
+      return _page(
+        _StaffDashboardLoader(
+          staffId: staffId,
+          localeNotifier: localeNotifier,
+        ),
+      );
+    }
+
+    if (routeName.startsWith('/child-dashboard/')) {
+      final childId = routeName.split('/').last;
+      final profile = _childFromArgs(args);
+
+      if (profile != null) {
+        return _page(
+          ChildProfileDashboard(
+            profile: profile,
+            firestoreService: FirestoreService(),
+            localeNotifier: localeNotifier,
+          ),
+        );
+      }
+
+      return _page(
+        _ChildDashboardLoader(
+          childId: childId,
+          localeNotifier: localeNotifier,
+        ),
+      );
+    }
+
+    switch (routeName) {
+      case '/admin-dashboard':
+        if (args is Map<String, dynamic> &&
+            args['schoolId'] is String &&
+            args['schoolName'] is String) {
+          return _page(
+            AdminDashboardPage(
+              schoolId: args['schoolId'] as String,
+              schoolName: args['schoolName'] as String,
+            ),
+          );
+        }
+        return _errorPage('Missing admin dashboard details.');
+
+      case '/zone-overview':
+        if (args is Map<String, dynamic> && args['teacherUid'] is String) {
+          return _page(
+            ZoneOverviewPage(
+              teacherUid: args['teacherUid'] as String,
+            ),
+          );
+        }
+        return _page(const ZoneOverviewPage());
+
+      case '/zone-select':
+        if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
+          return _page(
+            ZoneSelectionPage(
+              teacherUid: args['teacherUid'] as String?,
+              child: args['child'] as ChildProfile,
+            ),
+          );
+        }
+        return _errorPage('Missing child profile.');
+
+      case '/staff-dashboard':
+        final profile = _staffFromArgs(args);
+        if (profile != null) {
+          return _page(
+            StaffProfileDashboard(
+              profile: profile,
+              localeNotifier: localeNotifier,
+            ),
+          );
+        }
+        return _errorPage('Missing staff profile.');
+
+      case '/child-dashboard':
+        final profile = _childFromArgs(args);
+        if (profile != null) {
+          return _page(
+            ChildProfileDashboard(
+              profile: profile,
+              firestoreService: FirestoreService(),
+              localeNotifier: localeNotifier,
+            ),
+          );
+        }
+        return _errorPage('Missing child profile.');
+
+      case '/points-overview':
+        if (args is Map<String, dynamic> && args['teacherUid'] is String) {
+          return _page(
+            PointsOverviewPage(
+              teacherUid: args['teacherUid'] as String,
+            ),
+          );
+        }
+        return _page(const PointsOverviewPage());
+
+      case '/child-points':
+        if (args is ChildProfile) {
+          return _page(
+            ChildPointsPage(
+              child: args,
+            ),
+          );
+        }
+        return _errorPage('Missing child profile.');
+
+      case '/quiz-create':
+        if (args is StaffProfile) {
+          return _page(
+            QuizCreationPage(
+              staffUid: args.teacherUid,
+            ),
+          );
+        }
+
+        if (args is String) {
+          return _page(
+            QuizCreationPage(
+              staffUid: args,
+            ),
+          );
+        }
+
+        return _errorPage('Missing quiz creator.');
+
+      case '/quiz-list':
+        if (args is String) {
+          return _page(
+            QuizListPage(
+              teacherUid: args,
+            ),
+          );
+        }
+        return _errorPage('Missing teacher ID.');
+
+      case '/quiz-play':
+        if (args is Map<String, dynamic> && args['quiz'] is Quiz) {
+          return _page(
+            QuizPlayPage(
+              quiz: args['quiz'] as Quiz,
+              childProfile: args['childProfile'] as ChildProfile?,
+            ),
+          );
+        }
+        return _errorPage('Missing quiz.');
+
+      case '/student-quiz-list':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+
+          if (firestoreService != null && child != null) {
+            return _page(
+              StudentQuizListPage(
+                firestoreService: firestoreService,
+                child: child,
+              ),
+            );
+          }
+        }
+        return _errorPage('Missing student quiz details.');
+
+      case '/voice-lines':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+
+          if (firestoreService != null && child != null) {
+            return _page(
+              VoiceLinesPage(
+                firestoreService: firestoreService,
+                child: child,
+              ),
+            );
+          }
+        }
+        return _errorPage('Missing voice lines details.');
+
+      case '/icon-reset':
+        if (args is String) {
+          return _page(
+            IconResetPage(
+              teacherUid: args,
+            ),
+          );
+        }
+        return _errorPage('Missing teacher ID.');
+
+      case '/first-then-setup':
+        if (args is String) {
+          return _page(
+            FirstThenSetupPage(
+              teacherUid: args,
+            ),
+          );
+        }
+        return _errorPage('Missing teacher ID.');
+
+      case '/first-then-child':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+
+          if (firestoreService != null && child != null) {
+            return _page(
+              FirstThenChildPage(
+                firestoreService: firestoreService,
+                child: child,
+              ),
+            );
+          }
+        }
+        return _errorPage('Missing First Then child details.');
+
+      case '/circle-time':
+        if (args is Map<String, dynamic>) {
+          final teacherUid = args['teacherUid'] as String?;
+          final child = args['child'] as ChildProfile?;
+
+          if (teacherUid != null) {
+            return _page(
+              CircleTimePage(
+                teacherUid: teacherUid,
+                childProfile: child,
+              ),
+            );
+          }
+        }
+        return _errorPage('Missing Circle Time details.');
+
+      case '/handover-hub':
+        if (args is StaffProfile) {
+          return _page(
+            HandoverHubPage(
+              currentStaff: args,
+            ),
+          );
+        }
+        return _errorPage('Missing staff profile.');
+
+      case '/body-check':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+
+          if (firestoreService != null && child != null) {
+            return _page(
+              BodyCheckPage(
+                firestoreService: firestoreService,
+                child: child,
+              ),
+            );
+          }
+        }
+        return _errorPage('Missing Body Check details.');
+
+      case '/body-check-overview':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final teacherUid = args['teacherUid'] as String?;
+
+          if (firestoreService != null && teacherUid != null) {
+            return _page(
+              BodyCheckOverviewPage(
+                firestoreService: firestoreService,
+                teacherUid: teacherUid,
+              ),
+            );
+          }
+        }
+        return _errorPage('Missing Body Check overview details.');
+
+      case '/today-overview':
+        if (args is StaffProfile) {
+          return _page(
+            TodayOverviewPage(
+              staffProfile: args,
+            ),
+          );
+        }
+        return _errorPage('Missing staff profile.');
+
+      default:
+        return _errorPage('Invalid route or missing arguments.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Locale>(
       valueListenable: localeNotifier,
       builder: (context, locale, child) {
         return MaterialApp(
-      title: 'OneSpace App',
-      theme: AppTheme.lightTheme,
-      locale: locale,
-      supportedLocales: const [
-        Locale('en'), 
-    ],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-    ],
-      localeResolutionCallback: (locale, supportedLocales) {
-      return const Locale('en'); // force Flutter's internal UI to use English
-    },
-
+          title: 'OneSpace App',
+          theme: AppTheme.lightTheme,
+          locale: locale,
+          supportedLocales: const [
+            Locale('en'),
+          ],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            return const Locale('en');
+          },
           initialRoute: '/',
           routes: {
             '/': (context) => const AuthGate(),
-            '/account-settings': (context) => AccountSettingsPage(locale: locale,onLocaleChange: localeNotifier.changeLocale,),
+            '/account-settings': (context) => AccountSettingsPage(
+                  locale: locale,
+                  onLocaleChange: localeNotifier.changeLocale,
+                ),
             '/staffSchedule': (context) => const StaffSchedulePage(),
             '/childSchedule': (context) => const ChildSchedulePage(),
             '/visual-timer': (context) => const VisualTimerPage(),
             '/profiles': (context) {
               final args = ModalRoute.of(context)!.settings.arguments;
+
               if (args is Map<String, dynamic>) {
                 return ProfilesPage(
                   schoolId: args['schoolId'] as String?,
@@ -105,10 +471,12 @@ class _MyAppState extends State<MyApp> {
                   classroomName: args['classroomName'] as String?,
                 );
               }
+
               return const ProfilesPage();
             },
             '/add-profile': (context) {
               final args = ModalRoute.of(context)!.settings.arguments;
+
               if (args is Map<String, dynamic>) {
                 return AddProfilePage(
                   schoolId: args['schoolId'] as String?,
@@ -116,309 +484,198 @@ class _MyAppState extends State<MyApp> {
                   classroomName: args['classroomName'] as String?,
                 );
               }
+
               return const AddProfilePage();
             },
             '/create-classroom': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments;
-            if (args is Map<String, dynamic> && args['schoolId'] is String) {
-            return CreateClassroomPage(
-              schoolId: args['schoolId'] as String,
-              );
-            }
-            return const Scaffold(
-              body: Center(
-                child: Text('Missing school ID'),
+              final args = ModalRoute.of(context)!.settings.arguments;
+
+              if (args is Map<String, dynamic> && args['schoolId'] is String) {
+                return CreateClassroomPage(
+                  schoolId: args['schoolId'] as String,
+                );
+              }
+
+              return const Scaffold(
+                body: Center(
+                  child: Text('Missing school ID'),
                 ),
               );
             },
-            '/child-dashboard': (context) {
-              final args = ModalRoute.of(context)!.settings.arguments;
-              if (args is Map<String, dynamic> && args['profile'] is ChildProfile) {
-                return ChildProfileDashboard(
-                  profile: args['profile'] as ChildProfile,
-                  firestoreService: FirestoreService(),
-                  localeNotifier: localeNotifier,
-                );
-              }
-              if (args is ChildProfile) {
-                return ChildProfileDashboard(
-                  profile: args,
-                  firestoreService: FirestoreService(),
-                  localeNotifier: localeNotifier,
-                );
-              }
-              return const Scaffold(
-                body: Center(child: Text('Missing child profile')),
-              );
-            },
             '/classroom-details': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments;
-            if (args is Map<String, dynamic> &&
-                args['schoolId'] is String &&
-                args['classroomId'] is String) {
-                  return ClassroomDetailsPage(
-                    schoolId: args['schoolId'] as String,
-                    classroomId: args['classroomId'] as String,
-                    );
-                  }
+              final args = ModalRoute.of(context)!.settings.arguments;
 
-            return const Scaffold(
-              body: Center(
-                child: Text('Missing classroom details'),
+              if (args is Map<String, dynamic> &&
+                  args['schoolId'] is String &&
+                  args['classroomId'] is String) {
+                return ClassroomDetailsPage(
+                  schoolId: args['schoolId'] as String,
+                  classroomId: args['classroomId'] as String,
+                );
+              }
+
+              return const Scaffold(
+                body: Center(
+                  child: Text('Missing classroom details'),
                 ),
               );
             },
             '/school-settings': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments;
-            if (args is Map<String, dynamic> && args['schoolId'] is String) {
-            return SchoolSettingsPage(
-              schoolId: args['schoolId'] as String,
-              );
-            }
+              final args = ModalRoute.of(context)!.settings.arguments;
 
-            return const Scaffold(
-              body: Center(
-                child: Text('Missing school ID'),
+              if (args is Map<String, dynamic> && args['schoolId'] is String) {
+                return SchoolSettingsPage(
+                  schoolId: args['schoolId'] as String,
+                );
+              }
+
+              return const Scaffold(
+                body: Center(
+                  child: Text('Missing school ID'),
                 ),
               );
             },
           },
-          onGenerateRoute: (settings) {
-            if (settings.name == '/admin-dashboard') {
-            final args = settings.arguments;
-            if (args is Map<String, dynamic> &&
-              args['schoolId'] is String &&
-              args['schoolName'] is String) {
-            return MaterialPageRoute(
-              builder: (context) => AdminDashboardPage(
-              schoolId: args['schoolId'] as String,
-              schoolName: args['schoolName'] as String,
-                  ),
-                );
-              }
-            } else if (settings.name == '/zone-overview') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic> && args['teacherUid'] is String) {
-                return MaterialPageRoute(
-                  builder: (context) => ZoneOverviewPage(
-                  teacherUid: args['teacherUid'] as String,
-                ),
-              );
-            }
-            return MaterialPageRoute(
-              builder: (context) => const ZoneOverviewPage(),
-            );
-          } else if (settings.name == '/zone-select') {
-            final args = settings.arguments;
-            if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
-              return MaterialPageRoute(
-                builder: (context) => ZoneSelectionPage(
-                  teacherUid: args['teacherUid'] as String?,
-                  child: args['child'] as ChildProfile,
-                ),
-              );
-            }
-          } else if (settings.name == '/staff-dashboard') {
-                final args = settings.arguments;
-                if (args is Map<String, dynamic> && args['profile'] is StaffProfile) {
-                  return MaterialPageRoute(
-                    builder: (context) => StaffProfileDashboard(
-                      profile: args['profile'] as StaffProfile,
-                      localeNotifier: localeNotifier,
-                    ),
-                  );
-                }
-                if (args is StaffProfile) {
-                  return MaterialPageRoute(
-                    builder: (context) => StaffProfileDashboard(
-                      profile: args,
-                      localeNotifier: localeNotifier,
-                    ),
-                  );
-                }
-              } else if (settings.name == '/points-overview') {
-                final args = settings.arguments;
-                if (args is Map<String, dynamic> && args['teacherUid'] is String) {
-                  return MaterialPageRoute(
-                    builder: (context) => PointsOverviewPage(
-                      teacherUid: args['teacherUid'] as String,
-                    ),
-                  );
-                }
-                return MaterialPageRoute(
-                  builder: (context) => const PointsOverviewPage(),
-                );
-              } else if (settings.name == '/child-points') {
-              final args = settings.arguments;
-              if (args is ChildProfile) {
-                return MaterialPageRoute(
-                  builder: (context) => ChildPointsPage(child: args),
-                );
-              }
-            } else if (settings.name == '/quiz-create') {
-              final args = settings.arguments;
+          onGenerateRoute: _onGenerateRoute,
+        );
+      },
+    );
+  }
+}
 
-              if (args is StaffProfile) {
-                return MaterialPageRoute(
-                  builder: (context) => QuizCreationPage(staffUid: args.teacherUid),
-                );
-              }
+class _StaffDashboardLoader extends StatelessWidget {
+  final String staffId;
+  final LocaleNotifier localeNotifier;
 
-              if (args is String) {
-                return MaterialPageRoute(
-                  builder: (context) => QuizCreationPage(staffUid: args),
-                  );
-                }
-              } else if (settings.name == '/quiz-list') {
-              final args = settings.arguments;
-              if (args is String) {
-                return MaterialPageRoute(
-                  builder: (context) => QuizListPage(teacherUid: args),
-                );
-              }
-            } else if (settings.name == '/quiz-play') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic> && args['quiz'] is Quiz) {
-                return MaterialPageRoute(
-                  builder: (context) => QuizPlayPage(
-                    quiz: args['quiz'],
-                    childProfile: args['childProfile'] as ChildProfile?,
-                  ),
-                );
-              }
-            } else if (settings.name == '/voice-lines') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic>) {
-              final firestoreService = args['firestoreService'] as FirestoreService?;
-              final child = args['child'] as ChildProfile?;
-                if (firestoreService != null && child != null) {
-                  return MaterialPageRoute(
-                    builder: (context) => VoiceLinesPage(
-                      firestoreService: firestoreService,
-                      child: child,
-                    ),
-                  );
-                }
-              }
-            } else if (settings.name == '/student-quiz-list') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic>) {
-                final firestoreService = args['firestoreService'] as FirestoreService?;
-                final child = args['child'] as ChildProfile?;
-                if (firestoreService != null && child != null) {
-                  return MaterialPageRoute(
-                    builder: (context) => StudentQuizListPage(
-                      firestoreService: firestoreService,
-                      child: child,
-                    ),
-                  );
-                }
-              }
-            } else if (settings.name == '/icon-reset') {
-              final args = settings.arguments;
-              if (args is String) {
-                return MaterialPageRoute(
-                  builder: (context) => IconResetPage(teacherUid: args),
-                  );
-                }
-            } else if (settings.name == '/first-then-setup') {
-              final args = settings.arguments;
-              if (args is String) {
-                return MaterialPageRoute(
-                  builder: (context) => FirstThenSetupPage(
-                    teacherUid: args,
-                  ),
-                );
-              }
-            } else if (settings.name == '/first-then-child') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic>) {
-                final firestoreService =
-                    args['firestoreService'] as FirestoreService?;
-                final child = args['child'] as ChildProfile?;
-                if (firestoreService != null && child != null) {
-                  return MaterialPageRoute(
-                    builder: (context) => FirstThenChildPage(
-                      firestoreService: firestoreService,
-                      child: child,
-                    ),
-                  );
-                }
-              }
-            } else if (settings.name == '/circle-time') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic>) {
-              final teacherUid = args['teacherUid'] as String?;
-              final child = args['child'] as ChildProfile?;
-              if (teacherUid != null) {
-                return MaterialPageRoute(
-                  builder: (context) => CircleTimePage(
-                    teacherUid: teacherUid,
-                    childProfile: child,
-                    ),
-                  );
-                }
-              } 
-            }else if (settings.name == '/handover-hub') {
-              final args = settings.arguments;
-              if (args is StaffProfile) {
-                return MaterialPageRoute(
-                  builder: (context) => HandoverHubPage(
-                  currentStaff: args,
-                ),
-              );
-            }
-          } else if (settings.name == '/body-check') {
-              final args = settings.arguments;
-              if (args is Map<String, dynamic>) {
-                final firestoreService = args['firestoreService'] as FirestoreService?;
-                final child = args['child'] as ChildProfile?;
+  const _StaffDashboardLoader({
+    required this.staffId,
+    required this.localeNotifier,
+  });
 
-              if (firestoreService != null && child != null) {
-                return MaterialPageRoute(
-                  builder: (context) => BodyCheckPage(
-                    firestoreService: firestoreService,
-                    child: child,
-                    ),
+  Future<StaffProfile?> _loadStaffProfile() async {
+    final firestoreService = FirestoreService();
+
+    await firestoreService.restoreClassroomSessionFromAuthIfNeeded();
+
+    final staffProfiles = await firestoreService.getCurrentStaffProfiles().first;
+
+    for (final staff in staffProfiles) {
+      if (staff.id == staffId) {
+        return staff;
+      }
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<StaffProfile?>(
+      future: _loadStaffProfile(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final profile = snapshot.data;
+
+        if (profile == null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Staff Profile Not Found'),
+            ),
+            body: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/profiles',
+                    (route) => false,
                   );
-                }
-              }
-            } else if (settings.name == '/body-check-overview') {
-                final args = settings.arguments;
-                if (args is Map<String, dynamic>) {
-                  final firestoreService = args['firestoreService'] as FirestoreService?;
-                  final teacherUid = args['teacherUid'] as String?;
-
-                if (firestoreService != null && teacherUid != null) {
-                  return MaterialPageRoute(
-                    builder: (context) => BodyCheckOverviewPage(
-                      firestoreService: firestoreService,
-                      teacherUid: teacherUid,
-                      ),
-                    );
-                  }
-                }
-              } else if (settings.name == '/today-overview') {
-                  final args = settings.arguments;
-
-                    if (args is StaffProfile) {
-                      return MaterialPageRoute(
-                        builder: (context) => TodayOverviewPage(
-                        staffProfile: args,
-                    ),
-                  );
-                }
-              }
-
-            return MaterialPageRoute(
-              builder: (context) => Scaffold(
-                appBar: AppBar(title: const Text("Error")),
-                body: const Center(
-                  child: Text("Invalid route or missing arguments."),
-                ),
+                },
+                child: const Text('Return to Profiles'),
               ),
-            );
-          },
+            ),
+          );
+        }
+
+        return StaffProfileDashboard(
+          profile: profile,
+          localeNotifier: localeNotifier,
+        );
+      },
+    );
+  }
+}
+
+class _ChildDashboardLoader extends StatelessWidget {
+  final String childId;
+  final LocaleNotifier localeNotifier;
+
+  const _ChildDashboardLoader({
+    required this.childId,
+    required this.localeNotifier,
+  });
+
+  Future<ChildProfile?> _loadChildProfile() async {
+    final firestoreService = FirestoreService();
+
+    await firestoreService.restoreClassroomSessionFromAuthIfNeeded();
+
+    final childProfiles = await firestoreService.getCurrentChildProfiles().first;
+
+    for (final child in childProfiles) {
+      if (child.id == childId) {
+        return child;
+      }
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<ChildProfile?>(
+      future: _loadChildProfile(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final profile = snapshot.data;
+
+        if (profile == null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Child Profile Not Found'),
+            ),
+            body: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/profiles',
+                    (route) => false,
+                  );
+                },
+                child: const Text('Return to Profiles'),
+              ),
+            ),
+          );
+        }
+
+        return ChildProfileDashboard(
+          profile: profile,
+          firestoreService: FirestoreService(),
+          localeNotifier: localeNotifier,
         );
       },
     );
