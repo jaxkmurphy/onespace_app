@@ -19,12 +19,16 @@ class BodyCheckOverviewPage extends StatefulWidget {
   });
 
   @override
-  State<BodyCheckOverviewPage> createState() => _BodyCheckOverviewPageState();
+  State<BodyCheckOverviewPage> createState() =>
+      _BodyCheckOverviewPageState();
 }
 
-class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
+class _BodyCheckOverviewPageState
+    extends State<BodyCheckOverviewPage> {
   BodyCheckFilter _statusFilter = BodyCheckFilter.all;
   String _selectedChild = 'All';
+
+  final Set<String> _busyReports = {};
 
   String _painLabel(int level) {
     switch (level) {
@@ -39,7 +43,7 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
     }
   }
 
-  Color _painColor(int level) {
+  Color _painColour(int level) {
     switch (level) {
       case 1:
         return Colors.orange;
@@ -53,98 +57,436 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
   }
 
   String _formatTime(DateTime time) {
-    return '${time.day}/${time.month}/${time.year} '
-        '${time.hour.toString().padLeft(2, '0')}:'
-        '${time.minute.toString().padLeft(2, '0')}';
+    final localTime = time.toLocal();
+
+    return '${localTime.day.toString().padLeft(2, '0')}/'
+        '${localTime.month.toString().padLeft(2, '0')}/'
+        '${localTime.year} at '
+        '${localTime.hour.toString().padLeft(2, '0')}:'
+        '${localTime.minute.toString().padLeft(2, '0')}';
   }
 
-  List<BodyCheckReport> _applyFilters(List<BodyCheckReport> reports) {
-    return reports.where((report) {
+  List<BodyCheckReport> _filterAndSortReports(
+    List<BodyCheckReport> reports,
+  ) {
+    final filtered = reports.where((report) {
       final matchesStatus = switch (_statusFilter) {
         BodyCheckFilter.all => true,
         BodyCheckFilter.unchecked => !report.checked,
         BodyCheckFilter.checked => report.checked,
       };
 
-      final matchesChild =
-          _selectedChild == 'All' || report.childName == _selectedChild;
+      final matchesChild = _selectedChild == 'All' ||
+          report.childName == _selectedChild;
 
       return matchesStatus && matchesChild;
     }).toList();
+
+    filtered.sort((first, second) {
+      if (first.checked != second.checked) {
+        return first.checked ? 1 : -1;
+      }
+
+      if (!first.checked &&
+          first.painLevel != second.painLevel) {
+        return second.painLevel.compareTo(first.painLevel);
+      }
+
+      return second.timestamp.compareTo(first.timestamp);
+    });
+
+    return filtered;
   }
 
-  Future<void> _markChecked(BodyCheckReport report) async {
+  Future<void> _markChecked(
+    BodyCheckReport report,
+  ) async {
     final noteController = TextEditingController();
 
     final note = await showDialog<String>(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Mark as Checked'),
-          content: TextField(
-            controller: noteController,
-            maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Optional staff note',
-              border: OutlineInputBorder(),
-            ),
+          icon: const Icon(
+            Icons.health_and_safety_rounded,
+            size: 44,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, noteController.text.trim());
-              },
-              child: const Text('Mark Checked'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (note == null) return;
-
-    await widget.firestoreService.markCurrentBodyCheckReportChecked(
-      reportId: report.id,
-      checkedNote: note,
-    );
-  }
-
-  Future<void> _deleteReport(BodyCheckReport report) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Delete Report'),
-          content: Text(
-            'Delete this Body Check report for ${report.childName}?',
+          title: Text(
+            'Check ${report.childName}’s Report',
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+          content: SizedBox(
+            width: 480,
+            child: TextField(
+              controller: noteController,
+              maxLength: 240,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                labelText: 'Optional staff note',
+                hintText:
+                    'Record what was checked or what support was given.',
+                border: OutlineInputBorder(),
               ),
             ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Cancel'),
+            ),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.pop(
+                  dialogContext,
+                  noteController.text.trim(),
+                );
+              },
+              icon: const Icon(Icons.check_rounded),
+              label: const Text('Mark Checked'),
+            ),
           ],
         );
       },
     );
 
-    if (confirmed != true) return;
+    await Future<void>.delayed(
+      const Duration(milliseconds: 350),
+    );
 
-    await widget.firestoreService.deleteCurrentBodyCheckReport(report.id);
+    noteController.dispose();
+
+    if (note == null || !mounted) return;
+
+    setState(() {
+      _busyReports.add(report.id);
+    });
+
+    try {
+      await widget.firestoreService
+          .markCurrentBodyCheckReportChecked(
+        reportId: report.id,
+        checkedNote: note,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${report.childName}’s report was marked as checked.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'The report could not be updated.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busyReports.remove(report.id);
+        });
+      }
+    }
   }
 
-  Widget _buildFilters(List<BodyCheckReport> reports) {
+  Future<void> _deleteReport(
+    BodyCheckReport report,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          icon: const Icon(
+            Icons.delete_outline_rounded,
+            color: Colors.red,
+            size: 44,
+          ),
+          title: const Text('Delete Report?'),
+          content: Text(
+            'Delete this Body Check report for '
+            '${report.childName}?\n\n'
+            'This cannot be undone.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, false);
+              },
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(dialogContext, true);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    setState(() {
+      _busyReports.add(report.id);
+    });
+
+    try {
+      await widget.firestoreService
+          .deleteCurrentBodyCheckReport(report.id);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('The report could not be deleted.'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busyReports.remove(report.id);
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Body Check Reports'),
+      ),
+      body: SafeArea(
+        child: StreamBuilder<List<BodyCheckReport>>(
+          stream:
+              widget.firestoreService.getCurrentBodyCheckReports(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return _buildLoadError();
+            }
+
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            final reports = snapshot.data!;
+            final filteredReports =
+                _filterAndSortReports(reports);
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(18),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 1000,
+                  ),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.stretch,
+                    children: [
+                      _buildHeader(reports),
+                      const SizedBox(height: 18),
+                      if (reports.isNotEmpty) ...[
+                        _buildFilters(reports),
+                        const SizedBox(height: 18),
+                      ],
+                      _buildResultsHeading(
+                        filteredReports.length,
+                      ),
+                      const SizedBox(height: 12),
+                      if (reports.isEmpty)
+                        _buildEmptyState()
+                      else if (filteredReports.isEmpty)
+                        _buildNoMatches()
+                      else
+                        ...filteredReports.map(
+                          _buildReportCard,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+    List<BodyCheckReport> reports,
+  ) {
+    final unchecked =
+        reports.where((report) => !report.checked).length;
+
+    final urgent = reports.where((report) {
+      return !report.checked && report.painLevel == 3;
+    }).length;
+
+    final checked =
+        reports.where((report) => report.checked).length;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(22),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth >= 720;
+
+            final introduction = Row(
+              children: [
+                Container(
+                  width: 62,
+                  height: 62,
+                  decoration: BoxDecoration(
+                    color: Colors.red.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.health_and_safety_rounded,
+                    size: 36,
+                    color: Colors.red,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Classroom Body Checks',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Review reports and record when support has been provided.',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+
+            final statistics = Wrap(
+              alignment: WrapAlignment.end,
+              spacing: 9,
+              runSpacing: 9,
+              children: [
+                _buildStatistic(
+                  label: 'Urgent',
+                  value: urgent,
+                  colour: Colors.red,
+                  icon: Icons.priority_high_rounded,
+                ),
+                _buildStatistic(
+                  label: 'Unchecked',
+                  value: unchecked,
+                  colour: Colors.orange,
+                  icon: Icons.pending_actions_rounded,
+                ),
+                _buildStatistic(
+                  label: 'Checked',
+                  value: checked,
+                  colour: Colors.green,
+                  icon: Icons.check_circle_rounded,
+                ),
+              ],
+            );
+
+            if (isWide) {
+              return Row(
+                children: [
+                  Expanded(child: introduction),
+                  const SizedBox(width: 20),
+                  statistics,
+                ],
+              );
+            }
+
+            return Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.stretch,
+              children: [
+                introduction,
+                const SizedBox(height: 18),
+                statistics,
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatistic({
+    required String label,
+    required int value,
+    required Color colour,
+    required IconData icon,
+  }) {
+    return Container(
+      constraints: const BoxConstraints(
+        minWidth: 105,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 13,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: colour.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colour.withValues(alpha: 0.28),
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            color: colour,
+            size: 25,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value.toString(),
+            style: TextStyle(
+              color: colour,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilters(
+    List<BodyCheckReport> reports,
+  ) {
     final childNames = reports
         .map((report) => report.childName)
         .where((name) => name.trim().isNotEmpty)
@@ -154,142 +496,441 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
 
     final dropdownItems = ['All', ...childNames];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SegmentedButton<BodyCheckFilter>(
-          segments: const [
-            ButtonSegment(
-              value: BodyCheckFilter.all,
-              label: Text('All'),
-              icon: Icon(Icons.list),
-            ),
-            ButtonSegment(
-              value: BodyCheckFilter.unchecked,
-              label: Text('Unchecked'),
-              icon: Icon(Icons.warning_amber),
-            ),
-            ButtonSegment(
-              value: BodyCheckFilter.checked,
-              label: Text('Checked'),
-              icon: Icon(Icons.check_circle),
-            ),
-          ],
-          selected: {_statusFilter},
-          onSelectionChanged: (selected) {
-            setState(() {
-              _statusFilter = selected.first;
-            });
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final statusSelector =
+                SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SegmentedButton<BodyCheckFilter>(
+                segments: const [
+                  ButtonSegment(
+                    value: BodyCheckFilter.all,
+                    label: Text('All'),
+                    icon: Icon(Icons.list_rounded),
+                  ),
+                  ButtonSegment(
+                    value: BodyCheckFilter.unchecked,
+                    label: Text('Unchecked'),
+                    icon: Icon(
+                      Icons.warning_amber_rounded,
+                    ),
+                  ),
+                  ButtonSegment(
+                    value: BodyCheckFilter.checked,
+                    label: Text('Checked'),
+                    icon: Icon(
+                      Icons.check_circle_rounded,
+                    ),
+                  ),
+                ],
+                selected: {_statusFilter},
+                onSelectionChanged: (selected) {
+                  setState(() {
+                    _statusFilter = selected.first;
+                  });
+                },
+              ),
+            );
+
+            final childSelector =
+                DropdownButtonFormField<String>(
+              initialValue:
+                  dropdownItems.contains(_selectedChild)
+                      ? _selectedChild
+                      : 'All',
+              decoration: const InputDecoration(
+                labelText: 'Filter by child',
+                prefixIcon: Icon(Icons.person_rounded),
+                border: OutlineInputBorder(),
+              ),
+              items: dropdownItems.map((name) {
+                return DropdownMenuItem(
+                  value: name,
+                  child: Text(name),
+                );
+              }).toList(),
+              onChanged: (value) {
+                if (value == null) return;
+
+                setState(() {
+                  _selectedChild = value;
+                });
+              },
+            );
+
+            if (constraints.maxWidth >= 700) {
+              return Row(
+                children: [
+                  Expanded(child: statusSelector),
+                  const SizedBox(width: 16),
+                  SizedBox(
+                    width: 270,
+                    child: childSelector,
+                  ),
+                ],
+              );
+            }
+
+            return Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.stretch,
+              children: [
+                statusSelector,
+                const SizedBox(height: 14),
+                childSelector,
+              ],
+            );
           },
         ),
-        const SizedBox(height: 12),
-        DropdownButtonFormField<String>(
-          initialValue: dropdownItems.contains(_selectedChild)
-              ? _selectedChild
-              : 'All',
-          decoration: const InputDecoration(
-            labelText: 'Filter by child',
-            border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildResultsHeading(int count) {
+    return Row(
+      children: [
+        Text(
+          'Reports',
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(width: 9),
+        Chip(
+          label: Text(
+            count.toString(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          items: dropdownItems.map((name) {
-            return DropdownMenuItem(
-              value: name,
-              child: Text(name),
-            );
-          }).toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            setState(() {
-              _selectedChild = value;
-            });
-          },
         ),
       ],
     );
   }
 
-  Widget _buildReportCard(BodyCheckReport report) {
+  Widget _buildReportCard(
+    BodyCheckReport report,
+  ) {
+    final painColour = _painColour(report.painLevel);
+    final isBusy = _busyReports.contains(report.id);
+    final urgent =
+        !report.checked && report.painLevel == 3;
+
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: _painColor(report.painLevel),
-                  child: Text(
-                    report.painLevel.toString(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    report.childName,
-                    style: const TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.bold,
+      margin: const EdgeInsets.only(bottom: 14),
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: report.checked
+                  ? Colors.green
+                  : painColour,
+              width: 7,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 27,
+                    backgroundColor:
+                        painColour.withValues(alpha: 0.15),
+                    foregroundColor: painColour,
+                    child: Text(
+                      report.painLevel.toString(),
+                      style: const TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                if (report.checked)
-                  const Icon(Icons.check_circle, color: Colors.green)
-                else
-                  const Icon(Icons.warning_amber, color: Colors.orange),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Body part: ${report.bodyPart}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Pain level: ${_painLabel(report.painLevel)}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Pain type: ${report.painType}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Sent: ${_formatTime(report.timestamp)}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            if (report.checkedAt != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Checked: ${_formatTime(report.checkedAt!)}',
-                style: const TextStyle(fontSize: 15),
-              ),
-            ],
-            if (report.checkedNote.trim().isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Staff note: ${report.checkedNote}',
-                style: const TextStyle(fontSize: 15),
-              ),
-            ],
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                if (!report.checked)
+                  const SizedBox(width: 14),
                   Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _markChecked(report),
-                      icon: const Icon(Icons.check),
-                      label: const Text('Mark Checked'),
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          report.childName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          _formatTime(report.timestamp),
+                        ),
+                      ],
                     ),
                   ),
-                if (!report.checked) const SizedBox(width: 8),
-                IconButton(
-                  tooltip: 'Delete report',
-                  onPressed: () => _deleteReport(report),
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  _buildStatusChip(report),
+                ],
+              ),
+              if (urgent) ...[
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.all(13),
+                  decoration: BoxDecoration(
+                    color:
+                        Colors.red.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color:
+                          Colors.red.withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.priority_high_rounded,
+                        color: Colors.red,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'This child selected “Hurts a lot” and has not been checked.',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 9,
+                runSpacing: 9,
+                children: [
+                  _buildInformationChip(
+                    icon: Icons.location_on_rounded,
+                    label: report.bodyPart,
+                    colour: Colors.blue,
+                  ),
+                  _buildInformationChip(
+                    icon:
+                        Icons.sentiment_dissatisfied_rounded,
+                    label:
+                        _painLabel(report.painLevel),
+                    colour: painColour,
+                  ),
+                  _buildInformationChip(
+                    icon: Icons.healing_rounded,
+                    label: report.painType,
+                    colour: Colors.deepPurple,
+                  ),
+                ],
+              ),
+              if (report.checked) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.green
+                        .withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: Text(
+                              report.checkedAt == null
+                                  ? 'Checked by staff'
+                                  : 'Checked ${_formatTime(report.checkedAt!)}',
+                              style: const TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (report.checkedNote
+                          .trim()
+                          .isNotEmpty) ...[
+                        const SizedBox(height: 9),
+                        Text(report.checkedNote),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  if (!report.checked)
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: isBusy
+                            ? null
+                            : () => _markChecked(report),
+                        icon: isBusy
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child:
+                                    CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.check_rounded,
+                              ),
+                        label: const Text(
+                          'Mark Checked',
+                        ),
+                      ),
+                    ),
+                  if (!report.checked)
+                    const SizedBox(width: 10),
+                  IconButton.filledTonal(
+                    tooltip: 'Delete report',
+                    onPressed: isBusy
+                        ? null
+                        : () => _deleteReport(report),
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(
+    BodyCheckReport report,
+  ) {
+    final colour =
+        report.checked ? Colors.green : Colors.orange;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 11,
+        vertical: 7,
+      ),
+      decoration: BoxDecoration(
+        color: colour.withValues(alpha: 0.11),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colour.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            report.checked
+                ? Icons.check_circle_rounded
+                : Icons.pending_rounded,
+            color: colour,
+            size: 18,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            report.checked ? 'Checked' : 'Needs checking',
+            style: TextStyle(
+              color: colour,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInformationChip({
+    required IconData icon,
+    required String label,
+    required Color colour,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 9,
+      ),
+      decoration: BoxDecoration(
+        color: colour.withValues(alpha: 0.09),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: colour,
+            size: 20,
+          ),
+          const SizedBox(width: 7),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(38),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.health_and_safety_outlined,
+              size: 64,
+              color: Colors.green,
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'No Body Check reports yet',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 7),
+            const Text(
+              'Reports sent by children will appear here.',
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -297,62 +938,48 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Body Check Reports'),
+  Widget _buildNoMatches() {
+    return const Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: EdgeInsets.all(30),
+        child: Column(
+          children: [
+            Icon(
+              Icons.filter_alt_off_rounded,
+              size: 52,
+              color: Colors.grey,
+            ),
+            SizedBox(height: 12),
+            Text(
+              'No reports match these filters.',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
-      body: StreamBuilder<List<BodyCheckReport>>(
-        stream: widget.firestoreService.getCurrentBodyCheckReports(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('Something went wrong loading reports.'),
-            );
-          }
+    );
+  }
 
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final reports = snapshot.data!;
-          final filteredReports = _applyFilters(reports);
-
-          if (reports.isEmpty) {
-            return const Center(
-              child: Text(
-                'No Body Check reports yet.',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _buildFilters(reports),
-              const SizedBox(height: 16),
-              Text(
-                '${filteredReports.length} report(s) shown',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 12),
-              if (filteredReports.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.only(top: 32),
-                  child: Center(
-                    child: Text(
-                      'No reports match these filters.',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                )
-              else
-                ...filteredReports.map(_buildReportCard),
-            ],
-          );
-        },
+  Widget _buildLoadError() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 58,
+              color: Colors.red,
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Something went wrong loading Body Check reports.',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

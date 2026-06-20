@@ -1,10 +1,199 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/body_check_report.dart';
 import '../../models/incident_log_entry.dart';
+import '../../models/circle_time_day.dart';
+import '../../models/point_history_entry.dart';
+import '../../models/point_reward.dart';
 import 'firestore_base.dart';
 
 mixin WellbeingFirestoreService on FirestoreBase {
   // ZONES + POINTS
+
+  CollectionReference<Map<String, dynamic>> _currentPointHistoryRef(
+  String childId,
+) {
+  return currentChildDoc(childId).collection('point_history');
+}
+
+Stream<List<PointHistoryEntry>> getCurrentPointHistory(
+  String childId,
+) {
+  return _currentPointHistoryRef(childId)
+      .orderBy('createdAt', descending: true)
+      .limit(50)
+      .snapshots()
+      .map(
+        (snapshot) => snapshot.docs
+            .map(
+              (doc) => PointHistoryEntry.fromMap(
+                doc.id,
+                doc.data(),
+              ),
+            )
+            .toList(),
+      );
+}
+
+  CollectionReference<Map<String, dynamic>> _currentPointRewardsRef() {
+  return currentCollection('point_rewards');
+}
+
+Stream<List<PointReward>> getCurrentPointRewards({
+  bool activeOnly = false,
+}) {
+  return _currentPointRewardsRef().snapshots().map((snapshot) {
+    final rewards = snapshot.docs
+        .map(
+          (doc) => PointReward.fromMap(
+            doc.id,
+            doc.data(),
+          ),
+        )
+        .where(
+          (reward) => !activeOnly || reward.active,
+        )
+        .toList();
+
+    rewards.sort((first, second) {
+      if (first.active != second.active) {
+        return first.active ? -1 : 1;
+      }
+
+      final costComparison = first.cost.compareTo(second.cost);
+
+      if (costComparison != 0) {
+        return costComparison;
+      }
+
+      return first.name.compareTo(second.name);
+    });
+
+    return rewards;
+  });
+}
+
+Future<String> addCurrentPointReward({
+  required String name,
+  required String description,
+  required int cost,
+  required String iconName,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (name.trim().isEmpty) {
+    throw ArgumentError('A reward name is required.');
+  }
+
+  if (cost <= 0) {
+    throw ArgumentError('Reward cost must be greater than zero.');
+  }
+
+  final rewardRef = _currentPointRewardsRef().doc();
+
+  await rewardRef.set({
+    'name': name.trim(),
+    'description': description.trim(),
+    'cost': cost,
+    'iconName': iconName,
+    'active': true,
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+
+  return rewardRef.id;
+}
+
+Future<void> updateCurrentPointReward(
+  PointReward reward,
+) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (reward.name.trim().isEmpty) {
+    throw ArgumentError('A reward name is required.');
+  }
+
+  if (reward.cost <= 0) {
+    throw ArgumentError('Reward cost must be greater than zero.');
+  }
+
+  await _currentPointRewardsRef().doc(reward.id).update(
+        reward.toMap(),
+      );
+}
+
+Future<void> setCurrentPointRewardActive({
+  required String rewardId,
+  required bool active,
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  await _currentPointRewardsRef().doc(rewardId).update({
+    'active': active,
+  });
+}
+
+Future<int> addCurrentPointEntry({
+  required String childId,
+  required int amount,
+  required String reason,
+  String note = '',
+}) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  if (amount == 0) {
+    throw ArgumentError('Point amount cannot be zero.');
+  }
+
+  if (reason.trim().isEmpty) {
+    throw ArgumentError('A reason is required.');
+  }
+
+  final childRef = currentChildDoc(childId);
+  final historyRef = _currentPointHistoryRef(childId).doc();
+
+  return db.runTransaction<int>((transaction) async {
+    final childSnapshot = await transaction.get(childRef);
+    final childData = childSnapshot.data();
+
+    if (!childSnapshot.exists || childData == null) {
+      throw StateError('Child profile could not be found.');
+    }
+
+    final currentPoints =
+        (childData['points'] as num?)?.toInt() ?? 0;
+
+    final requestedBalance = currentPoints + amount;
+    final newBalance = requestedBalance < 0
+        ? 0
+        : requestedBalance;
+
+    final actualChange = newBalance - currentPoints;
+
+    if (actualChange == 0) {
+      throw StateError('The child already has zero points.');
+    }
+
+    transaction.update(
+      childRef,
+      {
+        'points': newBalance,
+      },
+    );
+
+    transaction.set(
+      historyRef,
+      {
+        'childId': childId,
+        'amount': actualChange,
+        'balanceAfter': newBalance,
+        'reason': reason.trim(),
+        'note': note.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+      },
+    );
+
+    return newBalance;
+  });
+}
 
   Future<void> setChildZone(
     String teacherUid,
@@ -85,6 +274,38 @@ mixin WellbeingFirestoreService on FirestoreBase {
   }
 
   // CIRCLE TIME
+
+  DocumentReference<Map<String, dynamic>> _currentCircleTimeDayRef(
+  String dateKey,
+) {
+  return currentCollection('circle_time_days').doc(dateKey);
+}
+
+Stream<CircleTimeDay> getCurrentCircleTimeDay(String dateKey) {
+  return _currentCircleTimeDayRef(dateKey).snapshots().map((snapshot) {
+    final data = snapshot.data();
+
+    if (!snapshot.exists || data == null) {
+      return CircleTimeDay(id: dateKey);
+    }
+
+    return CircleTimeDay.fromMap(snapshot.id, data);
+  });
+}
+
+Future<void> saveCurrentCircleTimeDay(
+  CircleTimeDay day,
+) async {
+  await restoreClassroomSessionFromAuthIfNeeded();
+
+  await _currentCircleTimeDayRef(day.id).set(
+    {
+      ...day.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    },
+    SetOptions(merge: true),
+  );
+}
 
   Future<void> updateStaffCircleTimePosition({
     required String teacherUid,
