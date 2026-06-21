@@ -409,7 +409,50 @@ Future<void> saveCurrentCircleTimeDay(
     });
   }
 
-  // INCIDENT LOG
+    // INCIDENT LOG
+
+  Map<String, dynamic> _newIncidentData(
+    IncidentLogEntry entry,
+  ) {
+    return {
+      ...entry.toMap(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+      'updatedByStaffId': entry.staffId,
+      'updatedByStaffName': entry.staffName,
+      'isArchived': false,
+    };
+  }
+
+  Map<String, dynamic> _updatedIncidentData({
+    required IncidentLogEntry entry,
+    required String updatedByStaffId,
+    required String updatedByStaffName,
+  }) {
+    return {
+      ...entry.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+      'updatedByStaffId': updatedByStaffId,
+      'updatedByStaffName': updatedByStaffName,
+    };
+  }
+
+  Map<String, dynamic> _archivedIncidentData({
+    required String reason,
+    required String staffId,
+    required String staffName,
+  }) {
+    return {
+      'isArchived': true,
+      'archiveReason': reason,
+      'archivedAt': FieldValue.serverTimestamp(),
+      'archivedByStaffId': staffId,
+      'archivedByStaffName': staffName,
+      'updatedAt': FieldValue.serverTimestamp(),
+      'updatedByStaffId': staffId,
+      'updatedByStaffName': staffName,
+    };
+  }
 
   Future<void> addIncidentLogEntry({
     required String teacherUid,
@@ -418,28 +461,7 @@ Future<void> saveCurrentCircleTimeDay(
     await teacherCollection(
       teacherUid: teacherUid,
       collectionName: 'incident_logs',
-    ).add(entry.toMap());
-  }
-
-  Stream<List<IncidentLogEntry>> getIncidentLogEntries(String teacherUid) {
-    return teacherCollection(
-      teacherUid: teacherUid,
-      collectionName: 'incident_logs',
-    ).orderBy('timestamp', descending: true).snapshots().map(
-          (snapshot) => snapshot.docs
-              .map((doc) => IncidentLogEntry.fromMap(doc.id, doc.data()))
-              .toList(),
-        );
-  }
-
-  Future<void> deleteIncidentLogEntry({
-    required String teacherUid,
-    required String incidentId,
-  }) async {
-    await teacherCollection(
-      teacherUid: teacherUid,
-      collectionName: 'incident_logs',
-    ).doc(incidentId).delete();
+    ).add(_newIncidentData(entry));
   }
 
   Future<void> addClassroomIncidentLogEntry({
@@ -451,10 +473,39 @@ Future<void> saveCurrentCircleTimeDay(
       schoolId: schoolId,
       classroomId: classroomId,
       collectionName: 'incident_logs',
-    ).add(entry.toMap());
+    ).add(_newIncidentData(entry));
   }
 
-  Stream<List<IncidentLogEntry>> getClassroomIncidentLogEntries({
+  Future<void> addCurrentIncidentLogEntry(
+    IncidentLogEntry entry,
+  ) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentIncidentLogsRef().add(
+      _newIncidentData(entry),
+    );
+  }
+
+  Stream<List<IncidentLogEntry>> getIncidentLogEntries(
+    String teacherUid,
+  ) {
+    return teacherCollection(
+      teacherUid: teacherUid,
+      collectionName: 'incident_logs',
+    ).orderBy('timestamp', descending: true).snapshots().map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => IncidentLogEntry.fromMap(
+                  doc.id,
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<IncidentLogEntry>>
+      getClassroomIncidentLogEntries({
     required String schoolId,
     required String classroomId,
   }) {
@@ -464,9 +515,154 @@ Future<void> saveCurrentCircleTimeDay(
       collectionName: 'incident_logs',
     ).orderBy('timestamp', descending: true).snapshots().map(
           (snapshot) => snapshot.docs
-              .map((doc) => IncidentLogEntry.fromMap(doc.id, doc.data()))
+              .map(
+                (doc) => IncidentLogEntry.fromMap(
+                  doc.id,
+                  doc.data(),
+                ),
+              )
               .toList(),
         );
+  }
+
+  Stream<List<IncidentLogEntry>>
+      getCurrentIncidentLogEntries() {
+    return currentIncidentLogsRef()
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => IncidentLogEntry.fromMap(
+                  doc.id,
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Future<void> updateIncidentLogEntry({
+    required String teacherUid,
+    required IncidentLogEntry entry,
+    required String updatedByStaffId,
+    required String updatedByStaffName,
+  }) async {
+    await teacherCollection(
+      teacherUid: teacherUid,
+      collectionName: 'incident_logs',
+    ).doc(entry.id).update(
+          _updatedIncidentData(
+            entry: entry,
+            updatedByStaffId: updatedByStaffId,
+            updatedByStaffName: updatedByStaffName,
+          ),
+        );
+  }
+
+  Future<void> updateClassroomIncidentLogEntry({
+    required String schoolId,
+    required String classroomId,
+    required IncidentLogEntry entry,
+    required String updatedByStaffId,
+    required String updatedByStaffName,
+  }) async {
+    await classroomCollection(
+      schoolId: schoolId,
+      classroomId: classroomId,
+      collectionName: 'incident_logs',
+    ).doc(entry.id).update(
+          _updatedIncidentData(
+            entry: entry,
+            updatedByStaffId: updatedByStaffId,
+            updatedByStaffName: updatedByStaffName,
+          ),
+        );
+  }
+
+  Future<void> updateCurrentIncidentLogEntry({
+    required IncidentLogEntry entry,
+    required String updatedByStaffId,
+    required String updatedByStaffName,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentIncidentLogsRef().doc(entry.id).update(
+          _updatedIncidentData(
+            entry: entry,
+            updatedByStaffId: updatedByStaffId,
+            updatedByStaffName: updatedByStaffName,
+          ),
+        );
+  }
+
+  Future<void> archiveIncidentLogEntry({
+    required String teacherUid,
+    required String incidentId,
+    required String reason,
+    required String staffId,
+    required String staffName,
+  }) async {
+    await teacherCollection(
+      teacherUid: teacherUid,
+      collectionName: 'incident_logs',
+    ).doc(incidentId).update(
+          _archivedIncidentData(
+            reason: reason,
+            staffId: staffId,
+            staffName: staffName,
+          ),
+        );
+  }
+
+  Future<void> archiveClassroomIncidentLogEntry({
+    required String schoolId,
+    required String classroomId,
+    required String incidentId,
+    required String reason,
+    required String staffId,
+    required String staffName,
+  }) async {
+    await classroomCollection(
+      schoolId: schoolId,
+      classroomId: classroomId,
+      collectionName: 'incident_logs',
+    ).doc(incidentId).update(
+          _archivedIncidentData(
+            reason: reason,
+            staffId: staffId,
+            staffName: staffName,
+          ),
+        );
+  }
+
+  Future<void> archiveCurrentIncidentLogEntry({
+    required String incidentId,
+    required String reason,
+    required String staffId,
+    required String staffName,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentIncidentLogsRef().doc(incidentId).update(
+          _archivedIncidentData(
+            reason: reason,
+            staffId: staffId,
+            staffName: staffName,
+          ),
+        );
+  }
+
+  // Retained temporarily for compatibility with the old Incident Log page.
+  // The upgraded interface will archive records instead.
+  Future<void> deleteIncidentLogEntry({
+    required String teacherUid,
+    required String incidentId,
+  }) async {
+    await teacherCollection(
+      teacherUid: teacherUid,
+      collectionName: 'incident_logs',
+    ).doc(incidentId).delete();
   }
 
   Future<void> deleteClassroomIncidentLogEntry({
@@ -481,25 +677,12 @@ Future<void> saveCurrentCircleTimeDay(
     ).doc(incidentId).delete();
   }
 
-  Future<void> addCurrentIncidentLogEntry(IncidentLogEntry entry) async {
+  Future<void> deleteCurrentIncidentLogEntry(
+    String incidentId,
+  ) async {
     await restoreClassroomSessionFromAuthIfNeeded();
 
-    await currentIncidentLogsRef().add(entry.toMap());
-  }
-
-  Stream<List<IncidentLogEntry>> getCurrentIncidentLogEntries() {
-    return currentIncidentLogsRef()
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => IncidentLogEntry.fromMap(doc.id, doc.data()))
-              .toList(),
-        );
-  }
-
-  Future<void> deleteCurrentIncidentLogEntry(String incidentId) async {
-    return currentIncidentLogsRef().doc(incidentId).delete();
+    await currentIncidentLogsRef().doc(incidentId).delete();
   }
 
   // BODY CHECK

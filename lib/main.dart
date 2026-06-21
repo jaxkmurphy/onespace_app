@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'l10n/app_localizations.dart';
 import 'auth_gate.dart';
 import 'firebase_options.dart';
 import 'locale_notifier.dart';
@@ -19,8 +18,8 @@ import 'pages/child_schedule_page.dart';
 import 'pages/circle_time_page.dart';
 import 'pages/classroom_details_page.dart';
 import 'pages/create_classroom_page.dart';
-import 'pages/first_then_child_page.dart';
-import 'pages/first_then_setup_page.dart';
+import 'pages/when_then_child_page.dart';
+import 'pages/when_then_setup_page.dart';
 import 'pages/handover_hub_page.dart';
 import 'pages/icon_reset_page.dart';
 import 'pages/points_overview_page.dart';
@@ -245,7 +244,21 @@ class _MyAppState extends State<MyApp> {
         }
         return _errorPage('Missing child profile.');
 
-      case '/quiz-create':
+        case '/quiz-create':
+        if (args is Map<String, dynamic>) {
+          final staffUid = args['staffUid'] as String?;
+          final quiz = args['quiz'] as Quiz?;
+
+          if (staffUid != null) {
+            return _page(
+              QuizCreationPage(
+                staffUid: staffUid,
+                existingQuiz: quiz,
+              ),
+            );
+          }
+        }
+
         if (args is StaffProfile) {
           return _page(
             QuizCreationPage(
@@ -303,21 +316,7 @@ class _MyAppState extends State<MyApp> {
         return _errorPage('Missing student quiz details.');
 
       case '/voice-lines':
-        if (args is Map<String, dynamic>) {
-          final firestoreService =
-              args['firestoreService'] as FirestoreService?;
-          final child = args['child'] as ChildProfile?;
-
-          if (firestoreService != null && child != null) {
-            return _page(
-              VoiceLinesPage(
-                firestoreService: firestoreService,
-                child: child,
-              ),
-            );
-          }
-        }
-        return _errorPage('Missing voice lines details.');
+      return _page(const VoiceLinesPage());
 
       case '/icon-reset':
         if (args is String) {
@@ -329,17 +328,17 @@ class _MyAppState extends State<MyApp> {
         }
         return _errorPage('Missing teacher ID.');
 
-      case '/first-then-setup':
+      case '/when-then-setup':
         if (args is String) {
           return _page(
-            FirstThenSetupPage(
+            WhenThenSetupPage(
               teacherUid: args,
             ),
           );
         }
         return _errorPage('Missing teacher ID.');
 
-      case '/first-then-child':
+      case '/when-then-child':
         if (args is Map<String, dynamic>) {
           final firestoreService =
               args['firestoreService'] as FirestoreService?;
@@ -347,14 +346,14 @@ class _MyAppState extends State<MyApp> {
 
           if (firestoreService != null && child != null) {
             return _page(
-              FirstThenChildPage(
+              WhenThenChildPage(
                 firestoreService: firestoreService,
                 child: child,
               ),
             );
           }
         }
-        return _errorPage('Missing First Then child details.');
+        return _errorPage('Missing When–Then child details.');
 
       case '/circle-time':
         if (args is Map<String, dynamic>) {
@@ -437,20 +436,13 @@ class _MyAppState extends State<MyApp> {
       valueListenable: localeNotifier,
       builder: (context, locale, child) {
         return MaterialApp(
-          title: 'OneSpace App',
+          onGenerateTitle: (context) {
+            return AppLocalizations.of(context)!.appTitle;
+          },
           theme: AppTheme.lightTheme,
           locale: locale,
-          supportedLocales: const [
-            Locale('en'),
-          ],
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          localeResolutionCallback: (locale, supportedLocales) {
-            return const Locale('en');
-          },
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           initialRoute: '/',
           routes: {
             '/': (context) => const AuthGate(),

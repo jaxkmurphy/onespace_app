@@ -4,20 +4,370 @@
   "settings": "Socruithe",
   "language": "Teanga",
   "selectLanguage": "Roghnaigh Teanga",
-  "pinUpdated": "Athraíodh an PIN",
+  "pinUpdated": "Nuashonraíodh an PIN",
   "savePin": "Sábháil PIN",
   "newPin": "PIN Nua",
-  "confirmPin": "Dearbhaigh an PIN",
-  "pinHint": "Caithfidh 4 dhigit a bheith sa PIN agus caithfidh siad a bheith mar an gcéanna",
+  "confirmPin": "Deimhnigh PIN",
+  "pinHint": "Caithfidh na PINanna a bheith mar an gcéanna agus 4 dhigit ar fad",
+
+  "cancel": "Cealaigh",
+  "save": "Sábháil",
+  "delete": "Scrios",
+  "edit": "Cuir in Eagar",
+  "add": "Cuir Leis",
+  "create": "Cruthaigh",
+  "close": "Dún",
+  "done": "Déanta",
+  "retry": "Bain Triail Eile As",
+  "loading": "Á Lódáil...",
+  "error": "Chuaigh rud éigin mícheart",
+  "all": "Uile",
+  "everyone": "Gach Duine",
+  "viewOnly": "Amharc amháin",
+  "untitled": "Gan Teideal",
+  "low": "Íseal",
+  "medium": "Meánach",
+  "high": "Ard",
+
   "zones_regulation": "Zóin Rialaithe",
   "points_overview": "Forbhreathnú Pointí",
   "view_schedule": "Féach ar an Sceideal",
-  "create_quiz": "Cruthaigh Tástáil",
-  "manage_quizzes": "Bainistigh Tástálacha",
+  "create_quiz": "Cruthaigh Tráth na gCeist",
+  "manage_quizzes": "Bainistigh Tráthanna na gCeist",
   "welcome": "Fáilte",
   "my_points": "Mo Phointí",
   "my_schedule": "Mo Sceideal",
-  "calming_sounds": "Fuaimeanna Ciúine",
-  "take_quiz": "Glac Tráth na gCeist",
-  "change_background": "Athraigh Dath an Chúlra"
+  "calming_sounds": "Fuaimeanna Suaimhneacha",
+  "take_quiz": "Déan Tráth na gCeist",
+  "change_background": "Athraigh Dath an Chúlra",
+
+  "handoverHub": "Mol Aistrithe Eolais",
+  "handoverStartHereTab": "Tosaigh Anseo",
+  "handoverStaffDocumentsTab": "Doiciméid Foirne",
+  "handoverQuickNotesTab": "Nótaí Tapa",
+  "readThisFirst": "Léigh é seo ar dtús",
+  "startHereDescription": "Ba cheart an t-eolas is tábhachtaí atá de dhíth láithreach ar mhúinteoir ionaid nó ar CRS a bheith sa rannóg seo.",
+  "noStartHereInformation": "Níl aon eolas curtha leis anseo fós.",
+  "editStartHere": "Cuir Tosaigh Anseo in Eagar",
+  "editStartHereTitle": "Cuir Tosaigh Anseo in Eagar",
+  "startHereHint": "Scríobh an t-eolas ranga is tábhachtaí anseo...",
+  "noStaffProfilesFound": "Níor aimsíodh aon phróifíl foirne.",
+  "staffDocumentTitle": "Doiciméad {staffName}",
+  "@staffDocumentTitle": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "editStaffDocument": "Cuir Doiciméad {staffName} in Eagar",
+  "@editStaffDocument": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutThisClass": "Maidir leis an Rang Seo",
+  "whatWorksWell": "Na Rudaí a Oibríonn go Maith",
+  "commonTriggers": "Spreagthaí Coitianta",
+  "successfulStrategies": "Straitéisí Rathúla",
+  "communicationTips": "Leideanna Cumarsáide",
+  "otherNotes": "Nótaí Eile",
+  "nothingAddedYet": "Níl aon rud curtha leis fós.",
+  "editQuickNote": "Cuir Nóta Tapa in Eagar",
+  "addQuickNote": "Cuir Nóta Tapa Leis",
+  "titleLabel": "Teideal",
+  "noteLabel": "Nóta",
+  "deleteNoteTitle": "Scrios an nóta?",
+  "deleteNoteMessage": "An bhfuil tú cinnte gur mhaith leat an nóta seo a scriosadh?",
+  "noQuickNotes": "Níl aon nótaí tapa ann fós.",
+  "quickNoteBy": "Le: {staffName}",
+  "@quickNoteBy": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "addNote": "Cuir Nóta Leis",
+  "handoverLoadError": "Níorbh fhéidir an t-eolas aistrithe a lódáil.",
+  "handoverSaveError": "Níorbh fhéidir an t-eolas aistrithe a shábháil.",
+  "handoverDeleteError": "Níorbh fhéidir an nóta a scriosadh.",
+  "lastUpdated": "Nuashonraithe go deireanach {date}",
+  "@lastUpdated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+"incidentLog": "Loga Teagmhas",
+"incidentLogClassroom": "Loga Teagmhas — {classroomName}",
+"@incidentLogClassroom": {
+  "placeholders": {
+    "classroomName": {
+      "type": "String"
+    }
+  }
+},
+"incidentLogIntro": "Cruthaigh agus athbhreithnigh taifid ar theagmhais sa seomra ranga.",
+"createIncident": "Cruthaigh Teagmhas",
+"viewIncidents": "Féach ar Theagmhais",
+"selectChild": "Roghnaigh Páiste",
+"severity": "Tromchúis",
+"useCurrentTime": "Úsáid an tAm Reatha (Réamhshocrú)",
+"manualTime": "Am de Láimh: {date}",
+"@manualTime": {
+  "placeholders": {
+    "date": {
+      "type": "String"
+    }
+  }
+},
+"resetToCurrentTime": "Athshocraigh go dtí an t-am reatha",
+"description": "Cur Síos",
+"actionTaken": "Gníomh a Rinneadh",
+"saveIncident": "Sábháil an Teagmhas",
+"saving": "Á Shábháil...",
+"pleaseSelectChild": "Roghnaigh páiste.",
+"enterIncidentDetails": "Cuir isteach cur síos agus an gníomh a rinneadh.",
+"incidentSaved": "Sábháladh an teagmhas.",
+"incidentUpdated": "Nuashonraíodh an teagmhas.",
+"incidentSaveFailed": "Níorbh fhéidir an teagmhas a shábháil.",
+"editIncident": "Cuir an Teagmhas in Eagar",
+"archiveIncident": "Cuir an Teagmhas sa Chartlann",
+"archiveIncidentQuestion": "Cuir an teagmhas seo sa chartlann?",
+"archiveIncidentMessage": "Cuir an teagmhas do {childName} sa chartlann? Fanfaidh sé sa stair iniúchta.",
+"@archiveIncidentMessage": {
+  "placeholders": {
+    "childName": {
+      "type": "String"
+    }
+  }
+},
+"archiveReason": "Cúis leis an gcartlannú",
+"incidentArchived": "Cuireadh an teagmhas sa chartlann.",
+"incidentArchiveFailed": "Níorbh fhéidir an teagmhas a chur sa chartlann.",
+"noIncidents": "Níl aon teagmhas logáilte fós.",
+"filterByChild": "Scag de réir páiste",
+"incidentsShown": "{count, plural, =0{Níl aon teagmhas á thaispeáint} one{Tá 1 teagmhas á thaispeáint} other{Tá {count} teagmhas á dtaispeáint}}",
+"@incidentsShown": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"noMatchingIncidents": "Ní mheaitseálann aon teagmhas na scagairí seo.",
+"severityLabel": "Tromchúis: {severity}",
+"@severityLabel": {
+  "placeholders": {
+    "severity": {
+      "type": "String"
+    }
+  }
+},
+"loggedBy": "Logáilte ag {staffName}",
+"@loggedBy": {
+  "placeholders": {
+    "staffName": {
+      "type": "String"
+    }
+  }
+},
+"incidentCategory": "Catagóir Teagmhais",
+"behaviour": "Iompar",
+"injury": "Gortú",
+"safety": "Sábháilteacht",
+"emotional": "Mothúchánach",
+"other": "Eile",
+"followUp": "Obair Leantach",
+"noFollowUp": "Níl obair leantach de dhíth",
+"followUpRequired": "Tá obair leantach de dhíth",
+"followUpCompleted": "Tá an obair leantach críochnaithe",
+"followUpNotes": "Nótaí Leantacha",
+"archivedIncidents": "Teagmhais sa Chartlann",
+"wordLearning": "Foghlaim Focal",
+"wordPractice": "Cleachtadh Focal",
+"wordProgress": "Dul Chun Cinn Focal",
+"createWordPack": "Cruthaigh Pacáiste Focal",
+"editWordPack": "Cuir Pacáiste Focal in Eagar",
+"deleteWordPack": "Scrios Pacáiste Focal",
+"deleteWordPackMessage": "Scrios “{packName}”? Scriosfar na focail atá ann freisin.",
+"@deleteWordPackMessage": {
+  "placeholders": {
+    "packName": {
+      "type": "String"
+    }
+  }
+},
+"packName": "Ainm an Phacáiste",
+"packDescription": "Cur Síos ar an bPacáiste",
+"packDescriptionHint": "Cad a chleachtfaidh na páistí sa phacáiste seo?",
+"createdBy": "Cruthaithe ag {staffName}",
+"@createdBy": {
+  "placeholders": {
+    "staffName": {
+      "type": "String"
+    }
+  }
+},
+"wordCount": "{count, plural, =0{Gan focail} one{1 fhocal} other{{count} focal}}",
+"@wordCount": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"assignedChildCount": "{count, plural, =0{Gan sannadh} one{Sannta do pháiste amháin} other{Sannta do {count} páiste}}",
+"@assignedChildCount": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"noWordPacks": "Níl aon phacáiste focal ann fós.",
+"createFirstWordPack": "Cruthaigh do chéad phacáiste focal chun tosú.",
+"addWord": "Cuir Focal Leis",
+"editWord": "Cuir Focal in Eagar",
+"deleteWord": "Scrios Focal",
+"deleteWordMessage": "Scrios an focal “{word}”?",
+"@deleteWordMessage": {
+  "placeholders": {
+    "word": {
+      "type": "String"
+    }
+  }
+},
+"word": "Focal",
+"emoji": "Emoji",
+"difficulty": "Deacracht",
+"easy": "Éasca",
+"hard": "Deacair",
+"assignChildren": "Sann Páistí",
+"saveAssignments": "Sábháil na Sannacháin",
+"noChildrenAvailable": "Níl aon phróifíl páiste ar fáil.",
+"noWords": "Níl aon fhocal curtha leis fós.",
+"addFirstWord": "Cuir dhá fhocal ar a laghad leis sula sannann tú an pacáiste seo.",
+"tapToPractise": "Tapáil chun cleachtadh",
+"noAssignedWordPacks": "Níl aon phacáiste focal sannta faoi láthair.",
+"packNeedsTwoWords": "Teastaíonn dhá fhocal ar a laghad sa phacáiste seo sular féidir é a chleachtadh.",
+"practiceComplete": "Cleachtadh Críochnaithe!",
+"practisedWords": "{count, plural, one{Chleacht tú 1 fhocal.} other{Chleacht tú {count} focal.}}",
+"@practisedWords": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"practiseAgain": "Cleachtaigh Arís",
+"backToPacks": "Ar Ais chuig na Pacáistí",
+"selectChildForProgress": "Roghnaigh páiste chun a ndul chun cinn a fheiceáil.",
+"noWordAttempts": "Níl aon iarracht cleachtaidh focal ann fós.",
+"totalAttempts": "Iarrachtaí iomlána: {count}",
+"@totalAttempts": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"correctAnswers": "Freagraí cearta: {count}",
+"@correctAnswers": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"accuracy": "Cruinneas: {percentage}%",
+"@accuracy": {
+  "placeholders": {
+    "percentage": {
+      "type": "String"
+    }
+  }
+},
+"wordBreakdown": "Miondealú Focal",
+"attemptSummary": "Iarrachtaí: {attempts} • Ceart: {correct} • Cruinneas: {accuracy}%",
+"@attemptSummary": {
+  "placeholders": {
+    "attempts": {
+      "type": "int"
+    },
+    "correct": {
+      "type": "int"
+    },
+    "accuracy": {
+      "type": "String"
+    }
+  }
+},
+"chooseMatchingWord": "Roghnaigh an focal a oireann don phictiúr.",
+"greatJob": "Maith thú!",
+"goodTry": "Iarracht mhaith!",
+"correctAnswerWas": "Ba é {answer} an freagra ceart.",
+"@correctAnswerWas": {
+  "placeholders": {
+    "answer": {
+      "type": "String"
+    }
+  }
+},
+"nextWord": "An Chéad Fhocal Eile",
+"finishPractice": "Críochnaigh an Cleachtadh",
+"loadingWords": "Tá do chuid focal á n-ullmhú...",
+"couldNotLoadWords": "Níorbh fhéidir an pacáiste focal seo a lódáil.",
+"packStyle": "Stíl an Phacáiste",
+"words": "Focail",
+"school": "Scoil",
+"home": "Baile",
+"animals": "Ainmhithe",
+"feelings": "Mothúcháin",
+"ourWorld": "An Domhan",
+"fun": "Spraoi",
+"selectedChildren": "Páistí Roghnaithe",
+"availableToEveryone": "Ar Fáil do Gach Duine",
+"couldNotLoadWordPacks": "Níorbh fhéidir na pacáistí focal a lódáil.",
+"wordPackCreated": "Cruthaíodh an pacáiste focal.",
+"wordPackDeleted": "Scriosadh an pacáiste focal.",
+"wordPackSaveFailed": "Níorbh fhéidir an pacáiste focal a shábháil.",
+"wordPackDeleteFailed": "Níorbh fhéidir an pacáiste focal a scriosadh.",
+"editPackDetails": "Cuir Sonraí an Phacáiste in Eagar",
+"wordPackUpdated": "Nuashonraíodh an pacáiste focal.",
+"assignmentsSaved": "Sábháladh na sannacháin.",
+"hint": "Leid",
+"hintOptional": "Leid chabhrach (roghnach)",
+"wordSaved": "Sábháladh an focal.",
+"wordDeleted": "Scriosadh an focal.",
+"wordSaveFailed": "Níorbh fhéidir an focal a shábháil.",
+"wordDeleteFailed": "Níorbh fhéidir an focal a scriosadh.",
+"wordProgressCount": "Focal {current} as {total}",
+"@wordProgressCount": {
+  "placeholders": {
+    "current": {
+      "type": "int"
+    },
+    "total": {
+      "type": "int"
+    }
+  }
+},
+"practiceScore": "{score} as {total} ceart",
+"@practiceScore": {
+  "placeholders": {
+    "score": {
+      "type": "int"
+    },
+    "total": {
+      "type": "int"
+    }
+  }
+},
+"showHint": "Taispeáin Leid"
+
 }

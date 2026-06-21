@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../models/first_then_option.dart';
+import '../../models/when_then_option.dart';
 import '../../models/quiz.dart';
 import '../../models/word_attempt.dart';
 import '../../models/word_item.dart';
@@ -7,237 +7,480 @@ import '../../models/word_pack.dart';
 import 'firestore_base.dart';
 
 mixin LearningFirestoreService on FirestoreBase {
-  // QUIZZES
 
-Future<void> addQuiz(Quiz quiz) async {
-  await db
-      .collection('teachers')
-      .doc(quiz.createdBy)
-      .collection('quizzes')
-      .doc(quiz.id)
-      .set(quiz.toMap());
-}
+    // QUIZZES
 
-Future<void> addClassroomQuiz({
-  required String schoolId,
-  required String classroomId,
-  required Quiz quiz,
-}) async {
-  await db
-      .collection('schools')
-      .doc(schoolId)
-      .collection('classrooms')
-      .doc(classroomId)
-      .collection('quizzes')
-      .doc(quiz.id)
-      .set(quiz.toMap());
-}
+  String generateQuizId() {
+    return db.collection('_generated_quiz_ids').doc().id;
+  }
 
-Future<void> addCurrentQuiz(Quiz quiz) async {
-  await restoreClassroomSessionFromAuthIfNeeded();
+  Map<String, dynamic> _quizDataForCreate(Quiz quiz) {
+    return {
+      ...quiz.toMap(),
+      'createdAt': quiz.createdAt == null
+          ? FieldValue.serverTimestamp()
+          : Timestamp.fromDate(quiz.createdAt!),
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+  }
 
-  if (hasClassroomSession) {
-    await addClassroomQuiz(
-      schoolId: session.requireSchoolId,
-      classroomId: session.requireClassroomId,
+  Map<String, dynamic> _quizDataForUpdate(Quiz quiz) {
+    return {
+      ...quiz.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+  }
+
+  Future<void> addQuiz(Quiz quiz) async {
+    await db
+        .collection('teachers')
+        .doc(quiz.createdBy)
+        .collection('quizzes')
+        .doc(quiz.id)
+        .set(_quizDataForCreate(quiz));
+  }
+
+  Future<void> addClassroomQuiz({
+    required String schoolId,
+    required String classroomId,
+    required Quiz quiz,
+  }) async {
+    await db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('quizzes')
+        .doc(quiz.id)
+        .set(_quizDataForCreate(quiz));
+  }
+
+  Future<void> addCurrentQuiz(Quiz quiz) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    if (hasClassroomSession) {
+      await addClassroomQuiz(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+        quiz: quiz,
+      );
+      return;
+    }
+
+    await addQuiz(quiz);
+  }
+
+  Future<void> updateQuiz({
+    required String teacherUid,
+    required Quiz quiz,
+  }) async {
+    await db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('quizzes')
+        .doc(quiz.id)
+        .update(_quizDataForUpdate(quiz));
+  }
+
+  Future<void> updateClassroomQuiz({
+    required String schoolId,
+    required String classroomId,
+    required Quiz quiz,
+  }) async {
+    await db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('quizzes')
+        .doc(quiz.id)
+        .update(_quizDataForUpdate(quiz));
+  }
+
+  Future<void> updateCurrentQuiz(Quiz quiz) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    if (hasClassroomSession) {
+      await updateClassroomQuiz(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+        quiz: quiz,
+      );
+      return;
+    }
+
+    await updateQuiz(
+      teacherUid: currentTeacherUid,
       quiz: quiz,
     );
-    return;
   }
 
-  await addQuiz(
-    quiz,
-  );
-}
-
-Stream<List<Quiz>> getQuizzes(String teacherUid) {
-  return db
-      .collection('teachers')
-      .doc(teacherUid)
-      .collection('quizzes')
-      .snapshots()
-      .map((snapshot) => snapshot.docs
+  Stream<List<Quiz>> getQuizzes(String teacherUid) {
+    return db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('quizzes')
+        .snapshots()
+        .map((snapshot) {
+      final quizzes = snapshot.docs
           .map((doc) => Quiz.fromMap(doc.id, doc.data()))
-          .toList());
-}
+          .toList();
 
-Stream<List<Quiz>> getClassroomQuizzes({
-  required String schoolId,
-  required String classroomId,
-}) {
-  return db
-      .collection('schools')
-      .doc(schoolId)
-      .collection('classrooms')
-      .doc(classroomId)
-      .collection('quizzes')
-      .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Quiz.fromMap(doc.id, doc.data()))
-          .toList());
-}
+      quizzes.sort((first, second) {
+        final firstDate = first.updatedAt ?? first.createdAt;
+        final secondDate = second.updatedAt ?? second.createdAt;
 
-Stream<List<Quiz>> getCurrentQuizzes() {
-  if (hasClassroomSession) {
-    return getClassroomQuizzes(
-      schoolId: session.requireSchoolId,
-      classroomId: session.requireClassroomId,
-    );
+        if (firstDate != null && secondDate != null) {
+          return secondDate.compareTo(firstDate);
+        }
+
+        return first.title
+            .toLowerCase()
+            .compareTo(second.title.toLowerCase());
+      });
+
+      return quizzes;
+    });
   }
 
-  return getQuizzes(currentTeacherUid);
-}
+  Stream<List<Quiz>> getClassroomQuizzes({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('quizzes')
+        .snapshots()
+        .map((snapshot) {
+      final quizzes = snapshot.docs
+          .map((doc) => Quiz.fromMap(doc.id, doc.data()))
+          .toList();
 
-Future<void> assignQuizToChild(
-  String teacherUid,
-  String childId,
-  String quizId,
-) async {
-  final childRef = db
-      .collection('teachers')
-      .doc(teacherUid)
-      .collection('child_profiles')
-      .doc(childId);
+      quizzes.sort((first, second) {
+        final firstDate = first.updatedAt ?? first.createdAt;
+        final secondDate = second.updatedAt ?? second.createdAt;
 
-  await childRef.update({
-    'assignedQuizzes': FieldValue.arrayUnion([quizId]),
-  });
-}
+        if (firstDate != null && secondDate != null) {
+          return secondDate.compareTo(firstDate);
+        }
 
-Future<void> assignClassroomQuizToChild({
-  required String schoolId,
-  required String classroomId,
-  required String childId,
-  required String quizId,
-}) async {
-  final childRef = db
-      .collection('schools')
-      .doc(schoolId)
-      .collection('classrooms')
-      .doc(classroomId)
-      .collection('child_profiles')
-      .doc(childId);
+        return first.title
+            .toLowerCase()
+            .compareTo(second.title.toLowerCase());
+      });
 
-  await childRef.update({
-    'assignedQuizzes': FieldValue.arrayUnion([quizId]),
-  });
-}
+      return quizzes;
+    });
+  }
 
-Future<void> assignCurrentQuizToChild({
-  required String childId,
-  required String quizId,
-}) async {
-  await restoreClassroomSessionFromAuthIfNeeded();
+  Stream<List<Quiz>> getCurrentQuizzes() {
+    if (hasClassroomSession) {
+      return getClassroomQuizzes(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+      );
+    }
 
-  if (hasClassroomSession) {
-    await assignClassroomQuizToChild(
-      schoolId: session.requireSchoolId,
-      classroomId: session.requireClassroomId,
-      childId: childId,
+    return getQuizzes(currentTeacherUid);
+  }
+
+  Stream<List<Quiz>> getCurrentQuizzesForChild(String childId) {
+    return getCurrentQuizzes().map((quizzes) {
+      return quizzes.where((quiz) {
+        return quiz.isAvailableForChild(childId);
+      }).toList();
+    });
+  }
+
+  Future<void> updateQuizAudience({
+    required String teacherUid,
+    required String quizId,
+    required bool availableToAll,
+    required List<String> assignedChildIds,
+  }) async {
+    await db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('quizzes')
+        .doc(quizId)
+        .update({
+      'availableToAll': availableToAll,
+      'assignedChildIds':
+          availableToAll ? <String>[] : assignedChildIds,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> updateClassroomQuizAudience({
+    required String schoolId,
+    required String classroomId,
+    required String quizId,
+    required bool availableToAll,
+    required List<String> assignedChildIds,
+  }) async {
+    await db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('quizzes')
+        .doc(quizId)
+        .update({
+      'availableToAll': availableToAll,
+      'assignedChildIds':
+          availableToAll ? <String>[] : assignedChildIds,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> updateCurrentQuizAudience({
+    required String quizId,
+    required bool availableToAll,
+    required List<String> assignedChildIds,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    if (hasClassroomSession) {
+      await updateClassroomQuizAudience(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+        quizId: quizId,
+        availableToAll: availableToAll,
+        assignedChildIds: assignedChildIds,
+      );
+      return;
+    }
+
+    await updateQuizAudience(
+      teacherUid: currentTeacherUid,
       quizId: quizId,
+      availableToAll: availableToAll,
+      assignedChildIds: assignedChildIds,
     );
-    return;
   }
 
-  await assignQuizToChild(
-    currentTeacherUid,
-    childId,
-    quizId,
-  );
-}
+  Map<String, dynamic> _quizCompletionData({
+    required String quizId,
+    required int score,
+    required int totalQuestions,
+    required List<int> selectedAnswerIndexes,
+  }) {
+    final percentage = totalQuestions <= 0
+        ? 0
+        : ((score / totalQuestions) * 100).round();
 
-Future<void> submitQuiz(
-  String teacherUid,
-  String childId,
-  String quizId,
-  int score,
-) async {
-  final childRef = db
-      .collection('teachers')
-      .doc(teacherUid)
-      .collection('child_profiles')
-      .doc(childId);
+    return {
+      'quizId': quizId,
+      'score': score,
+      'totalQuestions': totalQuestions,
+      'percentage': percentage,
+      'selectedAnswerIndexes': selectedAnswerIndexes,
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+  }
 
-  await childRef.set({
-    'completedQuizzes': {
-      quizId: {
-        'score': score,
-        'timestamp': FieldValue.serverTimestamp(),
-      }
-    }
-  }, SetOptions(merge: true));
-}
+  Future<void> submitQuiz(
+    String teacherUid,
+    String childId,
+    String quizId,
+    int score, {
+    int? totalQuestions,
+    List<int> selectedAnswerIndexes = const [],
+  }) async {
+    final childRef = db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('child_profiles')
+        .doc(childId);
 
-Future<void> submitClassroomQuiz({
-  required String schoolId,
-  required String classroomId,
-  required String childId,
-  required String quizId,
-  required int score,
-}) async {
-  final childRef = db
-      .collection('schools')
-      .doc(schoolId)
-      .collection('classrooms')
-      .doc(classroomId)
-      .collection('child_profiles')
-      .doc(childId);
-
-  await childRef.set({
-    'completedQuizzes': {
-      quizId: {
-        'score': score,
-        'timestamp': FieldValue.serverTimestamp(),
-      }
-    }
-  }, SetOptions(merge: true));
-}
-
-Future<void> submitCurrentQuiz({
-  required String childId,
-  required String quizId,
-  required int score,
-}) async {
-  await restoreClassroomSessionFromAuthIfNeeded();
-
-  if (hasClassroomSession) {
-    await submitClassroomQuiz(
-      schoolId: session.requireSchoolId,
-      classroomId: session.requireClassroomId,
-      childId: childId,
+    final completion = _quizCompletionData(
       quizId: quizId,
       score: score,
+      totalQuestions: totalQuestions ?? 0,
+      selectedAnswerIndexes: selectedAnswerIndexes,
     );
-    return;
+
+    final attemptRef = childRef
+        .collection('quiz_attempts')
+        .doc();
+
+    final batch = db.batch();
+
+    batch.set(
+      childRef,
+      {
+        'completedQuizzes': {
+          quizId: completion,
+        },
+      },
+      SetOptions(merge: true),
+    );
+
+    batch.set(attemptRef, completion);
+
+    await batch.commit();
   }
 
-  await submitQuiz(
-    currentTeacherUid,
-    childId,
-    quizId,
-    score,
-  );
-}
+  Future<void> submitClassroomQuiz({
+    required String schoolId,
+    required String classroomId,
+    required String childId,
+    required String quizId,
+    required int score,
+    int? totalQuestions,
+    List<int> selectedAnswerIndexes = const [],
+  }) async {
+    final childRef = db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('child_profiles')
+        .doc(childId);
 
-Future<void> deleteQuiz(String teacherUid, String quizId) async {
-  try {
+    final completion = _quizCompletionData(
+      quizId: quizId,
+      score: score,
+      totalQuestions: totalQuestions ?? 0,
+      selectedAnswerIndexes: selectedAnswerIndexes,
+    );
+
+    final attemptRef = childRef
+        .collection('quiz_attempts')
+        .doc();
+
+    final batch = db.batch();
+
+    batch.set(
+      childRef,
+      {
+        'completedQuizzes': {
+          quizId: completion,
+        },
+      },
+      SetOptions(merge: true),
+    );
+
+    batch.set(attemptRef, completion);
+
+    await batch.commit();
+  }
+
+  Future<void> submitCurrentQuiz({
+    required String childId,
+    required String quizId,
+    required int score,
+    int? totalQuestions,
+    List<int> selectedAnswerIndexes = const [],
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    if (hasClassroomSession) {
+      await submitClassroomQuiz(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+        childId: childId,
+        quizId: quizId,
+        score: score,
+        totalQuestions: totalQuestions,
+        selectedAnswerIndexes: selectedAnswerIndexes,
+      );
+      return;
+    }
+
+    await submitQuiz(
+      currentTeacherUid,
+      childId,
+      quizId,
+      score,
+      totalQuestions: totalQuestions,
+      selectedAnswerIndexes: selectedAnswerIndexes,
+    );
+  }
+
+  Stream<List<Map<String, dynamic>>> getQuizAttempts({
+    required String teacherUid,
+    required String childId,
+  }) {
+    return db
+        .collection('teachers')
+        .doc(teacherUid)
+        .collection('child_profiles')
+        .doc(childId)
+        .collection('quiz_attempts')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
+  }
+
+  Stream<List<Map<String, dynamic>>> getClassroomQuizAttempts({
+    required String schoolId,
+    required String classroomId,
+    required String childId,
+  }) {
+    return db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('child_profiles')
+        .doc(childId)
+        .collection('quiz_attempts')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
+  }
+
+  Stream<List<Map<String, dynamic>>>
+      getCurrentQuizAttemptsForChild(String childId) {
+    if (hasClassroomSession) {
+      return getClassroomQuizAttempts(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+        childId: childId,
+      );
+    }
+
+    return getQuizAttempts(
+      teacherUid: currentTeacherUid,
+      childId: childId,
+    );
+  }
+
+  Future<void> deleteQuiz(
+    String teacherUid,
+    String quizId,
+  ) async {
     await db
         .collection('teachers')
         .doc(teacherUid)
         .collection('quizzes')
         .doc(quizId)
         .delete();
-  } catch (e) {
-    throw Exception('Failed to delete quiz: $e');
   }
-}
 
-Future<void> deleteClassroomQuiz({
-  required String schoolId,
-  required String classroomId,
-  required String quizId,
-}) async {
-  try {
+  Future<void> deleteClassroomQuiz({
+    required String schoolId,
+    required String classroomId,
+    required String quizId,
+  }) async {
     await db
         .collection('schools')
         .doc(schoolId)
@@ -246,44 +489,41 @@ Future<void> deleteClassroomQuiz({
         .collection('quizzes')
         .doc(quizId)
         .delete();
-  } catch (e) {
-    throw Exception('Failed to delete classroom quiz: $e');
   }
-}
 
-Future<void> deleteCurrentQuiz(String quizId) async {
-  await restoreClassroomSessionFromAuthIfNeeded();
+  Future<void> deleteCurrentQuiz(String quizId) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
 
-  if (hasClassroomSession) {
-    await deleteClassroomQuiz(
-      schoolId: session.requireSchoolId,
-      classroomId: session.requireClassroomId,
-      quizId: quizId,
+    if (hasClassroomSession) {
+      await deleteClassroomQuiz(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+        quizId: quizId,
+      );
+      return;
+    }
+
+    await deleteQuiz(
+      currentTeacherUid,
+      quizId,
     );
-    return;
   }
 
-  await deleteQuiz(
-    currentTeacherUid,
-    quizId,
-  );
-}
+    // WHEN-THEN BOARD
 
-    // FIRST-THEN BOARD
-
-CollectionReference<Map<String, dynamic>> _firstThenOptionsRef({
+CollectionReference<Map<String, dynamic>> _whenThenOptionsRef({
   required String teacherUid,
   required String type,
 }) {
   return db
       .collection('teachers')
       .doc(teacherUid)
-      .collection('first_then_options')
+      .collection('when_then_options')
       .doc(type)
       .collection('items');
 }
 
-CollectionReference<Map<String, dynamic>> _classroomFirstThenOptionsRef({
+CollectionReference<Map<String, dynamic>> _classroomWhenThenOptionsRef({
   required String schoolId,
   required String classroomId,
   required String type,
@@ -293,21 +533,21 @@ CollectionReference<Map<String, dynamic>> _classroomFirstThenOptionsRef({
       .doc(schoolId)
       .collection('classrooms')
       .doc(classroomId)
-      .collection('first_then_options')
+      .collection('when_then_options')
       .doc(type)
       .collection('items');
 }
 
-Stream<List<FirstThenOption>> getFirstThenOptions({
+Stream<List<WhenThenOption>> getWhenThenOptions({
   required String teacherUid,
   required String type,
 }) {
-  return _firstThenOptionsRef(
+  return _whenThenOptionsRef(
     teacherUid: teacherUid,
     type: type,
   ).snapshots().map((snapshot) {
     final options = snapshot.docs
-        .map((doc) => FirstThenOption.fromMap(doc.id, doc.data()))
+        .map((doc) => WhenThenOption.fromMap(doc.id, doc.data()))
         .toList();
 
     options.sort((a, b) => a.label.compareTo(b.label));
@@ -315,18 +555,18 @@ Stream<List<FirstThenOption>> getFirstThenOptions({
   });
 }
 
-Stream<List<FirstThenOption>> getClassroomFirstThenOptions({
+Stream<List<WhenThenOption>> getClassroomWhenThenOptions({
   required String schoolId,
   required String classroomId,
   required String type,
 }) {
-  return _classroomFirstThenOptionsRef(
+  return _classroomWhenThenOptionsRef(
     schoolId: schoolId,
     classroomId: classroomId,
     type: type,
   ).snapshots().map((snapshot) {
     final options = snapshot.docs
-        .map((doc) => FirstThenOption.fromMap(doc.id, doc.data()))
+        .map((doc) => WhenThenOption.fromMap(doc.id, doc.data()))
         .toList();
 
     options.sort((a, b) => a.label.compareTo(b.label));
@@ -334,55 +574,55 @@ Stream<List<FirstThenOption>> getClassroomFirstThenOptions({
   });
 }
 
-Stream<List<FirstThenOption>> getCurrentFirstThenOptions({
+Stream<List<WhenThenOption>> getCurrentWhenThenOptions({
   required String type,
 }) {
   if (hasClassroomSession) {
-    return getClassroomFirstThenOptions(
+    return getClassroomWhenThenOptions(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       type: type,
     );
   }
 
-  return getFirstThenOptions(
+  return getWhenThenOptions(
     teacherUid: currentTeacherUid,
     type: type,
   );
 }
 
-Future<void> addFirstThenOption({
+Future<void> addWhenThenOption({
   required String teacherUid,
   required String type,
-  required FirstThenOption option,
+  required WhenThenOption option,
 }) async {
-  await _firstThenOptionsRef(
+  await _whenThenOptionsRef(
     teacherUid: teacherUid,
     type: type,
   ).add(option.toMap());
 }
 
-Future<void> addClassroomFirstThenOption({
+Future<void> addClassroomWhenThenOption({
   required String schoolId,
   required String classroomId,
   required String type,
-  required FirstThenOption option,
+  required WhenThenOption option,
 }) async {
-  await _classroomFirstThenOptionsRef(
+  await _classroomWhenThenOptionsRef(
     schoolId: schoolId,
     classroomId: classroomId,
     type: type,
   ).add(option.toMap());
 }
 
-Future<void> addCurrentFirstThenOption({
+Future<void> addCurrentWhenThenOption({
   required String type,
-  required FirstThenOption option,
+  required WhenThenOption option,
 }) async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await addClassroomFirstThenOption(
+    await addClassroomWhenThenOption(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       type: type,
@@ -391,45 +631,45 @@ Future<void> addCurrentFirstThenOption({
     return;
   }
 
-  await addFirstThenOption(
+  await addWhenThenOption(
     teacherUid: currentTeacherUid,
     type: type,
     option: option,
   );
 }
 
-Future<void> updateFirstThenOption({
+Future<void> updateWhenThenOption({
   required String teacherUid,
   required String type,
-  required FirstThenOption option,
+  required WhenThenOption option,
 }) async {
-  await _firstThenOptionsRef(
+  await _whenThenOptionsRef(
     teacherUid: teacherUid,
     type: type,
   ).doc(option.id).update(option.toMap());
 }
 
-Future<void> updateClassroomFirstThenOption({
+Future<void> updateClassroomWhenThenOption({
   required String schoolId,
   required String classroomId,
   required String type,
-  required FirstThenOption option,
+  required WhenThenOption option,
 }) async {
-  await _classroomFirstThenOptionsRef(
+  await _classroomWhenThenOptionsRef(
     schoolId: schoolId,
     classroomId: classroomId,
     type: type,
   ).doc(option.id).update(option.toMap());
 }
 
-Future<void> updateCurrentFirstThenOption({
+Future<void> updateCurrentWhenThenOption({
   required String type,
-  required FirstThenOption option,
+  required WhenThenOption option,
 }) async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await updateClassroomFirstThenOption(
+    await updateClassroomWhenThenOption(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       type: type,
@@ -438,45 +678,45 @@ Future<void> updateCurrentFirstThenOption({
     return;
   }
 
-  await updateFirstThenOption(
+  await updateWhenThenOption(
     teacherUid: currentTeacherUid,
     type: type,
     option: option,
   );
 }
 
-Future<void> deleteFirstThenOption({
+Future<void> deleteWhenThenOption({
   required String teacherUid,
   required String type,
   required String optionId,
 }) async {
-  await _firstThenOptionsRef(
+  await _whenThenOptionsRef(
     teacherUid: teacherUid,
     type: type,
   ).doc(optionId).delete();
 }
 
-Future<void> deleteClassroomFirstThenOption({
+Future<void> deleteClassroomWhenThenOption({
   required String schoolId,
   required String classroomId,
   required String type,
   required String optionId,
 }) async {
-  await _classroomFirstThenOptionsRef(
+  await _classroomWhenThenOptionsRef(
     schoolId: schoolId,
     classroomId: classroomId,
     type: type,
   ).doc(optionId).delete();
 }
 
-Future<void> deleteCurrentFirstThenOption({
+Future<void> deleteCurrentWhenThenOption({
   required String type,
   required String optionId,
 }) async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await deleteClassroomFirstThenOption(
+    await deleteClassroomWhenThenOption(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       type: type,
@@ -485,34 +725,34 @@ Future<void> deleteCurrentFirstThenOption({
     return;
   }
 
-  await deleteFirstThenOption(
+  await deleteWhenThenOption(
     teacherUid: currentTeacherUid,
     type: type,
     optionId: optionId,
   );
 }
 
-Future<void> seedDefaultFirstThenOptions(String teacherUid) async {
-  final activitySnapshot = await _firstThenOptionsRef(
+Future<void> seedDefaultWhenThenOptions(String teacherUid) async {
+  final activitySnapshot = await _whenThenOptionsRef(
     teacherUid: teacherUid,
     type: 'activities',
   ).limit(1).get();
 
-  final rewardSnapshot = await _firstThenOptionsRef(
+  final rewardSnapshot = await _whenThenOptionsRef(
     teacherUid: teacherUid,
     type: 'rewards',
   ).limit(1).get();
 
   if (activitySnapshot.docs.isEmpty) {
     final defaults = [
-      FirstThenOption(id: '', label: 'Quiz', iconName: 'quiz'),
-      FirstThenOption(id: '', label: 'Homework', iconName: 'book'),
-      FirstThenOption(id: '', label: 'Clean Up', iconName: 'clean'),
-      FirstThenOption(id: '', label: 'Finish Work', iconName: 'task'),
+      WhenThenOption(id: '', label: 'Quiz', iconName: 'quiz'),
+      WhenThenOption(id: '', label: 'Homework', iconName: 'book'),
+      WhenThenOption(id: '', label: 'Clean Up', iconName: 'clean'),
+      WhenThenOption(id: '', label: 'Finish Work', iconName: 'task'),
     ];
 
     for (final option in defaults) {
-      await addFirstThenOption(
+      await addWhenThenOption(
         teacherUid: teacherUid,
         type: 'activities',
         option: option,
@@ -522,15 +762,15 @@ Future<void> seedDefaultFirstThenOptions(String teacherUid) async {
 
   if (rewardSnapshot.docs.isEmpty) {
     final defaults = [
-      FirstThenOption(id: '', label: 'Calming Sounds', iconName: 'music'),
-      FirstThenOption(id: '', label: 'Playtime', iconName: 'toys'),
-      FirstThenOption(id: '', label: 'Outside Time', iconName: 'outside'),
-      FirstThenOption(id: '', label: 'Break', iconName: 'break'),
-      FirstThenOption(id: '', label: 'Music', iconName: 'music'),
+      WhenThenOption(id: '', label: 'Calming Sounds', iconName: 'music'),
+      WhenThenOption(id: '', label: 'Playtime', iconName: 'toys'),
+      WhenThenOption(id: '', label: 'Outside Time', iconName: 'outside'),
+      WhenThenOption(id: '', label: 'Break', iconName: 'break'),
+      WhenThenOption(id: '', label: 'Music', iconName: 'music'),
     ];
 
     for (final option in defaults) {
-      await addFirstThenOption(
+      await addWhenThenOption(
         teacherUid: teacherUid,
         type: 'rewards',
         option: option,
@@ -539,17 +779,17 @@ Future<void> seedDefaultFirstThenOptions(String teacherUid) async {
   }
 }
 
-Future<void> seedDefaultClassroomFirstThenOptions({
+Future<void> seedDefaultClassroomWhenThenOptions({
   required String schoolId,
   required String classroomId,
 }) async {
-  final activitySnapshot = await _classroomFirstThenOptionsRef(
+  final activitySnapshot = await _classroomWhenThenOptionsRef(
     schoolId: schoolId,
     classroomId: classroomId,
     type: 'activities',
   ).limit(1).get();
 
-  final rewardSnapshot = await _classroomFirstThenOptionsRef(
+  final rewardSnapshot = await _classroomWhenThenOptionsRef(
     schoolId: schoolId,
     classroomId: classroomId,
     type: 'rewards',
@@ -557,14 +797,14 @@ Future<void> seedDefaultClassroomFirstThenOptions({
 
   if (activitySnapshot.docs.isEmpty) {
     final defaults = [
-      FirstThenOption(id: '', label: 'Quiz', iconName: 'quiz'),
-      FirstThenOption(id: '', label: 'Homework', iconName: 'book'),
-      FirstThenOption(id: '', label: 'Clean Up', iconName: 'clean'),
-      FirstThenOption(id: '', label: 'Finish Work', iconName: 'task'),
+      WhenThenOption(id: '', label: 'Quiz', iconName: 'quiz'),
+      WhenThenOption(id: '', label: 'Homework', iconName: 'book'),
+      WhenThenOption(id: '', label: 'Clean Up', iconName: 'clean'),
+      WhenThenOption(id: '', label: 'Finish Work', iconName: 'task'),
     ];
 
     for (final option in defaults) {
-      await addClassroomFirstThenOption(
+      await addClassroomWhenThenOption(
         schoolId: schoolId,
         classroomId: classroomId,
         type: 'activities',
@@ -575,15 +815,15 @@ Future<void> seedDefaultClassroomFirstThenOptions({
 
   if (rewardSnapshot.docs.isEmpty) {
     final defaults = [
-      FirstThenOption(id: '', label: 'Calming Sounds', iconName: 'music'),
-      FirstThenOption(id: '', label: 'Playtime', iconName: 'toys'),
-      FirstThenOption(id: '', label: 'Outside Time', iconName: 'outside'),
-      FirstThenOption(id: '', label: 'Break', iconName: 'break'),
-      FirstThenOption(id: '', label: 'Music', iconName: 'music'),
+      WhenThenOption(id: '', label: 'Calming Sounds', iconName: 'music'),
+      WhenThenOption(id: '', label: 'Playtime', iconName: 'toys'),
+      WhenThenOption(id: '', label: 'Outside Time', iconName: 'outside'),
+      WhenThenOption(id: '', label: 'Break', iconName: 'break'),
+      WhenThenOption(id: '', label: 'Music', iconName: 'music'),
     ];
 
     for (final option in defaults) {
-      await addClassroomFirstThenOption(
+      await addClassroomWhenThenOption(
         schoolId: schoolId,
         classroomId: classroomId,
         type: 'rewards',
@@ -593,25 +833,25 @@ Future<void> seedDefaultClassroomFirstThenOptions({
   }
 }
 
-Future<void> seedDefaultCurrentFirstThenOptions() async {
+Future<void> seedDefaultCurrentWhenThenOptions() async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await seedDefaultClassroomFirstThenOptions(
+    await seedDefaultClassroomWhenThenOptions(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
     );
     return;
   }
 
-  await seedDefaultFirstThenOptions(currentTeacherUid);
+  await seedDefaultWhenThenOptions(currentTeacherUid);
 }
 
-Future<void> setFirstThenForChildren({
+Future<void> setWhenThenForChildren({
   required String teacherUid,
   required List<String> childIds,
-  required FirstThenOption activity,
-  required List<FirstThenOption> rewards,
+  required WhenThenOption activity,
+  required List<WhenThenOption> rewards,
 }) async {
   final batch = db.batch();
 
@@ -623,9 +863,9 @@ Future<void> setFirstThenForChildren({
         .doc(childId);
 
     batch.set(docRef, {
-      'firstThen': {
-        'activity': activity.toFirstThenMap(),
-        'rewards': rewards.map((reward) => reward.toFirstThenMap()).toList(),
+      'whenThen': {
+        'activity': activity.toWhenThenMap(),
+        'rewards': rewards.map((reward) => reward.toWhenThenMap()).toList(),
         'selectedRewardId': null,
         'isActive': true,
       }
@@ -635,12 +875,12 @@ Future<void> setFirstThenForChildren({
   await batch.commit();
 }
 
-Future<void> setClassroomFirstThenForChildren({
+Future<void> setClassroomWhenThenForChildren({
   required String schoolId,
   required String classroomId,
   required List<String> childIds,
-  required FirstThenOption activity,
-  required List<FirstThenOption> rewards,
+  required WhenThenOption activity,
+  required List<WhenThenOption> rewards,
 }) async {
   final batch = db.batch();
 
@@ -654,9 +894,9 @@ Future<void> setClassroomFirstThenForChildren({
         .doc(childId);
 
     batch.set(docRef, {
-      'firstThen': {
-        'activity': activity.toFirstThenMap(),
-        'rewards': rewards.map((reward) => reward.toFirstThenMap()).toList(),
+      'whenThen': {
+        'activity': activity.toWhenThenMap(),
+        'rewards': rewards.map((reward) => reward.toWhenThenMap()).toList(),
         'selectedRewardId': null,
         'isActive': true,
       }
@@ -666,15 +906,15 @@ Future<void> setClassroomFirstThenForChildren({
   await batch.commit();
 }
 
-Future<void> setCurrentFirstThenForChildren({
+Future<void> setCurrentWhenThenForChildren({
   required List<String> childIds,
-  required FirstThenOption activity,
-  required List<FirstThenOption> rewards,
+  required WhenThenOption activity,
+  required List<WhenThenOption> rewards,
 }) async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await setClassroomFirstThenForChildren(
+    await setClassroomWhenThenForChildren(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       childIds: childIds,
@@ -684,7 +924,7 @@ Future<void> setCurrentFirstThenForChildren({
     return;
   }
 
-  await setFirstThenForChildren(
+  await setWhenThenForChildren(
     teacherUid: currentTeacherUid,
     childIds: childIds,
     activity: activity,
@@ -692,7 +932,7 @@ Future<void> setCurrentFirstThenForChildren({
   );
 }
 
-Future<void> clearFirstThenForChild({
+Future<void> clearWhenThenForChild({
   required String teacherUid,
   required String childId,
 }) async {
@@ -702,7 +942,7 @@ Future<void> clearFirstThenForChild({
       .collection('child_profiles')
       .doc(childId)
       .set({
-    'firstThen': {
+    'whenThen': {
       'activity': null,
       'rewards': [],
       'selectedRewardId': null,
@@ -711,7 +951,7 @@ Future<void> clearFirstThenForChild({
   }, SetOptions(merge: true));
 }
 
-Future<void> clearClassroomFirstThenForChild({
+Future<void> clearClassroomWhenThenForChild({
   required String schoolId,
   required String classroomId,
   required String childId,
@@ -724,7 +964,7 @@ Future<void> clearClassroomFirstThenForChild({
       .collection('child_profiles')
       .doc(childId)
       .set({
-    'firstThen': {
+    'whenThen': {
       'activity': null,
       'rewards': [],
       'selectedRewardId': null,
@@ -733,11 +973,11 @@ Future<void> clearClassroomFirstThenForChild({
   }, SetOptions(merge: true));
 }
 
-Future<void> clearCurrentFirstThenForChild(String childId) async {
+Future<void> clearCurrentWhenThenForChild(String childId) async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await clearClassroomFirstThenForChild(
+    await clearClassroomWhenThenForChild(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       childId: childId,
@@ -745,13 +985,13 @@ Future<void> clearCurrentFirstThenForChild(String childId) async {
     return;
   }
 
-  await clearFirstThenForChild(
+  await clearWhenThenForChild(
     teacherUid: currentTeacherUid,
     childId: childId,
   );
 }
 
-Future<void> selectFirstThenReward({
+Future<void> selectWhenThenReward({
   required String teacherUid,
   required String childId,
   required String rewardId,
@@ -762,11 +1002,11 @@ Future<void> selectFirstThenReward({
       .collection('child_profiles')
       .doc(childId)
       .update({
-    'firstThen.selectedRewardId': rewardId,
+    'whenThen.selectedRewardId': rewardId,
   });
 }
 
-Future<void> selectClassroomFirstThenReward({
+Future<void> selectClassroomWhenThenReward({
   required String schoolId,
   required String classroomId,
   required String childId,
@@ -780,18 +1020,18 @@ Future<void> selectClassroomFirstThenReward({
       .collection('child_profiles')
       .doc(childId)
       .update({
-    'firstThen.selectedRewardId': rewardId,
+    'whenThen.selectedRewardId': rewardId,
   });
 }
 
-Future<void> selectCurrentFirstThenReward({
+Future<void> selectCurrentWhenThenReward({
   required String childId,
   required String rewardId,
 }) async {
   await restoreClassroomSessionFromAuthIfNeeded();
 
   if (hasClassroomSession) {
-    await selectClassroomFirstThenReward(
+    await selectClassroomWhenThenReward(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       childId: childId,
@@ -800,14 +1040,14 @@ Future<void> selectCurrentFirstThenReward({
     return;
   }
 
-  await selectFirstThenReward(
+  await selectWhenThenReward(
     teacherUid: currentTeacherUid,
     childId: childId,
     rewardId: rewardId,
   );
 }
 
-Stream<Map<String, dynamic>?> getFirstThenStream({
+Stream<Map<String, dynamic>?> getWhenThenStream({
   required String teacherUid,
   required String childId,
 }) {
@@ -821,19 +1061,19 @@ Stream<Map<String, dynamic>?> getFirstThenStream({
     final data = doc.data();
     if (data == null) return null;
 
-    final firstThen = data['firstThen'];
-    if (firstThen is Map<String, dynamic>) {
-      return firstThen;
+    final whenThen = data['whenThen'];
+    if (whenThen is Map<String, dynamic>) {
+      return whenThen;
     }
-    if (firstThen is Map) {
-      return Map<String, dynamic>.from(firstThen);
+    if (whenThen is Map) {
+      return Map<String, dynamic>.from(whenThen);
     }
 
     return null;
   });
 }
 
-Stream<Map<String, dynamic>?> getClassroomFirstThenStream({
+Stream<Map<String, dynamic>?> getClassroomWhenThenStream({
   required String schoolId,
   required String classroomId,
   required String childId,
@@ -850,30 +1090,30 @@ Stream<Map<String, dynamic>?> getClassroomFirstThenStream({
     final data = doc.data();
     if (data == null) return null;
 
-    final firstThen = data['firstThen'];
-    if (firstThen is Map<String, dynamic>) {
-      return firstThen;
+    final whenThen = data['whenThen'];
+    if (whenThen is Map<String, dynamic>) {
+      return whenThen;
     }
-    if (firstThen is Map) {
-      return Map<String, dynamic>.from(firstThen);
+    if (whenThen is Map) {
+      return Map<String, dynamic>.from(whenThen);
     }
 
     return null;
   });
 }
 
-Stream<Map<String, dynamic>?> getCurrentFirstThenStream({
+Stream<Map<String, dynamic>?> getCurrentWhenThenStream({
   required String childId,
 }) {
   if (hasClassroomSession) {
-    return getClassroomFirstThenStream(
+    return getClassroomWhenThenStream(
       schoolId: session.requireSchoolId,
       classroomId: session.requireClassroomId,
       childId: childId,
     );
   }
 
-  return getFirstThenStream(
+  return getWhenThenStream(
     teacherUid: currentTeacherUid,
     childId: childId,
   );
@@ -1346,7 +1586,7 @@ Stream<List<WordPack>> getAssignedWordPacks({
   return _wordPacksRef(teacherUid).snapshots().map((snapshot) {
     return snapshot.docs
         .map((doc) => WordPack.fromMap(doc.id, doc.data()))
-        .where((pack) => pack.assignedChildIds.contains(childId))
+        .where((pack) => pack.isAvailableForChild(childId))
         .toList();
   });
 }
@@ -1362,7 +1602,7 @@ Stream<List<WordPack>> getClassroomAssignedWordPacks({
   ).snapshots().map((snapshot) {
     return snapshot.docs
         .map((doc) => WordPack.fromMap(doc.id, doc.data()))
-        .where((pack) => pack.assignedChildIds.contains(childId))
+        .where((pack) => pack.isAvailableForChild(childId))
         .toList();
   });
 }
@@ -1448,6 +1688,17 @@ Stream<List<WordAttempt>> getWordAttemptsForChild({
         .map((doc) => WordAttempt.fromMap(doc.id, doc.data()))
         .toList();
 
+        attempts.sort((first, second) {
+      final firstDate = first.createdAt;
+      final secondDate = second.createdAt;
+
+      if (firstDate == null && secondDate == null) return 0;
+      if (firstDate == null) return 1;
+      if (secondDate == null) return -1;
+
+      return secondDate.compareTo(firstDate);
+    });
+
     return attempts;
   });
 }
@@ -1469,6 +1720,17 @@ Stream<List<WordAttempt>> getClassroomWordAttemptsForChild({
     final attempts = snapshot.docs
         .map((doc) => WordAttempt.fromMap(doc.id, doc.data()))
         .toList();
+
+        attempts.sort((first, second) {
+      final firstDate = first.createdAt;
+      final secondDate = second.createdAt;
+
+      if (firstDate == null && secondDate == null) return 0;
+      if (firstDate == null) return 1;
+      if (secondDate == null) return -1;
+
+      return secondDate.compareTo(firstDate);
+    });
 
     return attempts;
   });

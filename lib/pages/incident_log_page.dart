@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../models/incident_log_entry.dart';
 import '../models/staff_profile.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 
-enum IncidentLogMode {
-  create,
-  view,
-}
+enum IncidentLogMode { create, view }
 
 class IncidentLogPage extends StatefulWidget {
   final StaffProfile staffProfile;
@@ -24,63 +22,120 @@ class IncidentLogPage extends StatefulWidget {
 
 class _IncidentLogPageState extends State<IncidentLogPage> {
   final FirestoreService _firestoreService = FirestoreService();
-  final ClassroomSessionService _session = ClassroomSessionService.instance;
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _actionTakenController = TextEditingController();
+  final ClassroomSessionService _session =
+      ClassroomSessionService.instance;
+
+  final TextEditingController _descriptionController =
+      TextEditingController();
+  final TextEditingController _actionController =
+      TextEditingController();
+  final TextEditingController _followUpController =
+      TextEditingController();
 
   IncidentLogMode _mode = IncidentLogMode.create;
 
   String? _selectedChildId;
   String _selectedSeverity = 'Low';
+  String _selectedCategory = 'other';
+  String _selectedFollowUp = 'none';
+
   String _severityFilter = 'All';
-  String _selectedChildFilter = 'All';
+  String _selectedChildFilter = 'all';
+  bool _showArchived = false;
+
   DateTime? _selectedDateTime;
   bool _isSaving = false;
 
   @override
   void dispose() {
     _descriptionController.dispose();
-    _actionTakenController.dispose();
+    _actionController.dispose();
+    _followUpController.dispose();
     super.dispose();
   }
 
   String _formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year} '
-        '${date.hour.toString().padLeft(2, '0')}:'
-        '${date.minute.toString().padLeft(2, '0')}';
+    final material = MaterialLocalizations.of(context);
+
+    return '${material.formatMediumDate(date)} • '
+        '${material.formatTimeOfDay(TimeOfDay.fromDateTime(date))}';
+  }
+
+  String _severityLabel(String severity) {
+    switch (severity) {
+      case 'High':
+        return context.l10n.high;
+      case 'Medium':
+        return context.l10n.medium;
+      default:
+        return context.l10n.low;
+    }
+  }
+
+  String _categoryLabel(String category) {
+    switch (category) {
+      case 'behaviour':
+        return context.l10n.behaviour;
+      case 'injury':
+        return context.l10n.injury;
+      case 'safety':
+        return context.l10n.safety;
+      case 'emotional':
+        return context.l10n.emotional;
+      default:
+        return context.l10n.other;
+    }
+  }
+
+  String _followUpLabel(String status) {
+    switch (status) {
+      case 'required':
+        return context.l10n.followUpRequired;
+      case 'completed':
+        return context.l10n.followUpCompleted;
+      default:
+        return context.l10n.noFollowUp;
+    }
   }
 
   Color _severityColor(String severity) {
     switch (severity) {
       case 'High':
-        return Colors.red;
+        return Colors.red.shade700;
       case 'Medium':
-        return Colors.orange;
-      case 'Low':
+        return Colors.orange.shade700;
       default:
-        return Colors.green;
+        return Colors.green.shade700;
     }
   }
 
   IconData _severityIcon(String severity) {
     switch (severity) {
       case 'High':
-        return Icons.priority_high;
+        return Icons.priority_high_rounded;
       case 'Medium':
-        return Icons.warning_amber;
-      case 'Low':
+        return Icons.warning_amber_rounded;
       default:
-        return Icons.info_outline;
+        return Icons.info_outline_rounded;
     }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _pickDateTime() async {
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDateTime ?? DateTime.now(),
-      firstDate: DateTime(2024),
+      firstDate: DateTime(2020),
       lastDate: DateTime(2100),
     );
 
@@ -106,11 +161,19 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     });
   }
 
-  Future<void> _saveIncident(List<ChildProfile> children) async {
+  Future<void> _saveIncident(
+    List<ChildProfile> children,
+  ) async {
     if (_selectedChildId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a child.')),
-      );
+      _showMessage(context.l10n.pleaseSelectChild);
+      return;
+    }
+
+    final description = _descriptionController.text.trim();
+    final action = _actionController.text.trim();
+
+    if (description.isEmpty || action.isEmpty) {
+      _showMessage(context.l10n.enterIncidentDetails);
       return;
     }
 
@@ -118,359 +181,583 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
       (child) => child.id == _selectedChildId,
     );
 
-    final description = _descriptionController.text.trim();
-    final actionTaken = _actionTakenController.text.trim();
+    setState(() {
+      _isSaving = true;
+    });
 
-    if (description.isEmpty || actionTaken.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a description and action taken.'),
-        ),
-      );
-      return;
-    }
-
-    setState(() => _isSaving = true);
+    final incident = IncidentLogEntry(
+      id: '',
+      childId: selectedChild.id,
+      childName: selectedChild.name,
+      timestamp: _selectedDateTime ?? DateTime.now(),
+      description: description,
+      actionTaken: action,
+      severity: _selectedSeverity,
+      category: _selectedCategory,
+      staffId: widget.staffProfile.id,
+      staffName: widget.staffProfile.name,
+      followUpStatus: _selectedFollowUp,
+      followUpNotes: _followUpController.text.trim(),
+    );
 
     try {
-      final entry = IncidentLogEntry(
-        id: '',
-        childId: selectedChild.id,
-        childName: selectedChild.name,
-        timestamp: _selectedDateTime ?? DateTime.now(),
-        description: description,
-        actionTaken: actionTaken,
-        staffId: widget.staffProfile.id,
-        staffName: widget.staffProfile.name,
-        severity: _selectedSeverity,
+      await _firestoreService.addCurrentIncidentLogEntry(
+        incident,
       );
-
-      await _firestoreService.addCurrentIncidentLogEntry(entry);
 
       if (!mounted) return;
 
       _descriptionController.clear();
-      _actionTakenController.clear();
+      _actionController.clear();
+      _followUpController.clear();
 
       setState(() {
         _selectedChildId = null;
         _selectedSeverity = 'Low';
+        _selectedCategory = 'other';
+        _selectedFollowUp = 'none';
         _selectedDateTime = null;
         _isSaving = false;
         _mode = IncidentLogMode.view;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Incident saved.')),
-      );
-    } catch (e) {
+      _showMessage(context.l10n.incidentSaved);
+    } catch (_) {
       if (!mounted) return;
 
-      setState(() => _isSaving = false);
+      setState(() {
+        _isSaving = false;
+      });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save incident: $e')),
-      );
+      _showMessage(context.l10n.incidentSaveFailed);
     }
   }
 
-  Future<void> _deleteIncident(IncidentLogEntry incident) async {
-    final shouldDelete = await showDialog<bool>(
+  Future<void> _editIncident(
+    IncidentLogEntry incident,
+  ) async {
+    final updated = await showDialog<IncidentLogEntry>(
       context: context,
-      builder: (context) {
+      builder: (_) => _IncidentEditDialog(
+        incident: incident,
+      ),
+    );
+
+    if (updated == null) return;
+
+        try {
+          await _firestoreService.updateCurrentIncidentLogEntry(
+            entry: updated,
+            updatedByStaffId: widget.staffProfile.id,
+            updatedByStaffName: widget.staffProfile.name,
+          );
+
+        if (!mounted) return;
+        _showMessage(context.l10n.incidentUpdated);
+      } catch (_) {
+        if (!mounted) return;
+        _showMessage(context.l10n.incidentSaveFailed);
+      }
+    }
+
+  Future<void> _archiveIncident(
+    IncidentLogEntry incident,
+  ) async {
+    final reasonController = TextEditingController();
+
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Delete Incident?'),
-          content: Text(
-            'Are you sure you want to delete the incident for ${incident.childName}?',
+          title: Text(context.l10n.archiveIncidentQuestion),
+          content: SizedBox(
+            width: 520,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  context.l10n.archiveIncidentMessage(
+                    incident.childName,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: reasonController,
+                  autofocus: true,
+                  minLines: 2,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.archiveReason,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(context.l10n.cancel),
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.red.shade700,
               ),
+              onPressed: () {
+                final value = reasonController.text.trim();
+
+                if (value.isEmpty) return;
+
+                Navigator.pop(dialogContext, value);
+              },
+              child: Text(context.l10n.archiveIncident),
             ),
           ],
         );
       },
     );
 
-    if (shouldDelete != true) return;
+    reasonController.dispose();
 
-    await _firestoreService.deleteCurrentIncidentLogEntry(incident.id);
+    if (reason == null) return;
 
-    if (!mounted) return;
+      try {
+      await _firestoreService.archiveCurrentIncidentLogEntry(
+        incidentId: incident.id,
+        reason: reason,
+        staffId: widget.staffProfile.id,
+        staffName: widget.staffProfile.name,
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Incident deleted.')),
-    );
-  }
-
-  List<IncidentLogEntry> _applyFilters(List<IncidentLogEntry> incidents) {
-    return incidents.where((incident) {
-      final matchesSeverity =
-          _severityFilter == 'All' || incident.severity == _severityFilter;
-
-      final matchesChild =
-          _selectedChildFilter == 'All' ||
-          incident.childName == _selectedChildFilter;
-
-      return matchesSeverity && matchesChild;
-    }).toList();
+      if (!mounted) return;
+      _showMessage(context.l10n.incidentArchived);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage(context.l10n.incidentArchiveFailed);
+    }
   }
 
   Widget _buildModeSelector() {
-    return SegmentedButton<IncidentLogMode>(
-      segments: const [
-        ButtonSegment(
-          value: IncidentLogMode.create,
-          icon: Icon(Icons.add),
-          label: Text('Create Incident'),
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 10,
+      runSpacing: 10,
+      children: [
+        ChoiceChip(
+          selected: _mode == IncidentLogMode.create,
+          avatar: const Icon(Icons.add_rounded),
+          label: Text(context.l10n.createIncident),
+          onSelected: (_) {
+            setState(() {
+              _mode = IncidentLogMode.create;
+            });
+          },
         ),
-        ButtonSegment(
-          value: IncidentLogMode.view,
-          icon: Icon(Icons.list),
-          label: Text('View Incidents'),
+        ChoiceChip(
+          selected: _mode == IncidentLogMode.view,
+          avatar: const Icon(Icons.list_alt_rounded),
+          label: Text(context.l10n.viewIncidents),
+          onSelected: (_) {
+            setState(() {
+              _mode = IncidentLogMode.view;
+            });
+          },
         ),
       ],
-      selected: {_mode},
-      onSelectionChanged: (selected) {
-        setState(() {
-          _mode = selected.first;
-        });
-      },
     );
   }
 
-  Widget _buildCreateIncidentSection(List<ChildProfile> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text(
-          'Create Incident',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedChildId,
-          decoration: const InputDecoration(
-            labelText: 'Select Child',
-            border: OutlineInputBorder(),
-          ),
-          items: children.map((child) {
-            return DropdownMenuItem<String>(
-              value: child.id,
-              child: Text(child.name),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedChildId = value;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedSeverity,
-          decoration: const InputDecoration(
-            labelText: 'Severity',
-            border: OutlineInputBorder(),
-          ),
-          items: const [
-            DropdownMenuItem(
-              value: 'Low',
-              child: Text('Low'),
+  Widget _buildCreateSection(
+    List<ChildProfile> children,
+  ) {
+    return _IncidentSection(
+      icon: Icons.add_task_rounded,
+      title: context.l10n.createIncident,
+      color: const Color(0xFF7E57C2),
+      child: Column(
+        children: [
+          DropdownButtonFormField<String>(
+            initialValue: _selectedChildId,
+            decoration: InputDecoration(
+              labelText: context.l10n.selectChild,
+              prefixIcon: const Icon(Icons.person_search_rounded),
+              border: const OutlineInputBorder(),
             ),
-            DropdownMenuItem(
-              value: 'Medium',
-              child: Text('Medium'),
-            ),
-            DropdownMenuItem(
-              value: 'High',
-              child: Text('High'),
-            ),
-          ],
-          onChanged: (value) {
-            if (value == null) return;
-            setState(() {
-              _selectedSeverity = value;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        OutlinedButton.icon(
-          icon: const Icon(Icons.calendar_today),
-          label: Text(
-            _selectedDateTime == null
-                ? 'Use Current Time (Default)'
-                : 'Manual Time: ${_formatDate(_selectedDateTime!)}',
-          ),
-          onPressed: _pickDateTime,
-        ),
-        if (_selectedDateTime != null) ...[
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: () {
+            items: children.map((child) {
+              return DropdownMenuItem(
+                value: child.id,
+                child: Text(child.name),
+              );
+            }).toList(),
+            onChanged: (value) {
               setState(() {
-                _selectedDateTime = null;
+                _selectedChildId = value;
               });
             },
-            icon: const Icon(Icons.refresh),
-            label: const Text('Reset to current time'),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  initialValue: _selectedSeverity,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.severity,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Low',
+                      child: Text(context.l10n.low),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Medium',
+                      child: Text(context.l10n.medium),
+                    ),
+                    DropdownMenuItem(
+                      value: 'High',
+                      child: Text(context.l10n.high),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) return;
+
+                    setState(() {
+                      _selectedSeverity = value;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  initialValue: _selectedCategory,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.incidentCategory,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'behaviour',
+                      child: Text(context.l10n.behaviour),
+                    ),
+                    DropdownMenuItem(
+                      value: 'injury',
+                      child: Text(context.l10n.injury),
+                    ),
+                    DropdownMenuItem(
+                      value: 'safety',
+                      child: Text(context.l10n.safety),
+                    ),
+                    DropdownMenuItem(
+                      value: 'emotional',
+                      child: Text(context.l10n.emotional),
+                    ),
+                    DropdownMenuItem(
+                      value: 'other',
+                      child: Text(context.l10n.other),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) return;
+
+                    setState(() {
+                      _selectedCategory = value;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: _pickDateTime,
+            icon: const Icon(Icons.calendar_today_rounded),
+            label: Text(
+              _selectedDateTime == null
+                  ? context.l10n.useCurrentTime
+                  : context.l10n.manualTime(
+                      _formatDate(_selectedDateTime!),
+                    ),
+            ),
+          ),
+          if (_selectedDateTime != null)
+            TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  _selectedDateTime = null;
+                });
+              },
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text(context.l10n.resetToCurrentTime),
+            ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _descriptionController,
+            textCapitalization: TextCapitalization.sentences,
+            minLines: 3,
+            maxLines: 6,
+            decoration: InputDecoration(
+              labelText: context.l10n.description,
+              alignLabelWithHint: true,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _actionController,
+            textCapitalization: TextCapitalization.sentences,
+            minLines: 2,
+            maxLines: 5,
+            decoration: InputDecoration(
+              labelText: context.l10n.actionTaken,
+              alignLabelWithHint: true,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          DropdownButtonFormField<String>(
+            initialValue: _selectedFollowUp,
+            decoration: InputDecoration(
+              labelText: context.l10n.followUp,
+              border: const OutlineInputBorder(),
+            ),
+            items: [
+              DropdownMenuItem(
+                value: 'none',
+                child: Text(context.l10n.noFollowUp),
+              ),
+              DropdownMenuItem(
+                value: 'required',
+                child: Text(context.l10n.followUpRequired),
+              ),
+              DropdownMenuItem(
+                value: 'completed',
+                child: Text(context.l10n.followUpCompleted),
+              ),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+
+              setState(() {
+                _selectedFollowUp = value;
+              });
+            },
+          ),
+          if (_selectedFollowUp != 'none') ...[
+            const SizedBox(height: 16),
+            TextField(
+              controller: _followUpController,
+              textCapitalization: TextCapitalization.sentences,
+              minLines: 2,
+              maxLines: 4,
+              decoration: InputDecoration(
+                labelText: context.l10n.followUpNotes,
+                alignLabelWithHint: true,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ],
+          const SizedBox(height: 22),
+          SizedBox(
+            width: double.infinity,
+            height: 54,
+            child: FilledButton.icon(
+              onPressed: _isSaving
+                  ? null
+                  : () => _saveIncident(children),
+              icon: _isSaving
+                  ? const SizedBox(
+                      width: 21,
+                      height: 21,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.save_rounded),
+              label: Text(
+                _isSaving
+                    ? context.l10n.saving
+                    : context.l10n.saveIncident,
+              ),
+            ),
           ),
         ],
-        const SizedBox(height: 16),
-        TextField(
-          controller: _descriptionController,
-          maxLines: 4,
-          decoration: const InputDecoration(
-            labelText: 'Description',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: _actionTakenController,
-          maxLines: 3,
-          decoration: const InputDecoration(
-            labelText: 'Action Taken',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            icon: const Icon(Icons.save),
-            label: Text(_isSaving ? 'Saving...' : 'Save Incident'),
-            onPressed: _isSaving ? null : () => _saveIncident(children),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildViewIncidentsSection() {
+  List<IncidentLogEntry> _filterIncidents(
+    List<IncidentLogEntry> incidents,
+  ) {
+    return incidents.where((incident) {
+      if (incident.isArchived != _showArchived) return false;
+
+      if (_severityFilter != 'All' &&
+          incident.severity != _severityFilter) {
+        return false;
+      }
+
+      if (_selectedChildFilter != 'all' &&
+          incident.childId != _selectedChildFilter) {
+        return false;
+      }
+
+      return true;
+    }).toList();
+  }
+
+  Widget _buildViewSection(
+    List<ChildProfile> children,
+  ) {
     return StreamBuilder<List<IncidentLogEntry>>(
       stream: _firestoreService.getCurrentIncidentLogEntries(),
-      builder: (context, incidentSnapshot) {
-        if (incidentSnapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final incidents = incidentSnapshot.data ?? [];
-        final filteredIncidents = _applyFilters(incidents);
-
-        final childNames = incidents
-            .map((incident) => incident.childName)
-            .where((name) => name.trim().isNotEmpty)
-            .toSet()
-            .toList()
-          ..sort();
-
-        final childFilterItems = ['All', ...childNames];
-
-        if (incidents.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.only(top: 40),
-            child: Center(
-              child: Text(
-                'No incidents logged yet.',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return _IncidentMessageState(
+            icon: Icons.cloud_off_rounded,
+            message: context.l10n.error,
           );
         }
 
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final filtered = _filterIncidents(snapshot.data!);
+
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'View Incidents',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(
-                  value: 'All',
-                  label: Text('All'),
-                  icon: Icon(Icons.list),
-                ),
-                ButtonSegment(
-                  value: 'Low',
-                  label: Text('Low'),
-                  icon: Icon(Icons.info_outline),
-                ),
-                ButtonSegment(
-                  value: 'Medium',
-                  label: Text('Medium'),
-                  icon: Icon(Icons.warning_amber),
-                ),
-                ButtonSegment(
-                  value: 'High',
-                  label: Text('High'),
-                  icon: Icon(Icons.priority_high),
-                ),
-              ],
-              selected: {_severityFilter},
-              onSelectionChanged: (selected) {
-                setState(() {
-                  _severityFilter = selected.first;
-                });
-              },
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: childFilterItems.contains(_selectedChildFilter)
-                  ? _selectedChildFilter
-                  : 'All',
-              decoration: const InputDecoration(
-                labelText: 'Filter by child',
-                border: OutlineInputBorder(),
-              ),
-              items: childFilterItems.map((name) {
-                return DropdownMenuItem(
-                  value: name,
-                  child: Text(name),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() {
-                  _selectedChildFilter = value;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            Text(
-              '${filteredIncidents.length} incident(s) shown',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            if (filteredIncidents.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 32),
-                child: Center(
-                  child: Text(
-                    'No incidents match these filters.',
-                    style: TextStyle(fontSize: 16),
+            _IncidentSection(
+              icon: _showArchived
+                  ? Icons.archive_rounded
+                  : Icons.list_alt_rounded,
+              title: _showArchived
+                  ? context.l10n.archivedIncidents
+                  : context.l10n.viewIncidents,
+              color: const Color(0xFF42A5F5),
+              child: Column(
+                children: [
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      ChoiceChip(
+                        selected: !_showArchived,
+                        label: Text(context.l10n.viewIncidents),
+                        avatar:
+                            const Icon(Icons.list_alt_rounded),
+                        onSelected: (_) {
+                          setState(() {
+                            _showArchived = false;
+                          });
+                        },
+                      ),
+                      ChoiceChip(
+                        selected: _showArchived,
+                        label:
+                            Text(context.l10n.archivedIncidents),
+                        avatar: const Icon(Icons.archive_rounded),
+                        onSelected: (_) {
+                          setState(() {
+                            _showArchived = true;
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _severityFilter,
+                          decoration: InputDecoration(
+                            labelText: context.l10n.severity,
+                            border: const OutlineInputBorder(),
+                          ),
+                          items: [
+                            DropdownMenuItem(
+                              value: 'All',
+                              child: Text(context.l10n.all),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Low',
+                              child: Text(context.l10n.low),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Medium',
+                              child: Text(context.l10n.medium),
+                            ),
+                            DropdownMenuItem(
+                              value: 'High',
+                              child: Text(context.l10n.high),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value == null) return;
+
+                            setState(() {
+                              _severityFilter = value;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _selectedChildFilter,
+                          decoration: InputDecoration(
+                            labelText: context.l10n.filterByChild,
+                            border: const OutlineInputBorder(),
+                          ),
+                          items: [
+                            DropdownMenuItem(
+                              value: 'all',
+                              child: Text(context.l10n.all),
+                            ),
+                            ...children.map(
+                              (child) => DropdownMenuItem(
+                                value: child.id,
+                                child: Text(child.name),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value == null) return;
+
+                            setState(() {
+                              _selectedChildFilter = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      context.l10n.incidentsShown(filtered.length),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (filtered.isEmpty)
+              _IncidentMessageState(
+                icon: Icons.search_off_rounded,
+                message: snapshot.data!.isEmpty
+                    ? context.l10n.noIncidents
+                    : context.l10n.noMatchingIncidents,
               )
             else
-              ...filteredIncidents.map(_buildIncidentCard),
+              ...filtered.map(_buildIncidentCard),
           ],
         );
       },
@@ -481,136 +768,673 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     final severityColor = _severityColor(incident.severity);
 
     return Card(
+      elevation: 0,
       margin: const EdgeInsets.only(bottom: 14),
-      elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(22),
+        side: BorderSide(
+          color: severityColor.withValues(alpha: 0.28),
+          width: 2,
+        ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: severityColor,
-                  child: Icon(
-                    _severityIcon(incident.severity),
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    incident.childName,
-                    style: const TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.bold,
+      child: ExpansionTile(
+        leading: CircleAvatar(
+          backgroundColor: severityColor,
+          foregroundColor: Colors.white,
+          child: Icon(_severityIcon(incident.severity)),
+        ),
+        title: Text(
+          incident.childName,
+          style: const TextStyle(fontWeight: FontWeight.w900),
+        ),
+        subtitle: Text(_formatDate(incident.timestamp)),
+        trailing: incident.isArchived
+            ? const Icon(Icons.archive_rounded)
+            : PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    _editIncident(incident);
+                  } else if (value == 'archive') {
+                    _archiveIncident(incident);
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.edit_rounded),
+                      title: Text(context.l10n.editIncident),
                     ),
                   ),
-                ),
-                IconButton(
-                  tooltip: 'Delete incident',
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    color: Colors.red,
+                  PopupMenuItem(
+                    value: 'archive',
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(
+                        Icons.archive_outlined,
+                      ),
+                      title: Text(context.l10n.archiveIncident),
+                    ),
                   ),
-                  onPressed: () => _deleteIncident(incident),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
+                ],
+              ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Chip(
-                  avatar: Icon(
-                    _severityIcon(incident.severity),
-                    size: 18,
-                    color: severityColor,
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _IncidentChip(
+                      icon: _severityIcon(incident.severity),
+                      label: context.l10n.severityLabel(
+                        _severityLabel(incident.severity),
+                      ),
+                      color: severityColor,
+                    ),
+                    _IncidentChip(
+                      icon: Icons.category_rounded,
+                      label: _categoryLabel(incident.category),
+                      color: const Color(0xFF7E57C2),
+                    ),
+                    _IncidentChip(
+                      icon: Icons.person_rounded,
+                      label: context.l10n.loggedBy(
+                        incident.staffName,
+                      ),
+                      color: const Color(0xFF42A5F5),
+                    ),
+                    _IncidentChip(
+                      icon: Icons.follow_the_signs_rounded,
+                      label: _followUpLabel(
+                        incident.followUpStatus,
+                      ),
+                      color: const Color(0xFF26A69A),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _IncidentDetail(
+                  title: context.l10n.description,
+                  content: incident.description,
+                ),
+                _IncidentDetail(
+                  title: context.l10n.actionTaken,
+                  content: incident.actionTaken,
+                ),
+                if (incident.followUpNotes.isNotEmpty)
+                  _IncidentDetail(
+                    title: context.l10n.followUpNotes,
+                    content: incident.followUpNotes,
                   ),
-                  label: Text('${incident.severity} severity'),
-                ),
-                Chip(
-                  avatar: const Icon(Icons.calendar_today, size: 18),
-                  label: Text(_formatDate(incident.timestamp)),
-                ),
-                Chip(
-                  avatar: const Icon(Icons.person, size: 18),
-                  label: Text('Logged by ${incident.staffName}'),
-                ),
+                if (incident.isArchived &&
+                    incident.archiveReason.isNotEmpty)
+                  _IncidentDetail(
+                    title: context.l10n.archiveReason,
+                    content: incident.archiveReason,
+                  ),
               ],
             ),
-            const SizedBox(height: 12),
-            const Text(
-              'Description',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(incident.description),
-            const SizedBox(height: 12),
-            const Text(
-              'Action Taken',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(incident.actionTaken),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final classroomName = _session.currentClassroomName;
+
     final title = _session.hasClassroomSession
-        ? '${_session.currentClassroomName} Incident Log'
-        : 'Incident Log';
+        ? context.l10n.incidentLogClassroom(classroomName)
+        : context.l10n.incidentLog;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F4FF),
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: Text(title)),
       body: StreamBuilder<List<ChildProfile>>(
         stream: _firestoreService.getCurrentChildProfiles(),
-        builder: (context, childSnapshot) {
-          if (childSnapshot.connectionState == ConnectionState.waiting) {
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return _IncidentMessageState(
+              icon: Icons.cloud_off_rounded,
+              message: context.l10n.error,
+            );
+          }
+
+          if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final children = childSnapshot.data ?? [];
+          final children = snapshot.data!;
 
-          return SafeArea(
+          return Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFFF7F4FF),
+                  Color(0xFFF3F8FF),
+                ],
+              ),
+            ),
             child: ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(18),
               children: [
-                const Text(
-                  'Incident Log',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+                _IncidentHeader(
+                  title: context.l10n.incidentLog,
+                  description: context.l10n.incidentLogIntro,
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Create and review classroom incident records.',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 18),
                 _buildModeSelector(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 if (_mode == IncidentLogMode.create)
-                  _buildCreateIncidentSection(children)
+                  _buildCreateSection(children)
                 else
-                  _buildViewIncidentsSection(),
+                  _buildViewSection(children),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _IncidentEditDialog extends StatefulWidget {
+  final IncidentLogEntry incident;
+
+  const _IncidentEditDialog({
+    required this.incident,
+  });
+
+  @override
+  State<_IncidentEditDialog> createState() =>
+      _IncidentEditDialogState();
+}
+
+class _IncidentEditDialogState
+    extends State<_IncidentEditDialog> {
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _actionController;
+  late final TextEditingController _followUpController;
+
+  late String _severity;
+  late String _category;
+  late String _followUpStatus;
+  late DateTime _timestamp;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _descriptionController = TextEditingController(
+      text: widget.incident.description,
+    );
+    _actionController = TextEditingController(
+      text: widget.incident.actionTaken,
+    );
+    _followUpController = TextEditingController(
+      text: widget.incident.followUpNotes,
+    );
+
+    _severity = widget.incident.severity;
+    _category = widget.incident.category;
+    _followUpStatus = widget.incident.followUpStatus;
+    _timestamp = widget.incident.timestamp;
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _actionController.dispose();
+    _followUpController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDateTime() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _timestamp,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (date == null || !mounted) return;
+
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_timestamp),
+    );
+
+    if (time == null || !mounted) return;
+
+    setState(() {
+      _timestamp = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+      );
+    });
+  }
+
+  String _formatDate() {
+    final material = MaterialLocalizations.of(context);
+
+    return '${material.formatMediumDate(_timestamp)} • '
+        '${material.formatTimeOfDay(TimeOfDay.fromDateTime(_timestamp))}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(context.l10n.editIncident),
+      content: SizedBox(
+        width: 680,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                widget.incident.childName,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      initialValue: _severity,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.severity,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: 'Low',
+                          child: Text(context.l10n.low),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Medium',
+                          child: Text(context.l10n.medium),
+                        ),
+                        DropdownMenuItem(
+                          value: 'High',
+                          child: Text(context.l10n.high),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _severity = value);
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      initialValue: _category,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.incidentCategory,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: 'behaviour',
+                          child: Text(context.l10n.behaviour),
+                        ),
+                        DropdownMenuItem(
+                          value: 'injury',
+                          child: Text(context.l10n.injury),
+                        ),
+                        DropdownMenuItem(
+                          value: 'safety',
+                          child: Text(context.l10n.safety),
+                        ),
+                        DropdownMenuItem(
+                          value: 'emotional',
+                          child: Text(context.l10n.emotional),
+                        ),
+                        DropdownMenuItem(
+                          value: 'other',
+                          child: Text(context.l10n.other),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _category = value);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: _pickDateTime,
+                icon: const Icon(Icons.calendar_today_rounded),
+                label: Text(_formatDate()),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _descriptionController,
+                minLines: 3,
+                maxLines: 6,
+                decoration: InputDecoration(
+                  labelText: context.l10n.description,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _actionController,
+                minLines: 2,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: context.l10n.actionTaken,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                initialValue: _followUpStatus,
+                decoration: InputDecoration(
+                  labelText: context.l10n.followUp,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 'none',
+                    child: Text(context.l10n.noFollowUp),
+                  ),
+                  DropdownMenuItem(
+                    value: 'required',
+                    child: Text(context.l10n.followUpRequired),
+                  ),
+                  DropdownMenuItem(
+                    value: 'completed',
+                    child: Text(context.l10n.followUpCompleted),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => _followUpStatus = value);
+                  }
+                },
+              ),
+              if (_followUpStatus != 'none') ...[
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _followUpController,
+                  minLines: 2,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.followUpNotes,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(context.l10n.cancel),
+        ),
+        FilledButton.icon(
+          onPressed: () {
+            final description =
+                _descriptionController.text.trim();
+            final action = _actionController.text.trim();
+
+            if (description.isEmpty || action.isEmpty) return;
+
+            Navigator.pop(
+              context,
+              widget.incident.copyWith(
+                timestamp: _timestamp,
+                description: description,
+                actionTaken: action,
+                severity: _severity,
+                category: _category,
+                followUpStatus: _followUpStatus,
+                followUpNotes:
+                    _followUpController.text.trim(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.save_rounded),
+          label: Text(context.l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
+class _IncidentHeader extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const _IncidentHeader({
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF7E57C2),
+            Color(0xFF5C6BC0),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(26),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.assignment_late_rounded,
+            color: Colors.white,
+            size: 54,
+          ),
+          const SizedBox(width: 17),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IncidentSection extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Color color;
+  final Widget child;
+
+  const _IncidentSection({
+    required this.icon,
+    required this.title,
+    required this.color,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(
+          color: color.withValues(alpha: 0.25),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: color.withValues(alpha: 0.13),
+                  child: Icon(icon, color: color),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(fontWeight: FontWeight.w900),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _IncidentChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _IncidentChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 7,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IncidentDetail extends StatelessWidget {
+  final String title;
+  final String content;
+
+  const _IncidentDetail({
+    required this.title,
+    required this.content,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 4),
+          SelectableText(
+            content,
+            style: const TextStyle(height: 1.4),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IncidentMessageState extends StatelessWidget {
+  final IconData icon;
+  final String message;
+
+  const _IncidentMessageState({
+    required this.icon,
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 68,
+              color: const Color(0xFF7E57C2),
+            ),
+            const SizedBox(height: 15),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w900),
+            ),
+          ],
+        ),
       ),
     );
   }

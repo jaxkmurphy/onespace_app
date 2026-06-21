@@ -9,6 +9,26 @@
   "newPin": "New PIN",
   "confirmPin": "Confirm PIN",
   "pinHint": "PINs must be 4 digits and match",
+
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+  "create": "Create",
+  "close": "Close",
+  "done": "Done",
+  "retry": "Try Again",
+  "loading": "Loading...",
+  "error": "Something went wrong",
+  "all": "All",
+  "everyone": "Everyone",
+  "viewOnly": "View only",
+  "untitled": "Untitled",
+  "low": "Low",
+  "medium": "Medium",
+  "high": "High",
+
   "zones_regulation": "Zones of Regulation",
   "points_overview": "Points Overview",
   "view_schedule": "View Schedule",
@@ -19,5 +39,335 @@
   "my_schedule": "My Schedule",
   "calming_sounds": "Calming Sounds",
   "take_quiz": "Take a Quiz",
-  "change_background": "Change Background Color"
+  "change_background": "Change Background Colour",
+
+  "handoverHub": "Handover Hub",
+  "handoverStartHereTab": "Start Here",
+  "handoverStaffDocumentsTab": "Staff Documents",
+  "handoverQuickNotesTab": "Quick Notes",
+  "readThisFirst": "Read this first",
+  "startHereDescription": "This section should contain the most important things a substitute teacher or SNA needs to know immediately.",
+  "noStartHereInformation": "No Start Here information has been added yet.",
+  "editStartHere": "Edit Start Here",
+  "editStartHereTitle": "Edit Start Here",
+  "startHereHint": "Write the most important classroom information here...",
+  "noStaffProfilesFound": "No staff profiles found.",
+  "staffDocumentTitle": "{staffName} Document",
+  "@staffDocumentTitle": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "editStaffDocument": "Edit {staffName} Document",
+  "@editStaffDocument": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutThisClass": "About This Class",
+  "whatWorksWell": "What Works Well",
+  "commonTriggers": "Common Triggers",
+  "successfulStrategies": "Successful Strategies",
+  "communicationTips": "Communication Tips",
+  "otherNotes": "Other Notes",
+  "nothingAddedYet": "Nothing added yet.",
+  "editQuickNote": "Edit Quick Note",
+  "addQuickNote": "Add Quick Note",
+  "titleLabel": "Title",
+  "noteLabel": "Note",
+  "deleteNoteTitle": "Delete note?",
+  "deleteNoteMessage": "Are you sure you want to delete this note?",
+  "noQuickNotes": "No quick notes yet.",
+  "quickNoteBy": "By: {staffName}",
+  "@quickNoteBy": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "addNote": "Add Note",
+  "handoverLoadError": "Could not load handover information.",
+  "handoverSaveError": "Could not save the handover information.",
+  "handoverDeleteError": "Could not delete the note.",
+  "lastUpdated": "Last updated {date}",
+  "@lastUpdated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+"incidentLog": "Incident Log",
+"incidentLogClassroom": "{classroomName} Incident Log",
+"@incidentLogClassroom": {
+  "placeholders": {
+    "classroomName": {
+      "type": "String"
+    }
+  }
+},
+"incidentLogIntro": "Create and review classroom incident records.",
+"createIncident": "Create Incident",
+"viewIncidents": "View Incidents",
+"selectChild": "Select Child",
+"severity": "Severity",
+"useCurrentTime": "Use Current Time (Default)",
+"manualTime": "Manual Time: {date}",
+"@manualTime": {
+  "placeholders": {
+    "date": {
+      "type": "String"
+    }
+  }
+},
+"resetToCurrentTime": "Reset to current time",
+"description": "Description",
+"actionTaken": "Action Taken",
+"saveIncident": "Save Incident",
+"saving": "Saving...",
+"pleaseSelectChild": "Please select a child.",
+"enterIncidentDetails": "Please enter a description and the action taken.",
+"incidentSaved": "Incident saved.",
+"incidentUpdated": "Incident updated.",
+"incidentSaveFailed": "Failed to save the incident.",
+"editIncident": "Edit Incident",
+"archiveIncident": "Archive Incident",
+"archiveIncidentQuestion": "Archive this incident?",
+"archiveIncidentMessage": "Archive the incident for {childName}? It will remain in the audit history.",
+"@archiveIncidentMessage": {
+  "placeholders": {
+    "childName": {
+      "type": "String"
+    }
+  }
+},
+"archiveReason": "Reason for archiving",
+"incidentArchived": "Incident archived.",
+"incidentArchiveFailed": "Failed to archive the incident.",
+"noIncidents": "No incidents logged yet.",
+"filterByChild": "Filter by child",
+"incidentsShown": "{count, plural, =0{No incidents shown} one{1 incident shown} other{{count} incidents shown}}",
+"@incidentsShown": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"noMatchingIncidents": "No incidents match these filters.",
+"severityLabel": "{severity} severity",
+"@severityLabel": {
+  "placeholders": {
+    "severity": {
+      "type": "String"
+    }
+  }
+},
+"loggedBy": "Logged by {staffName}",
+"@loggedBy": {
+  "placeholders": {
+    "staffName": {
+      "type": "String"
+    }
+  }
+},
+"incidentCategory": "Incident Category",
+"behaviour": "Behaviour",
+"injury": "Injury",
+"safety": "Safety",
+"emotional": "Emotional",
+"other": "Other",
+"followUp": "Follow-up",
+"noFollowUp": "No follow-up needed",
+"followUpRequired": "Follow-up required",
+"followUpCompleted": "Follow-up completed",
+"followUpNotes": "Follow-up Notes",
+"archivedIncidents": "Archived Incidents",
+"wordLearning": "Word Learning",
+"wordPractice": "Word Practice",
+"wordProgress": "Word Progress",
+"createWordPack": "Create Word Pack",
+"editWordPack": "Edit Word Pack",
+"deleteWordPack": "Delete Word Pack",
+"deleteWordPackMessage": "Delete “{packName}”? Its words will also be deleted.",
+"@deleteWordPackMessage": {
+  "placeholders": {
+    "packName": {
+      "type": "String"
+    }
+  }
+},
+"packName": "Pack Name",
+"packDescription": "Pack Description",
+"packDescriptionHint": "What will children practise in this pack?",
+"createdBy": "Created by {staffName}",
+"@createdBy": {
+  "placeholders": {
+    "staffName": {
+      "type": "String"
+    }
+  }
+},
+"wordCount": "{count, plural, =0{No words} one{1 word} other{{count} words}}",
+"@wordCount": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"assignedChildCount": "{count, plural, =0{Not assigned} one{Assigned to 1 child} other{Assigned to {count} children}}",
+"@assignedChildCount": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"noWordPacks": "No word packs yet.",
+"createFirstWordPack": "Create your first word pack to get started.",
+"addWord": "Add Word",
+"editWord": "Edit Word",
+"deleteWord": "Delete Word",
+"deleteWordMessage": "Delete the word “{word}”?",
+"@deleteWordMessage": {
+  "placeholders": {
+    "word": {
+      "type": "String"
+    }
+  }
+},
+"word": "Word",
+"emoji": "Emoji",
+"difficulty": "Difficulty",
+"easy": "Easy",
+"hard": "Hard",
+"assignChildren": "Assign Children",
+"saveAssignments": "Save Assignments",
+"noChildrenAvailable": "No child profiles are available.",
+"noWords": "No words have been added yet.",
+"addFirstWord": "Add at least two words before assigning this pack.",
+"tapToPractise": "Tap to practise",
+"noAssignedWordPacks": "No word packs are assigned right now.",
+"packNeedsTwoWords": "This pack needs at least two words before it can be practised.",
+"practiceComplete": "Practice Complete!",
+"practisedWords": "{count, plural, one{You practised 1 word.} other{You practised {count} words.}}",
+"@practisedWords": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"practiseAgain": "Practise Again",
+"backToPacks": "Back to Packs",
+"selectChildForProgress": "Select a child to view their progress.",
+"noWordAttempts": "No word practice attempts yet.",
+"totalAttempts": "Total attempts: {count}",
+"@totalAttempts": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"correctAnswers": "Correct answers: {count}",
+"@correctAnswers": {
+  "placeholders": {
+    "count": {
+      "type": "int"
+    }
+  }
+},
+"accuracy": "Accuracy: {percentage}%",
+"@accuracy": {
+  "placeholders": {
+    "percentage": {
+      "type": "String"
+    }
+  }
+},
+"wordBreakdown": "Word Breakdown",
+"attemptSummary": "Attempts: {attempts} • Correct: {correct} • Accuracy: {accuracy}%",
+"@attemptSummary": {
+  "placeholders": {
+    "attempts": {
+      "type": "int"
+    },
+    "correct": {
+      "type": "int"
+    },
+    "accuracy": {
+      "type": "String"
+    }
+  }
+},
+"chooseMatchingWord": "Choose the word that matches the picture.",
+"greatJob": "Great job!",
+"goodTry": "Good try!",
+"correctAnswerWas": "The correct answer was {answer}.",
+"@correctAnswerWas": {
+  "placeholders": {
+    "answer": {
+      "type": "String"
+    }
+  }
+},
+"nextWord": "Next Word",
+"finishPractice": "Finish Practice",
+"loadingWords": "Getting your words ready...",
+"couldNotLoadWords": "Could not load this word pack.",
+"packStyle": "Pack Style",
+"words": "Words",
+"school": "School",
+"home": "Home",
+"animals": "Animals",
+"feelings": "Feelings",
+"ourWorld": "Our World",
+"fun": "Fun",
+"selectedChildren": "Selected Children",
+"availableToEveryone": "Available to Everyone",
+"couldNotLoadWordPacks": "Could not load word packs.",
+"wordPackCreated": "Word pack created.",
+"wordPackDeleted": "Word pack deleted.",
+"wordPackSaveFailed": "Could not save the word pack.",
+"wordPackDeleteFailed": "Could not delete the word pack.",
+"editPackDetails": "Edit Pack Details",
+"wordPackUpdated": "Word pack updated.",
+"assignmentsSaved": "Assignments saved.",
+"hint": "Hint",
+"hintOptional": "Helpful hint (optional)",
+"wordSaved": "Word saved.",
+"wordDeleted": "Word deleted.",
+"wordSaveFailed": "Could not save the word.",
+"wordDeleteFailed": "Could not delete the word.",
+"wordProgressCount": "Word {current} of {total}",
+"@wordProgressCount": {
+  "placeholders": {
+    "current": {
+      "type": "int"
+    },
+    "total": {
+      "type": "int"
+    }
+  }
+},
+"practiceScore": "{score} of {total} correct",
+"@practiceScore": {
+  "placeholders": {
+    "score": {
+      "type": "int"
+    },
+    "total": {
+      "type": "int"
+    }
+  }
+},
+"showHint": "Show Hint"
+
 }

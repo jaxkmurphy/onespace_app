@@ -132,13 +132,13 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                                 ),
                                 StaffDashboardFeatureCard(
                                   icon: Icons.view_kanban,
-                                  title: loc.getString('first_then_setup'),
+                                  title: loc.getString('when_then_setup'),
                                   subtitle:
-                                      'Assign First-Then tasks and rewards.',
+                                      'Create When–Then activities and rewards.',
                                   onTap: () {
                                     Navigator.pushNamed(
                                       context,
-                                      '/first-then-setup',
+                                      '/when-then-setup',
                                       arguments: widget.profile.teacherUid,
                                     );
                                   },
@@ -190,21 +190,6 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                                         'teacherUid':
                                             widget.profile.teacherUid,
                                       },
-                                    );
-                                  },
-                                ),
-                                StaffDashboardFeatureCard(
-                                  icon: Icons.record_voice_over,
-                                  title: 'Voice Lines',
-                                  subtitle:
-                                      'Open communication voice buttons.',
-                                  onTap: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Voice Lines is currently child-facing.',
-                                        ),
-                                      ),
                                     );
                                   },
                                 ),
