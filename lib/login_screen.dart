@@ -5,6 +5,7 @@ import 'models/school_member.dart';
 import 'services/classroom_auth_service.dart';
 import 'services/firestore_service.dart';
 import 'services/classroom_session_service.dart';
+import 'l10n/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   int selectedTab = 0;
 
   Future<void> _handleAdminAuth() async {
+    final l10n = context.l10n;
     setState(() => isLoading = true);
 
     try {
@@ -42,19 +44,16 @@ class _LoginScreenState extends State<LoginScreen> {
         final schoolCode = schoolCodeController.text.trim().toUpperCase();
 
         if (schoolName.isEmpty || schoolCode.isEmpty) {
-          throw Exception('Please enter a school name and school code.');
+          throw Exception(l10n.enterSchoolDetails);
         }
 
-        final userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+        final userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
 
         final user = userCredential.user;
 
         if (user == null) {
-          throw Exception('Could not create admin account.');
+          throw Exception(l10n.adminAccountCreateFailed);
         }
 
         final schoolId = await _firestoreService.createSchool(
@@ -69,22 +68,16 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(
           context,
           '/admin-dashboard',
-          arguments: {
-            'schoolId': schoolId,
-            'schoolName': schoolName,
-          },
+          arguments: {'schoolId': schoolId, 'schoolName': schoolName},
         );
       } else {
-        final userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+        final userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
 
         final user = userCredential.user;
 
         if (user == null) {
-          throw Exception('Could not log in.');
+          throw Exception(l10n.loginFailed);
         }
 
         await _sendUserToCorrectPage(user);
@@ -92,9 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_cleanError(e))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_cleanError(e))));
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -111,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final pin = classroomPinController.text.trim();
 
       if (schoolCode.isEmpty || classroomCode.isEmpty || pin.isEmpty) {
-        throw Exception('Please enter school code, classroom code and PIN.');
+        throw Exception(context.l10n.enterClassroomDetails);
       }
 
       final result = await _classroomAuthService.login(
@@ -126,24 +119,24 @@ class _LoginScreenState extends State<LoginScreen> {
         schoolId: result['schoolId']!,
         classroomId: result['classroomId']!,
         classroomName: result['classroomName']!,
-  );
+      );
 
-  Navigator.pushReplacementNamed(
-    context,
-    '/profiles',
-    arguments: {
-      'schoolId': result['schoolId'],
-      'classroomId': result['classroomId'],
-      'classroomName': result['classroomName'],
-      'isClassroomLogin': true,
+      Navigator.pushReplacementNamed(
+        context,
+        '/profiles',
+        arguments: {
+          'schoolId': result['schoolId'],
+          'classroomId': result['classroomId'],
+          'classroomName': result['classroomName'],
+          'isClassroomLogin': true,
         },
       );
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_cleanError(e))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_cleanError(e))));
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -152,8 +145,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _sendUserToCorrectPage(User user) async {
-    final SchoolMember? member =
-        await _firestoreService.getSchoolMemberByUid(user.uid);
+    final SchoolMember? member = await _firestoreService.getSchoolMemberByUid(
+      user.uid,
+    );
 
     if (!mounted) return;
 
@@ -166,10 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(
           context,
           '/admin-dashboard',
-          arguments: {
-            'schoolId': school.id,
-            'schoolName': school.name,
-          },
+          arguments: {'schoolId': school.id, 'schoolName': school.name},
         );
         return;
       }
@@ -182,17 +173,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final message = error.toString();
 
     if (message.contains('permission-denied')) {
-      return 'Classroom login details are incorrect.';
+      return context.l10n.classroomLoginIncorrect;
     }
 
     if (message.contains('invalid-argument')) {
-      return 'Please check all login fields.';
+      return context.l10n.checkLoginFields;
     }
 
     if (message.contains('user-not-found') ||
         message.contains('wrong-password') ||
         message.contains('invalid-credential')) {
-      return 'Admin email or password is incorrect.';
+      return context.l10n.adminLoginIncorrect;
     }
 
     return message.replaceFirst('Exception: ', '');
@@ -221,23 +212,23 @@ class _LoginScreenState extends State<LoginScreen> {
     return Expanded(
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
-        onTap: isLoading
-            ? null
-            : () {
-                setState(() {
-                  selectedTab = index;
-                  isRegistering = false;
-                });
-              },
+        onTap:
+            isLoading
+                ? null
+                : () {
+                  setState(() {
+                    selectedTab = index;
+                    isRegistering = false;
+                  });
+                },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color: selected ? colourScheme.primaryContainer : null,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected
-                  ? colourScheme.primary
-                  : colourScheme.outlineVariant,
+              color:
+                  selected ? colourScheme.primary : colourScheme.outlineVariant,
             ),
           ),
           child: Row(
@@ -246,18 +237,20 @@ class _LoginScreenState extends State<LoginScreen> {
               Icon(
                 icon,
                 size: 20,
-                color: selected
-                    ? colourScheme.onPrimaryContainer
-                    : colourScheme.onSurfaceVariant,
+                color:
+                    selected
+                        ? colourScheme.onPrimaryContainer
+                        : colourScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 8),
               Text(
                 label,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: selected
-                      ? colourScheme.onPrimaryContainer
-                      : colourScheme.onSurfaceVariant,
+                  color:
+                      selected
+                          ? colourScheme.onPrimaryContainer
+                          : colourScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -274,11 +267,11 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             controller: schoolNameController,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-              labelText: 'School Name',
-              hintText: 'Example: St Mary’s Primary School',
-              prefixIcon: Icon(Icons.school_outlined),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: context.l10n.schoolName,
+              hintText: context.l10n.schoolNameHint,
+              prefixIcon: const Icon(Icons.school_outlined),
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 14),
@@ -286,11 +279,11 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: schoolCodeController,
             textCapitalization: TextCapitalization.characters,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-              labelText: 'School Code',
-              hintText: 'Example: STM123',
-              prefixIcon: Icon(Icons.badge_outlined),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: context.l10n.schoolCode,
+              hintText: context.l10n.schoolCodeHint,
+              prefixIcon: const Icon(Icons.badge_outlined),
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 14),
@@ -299,10 +292,10 @@ class _LoginScreenState extends State<LoginScreen> {
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-            labelText: 'Admin Email',
-            prefixIcon: Icon(Icons.email_outlined),
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: context.l10n.adminEmail,
+            prefixIcon: const Icon(Icons.email_outlined),
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -313,10 +306,10 @@ class _LoginScreenState extends State<LoginScreen> {
           onSubmitted: (_) {
             if (!isLoading) _handleAdminAuth();
           },
-          decoration: const InputDecoration(
-            labelText: 'Password',
-            prefixIcon: Icon(Icons.lock_outline),
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: context.l10n.password,
+            prefixIcon: const Icon(Icons.lock_outline),
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 24),
@@ -324,35 +317,37 @@ class _LoginScreenState extends State<LoginScreen> {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: isLoading ? null : _handleAdminAuth,
-            icon: isLoading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(isRegistering ? Icons.person_add : Icons.login),
+            icon:
+                isLoading
+                    ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : Icon(isRegistering ? Icons.person_add : Icons.login),
             label: Text(
               isLoading
-                  ? 'Please wait...'
+                  ? context.l10n.pleaseWait
                   : isRegistering
-                      ? 'Create School Admin Account'
-                      : 'Admin Login',
+                  ? context.l10n.createSchoolAdminAccount
+                  : context.l10n.adminLogin,
             ),
           ),
         ),
         const SizedBox(height: 10),
         TextButton(
-          onPressed: isLoading
-              ? null
-              : () {
-                  setState(() {
-                    isRegistering = !isRegistering;
-                  });
-                },
+          onPressed:
+              isLoading
+                  ? null
+                  : () {
+                    setState(() {
+                      isRegistering = !isRegistering;
+                    });
+                  },
           child: Text(
             isRegistering
-                ? 'Already have an admin account? Login'
-                : 'No admin account? Register school',
+                ? context.l10n.existingAdminLogin
+                : context.l10n.registerSchoolPrompt,
           ),
         ),
       ],
@@ -366,11 +361,11 @@ class _LoginScreenState extends State<LoginScreen> {
           controller: classroomSchoolCodeController,
           textCapitalization: TextCapitalization.characters,
           textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-            labelText: 'School Code',
-            hintText: 'Example: STM123',
-            prefixIcon: Icon(Icons.school_outlined),
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: context.l10n.schoolCode,
+            hintText: context.l10n.schoolCodeHint,
+            prefixIcon: const Icon(Icons.school_outlined),
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -378,11 +373,11 @@ class _LoginScreenState extends State<LoginScreen> {
           controller: classroomCodeController,
           textCapitalization: TextCapitalization.characters,
           textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-            labelText: 'Classroom Code',
-            hintText: 'Example: ASD1',
-            prefixIcon: Icon(Icons.meeting_room_outlined),
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: context.l10n.classroomCode,
+            hintText: context.l10n.classroomCodeHint,
+            prefixIcon: const Icon(Icons.meeting_room_outlined),
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -394,10 +389,10 @@ class _LoginScreenState extends State<LoginScreen> {
           onSubmitted: (_) {
             if (!isLoading) _handleClassroomLogin();
           },
-          decoration: const InputDecoration(
-            labelText: 'Classroom PIN',
-            prefixIcon: Icon(Icons.lock_outline),
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: context.l10n.classroomPin,
+            prefixIcon: const Icon(Icons.lock_outline),
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 24),
@@ -405,14 +400,17 @@ class _LoginScreenState extends State<LoginScreen> {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: isLoading ? null : _handleClassroomLogin,
-            icon: isLoading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.login),
-            label: Text(isLoading ? 'Checking...' : 'Enter Classroom'),
+            icon:
+                isLoading
+                    ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : const Icon(Icons.login),
+            label: Text(
+              isLoading ? context.l10n.checking : context.l10n.enterClassroom,
+            ),
           ),
         ),
       ],
@@ -458,9 +456,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 18),
                       Text(
                         'OneSpace',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineLarge
+                        style: Theme.of(context).textTheme.headlineLarge
                             ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
@@ -468,9 +464,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         isAdminTab
                             ? isRegistering
-                                ? 'Create a school admin account'
-                                : 'Admin login'
-                            : 'Classroom login',
+                                ? context.l10n.createSchoolAdminIntro
+                                : context.l10n.adminLoginIntro
+                            : context.l10n.classroomLoginIntro,
                         style: Theme.of(context).textTheme.titleMedium,
                         textAlign: TextAlign.center,
                       ),
@@ -478,13 +474,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         children: [
                           _buildTabButton(
-                            label: 'Admin',
+                            label: context.l10n.admin,
                             icon: Icons.admin_panel_settings,
                             index: 0,
                           ),
                           const SizedBox(width: 12),
                           _buildTabButton(
-                            label: 'Classroom',
+                            label: context.l10n.classroom,
                             icon: Icons.meeting_room,
                             index: 1,
                           ),

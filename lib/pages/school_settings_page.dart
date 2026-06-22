@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/school.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
 
 class SchoolSettingsPage extends StatefulWidget {
   final String schoolId;
 
-  const SchoolSettingsPage({
-    super.key,
-    required this.schoolId,
-  });
+  const SchoolSettingsPage({super.key, required this.schoolId});
 
   @override
   State<SchoolSettingsPage> createState() => _SchoolSettingsPageState();
@@ -45,9 +43,9 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
       if (!mounted) return;
 
       if (school == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('School not found')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.schoolNotFound)));
         Navigator.pop(context);
         return;
       }
@@ -73,7 +71,9 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading school settings: $e')),
+        SnackBar(
+          content: Text(context.l10n.schoolSettingsLoadError(e.toString())),
+        ),
       );
     }
   }
@@ -102,7 +102,7 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('School settings updated')),
+        SnackBar(content: Text(context.l10n.schoolSettingsUpdated)),
       );
 
       Navigator.pop(context, true);
@@ -110,7 +110,13 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(
+          content: Text(
+            e.toString().contains('school code is already in use')
+                ? context.l10n.schoolCodeInUse
+                : context.l10n.schoolSettingsUpdateError,
+          ),
+        ),
       );
     } finally {
       if (mounted) {
@@ -139,240 +145,239 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
     final school = _school;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('School Settings'),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : school == null
-              ? const Center(child: Text('School not found'))
+      appBar: AppBar(title: Text(context.l10n.schoolSettings)),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : school == null
+              ? Center(child: Text(context.l10n.schoolNotFound))
               : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 720),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(18),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const Text(
-                                  'School Information',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                context.l10n.schoolInformation,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(context.l10n.schoolAccountInfo),
+                              const SizedBox(height: 22),
+
+                              TextFormField(
+                                controller: _nameController,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.schoolName,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.school_outlined),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return context.l10n.enterSchoolName;
+                                  }
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              TextFormField(
+                                controller: _schoolCodeController,
+                                textCapitalization:
+                                    TextCapitalization.characters,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.schoolCode,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.badge_outlined),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return context.l10n.enterSchoolCode;
+                                  }
+
+                                  if (value.trim().length < 3) {
+                                    return context.l10n.schoolCodeMinLength;
+                                  }
+
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                context.l10n.schoolCodeChangeInfo,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              TextFormField(
+                                controller: _classroomLimitController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.classroomLimit,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(
+                                    Icons.meeting_room_outlined,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'These details control the school account and classroom login.',
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return context.l10n.enterClassroomLimit;
+                                  }
+
+                                  final parsed = int.tryParse(value.trim());
+
+                                  if (parsed == null) {
+                                    return context.l10n.enterValidNumber;
+                                  }
+
+                                  if (parsed < 1) {
+                                    return context.l10n.classroomLimitMinimum;
+                                  }
+
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 24),
+
+                              const Divider(),
+
+                              const SizedBox(height: 16),
+
+                              Text(
+                                context.l10n.contactDetails,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                const SizedBox(height: 22),
+                              ),
 
-                                TextFormField(
-                                  controller: _nameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'School Name',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.school_outlined),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Enter a school name';
-                                    }
-                                    return null;
-                                  },
+                              const SizedBox(height: 16),
+
+                              TextFormField(
+                                controller: _principalNameController,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.principalName,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.person_outline),
                                 ),
+                              ),
 
-                                const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                                TextFormField(
-                                  controller: _schoolCodeController,
-                                  textCapitalization:
-                                      TextCapitalization.characters,
-                                  decoration: const InputDecoration(
-                                    labelText: 'School Code',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.badge_outlined),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Enter a school code';
-                                    }
-
-                                    if (value.trim().length < 3) {
-                                      return 'School code should be at least 3 characters';
-                                    }
-
-                                    return null;
-                                  },
+                              TextFormField(
+                                controller: _vicePrincipalNameController,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.vicePrincipalName,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.person_outline),
                                 ),
+                              ),
 
-                                const SizedBox(height: 8),
+                              const SizedBox(height: 16),
 
-                                const Text(
-                                  'Changing the school code will change what staff enter on the Classroom Login screen.',
-                                  style: TextStyle(fontSize: 13),
+                              TextFormField(
+                                controller: _schoolEmailController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.schoolEmail,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.email_outlined),
                                 ),
+                              ),
 
-                                const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                                TextFormField(
-                                  controller: _classroomLimitController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Classroom Limit',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon:
-                                        Icon(Icons.meeting_room_outlined),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Enter a classroom limit';
-                                    }
-
-                                    final parsed = int.tryParse(value.trim());
-
-                                    if (parsed == null) {
-                                      return 'Enter a valid number';
-                                    }
-
-                                    if (parsed < 1) {
-                                      return 'Classroom limit must be at least 1';
-                                    }
-
-                                    return null;
-                                  },
+                              TextFormField(
+                                controller: _phoneNumberController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.phoneNumber,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.phone_outlined),
                                 ),
+                              ),
 
-                                const SizedBox(height: 24),
+                              const SizedBox(height: 16),
 
-                                const Divider(),
-
-                                const SizedBox(height: 16),
-
-                                const Text(
-                                  'Contact Details',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                              TextFormField(
+                                controller: _addressController,
+                                minLines: 2,
+                                maxLines: 4,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.schoolAddress,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(
+                                    Icons.location_on_outlined,
                                   ),
                                 ),
+                              ),
 
-                                const SizedBox(height: 16),
+                              const SizedBox(height: 24),
 
-                                TextFormField(
-                                  controller: _principalNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Principal Name',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.person_outline),
-                                  ),
-                                ),
+                              const Divider(),
 
-                                const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                                TextFormField(
-                                  controller: _vicePrincipalNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Vice Principal Name',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.person_outline),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                TextFormField(
-                                  controller: _schoolEmailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: const InputDecoration(
-                                    labelText: 'School Email',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.email_outlined),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                TextFormField(
-                                  controller: _phoneNumberController,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Phone Number',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.phone_outlined),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                TextFormField(
-                                  controller: _addressController,
-                                  minLines: 2,
-                                  maxLines: 4,
-                                  decoration: const InputDecoration(
-                                    labelText: 'School Address',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.location_on_outlined),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 24),
-
-                                const Divider(),
-
-                                const SizedBox(height: 16),
-
-                                SwitchListTile(
-                                  value: _active,
-                                  title: const Text('School Active'),
-                                  subtitle: const Text(
-                                    'If disabled later, classroom login can be blocked for this school.',
-                                  ),
-                                  onChanged: _isSaving
-                                      ? null
-                                      : (value) {
+                              SwitchListTile(
+                                value: _active,
+                                title: Text(context.l10n.schoolActive),
+                                subtitle: Text(context.l10n.schoolInactiveInfo),
+                                onChanged:
+                                    _isSaving
+                                        ? null
+                                        : (value) {
                                           setState(() {
                                             _active = value;
                                           });
                                         },
-                                ),
+                              ),
 
-                                const SizedBox(height: 24),
+                              const SizedBox(height: 24),
 
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    icon: _isSaving
-                                        ? const SizedBox(
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  icon:
+                                      _isSaving
+                                          ? const SizedBox(
                                             width: 18,
                                             height: 18,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2,
                                             ),
                                           )
-                                        : const Icon(Icons.save),
-                                    label: Text(
-                                      _isSaving
-                                          ? 'Saving...'
-                                          : 'Save School Settings',
-                                    ),
-                                    onPressed:
-                                        _isSaving ? null : _saveSettings,
+                                          : const Icon(Icons.save),
+                                  label: Text(
+                                    _isSaving
+                                        ? context.l10n.saving
+                                        : context.l10n.saveSchoolSettings,
                                   ),
+                                  onPressed: _isSaving ? null : _saveSettings,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
+              ),
     );
   }
 }

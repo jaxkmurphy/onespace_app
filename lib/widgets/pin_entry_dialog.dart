@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 
 class PinEntryDialog extends StatefulWidget {
   final String correctPin;
@@ -19,7 +20,7 @@ class PinEntryDialogState extends State<PinEntryDialog> {
       Navigator.of(context).pop(true);
     } else {
       setState(() {
-        _error = 'Incorrect PIN';
+        _error = context.l10n.incorrectPin;
       });
     }
   }
@@ -27,7 +28,7 @@ class PinEntryDialogState extends State<PinEntryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Enter PIN'),
+      title: Text(context.l10n.enterPin),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -36,7 +37,7 @@ class PinEntryDialogState extends State<PinEntryDialog> {
             keyboardType: TextInputType.number,
             obscureText: true,
             decoration: InputDecoration(
-              labelText: 'PIN',
+              labelText: context.l10n.pin,
               errorText: _error,
             ),
             maxLength: 4,
@@ -46,11 +47,11 @@ class PinEntryDialogState extends State<PinEntryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _validatePin,
-          child: Text('Submit'),
+          child: Text(context.l10n.submit),
         ),
       ],
     );

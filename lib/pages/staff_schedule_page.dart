@@ -710,8 +710,8 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
             title: Text(context.l10n.replaceExistingSchedule),
             content: Text(
               context.l10n.dayExistingActivityCount(
-                targetEntries.length,
                 _dayLabel(targetDay),
+                targetEntries.length,
               ),
             ),
             actions: [

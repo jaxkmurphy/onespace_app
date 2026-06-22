@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 
 class ProfileSelectionCard extends StatelessWidget {
   final String name;
@@ -39,9 +40,10 @@ class ProfileSelectionCard extends StatelessWidget {
                 width: isChild ? 66 : 58,
                 height: isChild ? 66 : 58,
                 decoration: BoxDecoration(
-                  color: isChild
-                      ? color.withOpacity(0.9)
-                      : color.withOpacity(0.16),
+                  color:
+                      isChild
+                          ? color.withValues(alpha: 0.9)
+                          : color.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(isChild ? 24 : 18),
                 ),
                 child: Icon(
@@ -58,8 +60,8 @@ class ProfileSelectionCard extends StatelessWidget {
                     Text(
                       name,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (subtitle != null && subtitle!.isNotEmpty) ...[
                       const SizedBox(height: 4),
@@ -73,7 +75,7 @@ class ProfileSelectionCard extends StatelessWidget {
               ),
               if (onDelete != null)
                 IconButton(
-                  tooltip: 'Delete profile',
+                  tooltip: context.l10n.deleteProfile,
                   icon: const Icon(Icons.delete_outline),
                   color: Theme.of(context).colorScheme.error,
                   onPressed: onDelete,

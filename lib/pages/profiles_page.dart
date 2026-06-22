@@ -8,6 +8,7 @@ import '../models/child_profile.dart';
 import '../widgets/pin_entry_dialog.dart';
 import '../widgets/child_icon_unlock_dialog.dart';
 import '../widgets/profile_selection_card.dart';
+import '../l10n/l10n.dart';
 
 class ProfilesPage extends StatefulWidget {
   final String? schoolId;
@@ -143,20 +144,20 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (pinOk) {
       Navigator.pushNamed(context, '/add-profile');
     } else {
-      _showSnack('Access denied: incorrect PIN');
+      _showSnack(context.l10n.accessDeniedIncorrectPin);
     }
   }
 
   Future<void> _goToSettings() async {
-  final pinOk = await _checkPin();
-  if (!mounted) return;
+    final pinOk = await _checkPin();
+    if (!mounted) return;
 
-  if (pinOk) {
-    Navigator.pushNamed(context, '/account-settings');
-  } else {
-    _showSnack('Access denied: incorrect PIN');
+    if (pinOk) {
+      Navigator.pushNamed(context, '/account-settings');
+    } else {
+      _showSnack(context.l10n.accessDeniedIncorrectPin);
+    }
   }
-}
 
   Future<void> _onStaffTap(StaffProfile profile) async {
     final pinOk = await _checkPin();
@@ -165,9 +166,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
       Navigator.pushNamed(
         context,
         '/staff-dashboard/${profile.id}',
-        arguments: {
-          'profile': profile,
-        },
+        arguments: {'profile': profile},
       );
     }
   }
@@ -178,10 +177,11 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (profile.accessMode == 'iconSequence') {
       final ok = await showDialog<bool>(
         context: context,
-        builder: (_) => ChildIconUnlockDialog(
-          childName: profile.name,
-          correctSequence: profile.iconSequence,
-        ),
+        builder:
+            (_) => ChildIconUnlockDialog(
+              childName: profile.name,
+              correctSequence: profile.iconSequence,
+            ),
       );
       allowed = ok == true;
     } else {
@@ -192,64 +192,63 @@ class _ProfilesPageState extends State<ProfilesPage> {
       Navigator.pushNamed(
         context,
         '/child-dashboard/${profile.id}',
-        arguments: {
-          'profile': profile,
-        },
+        arguments: {'profile': profile},
       );
     }
   }
 
   Future<void> _onDeleteStaffProfile(String profileId) async {
+    final l10n = context.l10n;
     final confirmed = await _checkPin();
 
     if (!confirmed) {
-      _showSnack('Access denied: incorrect PIN');
+      _showSnack(l10n.accessDeniedIncorrectPin);
       return;
     }
 
     try {
       await firestoreService.deleteCurrentStaffProfile(profileId);
-      _showSnack('Staff profile deleted');
+      _showSnack(l10n.staffProfileDeleted);
     } catch (e) {
-      _showSnack('Failed to delete staff profile: $e');
+      _showSnack(l10n.staffProfileDeleteFailed(e.toString()));
     }
   }
 
   Future<void> _onDeleteChildProfile(String profileId) async {
+    final l10n = context.l10n;
     final confirmed = await _checkPin();
 
     if (!confirmed) {
-      _showSnack('Access denied: incorrect PIN');
+      _showSnack(l10n.accessDeniedIncorrectPin);
       return;
     }
 
     try {
       await firestoreService.deleteCurrentChildProfile(profileId);
-      _showSnack('Child profile deleted');
+      _showSnack(l10n.childProfileDeleted);
     } catch (e) {
-      _showSnack('Failed to delete child profile: $e');
+      _showSnack(l10n.childProfileDeleteFailed(e.toString()));
     }
   }
 
   Future<void> _logout() async {
     final shouldLogout = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text(
-          'Are you sure you want to logout?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: Text(context.l10n.logout),
+            content: Text(context.l10n.logoutConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(context.l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(context.l10n.logout),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
     );
 
     if (shouldLogout == true) {
@@ -259,10 +258,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
       if (!mounted) return;
 
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        '/',
-        (route) => false,
-      );
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
     }
   }
 
@@ -276,57 +272,20 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
   void _showSnack(String text) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(_getText(text))),
-    );
-  }
-
-  String _getText(String en) {
-    final isGa = Localizations.localeOf(context).languageCode == 'ga';
-    final map = {
-      'Profiles': 'Próifílí',
-      'Staff Profiles': 'Próifílí Foirne',
-      'Child Profiles': 'Próifílí Páistí',
-      'Choose a profile to continue':
-      'Roghnaigh próifíl le leanúint ar aghaidh',
-      'Staff profile': 'Próifíl foirne',
-      'Child profile': 'Próifíl páiste',
-      'No staff profiles found': 'Gan próifílí foirne',
-      'No child profiles found': 'Gan próifílí páistí',
-      'Age': 'Aois',
-      'Add Profile': 'Cuir Próifíl Leis',
-      'Account Settings': 'Socruithe Cuntais',
-      'Classroom Settings': 'Socruithe Seomra Ranga',
-      'Admin Actions': 'Gníomhartha Riaracháin',
-      'Create staff or child profiles': 'Cruthaigh próifílí foirne nó páistí',
-      'Manage PIN and account options': 'Bainistigh PIN agus roghanna cuntais',
-      'Managed by school admin': 'Bainistithe ag riarthóir na scoile',
-      'Access denied: incorrect PIN': 'Diúltaíodh rochtain: PIN mícheart',
-      'Staff profile deleted': 'Scriosadh próifíl an fhostaí',
-      'Child profile deleted': 'Scriosadh próifíl an pháiste',
-      'Classroom settings are managed by the school admin.':
-      'Tá socruithe an tseomra ranga á mbainistiú ag riarthóir na scoile.',
-      'App Settings': 'Socruithe Aipe',
-      'Language and app options': 'Teanga agus roghanna aipe',
-    };
-
-    return isGa && map.containsKey(en) ? map[en]! : en;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isRestoringSession) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final staffStream = _staffProfilesStream();
     final childStream = _childProfilesStream();
 
-    final title = _isClassroomMode
-        ? session.currentClassroomName
-        : _getText('Profiles');
+    final title =
+        _isClassroomMode ? session.currentClassroomName : context.l10n.profiles;
 
     return Scaffold(
       appBar: AppBar(
@@ -334,7 +293,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
+            tooltip: context.l10n.logout,
             onPressed: _logout,
           ),
         ],
@@ -357,13 +316,19 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
                 if (staffSnap.hasError) {
                   return Center(
-                    child: Text('Error loading staff: ${staffSnap.error}'),
+                    child: Text(
+                      context.l10n.staffLoadError(staffSnap.error.toString()),
+                    ),
                   );
                 }
 
                 if (childSnap.hasError) {
                   return Center(
-                    child: Text('Error loading children: ${childSnap.error}'),
+                    child: Text(
+                      context.l10n.childrenLoadError(
+                        childSnap.error.toString(),
+                      ),
+                    ),
                   );
                 }
 
@@ -393,13 +358,11 @@ class _ProfilesPageState extends State<ProfilesPage> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  _getText('Choose a profile to continue'),
+                                  context.l10n.chooseProfile,
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 if (_isClassroomMode) ...[
@@ -418,17 +381,15 @@ class _ProfilesPageState extends State<ProfilesPage> {
                           const SizedBox(height: 24),
 
                           Text(
-                            _getText('Staff Profiles'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            context.l10n.staffProfiles,
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 12),
 
                           if (staffProfiles.isEmpty)
                             _EmptyProfileSection(
-                              message: _getText('No staff profiles found'),
+                              message: context.l10n.noStaffProfilesFound,
                             )
                           else
                             ...staffProfiles.map(
@@ -436,14 +397,13 @@ class _ProfilesPageState extends State<ProfilesPage> {
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: ProfileSelectionCard(
                                   name: staff.name,
-                                  subtitle: _getText('Staff profile'),
+                                  subtitle: context.l10n.staffProfile,
                                   icon: Icons.person,
-                                  color:
-                                      Theme.of(context).colorScheme.primary,
+                                  color: Theme.of(context).colorScheme.primary,
                                   isChild: false,
                                   onTap: () => _onStaffTap(staff),
-                                  onDelete: () =>
-                                      _onDeleteStaffProfile(staff.id),
+                                  onDelete:
+                                      () => _onDeleteStaffProfile(staff.id),
                                 ),
                               ),
                             ),
@@ -451,17 +411,15 @@ class _ProfilesPageState extends State<ProfilesPage> {
                           const SizedBox(height: 18),
 
                           Text(
-                            _getText('Child Profiles'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            context.l10n.childProfiles,
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 12),
 
                           if (childProfiles.isEmpty)
                             _EmptyProfileSection(
-                              message: _getText('No child profiles found'),
+                              message: context.l10n.noChildProfilesShort,
                             )
                           else
                             ...childProfiles.map(
@@ -469,13 +427,13 @@ class _ProfilesPageState extends State<ProfilesPage> {
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: ProfileSelectionCard(
                                   name: child.name,
-                                  subtitle: '${_getText("Age")}: ${child.age}',
+                                  subtitle: context.l10n.ageValue(child.age),
                                   icon: Icons.child_care,
                                   color: const Color(0xFF26A69A),
                                   isChild: true,
                                   onTap: () => _onChildTap(child),
-                                  onDelete: () =>
-                                      _onDeleteChildProfile(child.id),
+                                  onDelete:
+                                      () => _onDeleteChildProfile(child.id),
                                 ),
                               ),
                             ),
@@ -483,10 +441,8 @@ class _ProfilesPageState extends State<ProfilesPage> {
                           const SizedBox(height: 24),
 
                           Text(
-                            _getText('Admin Actions'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            context.l10n.adminActions,
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 12),
@@ -496,22 +452,22 @@ class _ProfilesPageState extends State<ProfilesPage> {
                               final isWide = constraints.maxWidth > 700;
 
                               final addProfileCard = ProfileSelectionCard(
-                                name: _getText('Add Profile'),
-                                subtitle: _getText(
-                                  'Create staff or child profiles',
-                                ),
+                                name: context.l10n.addProfile,
+                                subtitle: context.l10n.createProfilesIntro,
                                 icon: Icons.person_add,
                                 color: Theme.of(context).colorScheme.primary,
                                 onTap: _goToAddProfile,
                               );
 
                               final settingsCard = ProfileSelectionCard(
-                                name: _isClassroomMode
-                                  ? _getText('App Settings')
-                                  : _getText('Account Settings'),
-                                subtitle: _isClassroomMode
-                                  ? _getText('Language and app options')
-                                  : _getText('Manage PIN and account options'),
+                                name:
+                                    _isClassroomMode
+                                        ? context.l10n.appSettings
+                                        : context.l10n.accountSettings,
+                                subtitle:
+                                    _isClassroomMode
+                                        ? context.l10n.languageAppOptions
+                                        : context.l10n.managePinAccountOptions,
                                 icon: Icons.settings,
                                 color: Colors.grey,
                                 onTap: _goToSettings,
@@ -555,9 +511,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
 class _EmptyProfileSection extends StatelessWidget {
   final String message;
 
-  const _EmptyProfileSection({
-    required this.message,
-  });
+  const _EmptyProfileSection({required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -566,10 +520,7 @@ class _EmptyProfileSection extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Center(
-          child: Text(
-            message,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          child: Text(message, style: Theme.of(context).textTheme.bodyLarge),
         ),
       ),
     );

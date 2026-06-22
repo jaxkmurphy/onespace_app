@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
 
 class CreateClassroomPage extends StatefulWidget {
   final String schoolId;
 
-  const CreateClassroomPage({
-    super.key,
-    required this.schoolId,
-  });
+  const CreateClassroomPage({super.key, required this.schoolId});
 
   @override
   State<CreateClassroomPage> createState() => _CreateClassroomPageState();
@@ -22,6 +20,20 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
   final _firestoreService = FirestoreService();
 
   bool _isSaving = false;
+
+  String _createError(Object error) {
+    final message = error.toString();
+    if (message.contains('School not found')) {
+      return context.l10n.schoolNotFound;
+    }
+    if (message.contains('Classroom limit reached')) {
+      return context.l10n.classroomLimitReached;
+    }
+    if (message.contains('classroom code is already in use')) {
+      return context.l10n.classroomCodeInUse;
+    }
+    return context.l10n.classroomCreateError(message);
+  }
 
   @override
   void dispose() {
@@ -48,17 +60,17 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Classroom created')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.classroomCreated)));
 
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error creating classroom: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_createError(e))));
     } finally {
       if (mounted) {
         setState(() {
@@ -71,9 +83,7 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Classroom'),
-      ),
+      appBar: AppBar(title: Text(context.l10n.createClassroom)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
@@ -83,9 +93,9 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  const Text(
-                    'Classroom Details',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.classroomDetails,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -95,14 +105,14 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
 
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Classroom Name',
-                      hintText: 'Example: ASD Unit 1',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.classroomName,
+                      hintText: context.l10n.classroomNameHint,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Enter a classroom name';
+                        return context.l10n.enterClassroomName;
                       }
                       return null;
                     },
@@ -113,18 +123,18 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
                   TextFormField(
                     controller: _codeController,
                     textCapitalization: TextCapitalization.characters,
-                    decoration: const InputDecoration(
-                      labelText: 'Classroom Code',
-                      hintText: 'Example: ASD1',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.classroomCode,
+                      hintText: context.l10n.classroomCodeHint,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Enter a classroom code';
+                        return context.l10n.enterClassroomCode;
                       }
 
                       if (value.trim().length < 3) {
-                        return 'Code should be at least 3 characters';
+                        return context.l10n.classroomCodeMinLength;
                       }
 
                       return null;
@@ -137,18 +147,18 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
                     controller: _pinController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Classroom PIN',
-                      hintText: 'Example: 1234',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.classroomPin,
+                      hintText: context.l10n.classroomPinHint,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Enter a classroom PIN';
+                        return context.l10n.enterClassroomPin;
                       }
 
                       if (value.trim().length < 4) {
-                        return 'PIN should be at least 4 digits';
+                        return context.l10n.classroomPinMinLength;
                       }
 
                       return null;
@@ -160,14 +170,21 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      icon: _isSaving
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.save),
-                      label: Text(_isSaving ? 'Saving...' : 'Create Classroom'),
+                      icon:
+                          _isSaving
+                              ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Icon(Icons.save),
+                      label: Text(
+                        _isSaving
+                            ? context.l10n.saving
+                            : context.l10n.createClassroom,
+                      ),
                       onPressed: _isSaving ? null : _saveClassroom,
                     ),
                   ),

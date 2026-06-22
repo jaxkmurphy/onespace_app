@@ -7,14 +7,14 @@ import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import 'incident_log_page.dart';
 import 'staff_schedule_page.dart';
+import '../l10n/body_check_localizations.dart';
+import '../l10n/l10n.dart';
+import '../l10n/zone_localizations.dart';
 
 class TodayOverviewPage extends StatefulWidget {
   final StaffProfile staffProfile;
 
-  const TodayOverviewPage({
-    super.key,
-    required this.staffProfile,
-  });
+  const TodayOverviewPage({super.key, required this.staffProfile});
 
   @override
   State<TodayOverviewPage> createState() => _TodayOverviewPageState();
@@ -58,8 +58,16 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
   }
 
   String _prettyDay(String day) {
-    if (day.isEmpty) return day;
-    return '${day[0].toUpperCase()}${day.substring(1)}';
+    return switch (day) {
+      'monday' => context.l10n.scheduleMonday,
+      'tuesday' => context.l10n.scheduleTuesday,
+      'wednesday' => context.l10n.scheduleWednesday,
+      'thursday' => context.l10n.scheduleThursday,
+      'friday' => context.l10n.scheduleFriday,
+      'saturday' => context.l10n.scheduleSaturday,
+      'sunday' => context.l10n.scheduleSunday,
+      _ => day,
+    };
   }
 
   String _formatDate(DateTime date) {
@@ -97,6 +105,12 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
     }
   }
 
+  String _severityLabel(String severity) => switch (severity) {
+    'High' => context.l10n.severityHigh,
+    'Medium' => context.l10n.severityMedium,
+    _ => context.l10n.severityLow,
+  };
+
   bool _isToday(DateTime date) {
     final now = DateTime.now();
     return date.year == now.year &&
@@ -110,7 +124,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
       children: [
         ElevatedButton.icon(
           icon: const Icon(Icons.health_and_safety),
-          label: const Text('View Body Check Reports'),
+          label: Text(context.l10n.viewBodyCheckReports),
           onPressed: () {
             Navigator.pushNamed(
               context,
@@ -125,14 +139,13 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
         const SizedBox(height: 10),
         ElevatedButton.icon(
           icon: const Icon(Icons.event_note),
-          label: const Text('Open Incident Log'),
+          label: Text(context.l10n.openIncidentLog),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => IncidentLogPage(
-                  staffProfile: widget.staffProfile,
-                ),
+                builder:
+                    (_) => IncidentLogPage(staffProfile: widget.staffProfile),
               ),
             );
           },
@@ -140,20 +153,18 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
         const SizedBox(height: 10),
         ElevatedButton.icon(
           icon: const Icon(Icons.schedule),
-          label: const Text('Open Schedule'),
+          label: Text(context.l10n.openSchedule),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const StaffSchedulePage(),
-              ),
+              MaterialPageRoute(builder: (_) => const StaffSchedulePage()),
             );
           },
         ),
         const SizedBox(height: 10),
         ElevatedButton.icon(
           icon: const Icon(Icons.palette),
-          label: const Text('Open Zones Overview'),
+          label: Text(context.l10n.openZonesOverview),
           onPressed: () {
             Navigator.pushNamed(context, '/zone-overview');
           },
@@ -173,9 +184,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            CircleAvatar(
-              child: Icon(icon),
-            ),
+            CircleAvatar(child: Icon(icon)),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -189,10 +198,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
                     ),
                   ),
                   Text(title),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
             ),
@@ -207,31 +213,32 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
       padding: const EdgeInsets.only(top: 22, bottom: 8),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
 
   Widget _buildChildrenSummary(List<ChildProfile> children) {
-    final childrenWithZones = children
-        .where((child) => child.zone != null && child.zone!.isNotEmpty)
-        .length;
+    final childrenWithZones =
+        children
+            .where((child) => child.zone != null && child.zone!.isNotEmpty)
+            .length;
 
     return Column(
       children: [
         _summaryCard(
           icon: Icons.groups,
-          title: 'Children',
+          title: context.l10n.children,
           value: children.length.toString(),
-          subtitle: 'Total child profiles',
+          subtitle: context.l10n.totalChildProfiles,
         ),
         _summaryCard(
           icon: Icons.palette,
-          title: 'Zones checked in',
+          title: context.l10n.zonesCheckedIn,
           value: '$childrenWithZones/${children.length}',
-          subtitle: 'Children with a selected zone',
+          subtitle: context.l10n.childrenWithSelectedZone,
         ),
       ],
     );
@@ -239,22 +246,24 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
 
   Widget _buildZoneSnapshot(List<ChildProfile> children) {
     if (children.isEmpty) {
-      return const Text('No child profiles yet.');
+      return Text(context.l10n.noChildProfilesYet);
     }
 
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: children.map((child) {
-        final zone = child.zone ?? 'No zone';
+      children:
+          children.map((child) {
+            final zone =
+                child.zone == null
+                    ? context.l10n.noZone
+                    : localizedZoneName(context.l10n, child.zone!);
 
-        return Chip(
-          avatar: CircleAvatar(
-            backgroundColor: _zoneColor(child.zone),
-          ),
-          label: Text('${child.name}: $zone'),
-        );
-      }).toList(),
+            return Chip(
+              avatar: CircleAvatar(backgroundColor: _zoneColor(child.zone)),
+              label: Text(context.l10n.childZoneSummary(child.name, zone)),
+            );
+          }).toList(),
     );
   }
 
@@ -266,11 +275,11 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
         final unchecked = reports.where((report) => !report.checked).toList();
 
         if (unchecked.isEmpty) {
-          return const Card(
+          return Card(
             child: ListTile(
-              leading: Icon(Icons.check_circle),
-              title: Text('No unchecked Body Check reports'),
-              subtitle: Text('Nothing currently needs review.'),
+              leading: const Icon(Icons.check_circle),
+              title: Text(context.l10n.noUncheckedBodyChecks),
+              subtitle: Text(context.l10n.nothingNeedsReview),
             ),
           );
         }
@@ -279,17 +288,23 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
           children: [
             _summaryCard(
               icon: Icons.health_and_safety,
-              title: 'Body Check Reports',
+              title: context.l10n.bodyCheckReports,
               value: unchecked.length.toString(),
-              subtitle: 'Unchecked reports needing staff review',
+              subtitle: context.l10n.uncheckedBodyChecksIntro,
             ),
-            ...unchecked.take(3).map(
+            ...unchecked
+                .take(3)
+                .map(
                   (report) => Card(
                     child: ListTile(
                       leading: const Icon(Icons.warning_amber),
                       title: Text(report.childName),
                       subtitle: Text(
-                        '${report.bodyPart} • ${report.painType} • ${_formatDate(report.timestamp)}',
+                        context.l10n.bodyCheckSummary(
+                          localizedBodyPart(context.l10n, report.bodyPart),
+                          localizedPainType(context.l10n, report.painType),
+                          _formatDate(report.timestamp),
+                        ),
                       ),
                     ),
                   ),
@@ -306,7 +321,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
                     },
                   );
                 },
-                child: Text('View all ${unchecked.length} Body Check reports'),
+                child: Text(context.l10n.viewAllBodyChecks(unchecked.length)),
               ),
           ],
         );
@@ -315,100 +330,104 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
   }
 
   Widget _buildTodaySchedule() {
-  final today = _todayKey();
+    final today = _todayKey();
 
-  return FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
-    future: _firestoreService.getCurrentSchedule(),
-    builder: (context, snapshot) {
-      final schedule = snapshot.data ?? {};
-      final entries = schedule[today] ?? [];
+    return FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+      future: _firestoreService.getCurrentSchedule(),
+      builder: (context, snapshot) {
+        final schedule = snapshot.data ?? {};
+        final entries = schedule[today] ?? [];
 
-      if (entries.isEmpty) {
-        return Card(
-          child: ListTile(
-            leading: const Icon(Icons.schedule),
-            title: Text('No schedule entries for ${_prettyDay(today)}'),
-            subtitle: const Text('Nothing has been added for today yet.'),
-          ),
-        );
-      }
-
-      return Column(
-        children: entries.map((entry) {
-          final start = entry['start'] ?? '';
-          final end = entry['end'] ?? '';
-          final description = entry['description'] ?? '';
-
+        if (entries.isEmpty) {
           return Card(
             child: ListTile(
               leading: const Icon(Icons.schedule),
-              title: Text(description),
-              subtitle: Text('$start - $end'),
+              title: Text(
+                context.l10n.noScheduleEntriesForDay(_prettyDay(today)),
+              ),
+              subtitle: Text(context.l10n.nothingScheduledTodayYet),
             ),
           );
-        }).toList(),
-      );
-    },
-  );
-}
+        }
+
+        return Column(
+          children:
+              entries.map((entry) {
+                final start = entry['start'] ?? '';
+                final end = entry['end'] ?? '';
+                final description = entry['description'] ?? '';
+
+                return Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.schedule),
+                    title: Text(description),
+                    subtitle: Text('$start - $end'),
+                  ),
+                );
+              }).toList(),
+        );
+      },
+    );
+  }
 
   Widget _buildRecentIncidents() {
-  return StreamBuilder<List<IncidentLogEntry>>(
-    stream: _firestoreService.getCurrentIncidentLogEntries(),
-    builder: (context, snapshot) {
-      final incidents = snapshot.data ?? [];
+    return StreamBuilder<List<IncidentLogEntry>>(
+      stream: _firestoreService.getCurrentIncidentLogEntries(),
+      builder: (context, snapshot) {
+        final incidents = snapshot.data ?? [];
 
-      final importantIncidents = incidents
-          .where(
-            (incident) =>
-                _isToday(incident.timestamp) ||
-                incident.severity == 'High' ||
-                incident.severity == 'Medium',
-          )
-          .take(4)
-          .toList();
+        final importantIncidents =
+            incidents
+                .where(
+                  (incident) =>
+                      _isToday(incident.timestamp) ||
+                      incident.severity == 'High' ||
+                      incident.severity == 'Medium',
+                )
+                .take(4)
+                .toList();
 
-      if (importantIncidents.isEmpty) {
-        return const Card(
-          child: ListTile(
-            leading: Icon(Icons.check_circle),
-            title: Text('No important recent incidents'),
-            subtitle: Text('No medium/high incidents found for review.'),
-          ),
-        );
-      }
-
-      return Column(
-        children: importantIncidents.map((incident) {
+        if (importantIncidents.isEmpty) {
           return Card(
             child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: _severityColor(incident.severity),
-                child: const Icon(
-                  Icons.event_note,
-                  color: Colors.white,
-                ),
-              ),
-              title: Text(incident.childName),
-              subtitle: Text(
-                '${incident.severity} • ${_formatDate(incident.timestamp)}\n${incident.description}',
-              ),
-              isThreeLine: true,
+              leading: const Icon(Icons.check_circle),
+              title: Text(context.l10n.noImportantIncidents),
+              subtitle: Text(context.l10n.noImportantIncidentsIntro),
             ),
           );
-        }).toList(),
-      );
-    },
-  );
-}
+        }
+
+        return Column(
+          children:
+              importantIncidents.map((incident) {
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: _severityColor(incident.severity),
+                      child: const Icon(Icons.event_note, color: Colors.white),
+                    ),
+                    title: Text(incident.childName),
+                    subtitle: Text(
+                      context.l10n.incidentSummary(
+                        _severityLabel(incident.severity),
+                        _formatDate(incident.timestamp),
+                        incident.description,
+                      ),
+                    ),
+                    isThreeLine: true,
+                  ),
+                );
+              }).toList(),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FF),
-      appBar: AppBar(
-        title: const Text('Today Overview'),
-      ),
+      appBar: AppBar(title: Text(context.l10n.todayOverview)),
       body: StreamBuilder<List<ChildProfile>>(
         stream: _childrenStream(),
         builder: (context, snapshot) {
@@ -418,30 +437,27 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                const Text(
-                  'Today Overview',
+                Text(
+                  context.l10n.todayOverview,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Quick classroom overview for ${widget.staffProfile.name}.',
+                  context.l10n.todayOverviewForStaff(widget.staffProfile.name),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                _sectionTitle('Quick Actions'),
+                _sectionTitle(context.l10n.quickActions),
                 _buildQuickActions(),
                 _buildChildrenSummary(children),
-                _sectionTitle('Zones Snapshot'),
+                _sectionTitle(context.l10n.zonesSnapshot),
                 _buildZoneSnapshot(children),
-                _sectionTitle('Body Check Attention'),
+                _sectionTitle(context.l10n.bodyCheckAttention),
                 _buildBodyCheckSummary(),
-                _sectionTitle('Today\'s Schedule'),
+                _sectionTitle(context.l10n.todaysSchedule),
                 _buildTodaySchedule(),
-                _sectionTitle('Recent / Important Incidents'),
+                _sectionTitle(context.l10n.recentImportantIncidents),
                 _buildRecentIncidents(),
               ],
             ),

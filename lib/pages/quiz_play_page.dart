@@ -4,16 +4,13 @@ import '../models/child_profile.dart';
 import '../models/question.dart';
 import '../models/quiz.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
 
 class QuizPlayPage extends StatefulWidget {
   final Quiz quiz;
   final ChildProfile? childProfile;
 
-  const QuizPlayPage({
-    super.key,
-    required this.quiz,
-    this.childProfile,
-  });
+  const QuizPlayPage({super.key, required this.quiz, this.childProfile});
 
   @override
   State<QuizPlayPage> createState() => _QuizPlayPageState();
@@ -34,8 +31,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
 
   bool get _isStaffPreview => widget.childProfile == null;
 
-  Question get _currentQuestion =>
-      widget.quiz.questions[_currentQuestionIndex];
+  Question get _currentQuestion => widget.quiz.questions[_currentQuestionIndex];
 
   bool get _isLastQuestion =>
       _currentQuestionIndex == widget.quiz.questions.length - 1;
@@ -43,26 +39,21 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
   double get _progress {
     if (widget.quiz.questions.isEmpty) return 0;
 
-    return (_currentQuestionIndex + 1) /
-        widget.quiz.questions.length;
+    return (_currentQuestionIndex + 1) / widget.quiz.questions.length;
   }
 
   void _showMessage(String message) {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   void _selectAnswer(int index) {
     if (_answerConfirmed || _isSubmitting) return;
 
-    final isCorrect =
-        _currentQuestion.isCorrectAnswer(index);
+    final isCorrect = _currentQuestion.isCorrectAnswer(index);
 
     setState(() {
       _selectedAnswerIndex = index;
@@ -121,9 +112,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
         _isFinished = true;
       });
     } catch (error) {
-      _showMessage(
-        'Your result could not be saved. Please try again.',
-      );
+      _showMessage(context.l10n.resultSaveFailed);
     } finally {
       if (mounted) {
         setState(() {
@@ -155,26 +144,20 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Leave this quiz?'),
+          title: Text(context.l10n.leaveQuizQuestion),
           content: Text(
             _isStaffPreview
-                ? 'Close the quiz preview?'
-                : 'Your answers in this attempt will not be saved.',
+                ? context.l10n.closeQuizPreview
+                : context.l10n.unsavedQuizAnswers,
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                false,
-              ),
-              child: const Text('Keep Playing'),
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(context.l10n.keepPlaying),
             ),
             FilledButton(
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                true,
-              ),
-              child: const Text('Leave'),
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(context.l10n.leave),
             ),
           ],
         );
@@ -193,24 +176,19 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.quiz_outlined,
-              size: 72,
-              color: Color(0xFF7E57C2),
-            ),
+            const Icon(Icons.quiz_outlined, size: 72, color: Color(0xFF7E57C2)),
             const SizedBox(height: 18),
             Text(
-              'This quiz has no questions yet',
+              context.l10n.quizHasNoQuestions,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 18),
             FilledButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Go Back'),
+              child: Text(context.l10n.goBack),
             ),
           ],
         ),
@@ -225,24 +203,16 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 9,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
       color: Colors.orange.shade100,
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.visibility_rounded,
-            size: 20,
-          ),
-          SizedBox(width: 7),
+          const Icon(Icons.visibility_rounded, size: 20),
+          const SizedBox(width: 7),
           Text(
-            'Staff Preview — results will not be saved',
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-            ),
+            context.l10n.staffPreviewBanner,
+            style: const TextStyle(fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -271,10 +241,9 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
               Expanded(
                 child: Text(
                   widget.quiz.title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w900),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
               Container(
@@ -287,12 +256,11 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '${_currentQuestionIndex + 1}'
-                  ' of ${widget.quiz.questions.length}',
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.w900,
+                  context.l10n.questionProgress(
+                    _currentQuestionIndex + 1,
+                    widget.quiz.questions.length,
                   ),
+                  style: TextStyle(color: color, fontWeight: FontWeight.w900),
                 ),
               ),
             ],
@@ -318,10 +286,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
       padding: const EdgeInsets.all(26),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            color,
-            color.withValues(alpha: 0.76),
-          ],
+          colors: [color, color.withValues(alpha: 0.76)],
         ),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -335,17 +300,14 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 7,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.20),
               borderRadius: BorderRadius.circular(30),
             ),
-            child: const Text(
-              'QUESTION',
-              style: TextStyle(
+            child: Text(
+              context.l10n.questionUppercase,
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.5,
@@ -372,35 +334,30 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 650;
-        final answerWidth = wide
-            ? (constraints.maxWidth - 14) / 2
-            : constraints.maxWidth;
+        final answerWidth =
+            wide ? (constraints.maxWidth - 14) / 2 : constraints.maxWidth;
 
         return Wrap(
           spacing: 14,
           runSpacing: 14,
-          children: List.generate(
-            _currentQuestion.options.length,
-            (index) {
-              final option = _currentQuestion.options[index];
-              final isCorrect =
-                  index == _currentQuestion.correctAnswerIndex;
-              final isSelected = index == _selectedAnswerIndex;
+          children: List.generate(_currentQuestion.options.length, (index) {
+            final option = _currentQuestion.options[index];
+            final isCorrect = index == _currentQuestion.correctAnswerIndex;
+            final isSelected = index == _selectedAnswerIndex;
 
-              return SizedBox(
-                width: answerWidth,
-                child: _AnswerCard(
-                  index: index,
-                  answer: option,
-                  themeColor: color,
-                  selected: isSelected,
-                  correct: isCorrect,
-                  revealAnswer: _answerConfirmed,
-                  onTap: () => _selectAnswer(index),
-                ),
-              );
-            },
-          ),
+            return SizedBox(
+              width: answerWidth,
+              child: _AnswerCard(
+                index: index,
+                answer: option,
+                themeColor: color,
+                selected: isSelected,
+                correct: isCorrect,
+                revealAnswer: _answerConfirmed,
+                onTap: () => _selectAnswer(index),
+              ),
+            );
+          }),
         );
       },
     );
@@ -415,19 +372,16 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
           color: Colors.white.withValues(alpha: 0.88),
           borderRadius: BorderRadius.circular(22),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.touch_app_rounded,
-              color: Color(0xFF7E57C2),
-            ),
-            SizedBox(width: 9),
+            const Icon(Icons.touch_app_rounded, color: Color(0xFF7E57C2)),
+            const SizedBox(width: 9),
             Flexible(
               child: Text(
-                'Tap the answer you think is right.',
+                context.l10n.tapCorrectAnswer,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
                 ),
@@ -438,13 +392,10 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
       );
     }
 
-    final isCorrect = _currentQuestion.isCorrectAnswer(
-      _selectedAnswerIndex!,
-    );
+    final isCorrect = _currentQuestion.isCorrectAnswer(_selectedAnswerIndex!);
 
-    final feedbackColor = isCorrect
-        ? Colors.green.shade600
-        : Colors.orange.shade700;
+    final feedbackColor =
+        isCorrect ? Colors.green.shade600 : Colors.orange.shade700;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 280),
@@ -461,15 +412,13 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
       child: Column(
         children: [
           Icon(
-            isCorrect
-                ? Icons.celebration_rounded
-                : Icons.lightbulb_rounded,
+            isCorrect ? Icons.celebration_rounded : Icons.lightbulb_rounded,
             color: feedbackColor,
             size: 45,
           ),
           const SizedBox(height: 8),
           Text(
-            isCorrect ? 'Brilliant!' : 'Good try!',
+            isCorrect ? context.l10n.brilliant : context.l10n.goodTry,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: feedbackColor,
@@ -480,13 +429,9 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
           if (!isCorrect) ...[
             const SizedBox(height: 6),
             Text(
-              'The answer is '
-              '${_currentQuestion.correctAnswer}.',
+              context.l10n.answerIs(_currentQuestion.correctAnswer),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ],
           if (_currentQuestion.explanation.isNotEmpty) ...[
@@ -507,35 +452,30 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
       width: double.infinity,
       height: 58,
       child: FilledButton.icon(
-        onPressed:
-            !_answerConfirmed || _isSubmitting ? null : _continue,
-        style: FilledButton.styleFrom(
-          backgroundColor: color,
-        ),
-        icon: _isSubmitting
-            ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
+        onPressed: !_answerConfirmed || _isSubmitting ? null : _continue,
+        style: FilledButton.styleFrom(backgroundColor: color),
+        icon:
+            _isSubmitting
+                ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+                : Icon(
+                  _isLastQuestion
+                      ? Icons.emoji_events_rounded
+                      : Icons.arrow_forward_rounded,
                 ),
-              )
-            : Icon(
-                _isLastQuestion
-                    ? Icons.emoji_events_rounded
-                    : Icons.arrow_forward_rounded,
-              ),
         label: Text(
           _isSubmitting
-              ? 'Saving your result...'
+              ? context.l10n.savingResult
               : _isLastQuestion
-                  ? 'See My Result'
-                  : 'Next Question',
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w900,
-          ),
+              ? context.l10n.seeMyResult
+              : context.l10n.nextQuestion,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
         ),
       ),
     );
@@ -568,35 +508,33 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
   Widget _buildResults(Color color) {
     final total = widget.quiz.questions.length;
 
-    final percentage = total <= 0
-        ? 0
-        : ((_score / total) * 100).round();
+    final percentage = total <= 0 ? 0 : ((_score / total) * 100).round();
 
     late String heading;
     late String message;
     late IconData icon;
 
     if (percentage == 100) {
-      heading = 'Amazing!';
-      message = 'You got every question right!';
+      heading = context.l10n.resultAmazing;
+      message = context.l10n.resultPerfectMessage;
       icon = Icons.workspace_premium_rounded;
     } else if (percentage >= 70) {
-      heading = 'Great work!';
-      message = 'You did a brilliant job!';
+      heading = context.l10n.resultGreatWork;
+      message = context.l10n.resultGreatMessage;
       icon = Icons.emoji_events_rounded;
     } else if (percentage >= 40) {
-      heading = 'Well done!';
-      message = 'You kept trying and learned something new!';
+      heading = context.l10n.resultWellDone;
+      message = context.l10n.resultWellDoneMessage;
       icon = Icons.star_rounded;
     } else {
-      heading = 'Good effort!';
-      message = 'Every try helps your brain grow!';
+      heading = context.l10n.resultGoodEffort;
+      message = context.l10n.resultGoodEffortMessage;
       icon = Icons.favorite_rounded;
     }
 
     if (_isStaffPreview) {
-      heading = 'Preview complete';
-      message = 'This is how the child’s result screen will look.';
+      heading = context.l10n.previewComplete;
+      message = context.l10n.previewResultMessage;
       icon = Icons.visibility_rounded;
     }
 
@@ -622,11 +560,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Icon(
-                    Icons.star_rounded,
-                    color: Color(0xFFFFC107),
-                    size: 34,
-                  ),
+                  Icon(Icons.star_rounded, color: Color(0xFFFFC107), size: 34),
                   SizedBox(width: 10),
                   Icon(
                     Icons.auto_awesome_rounded,
@@ -634,11 +568,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
                     size: 38,
                   ),
                   SizedBox(width: 10),
-                  Icon(
-                    Icons.star_rounded,
-                    color: Color(0xFFFFC107),
-                    size: 34,
-                  ),
+                  Icon(Icons.star_rounded, color: Color(0xFFFFC107), size: 34),
                 ],
               ),
               const SizedBox(height: 18),
@@ -647,18 +577,11 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
                 height: 125,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      color,
-                      color.withValues(alpha: 0.70),
-                    ],
+                    colors: [color, color.withValues(alpha: 0.70)],
                   ),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 68,
-                ),
+                child: Icon(icon, color: Colors.white, size: 68),
               ),
               const SizedBox(height: 22),
               Text(
@@ -674,9 +597,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 24),
               Container(
@@ -713,9 +634,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
                 height: 56,
                 child: FilledButton.icon(
                   onPressed: () => Navigator.pop(context),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: color,
-                  ),
+                  style: FilledButton.styleFrom(backgroundColor: color),
                   icon: Icon(
                     _isStaffPreview
                         ? Icons.close_rounded
@@ -723,8 +642,8 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
                   ),
                   label: Text(
                     _isStaffPreview
-                        ? 'Close Preview'
-                        : 'Back to My Quizzes',
+                        ? context.l10n.closePreview
+                        : context.l10n.backToMyQuizzes,
                   ),
                 ),
               ),
@@ -735,7 +654,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
                 child: OutlinedButton.icon(
                   onPressed: _playAgain,
                   icon: const Icon(Icons.replay_rounded),
-                  label: const Text('Play Again'),
+                  label: Text(context.l10n.playAgain),
                 ),
               ),
             ],
@@ -751,9 +670,7 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
 
     if (widget.quiz.questions.isEmpty) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.quiz.title),
-        ),
+        appBar: AppBar(title: Text(widget.quiz.title)),
         body: _buildEmptyQuiz(),
       );
     }
@@ -786,9 +703,8 @@ class _QuizPlayPageState extends State<QuizPlayPage> {
               ),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
-                child: _isFinished
-                    ? _buildResults(color)
-                    : _buildQuizBody(color),
+                child:
+                    _isFinished ? _buildResults(color) : _buildQuizBody(color),
               ),
             ),
           ),
@@ -830,26 +746,23 @@ class _AnswerCard extends StatelessWidget {
 
     if (revealAnswer && correct) {
       borderColor = Colors.green.shade600;
-      backgroundColor =
-          Colors.green.shade50;
+      backgroundColor = Colors.green.shade50;
       circleColor = Colors.green.shade600;
       statusIcon = Icons.check_circle_rounded;
     } else if (revealAnswer && selected && !correct) {
       borderColor = Colors.orange.shade700;
-      backgroundColor =
-          Colors.orange.shade50;
+      backgroundColor = Colors.orange.shade50;
       circleColor = Colors.orange.shade700;
       statusIcon = Icons.lightbulb_rounded;
     } else if (selected) {
       borderColor = themeColor;
-      backgroundColor =
-          themeColor.withValues(alpha: 0.10);
+      backgroundColor = themeColor.withValues(alpha: 0.10);
     }
 
     return Semantics(
       button: !revealAnswer,
       selected: selected,
-      label: 'Answer $_letter: $answer',
+      label: context.l10n.answerSemantics(_letter, answer),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
         onTap: revealAnswer ? null : onTap,
@@ -902,11 +815,7 @@ class _AnswerCard extends StatelessWidget {
                 ),
               ),
               if (statusIcon != null)
-                Icon(
-                  statusIcon,
-                  color: circleColor,
-                  size: 30,
-                ),
+                Icon(statusIcon, color: circleColor, size: 30),
             ],
           ),
         ),

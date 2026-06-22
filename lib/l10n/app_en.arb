@@ -807,7 +807,7 @@
   "@fun": {
     "description": "Text used in the app for fun."
   },
-  "selectedChildren": "Selected Children",
+  "selectedChildren": "Selected children",
   "@selectedChildren": {
     "description": "Text used in the app for selected children."
   },
@@ -1964,67 +1964,2443 @@
     "description": "Point reason."
   },
   "scheduleMonday": "Monday",
+  "@scheduleMonday": {
+    "description": "Text used in the app for schedule monday."
+  },
   "scheduleTuesday": "Tuesday",
+  "@scheduleTuesday": {
+    "description": "Text used in the app for schedule tuesday."
+  },
   "scheduleWednesday": "Wednesday",
+  "@scheduleWednesday": {
+    "description": "Text used in the app for schedule wednesday."
+  },
   "scheduleThursday": "Thursday",
+  "@scheduleThursday": {
+    "description": "Text used in the app for schedule thursday."
+  },
   "scheduleFriday": "Friday",
+  "@scheduleFriday": {
+    "description": "Text used in the app for schedule friday."
+  },
   "scheduleMinutes": "{count, plural, =1{1 minute} other{{count} minutes}}",
+  "@scheduleMinutes": {
+    "description": "Text used in the app for schedule minutes.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "scheduleHours": "{count, plural, =1{1 hour} other{{count} hours}}",
+  "@scheduleHours": {
+    "description": "Text used in the app for schedule hours.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "scheduleHoursMinutes": "{hours}h {minutes}m",
+  "@scheduleHoursMinutes": {
+    "description": "Text used in the app for schedule hours minutes.",
+    "placeholders": {
+      "hours": {},
+      "minutes": {}
+    }
+  },
   "scheduleActivityCount": "{count, plural, =0{No activities} =1{1 activity} other{{count} activities}}",
+  "@scheduleActivityCount": {
+    "description": "Text used in the app for schedule activity count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "scheduleActivityCountToday": "{count, plural, =0{No activities today} =1{1 activity} other{{count} activities}}",
+  "@scheduleActivityCountToday": {
+    "description": "Text used in the app for schedule activity count today.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "classroomScheduleTitle": "{classroomName} Schedule",
+  "@classroomScheduleTitle": {
+    "description": "Text used in the app for classroom schedule title.",
+    "placeholders": {
+      "classroomName": {}
+    }
+  },
   "staffScheduleTitle": "Staff Schedule",
+  "@staffScheduleTitle": {
+    "description": "Text used in the app for staff schedule title."
+  },
   "scheduleLoadFailed": "The schedule could not be loaded.",
+  "@scheduleLoadFailed": {
+    "description": "Text used in the app for schedule load failed."
+  },
   "classroomScheduleLoadFailed": "The classroom schedule could not be loaded.",
+  "@classroomScheduleLoadFailed": {
+    "description": "Text used in the app for classroom schedule load failed."
+  },
   "fillTimeSlot": "Fill Time Slot",
+  "@fillTimeSlot": {
+    "description": "Text used in the app for fill time slot."
+  },
   "duration": "Duration",
+  "@duration": {
+    "description": "Text used in the app for duration."
+  },
   "activityName": "Activity name",
+  "@activityName": {
+    "description": "Text used in the app for activity name."
+  },
   "activityNameHint": "Example: Morning reading",
+  "@activityNameHint": {
+    "description": "Text used in the app for activity name hint."
+  },
   "activityType": "Activity type",
+  "@activityType": {
+    "description": "Text used in the app for activity type."
+  },
   "enterActivityName": "Please enter an activity name.",
+  "@enterActivityName": {
+    "description": "Text used in the app for enter activity name."
+  },
   "activityOverlap": "This duration overlaps another scheduled activity.",
+  "@activityOverlap": {
+    "description": "Text used in the app for activity overlap."
+  },
   "activitySaveFailed": "The activity could not be saved.",
+  "@activitySaveFailed": {
+    "description": "Text used in the app for activity save failed."
+  },
   "fillSlot": "Fill Slot",
+  "@fillSlot": {
+    "description": "Text used in the app for fill slot."
+  },
   "saveChanges": "Save Changes",
+  "@saveChanges": {
+    "description": "Text used in the app for save changes."
+  },
   "clearThisSlot": "Clear This Slot?",
+  "@clearThisSlot": {
+    "description": "Text used in the app for clear this slot."
+  },
   "removeActivityFromDay": "Remove \"{activity}\" from {day}?",
+  "@removeActivityFromDay": {
+    "description": "Text used in the app for remove activity from day.",
+    "placeholders": {
+      "activity": {},
+      "day": {}
+    }
+  },
   "clearSlot": "Clear Slot",
+  "@clearSlot": {
+    "description": "Text used in the app for clear slot."
+  },
   "activityRemoveFailed": "The activity could not be removed.",
+  "@activityRemoveFailed": {
+    "description": "Text used in the app for activity remove failed."
+  },
   "copySchedule": "Copy Schedule",
+  "@copySchedule": {
+    "description": "Text used in the app for copy schedule."
+  },
   "copyActivitiesToDay": "Copy all activities from {sourceDay} to:",
+  "@copyActivitiesToDay": {
+    "description": "Text used in the app for copy activities to day.",
+    "placeholders": {
+      "sourceDay": {}
+    }
+  },
   "targetDay": "Target day",
+  "@targetDay": {
+    "description": "Text used in the app for target day."
+  },
   "continueLabel": "Continue",
+  "@continueLabel": {
+    "description": "Text used in the app for continue label."
+  },
   "replaceExistingSchedule": "Replace Existing Schedule?",
+  "@replaceExistingSchedule": {
+    "description": "Text used in the app for replace existing schedule."
+  },
   "dayExistingActivityCount": "{day} already has {count, plural, =1{1 activity} other{{count} activities}}.",
+  "@dayExistingActivityCount": {
+    "description": "Text used in the app for day existing activity count.",
+    "placeholders": {
+      "day": {},
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "replace": "Replace",
+  "@replace": {
+    "description": "Text used in the app for replace."
+  },
   "scheduleCopied": "{sourceDay} was copied to {targetDay}.",
+  "@scheduleCopied": {
+    "description": "Text used in the app for schedule copied.",
+    "placeholders": {
+      "sourceDay": {},
+      "targetDay": {}
+    }
+  },
   "scheduleCopyFailed": "The schedule could not be copied.",
+  "@scheduleCopyFailed": {
+    "description": "Text used in the app for schedule copy failed."
+  },
   "copyThisDay": "Copy this day",
+  "@copyThisDay": {
+    "description": "Text used in the app for copy this day."
+  },
   "copyDay": "Copy Day",
+  "@copyDay": {
+    "description": "Text used in the app for copy day."
+  },
   "tapBlankSlot": "Tap a blank slot to begin",
+  "@tapBlankSlot": {
+    "description": "Text used in the app for tap blank slot."
+  },
   "addFifteenMinuteActivity": "Add 15-minute activity",
+  "@addFifteenMinuteActivity": {
+    "description": "Text used in the app for add fifteen minute activity."
+  },
   "tapToAddActivity": "Tap to add activity",
+  "@tapToAddActivity": {
+    "description": "Text used in the app for tap to add activity."
+  },
   "editActivityTooltip": "Edit activity",
+  "@editActivityTooltip": {
+    "description": "Text used in the app for edit activity tooltip."
+  },
   "clearSlotTooltip": "Clear slot",
+  "@clearSlotTooltip": {
+    "description": "Text used in the app for clear slot tooltip."
+  },
   "happeningNow": "Happening Now",
+  "@happeningNow": {
+    "description": "Text used in the app for happening now."
+  },
   "comingNext": "Coming Next",
+  "@comingNext": {
+    "description": "Text used in the app for coming next."
+  },
   "nextActivity": "Next: {activity}",
+  "@nextActivity": {
+    "description": "Text used in the app for next activity.",
+    "placeholders": {
+      "activity": {}
+    }
+  },
   "startsAt": "Starts at {time}",
+  "@startsAt": {
+    "description": "Text used in the app for starts at.",
+    "placeholders": {
+      "time": {}
+    }
+  },
   "todaysActivitiesFinished": "All of today’s activities are finished.",
+  "@todaysActivitiesFinished": {
+    "description": "Text used in the app for todays activities finished."
+  },
   "dayToday": "{day} • Today",
+  "@dayToday": {
+    "description": "Text used in the app for day today.",
+    "placeholders": {
+      "day": {}
+    }
+  },
   "statusNow": "NOW",
+  "@statusNow": {
+    "description": "Text used in the app for status now."
+  },
   "statusNext": "NEXT",
+  "@statusNext": {
+    "description": "Text used in the app for status next."
+  },
   "statusFinished": "FINISHED",
+  "@statusFinished": {
+    "description": "Text used in the app for status finished."
+  },
   "nothingScheduledForDay": "Nothing is scheduled for {day}",
+  "@nothingScheduledForDay": {
+    "description": "Text used in the app for nothing scheduled for day.",
+    "placeholders": {
+      "day": {}
+    }
+  },
   "enjoyYourDay": "Enjoy your day!",
+  "@enjoyYourDay": {
+    "description": "Text used in the app for enjoy your day."
+  },
   "activityTypeLearning": "Learning",
+  "@activityTypeLearning": {
+    "description": "Text used in the app for activity type learning."
+  },
   "activityTypeBreak": "Break",
+  "@activityTypeBreak": {
+    "description": "Text used in the app for activity type break."
+  },
   "activityTypeFood": "Food",
+  "@activityTypeFood": {
+    "description": "Text used in the app for activity type food."
+  },
   "activityTypeMovement": "Movement",
+  "@activityTypeMovement": {
+    "description": "Text used in the app for activity type movement."
+  },
   "activityTypeTherapy": "Therapy",
+  "@activityTypeTherapy": {
+    "description": "Text used in the app for activity type therapy."
+  },
   "activityTypeCreative": "Creative",
+  "@activityTypeCreative": {
+    "description": "Text used in the app for activity type creative."
+  },
   "activityTypeArrival": "Arrival",
+  "@activityTypeArrival": {
+    "description": "Text used in the app for activity type arrival."
+  },
   "activityTypeHome": "Home Time",
-  "activityTypeOther": "Other"
+  "@activityTypeHome": {
+    "description": "Text used in the app for activity type home."
+  },
+  "activityTypeOther": "Other",
+  "@activityTypeOther": {
+    "description": "Text used in the app for activity type other."
+  },
+  "schoolName": "School Name",
+  "@schoolName": {
+    "description": "Text used in the app for school name."
+  },
+  "schoolNameHint": "Example: St Mary’s Primary School",
+  "@schoolNameHint": {
+    "description": "Text used in the app for school name hint."
+  },
+  "schoolCode": "School Code",
+  "@schoolCode": {
+    "description": "Text used in the app for school code."
+  },
+  "schoolCodeHint": "Example: STM123",
+  "@schoolCodeHint": {
+    "description": "Text used in the app for school code hint."
+  },
+  "adminEmail": "Admin Email",
+  "@adminEmail": {
+    "description": "Text used in the app for admin email."
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Text used in the app for password."
+  },
+  "pleaseWait": "Please wait...",
+  "@pleaseWait": {
+    "description": "Text used in the app for please wait."
+  },
+  "createSchoolAdminAccount": "Create School Admin Account",
+  "@createSchoolAdminAccount": {
+    "description": "Text used in the app for create school admin account."
+  },
+  "adminLogin": "Admin Login",
+  "@adminLogin": {
+    "description": "Text used in the app for admin login."
+  },
+  "existingAdminLogin": "Already have an admin account? Login",
+  "@existingAdminLogin": {
+    "description": "Text used in the app for existing admin login."
+  },
+  "registerSchoolPrompt": "No admin account? Register school",
+  "@registerSchoolPrompt": {
+    "description": "Text used in the app for register school prompt."
+  },
+  "classroomCode": "Classroom Code",
+  "@classroomCode": {
+    "description": "Text used in the app for classroom code."
+  },
+  "classroomCodeHint": "Example: ASD1",
+  "@classroomCodeHint": {
+    "description": "Text used in the app for classroom code hint."
+  },
+  "classroomPin": "Classroom PIN",
+  "@classroomPin": {
+    "description": "Text used in the app for classroom pin."
+  },
+  "checking": "Checking...",
+  "@checking": {
+    "description": "Text used in the app for checking."
+  },
+  "enterClassroom": "Enter Classroom",
+  "@enterClassroom": {
+    "description": "Text used in the app for enter classroom."
+  },
+  "createSchoolAdminIntro": "Create a school admin account",
+  "@createSchoolAdminIntro": {
+    "description": "Text used in the app for create school admin intro."
+  },
+  "adminLoginIntro": "Admin login",
+  "@adminLoginIntro": {
+    "description": "Text used in the app for admin login intro."
+  },
+  "classroomLoginIntro": "Classroom login",
+  "@classroomLoginIntro": {
+    "description": "Text used in the app for classroom login intro."
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Text used in the app for admin."
+  },
+  "classroom": "Classroom",
+  "@classroom": {
+    "description": "Text used in the app for classroom."
+  },
+  "enterSchoolDetails": "Please enter a school name and school code.",
+  "@enterSchoolDetails": {
+    "description": "Text used in the app for enter school details."
+  },
+  "adminAccountCreateFailed": "Could not create admin account.",
+  "@adminAccountCreateFailed": {
+    "description": "Text used in the app for admin account create failed."
+  },
+  "loginFailed": "Could not log in.",
+  "@loginFailed": {
+    "description": "Text used in the app for login failed."
+  },
+  "enterClassroomDetails": "Please enter school code, classroom code and PIN.",
+  "@enterClassroomDetails": {
+    "description": "Text used in the app for enter classroom details."
+  },
+  "classroomLoginIncorrect": "Classroom login details are incorrect.",
+  "@classroomLoginIncorrect": {
+    "description": "Text used in the app for classroom login incorrect."
+  },
+  "checkLoginFields": "Please check all login fields.",
+  "@checkLoginFields": {
+    "description": "Text used in the app for check login fields."
+  },
+  "adminLoginIncorrect": "Admin email or password is incorrect.",
+  "@adminLoginIncorrect": {
+    "description": "Text used in the app for admin login incorrect."
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Text used in the app for logout."
+  },
+  "logoutConfirmation": "Are you sure you want to logout?",
+  "@logoutConfirmation": {
+    "description": "Text used in the app for logout confirmation."
+  },
+  "accessDeniedIncorrectPin": "Access denied: incorrect PIN",
+  "@accessDeniedIncorrectPin": {
+    "description": "Text used in the app for access denied incorrect pin."
+  },
+  "staffProfileDeleted": "Staff profile deleted",
+  "@staffProfileDeleted": {
+    "description": "Text used in the app for staff profile deleted."
+  },
+  "childProfileDeleted": "Child profile deleted",
+  "@childProfileDeleted": {
+    "description": "Text used in the app for child profile deleted."
+  },
+  "staffProfileDeleteFailed": "Failed to delete staff profile: {error}",
+  "@staffProfileDeleteFailed": {
+    "description": "Text used in the app for staff profile delete failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "childProfileDeleteFailed": "Failed to delete child profile: {error}",
+  "@childProfileDeleteFailed": {
+    "description": "Text used in the app for child profile delete failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "chooseProfile": "Choose a profile to continue",
+  "@chooseProfile": {
+    "description": "Text used in the app for choose profile."
+  },
+  "staffProfiles": "Staff Profiles",
+  "@staffProfiles": {
+    "description": "Text used in the app for staff profiles."
+  },
+  "childProfiles": "Child Profiles",
+  "@childProfiles": {
+    "description": "Text used in the app for child profiles."
+  },
+  "staffProfile": "Staff profile",
+  "@staffProfile": {
+    "description": "Text used in the app for staff profile."
+  },
+  "noChildProfilesShort": "No child profiles found",
+  "@noChildProfilesShort": {
+    "description": "Text used in the app for no child profiles short."
+  },
+  "ageValue": "Age: {age}",
+  "@ageValue": {
+    "description": "Text used in the app for age value.",
+    "placeholders": {
+      "age": {}
+    }
+  },
+  "adminActions": "Admin Actions",
+  "@adminActions": {
+    "description": "Text used in the app for admin actions."
+  },
+  "addProfile": "Add Profile",
+  "@addProfile": {
+    "description": "Text used in the app for add profile."
+  },
+  "createProfilesIntro": "Create staff or child profiles",
+  "@createProfilesIntro": {
+    "description": "Text used in the app for create profiles intro."
+  },
+  "appSettings": "App Settings",
+  "@appSettings": {
+    "description": "Text used in the app for app settings."
+  },
+  "accountSettings": "Account Settings",
+  "@accountSettings": {
+    "description": "Text used in the app for account settings."
+  },
+  "languageAppOptions": "Language and app options",
+  "@languageAppOptions": {
+    "description": "Text used in the app for language app options."
+  },
+  "managePinAccountOptions": "Manage PIN and account options",
+  "@managePinAccountOptions": {
+    "description": "Text used in the app for manage pin account options."
+  },
+  "staffLoadError": "Error loading staff: {error}",
+  "@staffLoadError": {
+    "description": "Text used in the app for staff load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "childrenLoadError": "Error loading children: {error}",
+  "@childrenLoadError": {
+    "description": "Text used in the app for children load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteProfile": "Delete profile",
+  "@deleteProfile": {
+    "description": "Text used in the app for delete profile."
+  },
+  "enterPin": "Enter PIN",
+  "@enterPin": {
+    "description": "Text used in the app for enter pin."
+  },
+  "pin": "PIN",
+  "@pin": {
+    "description": "Text used in the app for pin."
+  },
+  "incorrectPin": "Incorrect PIN",
+  "@incorrectPin": {
+    "description": "Text used in the app for incorrect pin."
+  },
+  "submit": "Submit",
+  "@submit": {
+    "description": "Text used in the app for submit."
+  },
+  "clear": "Clear",
+  "@clear": {
+    "description": "Text used in the app for clear."
+  },
+  "next": "Next",
+  "@next": {
+    "description": "Text used in the app for next."
+  },
+  "startOver": "Start Over",
+  "@startOver": {
+    "description": "Text used in the app for start over."
+  },
+  "success": "Success",
+  "@success": {
+    "description": "Text used in the app for success."
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Text used in the app for ok."
+  },
+  "role": "Role",
+  "@role": {
+    "description": "Text used in the app for role."
+  },
+  "age": "Age",
+  "@age": {
+    "description": "Text used in the app for age."
+  },
+  "nameRequired": "Name is required",
+  "@nameRequired": {
+    "description": "Text used in the app for name required."
+  },
+  "roleRequired": "Role is required",
+  "@roleRequired": {
+    "description": "Text used in the app for role required."
+  },
+  "ageRequired": "Age is required",
+  "@ageRequired": {
+    "description": "Text used in the app for age required."
+  },
+  "ageNumberRequired": "Age must be a number",
+  "@ageNumberRequired": {
+    "description": "Text used in the app for age number required."
+  },
+  "addStaffProfile": "Add Staff Profile",
+  "@addStaffProfile": {
+    "description": "Text used in the app for add staff profile."
+  },
+  "addChildProfile": "Add Child Profile",
+  "@addChildProfile": {
+    "description": "Text used in the app for add child profile."
+  },
+  "profilesSavedToClassroom": "New profiles will be saved to this classroom.",
+  "@profilesSavedToClassroom": {
+    "description": "Text used in the app for profiles saved to classroom."
+  },
+  "createStaffProfile": "Create a staff profile",
+  "@createStaffProfile": {
+    "description": "Text used in the app for create staff profile."
+  },
+  "createChildProfile": "Create a child profile",
+  "@createChildProfile": {
+    "description": "Text used in the app for create child profile."
+  },
+  "staffProfileAccessInfo": "Staff profiles use the account or classroom PIN for access.",
+  "@staffProfileAccessInfo": {
+    "description": "Text used in the app for staff profile access info."
+  },
+  "childProfileAccessInfo": "Child profiles can use a simple 3-icon unlock sequence.",
+  "@childProfileAccessInfo": {
+    "description": "Text used in the app for child profile access info."
+  },
+  "staffDetails": "Staff Details",
+  "@staffDetails": {
+    "description": "Text used in the app for staff details."
+  },
+  "childDetails": "Child Details",
+  "@childDetails": {
+    "description": "Text used in the app for child details."
+  },
+  "confirmChildUnlock": "Confirm Child Unlock Sequence",
+  "@confirmChildUnlock": {
+    "description": "Text used in the app for confirm child unlock."
+  },
+  "setChildUnlock": "Set Child Unlock Sequence",
+  "@setChildUnlock": {
+    "description": "Text used in the app for set child unlock."
+  },
+  "tapSameIconsConfirm": "Tap the same 3 icons again to confirm.",
+  "@tapSameIconsConfirm": {
+    "description": "Text used in the app for tap same icons confirm."
+  },
+  "askChildPickIcons": "Ask the child to pick 3 icons in order.",
+  "@askChildPickIcons": {
+    "description": "Text used in the app for ask child pick icons."
+  },
+  "chooseThreeIconsFirst": "Please choose 3 icons first",
+  "@chooseThreeIconsFirst": {
+    "description": "Text used in the app for choose three icons first."
+  },
+  "chooseUnlockSequence": "Please choose a 3-icon unlock sequence",
+  "@chooseUnlockSequence": {
+    "description": "Text used in the app for choose unlock sequence."
+  },
+  "confirmChildUnlockPrompt": "Please confirm the child unlock sequence",
+  "@confirmChildUnlockPrompt": {
+    "description": "Text used in the app for confirm child unlock prompt."
+  },
+  "confirmThreeIconsPrompt": "Please tap the same 3 icons again to confirm",
+  "@confirmThreeIconsPrompt": {
+    "description": "Text used in the app for confirm three icons prompt."
+  },
+  "sequencesDoNotMatch": "Sequences did not match. Please try again.",
+  "@sequencesDoNotMatch": {
+    "description": "Text used in the app for sequences do not match."
+  },
+  "profileCreated": "Profile \"{name}\" created successfully.",
+  "@profileCreated": {
+    "description": "Text used in the app for profile created.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "profileSaveError": "Error saving profile: {error}",
+  "@profileSaveError": {
+    "description": "Text used in the app for profile save error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "saveStaffProfile": "Save Staff Profile",
+  "@saveStaffProfile": {
+    "description": "Text used in the app for save staff profile."
+  },
+  "saveChildProfile": "Save Child Profile",
+  "@saveChildProfile": {
+    "description": "Text used in the app for save child profile."
+  },
+  "selectedNone": "Selected: None",
+  "@selectedNone": {
+    "description": "Text used in the app for selected none."
+  },
+  "selectedIcons": "Selected: {icons}",
+  "@selectedIcons": {
+    "description": "Text used in the app for selected icons.",
+    "placeholders": {
+      "icons": {}
+    }
+  },
+  "selectedCount": "{selected}/{required} selected",
+  "@selectedCount": {
+    "description": "Text used in the app for selected count.",
+    "placeholders": {
+      "selected": {},
+      "required": {}
+    }
+  },
+  "wrongIconSequence": "Wrong sequence, try again",
+  "@wrongIconSequence": {
+    "description": "Text used in the app for wrong icon sequence."
+  },
+  "unlockChild": "Unlock {childName}",
+  "@unlockChild": {
+    "description": "Text used in the app for unlock child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "tapPicturesInOrder": "Tap your 3 pictures in order",
+  "@tapPicturesInOrder": {
+    "description": "Text used in the app for tap pictures in order."
+  },
+  "enteredCount": "Entered: {entered}/{required}",
+  "@enteredCount": {
+    "description": "Text used in the app for entered count.",
+    "placeholders": {
+      "entered": {},
+      "required": {}
+    }
+  },
+  "resetUnlockForChild": "Reset unlock for {childName}",
+  "@resetUnlockForChild": {
+    "description": "Text used in the app for reset unlock for child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "chooseIconsInOrder": "Choose 3 icons in order",
+  "@chooseIconsInOrder": {
+    "description": "Text used in the app for choose icons in order."
+  },
+  "confirmIconSequence": "Please confirm the 3-icon sequence",
+  "@confirmIconSequence": {
+    "description": "Text used in the app for confirm icon sequence."
+  },
+  "iconSequencesDoNotMatch": "Sequences did not match. Try again.",
+  "@iconSequencesDoNotMatch": {
+    "description": "Text used in the app for icon sequences do not match."
+  },
+  "iconStar": "Star",
+  "@iconStar": {
+    "description": "Text used in the app for icon star."
+  },
+  "iconCar": "Car",
+  "@iconCar": {
+    "description": "Text used in the app for icon car."
+  },
+  "iconDog": "Dog",
+  "@iconDog": {
+    "description": "Text used in the app for icon dog."
+  },
+  "iconApple": "Apple",
+  "@iconApple": {
+    "description": "Text used in the app for icon apple."
+  },
+  "iconBall": "Ball",
+  "@iconBall": {
+    "description": "Text used in the app for icon ball."
+  },
+  "iconMusic": "Music",
+  "@iconMusic": {
+    "description": "Text used in the app for icon music."
+  },
+  "iconSun": "Sun",
+  "@iconSun": {
+    "description": "Text used in the app for icon sun."
+  },
+  "iconHeart": "Heart",
+  "@iconHeart": {
+    "description": "Text used in the app for icon heart."
+  },
+  "schoolAdminTitle": "{schoolName} Admin",
+  "@schoolAdminTitle": {
+    "description": "Text used in the app for school admin title.",
+    "placeholders": {
+      "schoolName": {}
+    }
+  },
+  "schoolSettings": "School Settings",
+  "@schoolSettings": {
+    "description": "Text used in the app for school settings."
+  },
+  "schoolCodeValue": "School Code: {code}",
+  "@schoolCodeValue": {
+    "description": "Text used in the app for school code value.",
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "classroomsUsed": "Classrooms Used: {used} / {limit}",
+  "@classroomsUsed": {
+    "description": "Text used in the app for classrooms used.",
+    "placeholders": {
+      "used": {},
+      "limit": {}
+    }
+  },
+  "statusValue": "Status: {status}",
+  "@statusValue": {
+    "description": "Text used in the app for status value.",
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Text used in the app for active."
+  },
+  "inactive": "Inactive",
+  "@inactive": {
+    "description": "Text used in the app for inactive."
+  },
+  "classroomsLoadError": "Error loading classrooms: {error}",
+  "@classroomsLoadError": {
+    "description": "Text used in the app for classrooms load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "noClassroomsYet": "No classrooms yet.\nTap + Add Classroom to create one.",
+  "@noClassroomsYet": {
+    "description": "Text used in the app for no classrooms yet."
+  },
+  "classroomListSummary": "Code: {code} • Active: {active}",
+  "@classroomListSummary": {
+    "description": "Text used in the app for classroom list summary.",
+    "placeholders": {
+      "code": {},
+      "active": {}
+    }
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Text used in the app for yes."
+  },
+  "no": "No",
+  "@no": {
+    "description": "Text used in the app for no."
+  },
+  "addClassroom": "Add Classroom",
+  "@addClassroom": {
+    "description": "Text used in the app for add classroom."
+  },
+  "classroomCreated": "Classroom created",
+  "@classroomCreated": {
+    "description": "Text used in the app for classroom created."
+  },
+  "classroomCreateError": "Error creating classroom: {error}",
+  "@classroomCreateError": {
+    "description": "Text used in the app for classroom create error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "createClassroom": "Create Classroom",
+  "@createClassroom": {
+    "description": "Text used in the app for create classroom."
+  },
+  "classroomDetails": "Classroom Details",
+  "@classroomDetails": {
+    "description": "Text used in the app for classroom details."
+  },
+  "classroomName": "Classroom Name",
+  "@classroomName": {
+    "description": "Text used in the app for classroom name."
+  },
+  "classroomNameHint": "Example: ASD Unit 1",
+  "@classroomNameHint": {
+    "description": "Text used in the app for classroom name hint."
+  },
+  "enterClassroomName": "Enter a classroom name",
+  "@enterClassroomName": {
+    "description": "Text used in the app for enter classroom name."
+  },
+  "enterClassroomCode": "Enter a classroom code",
+  "@enterClassroomCode": {
+    "description": "Text used in the app for enter classroom code."
+  },
+  "classroomCodeMinLength": "Classroom code should be at least 3 characters",
+  "@classroomCodeMinLength": {
+    "description": "Text used in the app for classroom code min length."
+  },
+  "classroomPinHint": "Example: 1234",
+  "@classroomPinHint": {
+    "description": "Text used in the app for classroom pin hint."
+  },
+  "enterClassroomPin": "Enter a classroom PIN",
+  "@enterClassroomPin": {
+    "description": "Text used in the app for enter classroom pin."
+  },
+  "classroomPinMinLength": "PIN should be at least 4 digits",
+  "@classroomPinMinLength": {
+    "description": "Text used in the app for classroom pin min length."
+  },
+  "classroomNotFound": "Classroom not found",
+  "@classroomNotFound": {
+    "description": "Text used in the app for classroom not found."
+  },
+  "classroomLoadError": "Error loading classroom: {error}",
+  "@classroomLoadError": {
+    "description": "Text used in the app for classroom load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "classroomUpdated": "Classroom updated",
+  "@classroomUpdated": {
+    "description": "Text used in the app for classroom updated."
+  },
+  "deleteClassroom": "Delete Classroom",
+  "@deleteClassroom": {
+    "description": "Text used in the app for delete classroom."
+  },
+  "deleteClassroomConfirmation": "Are you sure you want to delete this classroom? This cannot be undone.",
+  "@deleteClassroomConfirmation": {
+    "description": "Text used in the app for delete classroom confirmation."
+  },
+  "classroomDeleted": "Classroom deleted",
+  "@classroomDeleted": {
+    "description": "Text used in the app for classroom deleted."
+  },
+  "classroomDeleteError": "Error deleting classroom: {error}",
+  "@classroomDeleteError": {
+    "description": "Text used in the app for classroom delete error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "classroomInformation": "Classroom Information",
+  "@classroomInformation": {
+    "description": "Text used in the app for classroom information."
+  },
+  "classroomAccessInfo": "These details control how staff access this classroom.",
+  "@classroomAccessInfo": {
+    "description": "Text used in the app for classroom access info."
+  },
+  "classroomCodeChangeInfo": "Changing this code will change what staff enter on the Classroom Login screen.",
+  "@classroomCodeChangeInfo": {
+    "description": "Text used in the app for classroom code change info."
+  },
+  "classroomActive": "Classroom Active",
+  "@classroomActive": {
+    "description": "Text used in the app for classroom active."
+  },
+  "classroomInactiveInfo": "If disabled, classroom login will be blocked for this classroom.",
+  "@classroomInactiveInfo": {
+    "description": "Text used in the app for classroom inactive info."
+  },
+  "saveClassroom": "Save Classroom",
+  "@saveClassroom": {
+    "description": "Text used in the app for save classroom."
+  },
+  "schoolNotFound": "School not found",
+  "@schoolNotFound": {
+    "description": "Text used in the app for school not found."
+  },
+  "schoolSettingsLoadError": "Error loading school settings: {error}",
+  "@schoolSettingsLoadError": {
+    "description": "Text used in the app for school settings load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "schoolSettingsUpdated": "School settings updated",
+  "@schoolSettingsUpdated": {
+    "description": "Text used in the app for school settings updated."
+  },
+  "schoolInformation": "School Information",
+  "@schoolInformation": {
+    "description": "Text used in the app for school information."
+  },
+  "schoolAccountInfo": "These details control the school account and classroom login.",
+  "@schoolAccountInfo": {
+    "description": "Text used in the app for school account info."
+  },
+  "enterSchoolName": "Enter a school name",
+  "@enterSchoolName": {
+    "description": "Text used in the app for enter school name."
+  },
+  "enterSchoolCode": "Enter a school code",
+  "@enterSchoolCode": {
+    "description": "Text used in the app for enter school code."
+  },
+  "schoolCodeMinLength": "School code should be at least 3 characters",
+  "@schoolCodeMinLength": {
+    "description": "Text used in the app for school code min length."
+  },
+  "schoolCodeChangeInfo": "Changing the school code will change what staff enter on the Classroom Login screen.",
+  "@schoolCodeChangeInfo": {
+    "description": "Text used in the app for school code change info."
+  },
+  "classroomLimit": "Classroom Limit",
+  "@classroomLimit": {
+    "description": "Text used in the app for classroom limit."
+  },
+  "enterClassroomLimit": "Enter a classroom limit",
+  "@enterClassroomLimit": {
+    "description": "Text used in the app for enter classroom limit."
+  },
+  "enterValidNumber": "Enter a valid number",
+  "@enterValidNumber": {
+    "description": "Text used in the app for enter valid number."
+  },
+  "classroomLimitMinimum": "Classroom limit must be at least 1",
+  "@classroomLimitMinimum": {
+    "description": "Text used in the app for classroom limit minimum."
+  },
+  "contactDetails": "Contact Details",
+  "@contactDetails": {
+    "description": "Text used in the app for contact details."
+  },
+  "principalName": "Principal Name",
+  "@principalName": {
+    "description": "Text used in the app for principal name."
+  },
+  "vicePrincipalName": "Vice Principal Name",
+  "@vicePrincipalName": {
+    "description": "Text used in the app for vice principal name."
+  },
+  "schoolEmail": "School Email",
+  "@schoolEmail": {
+    "description": "Text used in the app for school email."
+  },
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Text used in the app for phone number."
+  },
+  "schoolAddress": "School Address",
+  "@schoolAddress": {
+    "description": "Text used in the app for school address."
+  },
+  "schoolActive": "School Active",
+  "@schoolActive": {
+    "description": "Text used in the app for school active."
+  },
+  "schoolInactiveInfo": "If disabled later, classroom login can be blocked for this school.",
+  "@schoolInactiveInfo": {
+    "description": "Text used in the app for school inactive info."
+  },
+  "saveSchoolSettings": "Save School Settings",
+  "@saveSchoolSettings": {
+    "description": "Text used in the app for save school settings."
+  },
+  "schoolCodeInUse": "That school code is already in use.",
+  "@schoolCodeInUse": {
+    "description": "Text used in the app for school code in use."
+  },
+  "classroomCodeInUse": "That classroom code is already in use.",
+  "@classroomCodeInUse": {
+    "description": "Text used in the app for classroom code in use."
+  },
+  "classroomLimitReached": "Classroom limit reached. Increase the classroom limit in School Settings.",
+  "@classroomLimitReached": {
+    "description": "Text used in the app for classroom limit reached."
+  },
+  "classroomUpdateError": "The classroom could not be updated.",
+  "@classroomUpdateError": {
+    "description": "Text used in the app for classroom update error."
+  },
+  "schoolSettingsUpdateError": "The school settings could not be updated.",
+  "@schoolSettingsUpdateError": {
+    "description": "Text used in the app for school settings update error."
+  },
+  "bodyPartHead": "Head",
+  "@bodyPartHead": {
+    "description": "Text used in the app for body part head."
+  },
+  "bodyPartThroat": "Throat",
+  "@bodyPartThroat": {
+    "description": "Text used in the app for body part throat."
+  },
+  "bodyPartChest": "Chest",
+  "@bodyPartChest": {
+    "description": "Text used in the app for body part chest."
+  },
+  "bodyPartTummy": "Tummy",
+  "@bodyPartTummy": {
+    "description": "Text used in the app for body part tummy."
+  },
+  "bodyPartLeftArm": "Left arm",
+  "@bodyPartLeftArm": {
+    "description": "Text used in the app for body part left arm."
+  },
+  "bodyPartRightArm": "Right arm",
+  "@bodyPartRightArm": {
+    "description": "Text used in the app for body part right arm."
+  },
+  "bodyPartLeftHand": "Left hand",
+  "@bodyPartLeftHand": {
+    "description": "Text used in the app for body part left hand."
+  },
+  "bodyPartRightHand": "Right hand",
+  "@bodyPartRightHand": {
+    "description": "Text used in the app for body part right hand."
+  },
+  "bodyPartLeftLeg": "Left leg",
+  "@bodyPartLeftLeg": {
+    "description": "Text used in the app for body part left leg."
+  },
+  "bodyPartRightLeg": "Right leg",
+  "@bodyPartRightLeg": {
+    "description": "Text used in the app for body part right leg."
+  },
+  "bodyPartLeftFoot": "Left foot",
+  "@bodyPartLeftFoot": {
+    "description": "Text used in the app for body part left foot."
+  },
+  "bodyPartRightFoot": "Right foot",
+  "@bodyPartRightFoot": {
+    "description": "Text used in the app for body part right foot."
+  },
+  "bodyPartBackOfHead": "Back of head",
+  "@bodyPartBackOfHead": {
+    "description": "Text used in the app for body part back of head."
+  },
+  "bodyPartNeck": "Neck",
+  "@bodyPartNeck": {
+    "description": "Text used in the app for body part neck."
+  },
+  "bodyPartUpperBack": "Upper back",
+  "@bodyPartUpperBack": {
+    "description": "Text used in the app for body part upper back."
+  },
+  "bodyPartLowerBack": "Lower back",
+  "@bodyPartLowerBack": {
+    "description": "Text used in the app for body part lower back."
+  },
+  "bodyMapFront": "Front",
+  "@bodyMapFront": {
+    "description": "Text used in the app for body map front."
+  },
+  "bodyMapBack": "Back",
+  "@bodyMapBack": {
+    "description": "Text used in the app for body map back."
+  },
+  "bodyDiagramSemantics": "{side} body diagram. Tap where it hurts.",
+  "@bodyDiagramSemantics": {
+    "description": "Text used in the app for body diagram semantics.",
+    "placeholders": {
+      "side": {}
+    }
+  },
+  "tapSoreBodyPart": "Tap the body where you feel sore or uncomfortable.",
+  "@tapSoreBodyPart": {
+    "description": "Text used in the app for tap sore body part."
+  },
+  "bodyPartSelected": "You selected: {bodyPart}",
+  "@bodyPartSelected": {
+    "description": "Text used in the app for body part selected.",
+    "placeholders": {
+      "bodyPart": {}
+    }
+  },
+  "chooseBodyPartList": "Choose from a list instead",
+  "@chooseBodyPartList": {
+    "description": "Text used in the app for choose body part list."
+  },
+  "painLittleSore": "A little sore",
+  "@painLittleSore": {
+    "description": "Text used in the app for pain little sore."
+  },
+  "painLittleSoreDescription": "I notice it, but it only hurts a little.",
+  "@painLittleSoreDescription": {
+    "description": "Text used in the app for pain little sore description."
+  },
+  "painHurts": "It hurts",
+  "@painHurts": {
+    "description": "Text used in the app for pain hurts."
+  },
+  "painHurtsShort": "Hurts",
+  "@painHurtsShort": {
+    "description": "Text used in the app for pain hurts short."
+  },
+  "painHurtsDescription": "It is uncomfortable and I need help.",
+  "@painHurtsDescription": {
+    "description": "Text used in the app for pain hurts description."
+  },
+  "painHurtsALot": "It hurts a lot",
+  "@painHurtsALot": {
+    "description": "Text used in the app for pain hurts alot."
+  },
+  "painHurtsALotShort": "Hurts a lot",
+  "@painHurtsALotShort": {
+    "description": "Text used in the app for pain hurts alot short."
+  },
+  "painHurtsALotDescription": "It hurts badly and I need an adult now.",
+  "@painHurtsALotDescription": {
+    "description": "Text used in the app for pain hurts alot description."
+  },
+  "painUnknown": "Unknown",
+  "@painUnknown": {
+    "description": "Text used in the app for pain unknown."
+  },
+  "painSoreAching": "Sore or aching",
+  "@painSoreAching": {
+    "description": "Text used in the app for pain sore aching."
+  },
+  "painSoreAchingDescription": "A dull or heavy pain.",
+  "@painSoreAchingDescription": {
+    "description": "Text used in the app for pain sore aching description."
+  },
+  "painSharp": "Sharp",
+  "@painSharp": {
+    "description": "Text used in the app for pain sharp."
+  },
+  "painSharpDescription": "A sudden or pointed pain.",
+  "@painSharpDescription": {
+    "description": "Text used in the app for pain sharp description."
+  },
+  "painBurningHot": "Burning or hot",
+  "@painBurningHot": {
+    "description": "Text used in the app for pain burning hot."
+  },
+  "painBurningHotDescription": "It feels hot or burning.",
+  "@painBurningHotDescription": {
+    "description": "Text used in the app for pain burning hot description."
+  },
+  "painItchy": "Itchy",
+  "@painItchy": {
+    "description": "Text used in the app for pain itchy."
+  },
+  "painItchyDescription": "I want to scratch it.",
+  "@painItchyDescription": {
+    "description": "Text used in the app for pain itchy description."
+  },
+  "painThrobbing": "Throbbing",
+  "@painThrobbing": {
+    "description": "Text used in the app for pain throbbing."
+  },
+  "painThrobbingDescription": "It pulses or beats.",
+  "@painThrobbingDescription": {
+    "description": "Text used in the app for pain throbbing description."
+  },
+  "painTinglyNumb": "Tingly or numb",
+  "@painTinglyNumb": {
+    "description": "Text used in the app for pain tingly numb."
+  },
+  "painTinglyNumbDescription": "It feels asleep or strange.",
+  "@painTinglyNumbDescription": {
+    "description": "Text used in the app for pain tingly numb description."
+  },
+  "painSick": "Sick",
+  "@painSick": {
+    "description": "Text used in the app for pain sick."
+  },
+  "painSickDescription": "I feel like I might be sick.",
+  "@painSickDescription": {
+    "description": "Text used in the app for pain sick description."
+  },
+  "painNotSure": "Not sure",
+  "@painNotSure": {
+    "description": "Text used in the app for pain not sure."
+  },
+  "painNotSureDescription": "I cannot explain the feeling.",
+  "@painNotSureDescription": {
+    "description": "Text used in the app for pain not sure description."
+  },
+  "chooseSoreLocation": "Please choose where you feel sore.",
+  "@chooseSoreLocation": {
+    "description": "Text used in the app for choose sore location."
+  },
+  "choosePainAmount": "Please choose how much it hurts.",
+  "@choosePainAmount": {
+    "description": "Text used in the app for choose pain amount."
+  },
+  "choosePainFeeling": "Please choose what it feels like.",
+  "@choosePainFeeling": {
+    "description": "Text used in the app for choose pain feeling."
+  },
+  "bodyCheckSendFailed": "Your Body Check could not be sent. Please tell an adult now.",
+  "@bodyCheckSendFailed": {
+    "description": "Text used in the app for body check send failed."
+  },
+  "staffHaveBeenTold": "Staff Have Been Told",
+  "@staffHaveBeenTold": {
+    "description": "Text used in the app for staff have been told."
+  },
+  "bodyCheckSentMessage": "Your Body Check was sent.\n\nPlease tell an adult now if you need help.",
+  "@bodyCheckSentMessage": {
+    "description": "Text used in the app for body check sent message."
+  },
+  "okay": "Okay",
+  "@okay": {
+    "description": "Text used in the app for okay."
+  },
+  "bodyCheckWhere": "Where?",
+  "@bodyCheckWhere": {
+    "description": "Text used in the app for body check where."
+  },
+  "bodyCheckHowMuch": "How much?",
+  "@bodyCheckHowMuch": {
+    "description": "Text used in the app for body check how much."
+  },
+  "bodyCheckWhatFeeling": "What feeling?",
+  "@bodyCheckWhatFeeling": {
+    "description": "Text used in the app for body check what feeling."
+  },
+  "review": "Review",
+  "@review": {
+    "description": "Text used in the app for review."
+  },
+  "bodyCheckStep": "Step {current} of {total}: {name}",
+  "@bodyCheckStep": {
+    "description": "Text used in the app for body check step.",
+    "placeholders": {
+      "current": {},
+      "total": {},
+      "name": {}
+    }
+  },
+  "whereDoesItHurt": "Where does it hurt?",
+  "@whereDoesItHurt": {
+    "description": "Text used in the app for where does it hurt."
+  },
+  "howMuchDoesItHurt": "How much does it hurt?",
+  "@howMuchDoesItHurt": {
+    "description": "Text used in the app for how much does it hurt."
+  },
+  "choosePainFace": "Choose the face that best shows how you feel.",
+  "@choosePainFace": {
+    "description": "Text used in the app for choose pain face."
+  },
+  "whatDoesItFeelLike": "What does it feel like?",
+  "@whatDoesItFeelLike": {
+    "description": "Text used in the app for what does it feel like."
+  },
+  "choosePainDescription": "Choose the description that feels closest. It is okay if you are not sure.",
+  "@choosePainDescription": {
+    "description": "Text used in the app for choose pain description."
+  },
+  "checkYourBodyCheck": "Check Your Body Check",
+  "@checkYourBodyCheck": {
+    "description": "Text used in the app for check your body check."
+  },
+  "reviewBodyCheckMessage": "Make sure this shows how you feel before telling staff.",
+  "@reviewBodyCheckMessage": {
+    "description": "Text used in the app for review body check message."
+  },
+  "tellAdultBodyCheck": "If you need help now, please tell an adult as well as sending this Body Check.",
+  "@tellAdultBodyCheck": {
+    "description": "Text used in the app for tell adult body check."
+  },
+  "changeBodyCheckAnswer": "Change {label}",
+  "@changeBodyCheckAnswer": {
+    "description": "Text used in the app for change body check answer.",
+    "placeholders": {
+      "label": {}
+    }
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Text used in the app for back."
+  },
+  "sending": "Sending...",
+  "@sending": {
+    "description": "Text used in the app for sending."
+  },
+  "tellStaff": "Tell Staff",
+  "@tellStaff": {
+    "description": "Text used in the app for tell staff."
+  },
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Text used in the app for continue button."
+  },
+  "checkChildReport": "Check {childName}’s Report",
+  "@checkChildReport": {
+    "description": "Text used in the app for check child report.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "optionalStaffNote": "Optional staff note",
+  "@optionalStaffNote": {
+    "description": "Text used in the app for optional staff note."
+  },
+  "staffNoteHint": "Record what was checked or what support was given.",
+  "@staffNoteHint": {
+    "description": "Text used in the app for staff note hint."
+  },
+  "markChecked": "Mark Checked",
+  "@markChecked": {
+    "description": "Text used in the app for mark checked."
+  },
+  "reportMarkedChecked": "{childName}’s report was marked as checked.",
+  "@reportMarkedChecked": {
+    "description": "Text used in the app for report marked checked.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "reportUpdateFailed": "The report could not be updated.",
+  "@reportUpdateFailed": {
+    "description": "Text used in the app for report update failed."
+  },
+  "deleteReportQuestion": "Delete Report?",
+  "@deleteReportQuestion": {
+    "description": "Text used in the app for delete report question."
+  },
+  "deleteBodyCheckReport": "Delete this Body Check report for {childName}?\n\nThis cannot be undone.",
+  "@deleteBodyCheckReport": {
+    "description": "Text used in the app for delete body check report.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "reportDeleteFailed": "The report could not be deleted.",
+  "@reportDeleteFailed": {
+    "description": "Text used in the app for report delete failed."
+  },
+  "classroomBodyChecks": "Classroom Body Checks",
+  "@classroomBodyChecks": {
+    "description": "Text used in the app for classroom body checks."
+  },
+  "classroomBodyChecksIntro": "Review reports and record when support has been provided.",
+  "@classroomBodyChecksIntro": {
+    "description": "Text used in the app for classroom body checks intro."
+  },
+  "urgent": "Urgent",
+  "@urgent": {
+    "description": "Text used in the app for urgent."
+  },
+  "unchecked": "Unchecked",
+  "@unchecked": {
+    "description": "Text used in the app for unchecked."
+  },
+  "checked": "Checked",
+  "@checked": {
+    "description": "Text used in the app for checked."
+  },
+  "reports": "Reports",
+  "@reports": {
+    "description": "Text used in the app for reports."
+  },
+  "urgentBodyCheckMessage": "This child selected “Hurts a lot” and has not been checked.",
+  "@urgentBodyCheckMessage": {
+    "description": "Text used in the app for urgent body check message."
+  },
+  "checkedByStaff": "Checked by staff",
+  "@checkedByStaff": {
+    "description": "Text used in the app for checked by staff."
+  },
+  "checkedAt": "Checked {time}",
+  "@checkedAt": {
+    "description": "Text used in the app for checked at.",
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "deleteReport": "Delete report",
+  "@deleteReport": {
+    "description": "Text used in the app for delete report."
+  },
+  "needsChecking": "Needs checking",
+  "@needsChecking": {
+    "description": "Text used in the app for needs checking."
+  },
+  "noBodyCheckReports": "No Body Check reports yet",
+  "@noBodyCheckReports": {
+    "description": "Text used in the app for no body check reports."
+  },
+  "bodyCheckReportsAppearHere": "Reports sent by children will appear here.",
+  "@bodyCheckReportsAppearHere": {
+    "description": "Text used in the app for body check reports appear here."
+  },
+  "noReportsMatchFilters": "No reports match these filters.",
+  "@noReportsMatchFilters": {
+    "description": "Text used in the app for no reports match filters."
+  },
+  "bodyCheckReportsLoadFailed": "Something went wrong loading Body Check reports.",
+  "@bodyCheckReportsLoadFailed": {
+    "description": "Text used in the app for body check reports load failed."
+  },
+  "dateTimeAt": "{date} at {time}",
+  "@dateTimeAt": {
+    "description": "Text used in the app for date time at.",
+    "placeholders": {
+      "date": {},
+      "time": {}
+    }
+  },
+  "quizStyleGeneral": "General",
+  "@quizStyleGeneral": {
+    "description": "Text used in the app for quiz style general."
+  },
+  "quizStyleNumbers": "Numbers",
+  "@quizStyleNumbers": {
+    "description": "Text used in the app for quiz style numbers."
+  },
+  "quizStyleWords": "Words",
+  "@quizStyleWords": {
+    "description": "Text used in the app for quiz style words."
+  },
+  "quizStyleScience": "Science",
+  "@quizStyleScience": {
+    "description": "Text used in the app for quiz style science."
+  },
+  "quizStyleWorld": "Our World",
+  "@quizStyleWorld": {
+    "description": "Text used in the app for quiz style world."
+  },
+  "quizStyleMemory": "Memory",
+  "@quizStyleMemory": {
+    "description": "Text used in the app for quiz style memory."
+  },
+  "quizStyleFun": "Fun",
+  "@quizStyleFun": {
+    "description": "Text used in the app for quiz style fun."
+  },
+  "enterQuizTitle": "Please enter a quiz title.",
+  "@enterQuizTitle": {
+    "description": "Text used in the app for enter quiz title."
+  },
+  "chooseQuizAudience": "Choose at least one child or make the quiz available to everyone.",
+  "@chooseQuizAudience": {
+    "description": "Text used in the app for choose quiz audience."
+  },
+  "addAtLeastOneQuestion": "Add at least one question.",
+  "@addAtLeastOneQuestion": {
+    "description": "Text used in the app for add at least one question."
+  },
+  "quizUpdatedSuccess": "Quiz updated successfully!",
+  "@quizUpdatedSuccess": {
+    "description": "Text used in the app for quiz updated success."
+  },
+  "quizCreatedSuccess": "Quiz created successfully!",
+  "@quizCreatedSuccess": {
+    "description": "Text used in the app for quiz created success."
+  },
+  "quizSaveFailed": "Could not save the quiz: {error}",
+  "@quizSaveFailed": {
+    "description": "Text used in the app for quiz save failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "editYourQuiz": "Edit your quiz",
+  "@editYourQuiz": {
+    "description": "Text used in the app for edit your quiz."
+  },
+  "createNewQuiz": "Create a new quiz",
+  "@createNewQuiz": {
+    "description": "Text used in the app for create new quiz."
+  },
+  "quizEditorIntro": "Keep questions clear, encouraging and easy to understand.",
+  "@quizEditorIntro": {
+    "description": "Text used in the app for quiz editor intro."
+  },
+  "quizDetails": "Quiz details",
+  "@quizDetails": {
+    "description": "Text used in the app for quiz details."
+  },
+  "quizDetailsIntro": "Give the quiz a clear name and short description.",
+  "@quizDetailsIntro": {
+    "description": "Text used in the app for quiz details intro."
+  },
+  "quizTitle": "Quiz title",
+  "@quizTitle": {
+    "description": "Text used in the app for quiz title."
+  },
+  "quizTitleHint": "For example: Animal Sounds",
+  "@quizTitleHint": {
+    "description": "Text used in the app for quiz title hint."
+  },
+  "quizDescriptionHint": "What will children practise in this quiz?",
+  "@quizDescriptionHint": {
+    "description": "Text used in the app for quiz description hint."
+  },
+  "quizStyle": "Quiz style",
+  "@quizStyle": {
+    "description": "Text used in the app for quiz style."
+  },
+  "quizStyleIntro": "Choose a friendly visual theme.",
+  "@quizStyleIntro": {
+    "description": "Text used in the app for quiz style intro."
+  },
+  "whoCanPlay": "Who can play?",
+  "@whoCanPlay": {
+    "description": "Text used in the app for who can play."
+  },
+  "quizAudienceIntro": "Make it available to everyone or selected children.",
+  "@quizAudienceIntro": {
+    "description": "Text used in the app for quiz audience intro."
+  },
+  "questions": "Questions",
+  "@questions": {
+    "description": "Text used in the app for questions."
+  },
+  "questionCount": "{count, plural, =1{1 question} other{{count} questions}}",
+  "@questionCount": {
+    "description": "Text used in the app for question count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "addQuestion": "Add question",
+  "@addQuestion": {
+    "description": "Text used in the app for add question."
+  },
+  "addAnotherQuestion": "Add another question",
+  "@addAnotherQuestion": {
+    "description": "Text used in the app for add another question."
+  },
+  "editQuiz": "Edit Quiz",
+  "@editQuiz": {
+    "description": "Text used in the app for edit quiz."
+  },
+  "createQuiz": "Create Quiz",
+  "@createQuiz": {
+    "description": "Text used in the app for create quiz."
+  },
+  "questionNumber": "Question {number}",
+  "@questionNumber": {
+    "description": "Text used in the app for question number.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "moveUp": "Move up",
+  "@moveUp": {
+    "description": "Text used in the app for move up."
+  },
+  "moveDown": "Move down",
+  "@moveDown": {
+    "description": "Text used in the app for move down."
+  },
+  "deleteQuestion": "Delete question",
+  "@deleteQuestion": {
+    "description": "Text used in the app for delete question."
+  },
+  "question": "Question",
+  "@question": {
+    "description": "Text used in the app for question."
+  },
+  "questionHint": "What would you like to ask?",
+  "@questionHint": {
+    "description": "Text used in the app for question hint."
+  },
+  "answers": "Answers",
+  "@answers": {
+    "description": "Text used in the app for answers."
+  },
+  "correctAnswerInstruction": "Tap the circle beside the correct answer.",
+  "@correctAnswerInstruction": {
+    "description": "Text used in the app for correct answer instruction."
+  },
+  "correctAnswer": "Correct answer",
+  "@correctAnswer": {
+    "description": "Text used in the app for correct answer."
+  },
+  "markAsCorrect": "Mark as correct",
+  "@markAsCorrect": {
+    "description": "Text used in the app for mark as correct."
+  },
+  "answerLabel": "Answer {letter}",
+  "@answerLabel": {
+    "description": "Text used in the app for answer label.",
+    "placeholders": {
+      "letter": {}
+    }
+  },
+  "removeAnswer": "Remove answer",
+  "@removeAnswer": {
+    "description": "Text used in the app for remove answer."
+  },
+  "addAnswer": "Add answer",
+  "@addAnswer": {
+    "description": "Text used in the app for add answer."
+  },
+  "helpfulExplanation": "Helpful explanation (optional)",
+  "@helpfulExplanation": {
+    "description": "Text used in the app for helpful explanation."
+  },
+  "helpfulExplanationHint": "Shown after the child answers the question.",
+  "@helpfulExplanationHint": {
+    "description": "Text used in the app for helpful explanation hint."
+  },
+  "questionNeedsText": "Question {number} needs some question text.",
+  "@questionNeedsText": {
+    "description": "Text used in the app for question needs text.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "questionNeedsAnswers": "Question {number} needs at least two answers.",
+  "@questionNeedsAnswers": {
+    "description": "Text used in the app for question needs answers.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "completeQuestionAnswers": "Please complete every answer for question {number}.",
+  "@completeQuestionAnswers": {
+    "description": "Text used in the app for complete question answers.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "questionDuplicateAnswers": "Question {number} has duplicate answers.",
+  "@questionDuplicateAnswers": {
+    "description": "Text used in the app for question duplicate answers.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "chooseCorrectAnswer": "Choose the correct answer for question {number}.",
+  "@chooseCorrectAnswer": {
+    "description": "Text used in the app for choose correct answer.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "previewNeedsQuestion": "Add at least one question before previewing.",
+  "@previewNeedsQuestion": {
+    "description": "Text used in the app for preview needs question."
+  },
+  "quizCopyTitle": "{title} Copy",
+  "@quizCopyTitle": {
+    "description": "Text used in the app for quiz copy title.",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "quizDuplicated": "Quiz duplicated successfully.",
+  "@quizDuplicated": {
+    "description": "Text used in the app for quiz duplicated."
+  },
+  "quizDuplicateFailed": "Could not duplicate the quiz: {error}",
+  "@quizDuplicateFailed": {
+    "description": "Text used in the app for quiz duplicate failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteQuizQuestion": "Delete quiz?",
+  "@deleteQuizQuestion": {
+    "description": "Text used in the app for delete quiz question."
+  },
+  "deleteQuizConfirmation": "Are you sure you want to delete “{title}”? Existing result history will be kept.",
+  "@deleteQuizConfirmation": {
+    "description": "Text used in the app for delete quiz confirmation.",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "quizDeleted": "Quiz deleted.",
+  "@quizDeleted": {
+    "description": "Text used in the app for quiz deleted."
+  },
+  "quizDeleteFailed": "Could not delete the quiz: {error}",
+  "@quizDeleteFailed": {
+    "description": "Text used in the app for quiz delete failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "quizzesLoadFailed": "Could not load quizzes",
+  "@quizzesLoadFailed": {
+    "description": "Text used in the app for quizzes load failed."
+  },
+  "quizLibraryEmpty": "Your quiz library is empty",
+  "@quizLibraryEmpty": {
+    "description": "Text used in the app for quiz library empty."
+  },
+  "createFirstQuiz": "Create your first quiz to get started.",
+  "@createFirstQuiz": {
+    "description": "Text used in the app for create first quiz."
+  },
+  "quizResultsLoadFailed": "Could not load results",
+  "@quizResultsLoadFailed": {
+    "description": "Text used in the app for quiz results load failed."
+  },
+  "childProfilesLoadFailedShort": "Child profiles could not be loaded.",
+  "@childProfilesLoadFailedShort": {
+    "description": "Text used in the app for child profiles load failed short."
+  },
+  "noChildProfiles": "No child profiles",
+  "@noChildProfiles": {
+    "description": "Text used in the app for no child profiles."
+  },
+  "quizResultsAfterProfiles": "Quiz results will appear after profiles are added.",
+  "@quizResultsAfterProfiles": {
+    "description": "Text used in the app for quiz results after profiles."
+  },
+  "quizResults": "Quiz results",
+  "@quizResults": {
+    "description": "Text used in the app for quiz results."
+  },
+  "quizResultsIntro": "Recent attempts and scores for each child.",
+  "@quizResultsIntro": {
+    "description": "Text used in the app for quiz results intro."
+  },
+  "quizLibrary": "Quiz Library",
+  "@quizLibrary": {
+    "description": "Text used in the app for quiz library."
+  },
+  "results": "Results",
+  "@results": {
+    "description": "Text used in the app for results."
+  },
+  "audienceSelectedCount": "{count} selected",
+  "@audienceSelectedCount": {
+    "description": "Text used in the app for audience selected count.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "moreOptions": "More options",
+  "@moreOptions": {
+    "description": "Text used in the app for more options."
+  },
+  "duplicate": "Duplicate",
+  "@duplicate": {
+    "description": "Text used in the app for duplicate."
+  },
+  "noDescriptionAdded": "No description added.",
+  "@noDescriptionAdded": {
+    "description": "Text used in the app for no description added."
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Text used in the app for preview."
+  },
+  "loadingAttempts": "Loading attempts...",
+  "@loadingAttempts": {
+    "description": "Text used in the app for loading attempts."
+  },
+  "noQuizAttempts": "No quiz attempts yet",
+  "@noQuizAttempts": {
+    "description": "Text used in the app for no quiz attempts."
+  },
+  "attemptCount": "{count, plural, =1{1 attempt} other{{count} attempts}}",
+  "@attemptCount": {
+    "description": "Text used in the app for attempt count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "attemptsLoadFailed": "Could not load attempts.",
+  "@attemptsLoadFailed": {
+    "description": "Text used in the app for attempts load failed."
+  },
+  "resultsAfterQuiz": "Results will appear after this child completes a quiz.",
+  "@resultsAfterQuiz": {
+    "description": "Text used in the app for results after quiz."
+  },
+  "deletedQuiz": "Deleted quiz",
+  "@deletedQuiz": {
+    "description": "Text used in the app for deleted quiz."
+  },
+  "scoreSummary": "{score}/{total} • {percentage}%",
+  "@scoreSummary": {
+    "description": "Text used in the app for score summary.",
+    "placeholders": {
+      "score": {},
+      "total": {},
+      "percentage": {}
+    }
+  },
+  "pointsValue": "{score} points",
+  "@pointsValue": {
+    "description": "Text used in the app for points value.",
+    "placeholders": {
+      "score": {}
+    }
+  },
+  "noQuizzesNow": "No quizzes right now",
+  "@noQuizzesNow": {
+    "description": "Text used in the app for no quizzes now."
+  },
+  "quizWillAppear": "A new quiz will appear here when it is ready for you.",
+  "@quizWillAppear": {
+    "description": "Text used in the app for quiz will appear."
+  },
+  "childQuizzesLoadFailed": "We could not load your quizzes",
+  "@childQuizzesLoadFailed": {
+    "description": "Text used in the app for child quizzes load failed."
+  },
+  "readyToPlay": "Ready to play, {childName}?",
+  "@readyToPlay": {
+    "description": "Text used in the app for ready to play.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "quizzesToExplore": "{count, plural, =1{You have 1 quiz to explore.} other{You have {count} quizzes to explore.}}",
+  "@quizzesToExplore": {
+    "description": "Text used in the app for quizzes to explore.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "quizzesPlayed": "{count} played",
+  "@quizzesPlayed": {
+    "description": "Text used in the app for quizzes played.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "myQuizzes": "My Quizzes",
+  "@myQuizzes": {
+    "description": "Text used in the app for my quizzes."
+  },
+  "quizCardSemantics": "{title}, {count, plural, =1{1 question} other{{count} questions}}",
+  "@quizCardSemantics": {
+    "description": "Text used in the app for quiz card semantics.",
+    "placeholders": {
+      "title": {},
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "played": "Played",
+  "@played": {
+    "description": "Text used in the app for played."
+  },
+  "tapToStartQuiz": "Tap to start this quiz!",
+  "@tapToStartQuiz": {
+    "description": "Text used in the app for tap to start quiz."
+  },
+  "playAgain": "Play Again",
+  "@playAgain": {
+    "description": "Text used in the app for play again."
+  },
+  "letsPlay": "Let’s Play!",
+  "@letsPlay": {
+    "description": "Text used in the app for lets play."
+  },
+  "resultSaveFailed": "Your result could not be saved. Please try again.",
+  "@resultSaveFailed": {
+    "description": "Text used in the app for result save failed."
+  },
+  "leaveQuizQuestion": "Leave this quiz?",
+  "@leaveQuizQuestion": {
+    "description": "Text used in the app for leave quiz question."
+  },
+  "closeQuizPreview": "Close the quiz preview?",
+  "@closeQuizPreview": {
+    "description": "Text used in the app for close quiz preview."
+  },
+  "unsavedQuizAnswers": "Your answers in this attempt will not be saved.",
+  "@unsavedQuizAnswers": {
+    "description": "Text used in the app for unsaved quiz answers."
+  },
+  "keepPlaying": "Keep Playing",
+  "@keepPlaying": {
+    "description": "Text used in the app for keep playing."
+  },
+  "leave": "Leave",
+  "@leave": {
+    "description": "Text used in the app for leave."
+  },
+  "quizHasNoQuestions": "This quiz has no questions yet",
+  "@quizHasNoQuestions": {
+    "description": "Text used in the app for quiz has no questions."
+  },
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Text used in the app for go back."
+  },
+  "staffPreviewBanner": "Staff Preview — results will not be saved",
+  "@staffPreviewBanner": {
+    "description": "Text used in the app for staff preview banner."
+  },
+  "questionUppercase": "QUESTION",
+  "@questionUppercase": {
+    "description": "Text used in the app for question uppercase."
+  },
+  "questionProgress": "{current} of {total}",
+  "@questionProgress": {
+    "description": "Text used in the app for question progress.",
+    "placeholders": {
+      "current": {},
+      "total": {}
+    }
+  },
+  "tapCorrectAnswer": "Tap the answer you think is right.",
+  "@tapCorrectAnswer": {
+    "description": "Text used in the app for tap correct answer."
+  },
+  "brilliant": "Brilliant!",
+  "@brilliant": {
+    "description": "Text used in the app for brilliant."
+  },
+  "answerIs": "The answer is {answer}.",
+  "@answerIs": {
+    "description": "Text used in the app for answer is.",
+    "placeholders": {
+      "answer": {}
+    }
+  },
+  "savingResult": "Saving your result...",
+  "@savingResult": {
+    "description": "Text used in the app for saving result."
+  },
+  "seeMyResult": "See My Result",
+  "@seeMyResult": {
+    "description": "Text used in the app for see my result."
+  },
+  "nextQuestion": "Next Question",
+  "@nextQuestion": {
+    "description": "Text used in the app for next question."
+  },
+  "resultAmazing": "Amazing!",
+  "@resultAmazing": {
+    "description": "Text used in the app for result amazing."
+  },
+  "resultPerfectMessage": "You got every question right!",
+  "@resultPerfectMessage": {
+    "description": "Text used in the app for result perfect message."
+  },
+  "resultGreatWork": "Great work!",
+  "@resultGreatWork": {
+    "description": "Text used in the app for result great work."
+  },
+  "resultGreatMessage": "You did a brilliant job!",
+  "@resultGreatMessage": {
+    "description": "Text used in the app for result great message."
+  },
+  "resultWellDone": "Well done!",
+  "@resultWellDone": {
+    "description": "Text used in the app for result well done."
+  },
+  "resultWellDoneMessage": "You kept trying and learned something new!",
+  "@resultWellDoneMessage": {
+    "description": "Text used in the app for result well done message."
+  },
+  "resultGoodEffort": "Good effort!",
+  "@resultGoodEffort": {
+    "description": "Text used in the app for result good effort."
+  },
+  "resultGoodEffortMessage": "Every try helps your brain grow!",
+  "@resultGoodEffortMessage": {
+    "description": "Text used in the app for result good effort message."
+  },
+  "previewComplete": "Preview complete",
+  "@previewComplete": {
+    "description": "Text used in the app for preview complete."
+  },
+  "previewResultMessage": "This is how the child’s result screen will look.",
+  "@previewResultMessage": {
+    "description": "Text used in the app for preview result message."
+  },
+  "closePreview": "Close Preview",
+  "@closePreview": {
+    "description": "Text used in the app for close preview."
+  },
+  "backToMyQuizzes": "Back to My Quizzes",
+  "@backToMyQuizzes": {
+    "description": "Text used in the app for back to my quizzes."
+  },
+  "answerSemantics": "Answer {letter}: {answer}",
+  "@answerSemantics": {
+    "description": "Text used in the app for answer semantics.",
+    "placeholders": {
+      "letter": {},
+      "answer": {}
+    }
+  },
+  "zoneBlue": "Blue Zone",
+  "@zoneBlue": {
+    "description": "Text used in the app for zone blue."
+  },
+  "zoneGreen": "Green Zone",
+  "@zoneGreen": {
+    "description": "Text used in the app for zone green."
+  },
+  "zoneYellow": "Yellow Zone",
+  "@zoneYellow": {
+    "description": "Text used in the app for zone yellow."
+  },
+  "zoneRed": "Red Zone",
+  "@zoneRed": {
+    "description": "Text used in the app for zone red."
+  },
+  "zoneBlueChildDescription": "My body is running slowly. I may need rest, comfort or gentle movement.",
+  "@zoneBlueChildDescription": {
+    "description": "Text used in the app for zone blue child description."
+  },
+  "zoneGreenChildDescription": "My body feels calm and comfortable. I may feel ready to learn or play.",
+  "@zoneGreenChildDescription": {
+    "description": "Text used in the app for zone green child description."
+  },
+  "zoneYellowChildDescription": "My energy is rising. I may need help slowing down or finding focus.",
+  "@zoneYellowChildDescription": {
+    "description": "Text used in the app for zone yellow child description."
+  },
+  "zoneRedChildDescription": "My feelings are very intense. I may need space, safety and support.",
+  "@zoneRedChildDescription": {
+    "description": "Text used in the app for zone red child description."
+  },
+  "zoneBlueStaffDescription": "Low energy, tired, sad or unwell.",
+  "@zoneBlueStaffDescription": {
+    "description": "Text used in the app for zone blue staff description."
+  },
+  "zoneGreenStaffDescription": "Calm, focused, comfortable and ready.",
+  "@zoneGreenStaffDescription": {
+    "description": "Text used in the app for zone green staff description."
+  },
+  "zoneYellowStaffDescription": "Worried, excited, frustrated or restless.",
+  "@zoneYellowStaffDescription": {
+    "description": "Text used in the app for zone yellow staff description."
+  },
+  "zoneRedStaffDescription": "Very intense feelings requiring support.",
+  "@zoneRedStaffDescription": {
+    "description": "Text used in the app for zone red staff description."
+  },
+  "feelingTired": "Tired",
+  "@feelingTired": {
+    "description": "Text used in the app for feeling tired."
+  },
+  "feelingSad": "Sad",
+  "@feelingSad": {
+    "description": "Text used in the app for feeling sad."
+  },
+  "feelingBored": "Bored",
+  "@feelingBored": {
+    "description": "Text used in the app for feeling bored."
+  },
+  "feelingUnwell": "Unwell",
+  "@feelingUnwell": {
+    "description": "Text used in the app for feeling unwell."
+  },
+  "feelingSlow": "Slow",
+  "@feelingSlow": {
+    "description": "Text used in the app for feeling slow."
+  },
+  "feelingCalm": "Calm",
+  "@feelingCalm": {
+    "description": "Text used in the app for feeling calm."
+  },
+  "feelingFocused": "Focused",
+  "@feelingFocused": {
+    "description": "Text used in the app for feeling focused."
+  },
+  "feelingHappy": "Happy",
+  "@feelingHappy": {
+    "description": "Text used in the app for feeling happy."
+  },
+  "feelingContent": "Content",
+  "@feelingContent": {
+    "description": "Text used in the app for feeling content."
+  },
+  "feelingReady": "Ready",
+  "@feelingReady": {
+    "description": "Text used in the app for feeling ready."
+  },
+  "feelingWorried": "Worried",
+  "@feelingWorried": {
+    "description": "Text used in the app for feeling worried."
+  },
+  "feelingExcited": "Excited",
+  "@feelingExcited": {
+    "description": "Text used in the app for feeling excited."
+  },
+  "feelingFrustrated": "Frustrated",
+  "@feelingFrustrated": {
+    "description": "Text used in the app for feeling frustrated."
+  },
+  "feelingSilly": "Silly",
+  "@feelingSilly": {
+    "description": "Text used in the app for feeling silly."
+  },
+  "feelingRestless": "Restless",
+  "@feelingRestless": {
+    "description": "Text used in the app for feeling restless."
+  },
+  "feelingAngry": "Angry",
+  "@feelingAngry": {
+    "description": "Text used in the app for feeling angry."
+  },
+  "feelingPanicked": "Panicked",
+  "@feelingPanicked": {
+    "description": "Text used in the app for feeling panicked."
+  },
+  "feelingTerrified": "Terrified",
+  "@feelingTerrified": {
+    "description": "Text used in the app for feeling terrified."
+  },
+  "feelingOverwhelmed": "Overwhelmed",
+  "@feelingOverwhelmed": {
+    "description": "Text used in the app for feeling overwhelmed."
+  },
+  "feelingOutOfControl": "Out of control",
+  "@feelingOutOfControl": {
+    "description": "Text used in the app for feeling out of control."
+  },
+  "zoneSelected": "You selected the {zoneName}.",
+  "@zoneSelected": {
+    "description": "Text used in the app for zone selected.",
+    "placeholders": {
+      "zoneName": {}
+    }
+  },
+  "zoneUpdateFailed": "Could not update your zone: {error}",
+  "@zoneUpdateFailed": {
+    "description": "Text used in the app for zone update failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "howAreYouFeeling": "How Are You Feeling?",
+  "@howAreYouFeeling": {
+    "description": "Text used in the app for how are you feeling."
+  },
+  "helloChild": "Hello {childName}",
+  "@helloChild": {
+    "description": "Text used in the app for hello child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "chooseCurrentZone": "Choose the zone that feels most like you right now.",
+  "@chooseCurrentZone": {
+    "description": "Text used in the app for choose current zone."
+  },
+  "everyZoneOkay": "Every zone is okay.",
+  "@everyZoneOkay": {
+    "description": "Text used in the app for every zone okay."
+  },
+  "thisIsMyZone": "This is my zone",
+  "@thisIsMyZone": {
+    "description": "Text used in the app for this is my zone."
+  },
+  "chooseZone": "Choose {zoneName}",
+  "@chooseZone": {
+    "description": "Text used in the app for choose zone.",
+    "placeholders": {
+      "zoneName": {}
+    }
+  },
+  "noBadZones": "There are no bad zones. Our feelings give us information about what our body may need.",
+  "@noBadZones": {
+    "description": "Text used in the app for no bad zones."
+  },
+  "zonesOverview": "Zones Overview",
+  "@zonesOverview": {
+    "description": "Text used in the app for zones overview."
+  },
+  "classroomZonesLoadFailed": "Could not load classroom zones.",
+  "@classroomZonesLoadFailed": {
+    "description": "Text used in the app for classroom zones load failed."
+  },
+  "classroomZones": "Classroom Zones",
+  "@classroomZones": {
+    "description": "Text used in the app for classroom zones."
+  },
+  "classroomZonesIntro": "A live view of how children are feeling.",
+  "@classroomZonesIntro": {
+    "description": "Text used in the app for classroom zones intro."
+  },
+  "checkedIn": "Checked in",
+  "@checkedIn": {
+    "description": "Text used in the app for checked in."
+  },
+  "noChildrenInZone": "No children are currently in this zone.",
+  "@noChildrenInZone": {
+    "description": "Text used in the app for no children in zone."
+  },
+  "allChildrenCheckedIn": "Every child has completed their zone check-in.",
+  "@allChildrenCheckedIn": {
+    "description": "Text used in the app for all children checked in."
+  },
+  "notCheckedIn": "Not checked in",
+  "@notCheckedIn": {
+    "description": "Text used in the app for not checked in."
+  },
+  "noChildProfilesFoundShort": "No child profiles found",
+  "@noChildProfilesFoundShort": {
+    "description": "Text used in the app for no child profiles found short."
+  },
+  "createChildBeforeZones": "Create a child profile before using the Zones Overview.",
+  "@createChildBeforeZones": {
+    "description": "Text used in the app for create child before zones."
+  },
+  "viewBodyCheckReports": "View Body Check Reports",
+  "@viewBodyCheckReports": {
+    "description": "Text used in the app for view body check reports."
+  },
+  "openIncidentLog": "Open Incident Log",
+  "@openIncidentLog": {
+    "description": "Text used in the app for open incident log."
+  },
+  "openSchedule": "Open Schedule",
+  "@openSchedule": {
+    "description": "Text used in the app for open schedule."
+  },
+  "openZonesOverview": "Open Zones Overview",
+  "@openZonesOverview": {
+    "description": "Text used in the app for open zones overview."
+  },
+  "totalChildProfiles": "Total child profiles",
+  "@totalChildProfiles": {
+    "description": "Text used in the app for total child profiles."
+  },
+  "zonesCheckedIn": "Zones checked in",
+  "@zonesCheckedIn": {
+    "description": "Text used in the app for zones checked in."
+  },
+  "childrenWithSelectedZone": "Children with a selected zone",
+  "@childrenWithSelectedZone": {
+    "description": "Text used in the app for children with selected zone."
+  },
+  "noChildProfilesYet": "No child profiles yet.",
+  "@noChildProfilesYet": {
+    "description": "Text used in the app for no child profiles yet."
+  },
+  "noZone": "No zone",
+  "@noZone": {
+    "description": "Text used in the app for no zone."
+  },
+  "childZoneSummary": "{childName}: {zone}",
+  "@childZoneSummary": {
+    "description": "Text used in the app for child zone summary.",
+    "placeholders": {
+      "childName": {},
+      "zone": {}
+    }
+  },
+  "noUncheckedBodyChecks": "No unchecked Body Check reports",
+  "@noUncheckedBodyChecks": {
+    "description": "Text used in the app for no unchecked body checks."
+  },
+  "nothingNeedsReview": "Nothing currently needs review.",
+  "@nothingNeedsReview": {
+    "description": "Text used in the app for nothing needs review."
+  },
+  "uncheckedBodyChecksIntro": "Unchecked reports needing staff review",
+  "@uncheckedBodyChecksIntro": {
+    "description": "Text used in the app for unchecked body checks intro."
+  },
+  "bodyCheckSummary": "{bodyPart} • {painType} • {date}",
+  "@bodyCheckSummary": {
+    "description": "Text used in the app for body check summary.",
+    "placeholders": {
+      "bodyPart": {},
+      "painType": {},
+      "date": {}
+    }
+  },
+  "viewAllBodyChecks": "View all {count} Body Check reports",
+  "@viewAllBodyChecks": {
+    "description": "Text used in the app for view all body checks.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "scheduleSaturday": "Saturday",
+  "@scheduleSaturday": {
+    "description": "Text used in the app for schedule saturday."
+  },
+  "scheduleSunday": "Sunday",
+  "@scheduleSunday": {
+    "description": "Text used in the app for schedule sunday."
+  },
+  "noScheduleEntriesForDay": "No schedule entries for {day}",
+  "@noScheduleEntriesForDay": {
+    "description": "Text used in the app for no schedule entries for day.",
+    "placeholders": {
+      "day": {}
+    }
+  },
+  "nothingScheduledTodayYet": "Nothing has been added for today yet.",
+  "@nothingScheduledTodayYet": {
+    "description": "Text used in the app for nothing scheduled today yet."
+  },
+  "noImportantIncidents": "No important recent incidents",
+  "@noImportantIncidents": {
+    "description": "Text used in the app for no important incidents."
+  },
+  "noImportantIncidentsIntro": "No medium/high incidents found for review.",
+  "@noImportantIncidentsIntro": {
+    "description": "Text used in the app for no important incidents intro."
+  },
+  "severityHigh": "High",
+  "@severityHigh": {
+    "description": "Text used in the app for severity high."
+  },
+  "severityMedium": "Medium",
+  "@severityMedium": {
+    "description": "Text used in the app for severity medium."
+  },
+  "severityLow": "Low",
+  "@severityLow": {
+    "description": "Text used in the app for severity low."
+  },
+  "incidentSummary": "{severity} • {date}\n{description}",
+  "@incidentSummary": {
+    "description": "Text used in the app for incident summary.",
+    "placeholders": {
+      "severity": {},
+      "date": {},
+      "description": {}
+    }
+  },
+  "todayOverviewForStaff": "Quick classroom overview for {staffName}.",
+  "@todayOverviewForStaff": {
+    "description": "Text used in the app for today overview for staff.",
+    "placeholders": {
+      "staffName": {}
+    }
+  },
+  "quickActions": "Quick Actions",
+  "@quickActions": {
+    "description": "Text used in the app for quick actions."
+  },
+  "zonesSnapshot": "Zones Snapshot",
+  "@zonesSnapshot": {
+    "description": "Text used in the app for zones snapshot."
+  },
+  "bodyCheckAttention": "Body Check Attention",
+  "@bodyCheckAttention": {
+    "description": "Text used in the app for body check attention."
+  },
+  "todaysSchedule": "Today's Schedule",
+  "@todaysSchedule": {
+    "description": "Text used in the app for todays schedule."
+  },
+  "recentImportantIncidents": "Recent / Important Incidents",
+  "@recentImportantIncidents": {
+    "description": "Text used in the app for recent important incidents."
+  },
+  "iMightFeel": "I might feel:",
+  "@iMightFeel": {
+    "description": "Text used in the app for i might feel."
+  }
 }

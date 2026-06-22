@@ -3,6 +3,8 @@ import '../models/body_check_report.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
 import '../widgets/body_map_selector.dart';
+import '../l10n/body_check_localizations.dart';
+import '../l10n/l10n.dart';
 
 class BodyCheckPage extends StatefulWidget {
   final ChildProfile child;
@@ -112,26 +114,23 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   void _continue() {
     if (_currentStep == 0 && _selectedBodyPart == null) {
-      _showMessage('Please choose where you feel sore.');
+      _showMessage(context.l10n.chooseSoreLocation);
       return;
     }
 
     if (_currentStep == 1 && _selectedPainLevel == null) {
-      _showMessage('Please choose how much it hurts.');
+      _showMessage(context.l10n.choosePainAmount);
       return;
     }
 
     if (_currentStep == 2 && _selectedPainType == null) {
-      _showMessage('Please choose what it feels like.');
+      _showMessage(context.l10n.choosePainFeeling);
       return;
     }
 
@@ -174,9 +173,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
     );
 
     try {
-      await widget.firestoreService.addCurrentBodyCheckReport(
-        report,
-      );
+      await widget.firestoreService.addCurrentBodyCheckReport(report);
 
       if (!mounted) return;
 
@@ -188,9 +185,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
     } catch (e) {
       if (!mounted) return;
 
-      _showMessage(
-        'Your Body Check could not be sent. Please tell an adult now.',
-      );
+      _showMessage(context.l10n.bodyCheckSendFailed);
 
       setState(() {
         _isSaving = false;
@@ -209,18 +204,14 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
             color: Colors.green,
             size: 64,
           ),
-          title: const Text(
-            'Staff Have Been Told',
+          title: Text(
+            context.l10n.staffHaveBeenTold,
             textAlign: TextAlign.center,
           ),
-          content: const Text(
-            'Your Body Check was sent.\n\n'
-            'Please tell an adult now if you need help.',
+          content: Text(
+            context.l10n.bodyCheckSentMessage,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              height: 1.4,
-            ),
+            style: const TextStyle(fontSize: 18, height: 1.4),
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
@@ -229,7 +220,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                 Navigator.pop(dialogContext);
               },
               icon: const Icon(Icons.check_rounded),
-              label: const Text('Okay'),
+              label: Text(context.l10n.okay),
             ),
           ],
         );
@@ -240,9 +231,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Body Check'),
-      ),
+      appBar: AppBar(title: Text(context.l10n.bodyCheck)),
       body: SafeArea(
         child: Column(
           children: [
@@ -255,9 +244,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                   padding: const EdgeInsets.all(18),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 1000,
-                      ),
+                      constraints: const BoxConstraints(maxWidth: 1000),
                       child: _buildCurrentStep(),
                     ),
                   ),
@@ -272,11 +259,11 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
   }
 
   Widget _buildProgressHeader() {
-    const stepNames = [
-      'Where?',
-      'How much?',
-      'What feeling?',
-      'Review',
+    final stepNames = [
+      context.l10n.bodyCheckWhere,
+      context.l10n.bodyCheckHowMuch,
+      context.l10n.bodyCheckWhatFeeling,
+      context.l10n.review,
     ];
 
     return Container(
@@ -297,48 +284,45 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
           child: Column(
             children: [
               Row(
-                children: List.generate(
-                  stepNames.length,
-                  (index) {
-                    final completed = index < _currentStep;
-                    final active = index == _currentStep;
+                children: List.generate(stepNames.length, (index) {
+                  final completed = index < _currentStep;
+                  final active = index == _currentStep;
 
-                    return Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: AnimatedContainer(
-                              duration:
-                                  const Duration(milliseconds: 200),
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: completed || active
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainerHighest,
-                                borderRadius:
-                                    BorderRadius.circular(10),
-                              ),
+                  return Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color:
+                                  completed || active
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(
+                                        context,
+                                      ).colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          if (index < stepNames.length - 1)
-                            const SizedBox(width: 6),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        ),
+                        if (index < stepNames.length - 1)
+                          const SizedBox(width: 6),
+                      ],
+                    ),
+                  );
+                }),
               ),
               const SizedBox(height: 9),
               Text(
-                'Step ${_currentStep + 1} of 4: '
-                '${stepNames[_currentStep]}',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                context.l10n.bodyCheckStep(
+                  _currentStep + 1,
+                  4,
+                  stepNames[_currentStep],
+                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -368,9 +352,8 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
       children: [
         _buildStepIntroduction(
           icon: Icons.accessibility_new_rounded,
-          title: 'Where does it hurt?',
-          message:
-              'Tap the body where you feel sore or uncomfortable.',
+          title: context.l10n.whereDoesItHurt,
+          message: context.l10n.tapSoreBodyPart,
           colour: Colors.blue,
         ),
         const SizedBox(height: 18),
@@ -393,9 +376,8 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
       children: [
         _buildStepIntroduction(
           icon: Icons.sentiment_dissatisfied_rounded,
-          title: 'How much does it hurt?',
-          message:
-              'Choose the face that best shows how you feel.',
+          title: context.l10n.howMuchDoesItHurt,
+          message: context.l10n.choosePainFace,
           colour: Colors.deepOrange,
         ),
         const SizedBox(height: 20),
@@ -408,14 +390,8 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (int index = 0;
-                        index < painLevels.length;
-                        index++) ...[
-                      Expanded(
-                        child: _buildPainLevelCard(
-                          painLevels[index],
-                        ),
-                      ),
+                    for (int index = 0; index < painLevels.length; index++) ...[
+                      Expanded(child: _buildPainLevelCard(painLevels[index])),
                       if (index < painLevels.length - 1)
                         const SizedBox(width: 14),
                     ],
@@ -426,12 +402,9 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
 
             return Column(
               children: [
-                for (int index = 0;
-                    index < painLevels.length;
-                    index++) ...[
+                for (int index = 0; index < painLevels.length; index++) ...[
                   _buildPainLevelCard(painLevels[index]),
-                  if (index < painLevels.length - 1)
-                    const SizedBox(height: 12),
+                  if (index < painLevels.length - 1) const SizedBox(height: 12),
                 ],
               ],
             );
@@ -447,53 +420,48 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
     return Semantics(
       button: true,
       selected: selected,
-      label: pain.label,
+      label: localizedPainLevel(context.l10n, pain.level),
       child: Card(
         margin: EdgeInsets.zero,
         elevation: selected ? 7 : 2,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: _isSaving
-              ? null
-              : () {
-                  setState(() {
-                    _selectedPainLevel = pain.level;
-                  });
-                },
+          onTap:
+              _isSaving
+                  ? null
+                  : () {
+                    setState(() {
+                      _selectedPainLevel = pain.level;
+                    });
+                  },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: pain.colour.withValues(
-                alpha: selected ? 0.20 : 0.08,
-              ),
+              color: pain.colour.withValues(alpha: selected ? 0.20 : 0.08),
               border: Border.all(
-                color: selected
-                    ? pain.colour
-                    : pain.colour.withValues(alpha: 0.25),
+                color:
+                    selected
+                        ? pain.colour
+                        : pain.colour.withValues(alpha: 0.25),
                 width: selected ? 4 : 1,
               ),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
               children: [
-                Icon(
-                  pain.icon,
-                  size: 72,
-                  color: pain.colour,
-                ),
+                Icon(pain.icon, size: 72, color: pain.colour),
                 const SizedBox(height: 12),
                 Text(
-                  pain.label,
+                  localizedPainLevel(context.l10n, pain.level),
                   textAlign: TextAlign.center,
-                  style:
-                      Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  pain.description,
+                  localizedPainLevelDescription(context.l10n, pain.level),
                   textAlign: TextAlign.center,
                 ),
                 if (selected) ...[
@@ -518,29 +486,30 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
       children: [
         _buildStepIntroduction(
           icon: Icons.psychology_alt_rounded,
-          title: 'What does it feel like?',
-          message:
-              'Choose the description that feels closest. It is okay if you are not sure.',
+          title: context.l10n.whatDoesItFeelLike,
+          message: context.l10n.choosePainDescription,
           colour: Colors.purple,
         ),
         const SizedBox(height: 20),
         LayoutBuilder(
           builder: (context, constraints) {
-            final cardWidth = constraints.maxWidth >= 850
-                ? (constraints.maxWidth - 42) / 4
-                : constraints.maxWidth >= 560
+            final cardWidth =
+                constraints.maxWidth >= 850
+                    ? (constraints.maxWidth - 42) / 4
+                    : constraints.maxWidth >= 560
                     ? (constraints.maxWidth - 14) / 2
                     : constraints.maxWidth;
 
             return Wrap(
               spacing: 14,
               runSpacing: 14,
-              children: painTypes.map((type) {
-                return SizedBox(
-                  width: cardWidth,
-                  child: _buildPainTypeCard(type),
-                );
-              }).toList(),
+              children:
+                  painTypes.map((type) {
+                    return SizedBox(
+                      width: cardWidth,
+                      child: _buildPainTypeCard(type),
+                    );
+                  }).toList(),
             );
           },
         ),
@@ -554,65 +523,55 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
     return Semantics(
       button: true,
       selected: selected,
-      label: type.label,
+      label: localizedPainType(context.l10n, type.value),
       child: Card(
         margin: EdgeInsets.zero,
         elevation: selected ? 6 : 2,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: _isSaving
-              ? null
-              : () {
-                  setState(() {
-                    _selectedPainType = type.value;
-                  });
-                },
+          onTap:
+              _isSaving
+                  ? null
+                  : () {
+                    setState(() {
+                      _selectedPainType = type.value;
+                    });
+                  },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            constraints: const BoxConstraints(
-              minHeight: 165,
-            ),
+            constraints: const BoxConstraints(minHeight: 165),
             padding: const EdgeInsets.all(17),
             decoration: BoxDecoration(
-              color: type.colour.withValues(
-                alpha: selected ? 0.18 : 0.07,
-              ),
+              color: type.colour.withValues(alpha: selected ? 0.18 : 0.07),
               border: Border.all(
-                color: selected
-                    ? type.colour
-                    : type.colour.withValues(alpha: 0.24),
+                color:
+                    selected
+                        ? type.colour
+                        : type.colour.withValues(alpha: 0.24),
                 width: selected ? 3 : 1,
               ),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
               children: [
-                Icon(
-                  type.icon,
-                  size: 42,
-                  color: type.colour,
-                ),
+                Icon(type.icon, size: 42, color: type.colour),
                 const SizedBox(height: 9),
                 Text(
-                  type.label,
+                  localizedPainType(context.l10n, type.value),
                   textAlign: TextAlign.center,
-                  style:
-                      Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  type.description,
+                  localizedPainTypeDescription(context.l10n, type.value),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 if (selected) ...[
                   const SizedBox(height: 7),
-                  Icon(
-                    Icons.check_circle_rounded,
-                    color: type.colour,
-                  ),
+                  Icon(Icons.check_circle_rounded, color: type.colour),
                 ],
               ],
             ),
@@ -636,17 +595,16 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
       children: [
         _buildStepIntroduction(
           icon: Icons.fact_check_rounded,
-          title: 'Check Your Body Check',
-          message:
-              'Make sure this shows how you feel before telling staff.',
+          title: context.l10n.checkYourBodyCheck,
+          message: context.l10n.reviewBodyCheckMessage,
           colour: Colors.green,
         ),
         const SizedBox(height: 20),
         _buildReviewItem(
           icon: Icons.location_on_rounded,
           colour: Colors.blue,
-          label: 'Where?',
-          value: _selectedBodyPart!,
+          label: context.l10n.bodyCheckWhere,
+          value: localizedBodyPart(context.l10n, _selectedBodyPart!),
           onEdit: () {
             setState(() {
               _currentStep = 0;
@@ -657,8 +615,8 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
         _buildReviewItem(
           icon: pain.icon,
           colour: pain.colour,
-          label: 'How much?',
-          value: pain.label,
+          label: context.l10n.bodyCheckHowMuch,
+          value: localizedPainLevel(context.l10n, pain.level),
           onEdit: () {
             setState(() {
               _currentStep = 1;
@@ -669,8 +627,8 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
         _buildReviewItem(
           icon: type.icon,
           colour: type.colour,
-          label: 'What feeling?',
-          value: type.label,
+          label: context.l10n.bodyCheckWhatFeeling,
+          value: localizedPainType(context.l10n, type.value),
           onEdit: () {
             setState(() {
               _currentStep = 2;
@@ -683,22 +641,20 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
           decoration: BoxDecoration(
             color: Colors.orange.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.orange.withValues(alpha: 0.4),
-            ),
+            border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
           ),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.record_voice_over_rounded,
                 color: Colors.orange,
                 size: 34,
               ),
-              SizedBox(width: 13),
+              const SizedBox(width: 13),
               Expanded(
                 child: Text(
-                  'If you need help now, please tell an adult as well as sending this Body Check.',
-                  style: TextStyle(
+                  context.l10n.tellAdultBodyCheck,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -733,13 +689,10 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
         title: Text(label),
         subtitle: Text(
           value,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         trailing: IconButton(
-          tooltip: 'Change $label',
+          tooltip: context.l10n.changeBodyCheckAnswer(label),
           onPressed: onEdit,
           icon: const Icon(Icons.edit_rounded),
         ),
@@ -766,11 +719,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                 color: colour.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(
-                icon,
-                size: 36,
-                color: colour,
-              ),
+              child: Icon(icon, size: 36, color: colour),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -779,16 +728,12 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                 children: [
                   Text(
                     title,
-                    style:
-                        Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 5),
-                  Text(
-                    message,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+                  Text(message, style: Theme.of(context).textTheme.bodyLarge),
                 ],
               ),
             ),
@@ -825,7 +770,7 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                     child: OutlinedButton.icon(
                       onPressed: _isSaving ? null : _goBack,
                       icon: const Icon(Icons.arrow_back_rounded),
-                      label: const Text('Back'),
+                      label: Text(context.l10n.back),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -834,34 +779,35 @@ class _BodyCheckPageState extends State<BodyCheckPage> {
                   flex: 2,
                   child: FilledButton.icon(
                     style: FilledButton.styleFrom(
-                      backgroundColor:
-                          isReviewStep ? Colors.green : null,
+                      backgroundColor: isReviewStep ? Colors.green : null,
                     ),
-                    onPressed: _isSaving
-                        ? null
-                        : isReviewStep
+                    onPressed:
+                        _isSaving
+                            ? null
+                            : isReviewStep
                             ? _submitReport
                             : _continue,
-                    icon: _isSaving
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
+                    icon:
+                        _isSaving
+                            ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                            : Icon(
+                              isReviewStep
+                                  ? Icons.send_rounded
+                                  : Icons.arrow_forward_rounded,
                             ),
-                          )
-                        : Icon(
-                            isReviewStep
-                                ? Icons.send_rounded
-                                : Icons.arrow_forward_rounded,
-                          ),
                     label: Text(
                       _isSaving
-                          ? 'Sending...'
+                          ? context.l10n.sending
                           : isReviewStep
-                              ? 'Tell Staff'
-                              : 'Continue',
+                          ? context.l10n.tellStaff
+                          : context.l10n.continueButton,
                     ),
                   ),
                 ),

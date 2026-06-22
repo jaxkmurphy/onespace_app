@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/classroom.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
 
 class ClassroomDetailsPage extends StatefulWidget {
   final String schoolId;
@@ -45,9 +46,9 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
       if (!mounted) return;
 
       if (classroom == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Classroom not found')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.classroomNotFound)));
         Navigator.pop(context);
         return;
       }
@@ -68,7 +69,7 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading classroom: $e')),
+        SnackBar(content: Text(context.l10n.classroomLoadError(e.toString()))),
       );
     }
   }
@@ -92,16 +93,22 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Classroom updated')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.classroomUpdated)));
 
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(
+          content: Text(
+            e.toString().contains('classroom code is already in use')
+                ? context.l10n.classroomCodeInUse
+                : context.l10n.classroomUpdateError,
+          ),
+        ),
       );
     } finally {
       if (mounted) {
@@ -115,22 +122,21 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
   Future<void> _deleteClassroom() async {
     final shouldDelete = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Classroom'),
-        content: const Text(
-          'Are you sure you want to delete this classroom? This cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: Text(context.l10n.deleteClassroom),
+            content: Text(context.l10n.deleteClassroomConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(context.l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(context.l10n.delete),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
     );
 
     if (shouldDelete != true) return;
@@ -147,16 +153,18 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Classroom deleted')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.classroomDeleted)));
 
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting classroom: $e')),
+        SnackBar(
+          content: Text(context.l10n.classroomDeleteError(e.toString())),
+        ),
       );
     } finally {
       if (mounted) {
@@ -180,170 +188,168 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
     final classroom = _classroom;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Classroom Details'),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : classroom == null
-              ? const Center(child: Text('Classroom not found'))
+      appBar: AppBar(title: Text(context.l10n.classroomDetails)),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : classroom == null
+              ? Center(child: Text(context.l10n.classroomNotFound))
               : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 720),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(18),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const Text(
-                                  'Classroom Information',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                context.l10n.classroomInformation,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(context.l10n.classroomAccessInfo),
+
+                              const SizedBox(height: 22),
+
+                              TextFormField(
+                                controller: _nameController,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.classroomName,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(
+                                    Icons.meeting_room_outlined,
                                   ),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return context.l10n.enterClassroomName;
+                                  }
+                                  return null;
+                                },
+                              ),
 
-                                const SizedBox(height: 8),
+                              const SizedBox(height: 16),
 
-                                const Text(
-                                  'These details control how staff access this classroom.',
+                              TextFormField(
+                                controller: _codeController,
+                                textCapitalization:
+                                    TextCapitalization.characters,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.classroomCode,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.badge_outlined),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return context.l10n.enterClassroomCode;
+                                  }
 
-                                const SizedBox(height: 22),
+                                  if (value.trim().length < 3) {
+                                    return context.l10n.classroomCodeMinLength;
+                                  }
 
-                                TextFormField(
-                                  controller: _nameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Classroom Name',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon:
-                                        Icon(Icons.meeting_room_outlined),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Enter a classroom name';
-                                    }
-                                    return null;
-                                  },
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                context.l10n.classroomCodeChangeInfo,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              TextFormField(
+                                controller: _pinController,
+                                obscureText: true,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.classroomPin,
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.lock_outline),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return context.l10n.enterClassroomPin;
+                                  }
 
-                                const SizedBox(height: 16),
+                                  if (value.trim().length < 4) {
+                                    return context.l10n.classroomPinMinLength;
+                                  }
 
-                                TextFormField(
-                                  controller: _codeController,
-                                  textCapitalization:
-                                      TextCapitalization.characters,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Classroom Code',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.badge_outlined),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Enter a classroom code';
-                                    }
+                                  return null;
+                                },
+                              ),
 
-                                    if (value.trim().length < 3) {
-                                      return 'Classroom code should be at least 3 characters';
-                                    }
+                              const SizedBox(height: 16),
 
-                                    return null;
-                                  },
+                              SwitchListTile(
+                                value: _active,
+                                title: Text(context.l10n.classroomActive),
+                                subtitle: Text(
+                                  context.l10n.classroomInactiveInfo,
                                 ),
-
-                                const SizedBox(height: 8),
-
-                                const Text(
-                                  'Changing this code will change what staff enter on the Classroom Login screen.',
-                                  style: TextStyle(fontSize: 13),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                TextFormField(
-                                  controller: _pinController,
-                                  obscureText: true,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Classroom PIN',
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.lock_outline),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Enter a classroom PIN';
-                                    }
-
-                                    if (value.trim().length < 4) {
-                                      return 'PIN should be at least 4 digits';
-                                    }
-
-                                    return null;
-                                  },
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                SwitchListTile(
-                                  value: _active,
-                                  title: const Text('Classroom Active'),
-                                  subtitle: const Text(
-                                    'If disabled, classroom login will be blocked for this classroom.',
-                                  ),
-                                  onChanged: _isSaving
-                                      ? null
-                                      : (value) {
+                                onChanged:
+                                    _isSaving
+                                        ? null
+                                        : (value) {
                                           setState(() {
                                             _active = value;
                                           });
                                         },
-                                ),
+                              ),
 
-                                const SizedBox(height: 24),
+                              const SizedBox(height: 24),
 
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    icon: _isSaving
-                                        ? const SizedBox(
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  icon:
+                                      _isSaving
+                                          ? const SizedBox(
                                             width: 18,
                                             height: 18,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2,
                                             ),
                                           )
-                                        : const Icon(Icons.save),
-                                    label: Text(
-                                      _isSaving
-                                          ? 'Saving...'
-                                          : 'Save Classroom',
-                                    ),
-                                    onPressed:
-                                        _isSaving ? null : _saveClassroom,
+                                          : const Icon(Icons.save),
+                                  label: Text(
+                                    _isSaving
+                                        ? context.l10n.saving
+                                        : context.l10n.saveClassroom,
                                   ),
+                                  onPressed: _isSaving ? null : _saveClassroom,
                                 ),
+                              ),
 
-                                const SizedBox(height: 12),
+                              const SizedBox(height: 12),
 
-                                OutlinedButton.icon(
-                                  icon: const Icon(Icons.delete_outline),
-                                  label: const Text('Delete Classroom'),
-                                  onPressed:
-                                      _isSaving ? null : _deleteClassroom,
-                                ),
-                              ],
-                            ),
+                              OutlinedButton.icon(
+                                icon: const Icon(Icons.delete_outline),
+                                label: Text(context.l10n.deleteClassroom),
+                                onPressed: _isSaving ? null : _deleteClassroom,
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
+              ),
     );
   }
 }

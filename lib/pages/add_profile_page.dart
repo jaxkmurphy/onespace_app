@@ -5,6 +5,7 @@ import '../models/child_profile.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import '../widgets/icon_sequence_picker.dart';
+import '../l10n/l10n.dart';
 
 class AddProfilePage extends StatefulWidget {
   final String? schoolId;
@@ -87,45 +88,38 @@ class _AddProfilePageState extends State<AddProfilePage> {
           id: '',
           name: name,
           role: role,
-          teacherUid: _isClassroomMode
-              ? session.requireClassroomId
-              : FirebaseAuth.instance.currentUser!.uid,
+          teacherUid:
+              _isClassroomMode
+                  ? session.requireClassroomId
+                  : FirebaseAuth.instance.currentUser!.uid,
         );
 
         await firestoreService.addCurrentStaffProfile(profile);
       } else {
         if (childIconSequence.length != 3) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please choose a 3-icon unlock sequence'),
-            ),
+            SnackBar(content: Text(context.l10n.chooseUnlockSequence)),
           );
           return;
         }
 
         if (!confirmingChildSequence) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please confirm the child unlock sequence'),
-            ),
+            SnackBar(content: Text(context.l10n.confirmChildUnlockPrompt)),
           );
           return;
         }
 
         if (childIconSequenceConfirm.length != 3) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please tap the same 3 icons again to confirm'),
-            ),
+            SnackBar(content: Text(context.l10n.confirmThreeIconsPrompt)),
           );
           return;
         }
 
         if (!_matches(childIconSequence, childIconSequenceConfirm)) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sequences did not match. Please try again.'),
-            ),
+            SnackBar(content: Text(context.l10n.sequencesDoNotMatch)),
           );
           _restartChildSequenceSetup();
           return;
@@ -137,9 +131,10 @@ class _AddProfilePageState extends State<AddProfilePage> {
           id: '',
           name: name,
           age: age,
-          teacherUid: _isClassroomMode
-              ? session.requireClassroomId
-              : FirebaseAuth.instance.currentUser!.uid,
+          teacherUid:
+              _isClassroomMode
+                  ? session.requireClassroomId
+                  : FirebaseAuth.instance.currentUser!.uid,
           zone: null,
           accessMode: 'iconSequence',
           iconSequence: childIconSequence,
@@ -154,11 +149,11 @@ class _AddProfilePageState extends State<AddProfilePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Success'),
-            content: Text('Profile "$name" created successfully.'),
+            title: Text(context.l10n.success),
+            content: Text(context.l10n.profileCreated(name)),
             actions: [
               TextButton(
-                child: const Text('OK'),
+                child: Text(context.l10n.ok),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -172,7 +167,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving profile: $e')),
+        SnackBar(content: Text(context.l10n.profileSaveError(e.toString()))),
       );
     }
   }
@@ -192,7 +187,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isStaff ? 'Add Staff Profile' : 'Add Child Profile'),
+        title: Text(
+          isStaff ? context.l10n.addStaffProfile : context.l10n.addChildProfile,
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -211,9 +208,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         child: ListTile(
                           leading: const Icon(Icons.meeting_room_outlined),
                           title: Text(classroomName),
-                          subtitle: const Text(
-                            'New profiles will be saved to this classroom.',
-                          ),
+                          subtitle: Text(context.l10n.profilesSavedToClassroom),
                         ),
                       ),
                       const SizedBox(height: 18),
@@ -233,9 +228,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
                               width: 78,
                               height: 78,
                               decoration: BoxDecoration(
-                                color: isStaff
-                                    ? colourScheme.primaryContainer
-                                    : const Color(0xFF26A69A).withOpacity(0.18),
+                                color:
+                                    isStaff
+                                        ? colourScheme.primaryContainer
+                                        : const Color(
+                                          0xFF26A69A,
+                                        ).withValues(alpha: 0.18),
                                 borderRadius: BorderRadius.circular(26),
                               ),
                               child: Icon(
@@ -243,27 +241,26 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                     ? Icons.person_add_alt_1_rounded
                                     : Icons.child_care_rounded,
                                 size: 44,
-                                color: isStaff
-                                    ? colourScheme.onPrimaryContainer
-                                    : const Color(0xFF26A69A),
+                                color:
+                                    isStaff
+                                        ? colourScheme.onPrimaryContainer
+                                        : const Color(0xFF26A69A),
                               ),
                             ),
                             const SizedBox(height: 14),
                             Text(
                               isStaff
-                                  ? 'Create a staff profile'
-                                  : 'Create a child profile',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
+                                  ? context.l10n.createStaffProfile
+                                  : context.l10n.createChildProfile,
+                              style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 6),
                             Text(
                               isStaff
-                                  ? 'Staff profiles use the account or classroom PIN for access.'
-                                  : 'Child profiles can use a simple 3-icon unlock sequence.',
+                                  ? context.l10n.staffProfileAccessInfo
+                                  : context.l10n.childProfileAccessInfo,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
                             ),
@@ -284,7 +281,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                           children: [
                             Expanded(
                               child: _ProfileTypeButton(
-                                label: 'Staff',
+                                label: context.l10n.staffLabel,
                                 icon: Icons.person,
                                 selected: isStaff,
                                 color: colourScheme.primary,
@@ -298,7 +295,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: _ProfileTypeButton(
-                                label: 'Child',
+                                label: context.l10n.childLabel,
                                 icon: Icons.child_care,
                                 selected: !isStaff,
                                 color: const Color(0xFF26A69A),
@@ -327,23 +324,23 @@ class _AddProfilePageState extends State<AddProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              isStaff ? 'Staff Details' : 'Child Details',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
+                              isStaff
+                                  ? context.l10n.staffDetails
+                                  : context.l10n.childDetails,
+                              style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: nameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Name',
-                                prefixIcon: Icon(Icons.badge_outlined),
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: context.l10n.nameLabel,
+                                prefixIcon: const Icon(Icons.badge_outlined),
+                                border: const OutlineInputBorder(),
                               ),
                               validator: (val) {
                                 if (val == null || val.trim().isEmpty) {
-                                  return 'Name is required';
+                                  return context.l10n.nameRequired;
                                 }
                                 return null;
                               },
@@ -352,14 +349,14 @@ class _AddProfilePageState extends State<AddProfilePage> {
                             if (isStaff)
                               TextFormField(
                                 controller: roleController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Role',
-                                  prefixIcon: Icon(Icons.work_outline),
-                                  border: OutlineInputBorder(),
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.role,
+                                  prefixIcon: const Icon(Icons.work_outline),
+                                  border: const OutlineInputBorder(),
                                 ),
                                 validator: (val) {
                                   if (val == null || val.trim().isEmpty) {
-                                    return 'Role is required';
+                                    return context.l10n.roleRequired;
                                   }
                                   return null;
                                 },
@@ -367,19 +364,19 @@ class _AddProfilePageState extends State<AddProfilePage> {
                             if (!isStaff) ...[
                               TextFormField(
                                 controller: ageController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Age',
-                                  prefixIcon: Icon(Icons.cake_outlined),
-                                  border: OutlineInputBorder(),
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.age,
+                                  prefixIcon: const Icon(Icons.cake_outlined),
+                                  border: const OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
                                 validator: (val) {
                                   if (val == null || val.trim().isEmpty) {
-                                    return 'Age is required';
+                                    return context.l10n.ageRequired;
                                   }
 
                                   if (int.tryParse(val.trim()) == null) {
-                                    return 'Age must be a number';
+                                    return context.l10n.ageNumberRequired;
                                   }
 
                                   return null;
@@ -389,8 +386,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
                               Container(
                                 padding: const EdgeInsets.all(18),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF26A69A)
-                                      .withOpacity(0.10),
+                                  color: const Color(
+                                    0xFF26A69A,
+                                  ).withValues(alpha: 0.10),
                                   borderRadius: BorderRadius.circular(22),
                                 ),
                                 child: Column(
@@ -407,14 +405,15 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                         Expanded(
                                           child: Text(
                                             confirmingChildSequence
-                                                ? 'Confirm Child Unlock Sequence'
-                                                : 'Set Child Unlock Sequence',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                ? context
+                                                    .l10n
+                                                    .confirmChildUnlock
+                                                : context.l10n.setChildUnlock,
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -422,8 +421,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                     const SizedBox(height: 8),
                                     Text(
                                       confirmingChildSequence
-                                          ? 'Tap the same 3 icons again to confirm.'
-                                          : 'Ask the child to pick 3 icons in order.',
+                                          ? context.l10n.tapSameIconsConfirm
+                                          : context.l10n.askChildPickIcons,
                                     ),
                                     const SizedBox(height: 14),
                                     IconSequencePicker(
@@ -434,8 +433,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                           childIconSequenceConfirm =
                                               List<String>.from(sequence);
                                         } else {
-                                          childIconSequence =
-                                              List<String>.from(sequence);
+                                          childIconSequence = List<String>.from(
+                                            sequence,
+                                          );
                                         }
                                       },
                                     ),
@@ -445,21 +445,23 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                       runSpacing: 10,
                                       children: [
                                         OutlinedButton.icon(
-                                          onPressed:
-                                              _restartChildSequenceSetup,
+                                          onPressed: _restartChildSequenceSetup,
                                           icon: const Icon(Icons.refresh),
-                                          label: const Text('Start Over'),
+                                          label: Text(context.l10n.startOver),
                                         ),
                                         if (!confirmingChildSequence)
                                           ElevatedButton.icon(
                                             onPressed: () {
                                               if (childIconSequence.length !=
                                                   3) {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
                                                     content: Text(
-                                                      'Please choose 3 icons first',
+                                                      context
+                                                          .l10n
+                                                          .chooseThreeIconsFirst,
                                                     ),
                                                   ),
                                                 );
@@ -475,7 +477,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                                             icon: const Icon(
                                               Icons.arrow_forward,
                                             ),
-                                            label: const Text('Next'),
+                                            label: Text(context.l10n.next),
                                           ),
                                       ],
                                     ),
@@ -492,7 +494,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
                       onPressed: _saveProfile,
                       icon: const Icon(Icons.save_rounded),
                       label: Text(
-                        'Save ${isStaff ? "Staff" : "Child"} Profile',
+                        isStaff
+                            ? context.l10n.saveStaffProfile
+                            : context.l10n.saveChildProfile,
                       ),
                     ),
                   ],
@@ -524,7 +528,7 @@ class _ProfileTypeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? color.withOpacity(0.16) : Colors.transparent,
+      color: selected ? color.withValues(alpha: 0.16) : Colors.transparent,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         onTap: onTap,
@@ -549,10 +553,9 @@ class _ProfileTypeButton extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight:
-                          selected ? FontWeight.bold : FontWeight.normal,
-                      color: selected ? color : null,
-                    ),
+                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                  color: selected ? color : null,
+                ),
               ),
             ],
           ),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import '../l10n/body_check_localizations.dart';
+import '../l10n/l10n.dart';
 
-enum BodyMapView {
-  front,
-  back,
-}
+enum BodyMapView { front, back }
 
 class BodyMapSelector extends StatefulWidget {
   final String? selectedBodyPart;
@@ -154,10 +153,7 @@ class _BodyMapSelectorState extends State<BodyMapSelector> {
     return regions.where((region) => region.view == _view).toList();
   }
 
-  void _handleTap(
-    TapDownDetails details,
-    Size size,
-  ) {
+  void _handleTap(TapDownDetails details, Size size) {
     if (!widget.enabled || size.width <= 0 || size.height <= 0) {
       return;
     }
@@ -183,41 +179,37 @@ class _BodyMapSelectorState extends State<BodyMapSelector> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SegmentedButton<BodyMapView>(
-          segments: const [
+          segments: [
             ButtonSegment(
               value: BodyMapView.front,
-              icon: Icon(Icons.accessibility_new_rounded),
-              label: Text('Front'),
+              icon: const Icon(Icons.accessibility_new_rounded),
+              label: Text(context.l10n.bodyMapFront),
             ),
             ButtonSegment(
               value: BodyMapView.back,
-              icon: Icon(Icons.accessibility_rounded),
-              label: Text('Back'),
+              icon: const Icon(Icons.accessibility_rounded),
+              label: Text(context.l10n.bodyMapBack),
             ),
           ],
           selected: {_view},
-          onSelectionChanged: widget.enabled
-              ? (selection) {
-                  setState(() {
-                    _view = selection.first;
-                  });
-                }
-              : null,
+          onSelectionChanged:
+              widget.enabled
+                  ? (selection) {
+                    setState(() {
+                      _view = selection.first;
+                    });
+                  }
+                  : null,
         ),
         const SizedBox(height: 14),
         Center(
           child: Container(
-            constraints: const BoxConstraints(
-              maxWidth: 380,
-            ),
+            constraints: const BoxConstraints(maxWidth: 380),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: colourScheme.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(26),
-              border: Border.all(
-                color: colourScheme.outlineVariant,
-                width: 2,
-              ),
+              border: Border.all(color: colourScheme.outlineVariant, width: 2),
             ),
             child: AspectRatio(
               aspectRatio: 0.62,
@@ -229,24 +221,24 @@ class _BodyMapSelectorState extends State<BodyMapSelector> {
                   );
 
                   return Semantics(
-                    label:
-                        '${_view == BodyMapView.front ? "Front" : "Back"} '
-                        'body diagram. Tap where it hurts.',
+                    label: context.l10n.bodyDiagramSemantics(
+                      _view == BodyMapView.front
+                          ? context.l10n.bodyMapFront
+                          : context.l10n.bodyMapBack,
+                    ),
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTapDown: widget.enabled
-                          ? (details) => _handleTap(details, size)
-                          : null,
+                      onTapDown:
+                          widget.enabled
+                              ? (details) => _handleTap(details, size)
+                              : null,
                       child: CustomPaint(
                         painter: _BodyPainter(
                           view: _view,
-                          selectedBodyPart:
-                              widget.selectedBodyPart,
+                          selectedBodyPart: widget.selectedBodyPart,
                           regions: _visibleRegions,
-                          bodyColour:
-                              colourScheme.primaryContainer,
-                          outlineColour:
-                              colourScheme.onPrimaryContainer,
+                          bodyColour: colourScheme.primaryContainer,
+                          outlineColour: colourScheme.onPrimaryContainer,
                           highlightColour: colourScheme.error,
                         ),
                         child: const SizedBox.expand(),
@@ -261,68 +253,63 @@ class _BodyMapSelectorState extends State<BodyMapSelector> {
         const SizedBox(height: 14),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: widget.selectedBodyPart == null
-              ? Container(
-                  key: const ValueKey('nothing-selected'),
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: colourScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.touch_app_rounded),
-                      SizedBox(width: 11),
-                      Expanded(
-                        child: Text(
-                          'Tap the body where you feel sore or uncomfortable.',
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(
-                  key: ValueKey(widget.selectedBodyPart),
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: colourScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: colourScheme.error,
+          child:
+              widget.selectedBodyPart == null
+                  ? Container(
+                    key: const ValueKey('nothing-selected'),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: colourScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(18),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_rounded,
-                        color: colourScheme.error,
-                      ),
-                      const SizedBox(width: 11),
-                      Expanded(
-                        child: Text(
-                          'You selected: ${widget.selectedBodyPart}',
-                          style: TextStyle(
-                            color:
-                                colourScheme.onErrorContainer,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.touch_app_rounded),
+                        const SizedBox(width: 11),
+                        Expanded(child: Text(context.l10n.tapSoreBodyPart)),
+                      ],
+                    ),
+                  )
+                  : Container(
+                    key: ValueKey(widget.selectedBodyPart),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: colourScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: colourScheme.error),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          color: colourScheme.error,
+                        ),
+                        const SizedBox(width: 11),
+                        Expanded(
+                          child: Text(
+                            context.l10n.bodyPartSelected(
+                              localizedBodyPart(
+                                context.l10n,
+                                widget.selectedBodyPart!,
+                              ),
+                            ),
+                            style: TextStyle(
+                              color: colourScheme.onErrorContainer,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
         ),
         const SizedBox(height: 12),
         ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(
-            horizontal: 8,
-          ),
-          title: const Text(
-            'Choose from a list instead',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+          title: Text(
+            context.l10n.chooseBodyPartList,
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           leading: const Icon(Icons.list_alt_rounded),
           children: [
@@ -331,22 +318,23 @@ class _BodyMapSelectorState extends State<BodyMapSelector> {
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: _visibleRegions.map((region) {
-                  final selected =
-                      widget.selectedBodyPart == region.label;
+                children:
+                    _visibleRegions.map((region) {
+                      final selected = widget.selectedBodyPart == region.label;
 
-                  return ChoiceChip(
-                    selected: selected,
-                    label: Text(region.label),
-                    onSelected: widget.enabled
-                        ? (_) {
-                            widget.onBodyPartSelected(
-                              region.label,
-                            );
-                          }
-                        : null,
-                  );
-                }).toList(),
+                      return ChoiceChip(
+                        selected: selected,
+                        label: Text(
+                          localizedBodyPart(context.l10n, region.label),
+                        ),
+                        onSelected:
+                            widget.enabled
+                                ? (_) {
+                                  widget.onBodyPartSelected(region.label);
+                                }
+                                : null,
+                      );
+                    }).toList(),
               ),
             ),
           ],
@@ -390,26 +378,30 @@ class _BodyPainter extends CustomPainter {
     final width = size.width;
     final height = size.height;
 
-    final bodyPaint = Paint()
-      ..color = bodyColour
-      ..style = PaintingStyle.fill;
+    final bodyPaint =
+        Paint()
+          ..color = bodyColour
+          ..style = PaintingStyle.fill;
 
-    final outlinePaint = Paint()
-      ..color = outlineColour.withValues(alpha: 0.55)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5;
+    final outlinePaint =
+        Paint()
+          ..color = outlineColour.withValues(alpha: 0.55)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5;
 
-    final limbPaint = Paint()
-      ..color = bodyColour
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = width * 0.115
-      ..strokeCap = StrokeCap.round;
+    final limbPaint =
+        Paint()
+          ..color = bodyColour
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = width * 0.115
+          ..strokeCap = StrokeCap.round;
 
-    final limbOutlinePaint = Paint()
-      ..color = outlineColour.withValues(alpha: 0.45)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = (width * 0.115) + 4
-      ..strokeCap = StrokeCap.round;
+    final limbOutlinePaint =
+        Paint()
+          ..color = outlineColour.withValues(alpha: 0.45)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = (width * 0.115) + 4
+          ..strokeCap = StrokeCap.round;
 
     // Arms
     final leftShoulder = Offset(width * 0.37, height * 0.26);
@@ -458,34 +450,30 @@ class _BodyPainter extends CustomPainter {
     );
 
     // Torso
-    final torsoPath = Path()
-      ..moveTo(width * 0.37, height * 0.22)
-      ..quadraticBezierTo(
-        width * 0.50,
-        height * 0.19,
-        width * 0.63,
-        height * 0.22,
-      )
-      ..lineTo(width * 0.61, height * 0.50)
-      ..quadraticBezierTo(
-        width * 0.50,
-        height * 0.56,
-        width * 0.39,
-        height * 0.50,
-      )
-      ..close();
+    final torsoPath =
+        Path()
+          ..moveTo(width * 0.37, height * 0.22)
+          ..quadraticBezierTo(
+            width * 0.50,
+            height * 0.19,
+            width * 0.63,
+            height * 0.22,
+          )
+          ..lineTo(width * 0.61, height * 0.50)
+          ..quadraticBezierTo(
+            width * 0.50,
+            height * 0.56,
+            width * 0.39,
+            height * 0.50,
+          )
+          ..close();
 
     canvas.drawPath(torsoPath, bodyPaint);
     canvas.drawPath(torsoPath, outlinePaint);
 
     // Neck
     final neckRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        width * 0.44,
-        height * 0.15,
-        width * 0.12,
-        height * 0.10,
-      ),
+      Rect.fromLTWH(width * 0.44, height * 0.15, width * 0.12, height * 0.10),
       const Radius.circular(12),
     );
 
@@ -511,16 +499,9 @@ class _BodyPainter extends CustomPainter {
       outlinePaint,
     );
 
-    _drawBodyDetails(
-      canvas,
-      size,
-      outlinePaint,
-    );
+    _drawBodyDetails(canvas, size, outlinePaint);
 
-    _drawSelectedRegion(
-      canvas,
-      size,
-    );
+    _drawSelectedRegion(canvas, size);
   }
 
   void _drawLimb(
@@ -529,8 +510,7 @@ class _BodyPainter extends CustomPainter {
     Paint outlinePaint,
     Paint bodyPaint,
   ) {
-    final path = Path()
-      ..moveTo(points.first.dx, points.first.dy);
+    final path = Path()..moveTo(points.first.dx, points.first.dy);
 
     for (final point in points.skip(1)) {
       path.lineTo(point.dx, point.dy);
@@ -540,18 +520,15 @@ class _BodyPainter extends CustomPainter {
     canvas.drawPath(path, bodyPaint);
   }
 
-  void _drawBodyDetails(
-    Canvas canvas,
-    Size size,
-    Paint detailPaint,
-  ) {
+  void _drawBodyDetails(Canvas canvas, Size size, Paint detailPaint) {
     final width = size.width;
     final height = size.height;
 
-    final softerPaint = Paint()
-      ..color = detailPaint.color.withValues(alpha: 0.45)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+    final softerPaint =
+        Paint()
+          ..color = detailPaint.color.withValues(alpha: 0.45)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
 
     if (view == BodyMapView.front) {
       canvas.drawArc(
@@ -592,10 +569,7 @@ class _BodyPainter extends CustomPainter {
     }
   }
 
-  void _drawSelectedRegion(
-    Canvas canvas,
-    Size size,
-  ) {
+  void _drawSelectedRegion(Canvas canvas, Size size) {
     if (selectedBodyPart == null) return;
 
     _BodyRegion? selectedRegion;
@@ -616,19 +590,18 @@ class _BodyPainter extends CustomPainter {
       selectedRegion.rect.height * size.height,
     );
 
-    final highlightPaint = Paint()
-      ..color = highlightColour.withValues(alpha: 0.32)
-      ..style = PaintingStyle.fill;
+    final highlightPaint =
+        Paint()
+          ..color = highlightColour.withValues(alpha: 0.32)
+          ..style = PaintingStyle.fill;
 
-    final highlightOutline = Paint()
-      ..color = highlightColour
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+    final highlightOutline =
+        Paint()
+          ..color = highlightColour
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3;
 
-    final highlight = RRect.fromRectAndRadius(
-      rect,
-      const Radius.circular(24),
-    );
+    final highlight = RRect.fromRectAndRadius(rect, const Radius.circular(24));
 
     canvas.drawRRect(highlight, highlightPaint);
     canvas.drawRRect(highlight, highlightOutline);

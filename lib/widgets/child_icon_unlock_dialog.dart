@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/profile_unlock_icons.dart';
+import '../l10n/l10n.dart';
+import '../l10n/profile_unlock_localizations.dart';
 
 class ChildIconUnlockDialog extends StatefulWidget {
   final List<String> correctSequence;
@@ -38,7 +40,7 @@ class _ChildIconUnlockDialogState extends State<ChildIconUnlockDialog> {
             enteredSequence.clear();
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Wrong sequence, try again')),
+            SnackBar(content: Text(context.l10n.wrongIconSequence)),
           );
         }
       });
@@ -62,43 +64,51 @@ class _ChildIconUnlockDialogState extends State<ChildIconUnlockDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Unlock ${widget.childName}'),
+      title: Text(context.l10n.unlockChild(widget.childName)),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Tap your 3 pictures in order'),
+            Text(context.l10n.tapPicturesInOrder),
             const SizedBox(height: 12),
-            Text('Entered: ${enteredSequence.length}/${widget.correctSequence.length}'),
+            Text(
+              context.l10n.enteredCount(
+                enteredSequence.length,
+                widget.correctSequence.length,
+              ),
+            ),
             const SizedBox(height: 16),
             Wrap(
               spacing: 12,
               runSpacing: 12,
-              children: profileUnlockIcons.map((option) {
-                return ElevatedButton(
-                  onPressed: () => _handleTap(option.keyName),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(option.icon, size: 32),
-                      const SizedBox(height: 4),
-                      Text(option.label),
-                    ],
-                  ),
-                );
-              }).toList(),
+              children:
+                  profileUnlockIcons.map((option) {
+                    return ElevatedButton(
+                      onPressed: () => _handleTap(option.keyName),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(option.icon, size: 32),
+                          const SizedBox(height: 4),
+                          Text(
+                            localizedProfileUnlockIcon(
+                              context.l10n,
+                              option.keyName,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: _clear,
-          child: const Text('Clear'),
-        ),
+        TextButton(onPressed: _clear, child: Text(context.l10n.clear)),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
       ],
     );

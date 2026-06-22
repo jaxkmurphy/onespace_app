@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/profile_unlock_icons.dart';
+import '../l10n/l10n.dart';
+import '../l10n/profile_unlock_localizations.dart';
 
 class IconSequencePicker extends StatefulWidget {
   final void Function(List<String>) onChanged;
@@ -58,7 +60,9 @@ class _IconSequencePickerState extends State<IconSequencePicker> {
 
   String _labelFor(String keyName) {
     for (final icon in profileUnlockIcons) {
-      if (icon.keyName == keyName) return icon.label;
+      if (icon.keyName == keyName) {
+        return localizedProfileUnlockIcon(context.l10n, keyName);
+      }
     }
     return keyName;
   }
@@ -71,34 +75,47 @@ class _IconSequencePickerState extends State<IconSequencePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          selected.isEmpty ? 'Selected: None' : 'Selected: $selectedLabels',
+          selected.isEmpty
+              ? context.l10n.selectedNone
+              : context.l10n.selectedIcons(selectedLabels),
         ),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12,
           runSpacing: 12,
-          children: profileUnlockIcons.map((option) {
-            return ElevatedButton(
-              onPressed: () => _selectIcon(option.keyName),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(option.icon, size: 32),
-                  const SizedBox(height: 4),
-                  Text(option.label),
-                ],
-              ),
-            );
-          }).toList(),
+          children:
+              profileUnlockIcons.map((option) {
+                return ElevatedButton(
+                  onPressed: () => _selectIcon(option.keyName),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(option.icon, size: 32),
+                      const SizedBox(height: 4),
+                      Text(
+                        localizedProfileUnlockIcon(
+                          context.l10n,
+                          option.keyName,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Text('${selected.length}/${widget.requiredLength} selected'),
+            Text(
+              context.l10n.selectedCount(
+                selected.length,
+                widget.requiredLength,
+              ),
+            ),
             const SizedBox(width: 12),
             TextButton(
               onPressed: _clearSelection,
-              child: const Text('Clear'),
+              child: Text(context.l10n.clear),
             ),
           ],
         ),

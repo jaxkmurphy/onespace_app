@@ -46,7 +46,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get delete => 'Scrios';
 
   @override
-  String get edit => 'Cuir in Eagar';
+  String get edit => 'Cuir in eagar';
 
   @override
   String get add => 'Cuir Leis';
@@ -64,13 +64,13 @@ class AppLocalizationsGa extends AppLocalizations {
   String get retry => 'Bain Triail Eile As';
 
   @override
-  String get loading => 'Á Lódáil...';
+  String get loading => 'Á lódáil...';
 
   @override
   String get error => 'Chuaigh rud éigin mícheart';
 
   @override
-  String get all => 'Uile';
+  String get all => 'Gach Ceann';
 
   @override
   String get everyone => 'Gach Duine';
@@ -270,7 +270,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get resetToCurrentTime => 'Athshocraigh go dtí an t-am reatha';
 
   @override
-  String get description => 'Cur Síos';
+  String get description => 'Cur síos';
 
   @override
   String get actionTaken => 'Gníomh a Rinneadh';
@@ -616,7 +616,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get fun => 'Spraoi';
 
   @override
-  String get selectedChildren => 'Páistí Roghnaithe';
+  String get selectedChildren => 'Páistí roghnaithe';
 
   @override
   String get availableToEveryone => 'Ar Fáil do Gach Duine';
@@ -1636,7 +1636,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get replaceExistingSchedule => 'Ionadaigh an Sceideal Reatha?';
 
   @override
-  String dayExistingActivityCount(num count, Object day) {
+  String dayExistingActivityCount(Object day, num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -1746,4 +1746,1677 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get activityTypeOther => 'Eile';
+
+  @override
+  String get schoolName => 'Ainm na Scoile';
+
+  @override
+  String get schoolNameHint => 'Sampla: Bunscoil Mhuire';
+
+  @override
+  String get schoolCode => 'Cód Scoile';
+
+  @override
+  String get schoolCodeHint => 'Sampla: STM123';
+
+  @override
+  String get adminEmail => 'Ríomhphost an Riarthóra';
+
+  @override
+  String get password => 'Focal Faire';
+
+  @override
+  String get pleaseWait => 'Fan go fóill...';
+
+  @override
+  String get createSchoolAdminAccount => 'Cruthaigh Cuntas Riarthóra Scoile';
+
+  @override
+  String get adminLogin => 'Logáil Isteach mar Riarthóir';
+
+  @override
+  String get existingAdminLogin =>
+      'An bhfuil cuntas riarthóra agat? Logáil isteach';
+
+  @override
+  String get registerSchoolPrompt => 'Gan cuntas riarthóra? Cláraigh scoil';
+
+  @override
+  String get classroomCode => 'Cód Seomra Ranga';
+
+  @override
+  String get classroomCodeHint => 'Sampla: ASD1';
+
+  @override
+  String get classroomPin => 'PIN an tSeomra Ranga';
+
+  @override
+  String get checking => 'Á sheiceáil...';
+
+  @override
+  String get enterClassroom => 'Téigh Isteach sa Seomra Ranga';
+
+  @override
+  String get createSchoolAdminIntro => 'Cruthaigh cuntas riarthóra scoile';
+
+  @override
+  String get adminLoginIntro => 'Logáil isteach mar riarthóir';
+
+  @override
+  String get classroomLoginIntro => 'Logáil isteach sa seomra ranga';
+
+  @override
+  String get admin => 'Riarthóir';
+
+  @override
+  String get classroom => 'Seomra Ranga';
+
+  @override
+  String get enterSchoolDetails => 'Cuir ainm scoile agus cód scoile isteach.';
+
+  @override
+  String get adminAccountCreateFailed =>
+      'Níorbh fhéidir cuntas riarthóra a chruthú.';
+
+  @override
+  String get loginFailed => 'Níorbh fhéidir logáil isteach.';
+
+  @override
+  String get enterClassroomDetails =>
+      'Cuir cód scoile, cód seomra ranga agus PIN isteach.';
+
+  @override
+  String get classroomLoginIncorrect =>
+      'Tá sonraí logála isteach an tseomra ranga mícheart.';
+
+  @override
+  String get checkLoginFields => 'Seiceáil na réimsí logála isteach go léir.';
+
+  @override
+  String get adminLoginIncorrect =>
+      'Tá ríomhphost nó focal faire an riarthóra mícheart.';
+
+  @override
+  String get logout => 'Logáil Amach';
+
+  @override
+  String get logoutConfirmation =>
+      'An bhfuil tú cinnte gur mhaith leat logáil amach?';
+
+  @override
+  String get accessDeniedIncorrectPin => 'Diúltaíodh rochtain: PIN mícheart';
+
+  @override
+  String get staffProfileDeleted => 'Scriosadh próifíl na foirne';
+
+  @override
+  String get childProfileDeleted => 'Scriosadh próifíl an pháiste';
+
+  @override
+  String staffProfileDeleteFailed(Object error) {
+    return 'Níorbh fhéidir próifíl na foirne a scriosadh: $error';
+  }
+
+  @override
+  String childProfileDeleteFailed(Object error) {
+    return 'Níorbh fhéidir próifíl an pháiste a scriosadh: $error';
+  }
+
+  @override
+  String get chooseProfile => 'Roghnaigh próifíl chun leanúint ar aghaidh';
+
+  @override
+  String get staffProfiles => 'Próifílí Foirne';
+
+  @override
+  String get childProfiles => 'Próifílí Páistí';
+
+  @override
+  String get staffProfile => 'Próifíl foirne';
+
+  @override
+  String get noChildProfilesShort => 'Níor aimsíodh próifílí páistí';
+
+  @override
+  String ageValue(Object age) {
+    return 'Aois: $age';
+  }
+
+  @override
+  String get adminActions => 'Gníomhartha Riaracháin';
+
+  @override
+  String get addProfile => 'Cuir Próifíl Leis';
+
+  @override
+  String get createProfilesIntro => 'Cruthaigh próifílí foirne nó páistí';
+
+  @override
+  String get appSettings => 'Socruithe Aipe';
+
+  @override
+  String get accountSettings => 'Socruithe Cuntais';
+
+  @override
+  String get languageAppOptions => 'Teanga agus roghanna aipe';
+
+  @override
+  String get managePinAccountOptions => 'Bainistigh PIN agus roghanna cuntais';
+
+  @override
+  String staffLoadError(Object error) {
+    return 'Earráid agus an fhoireann á lódáil: $error';
+  }
+
+  @override
+  String childrenLoadError(Object error) {
+    return 'Earráid agus páistí á lódáil: $error';
+  }
+
+  @override
+  String get deleteProfile => 'Scrios próifíl';
+
+  @override
+  String get enterPin => 'Cuir PIN isteach';
+
+  @override
+  String get pin => 'PIN';
+
+  @override
+  String get incorrectPin => 'PIN mícheart';
+
+  @override
+  String get submit => 'Cuir isteach';
+
+  @override
+  String get clear => 'Glan';
+
+  @override
+  String get next => 'Ar Aghaidh';
+
+  @override
+  String get startOver => 'Tosaigh Arís';
+
+  @override
+  String get success => 'D\'éirigh leis';
+
+  @override
+  String get ok => 'Ceart go leor';
+
+  @override
+  String get role => 'Ról';
+
+  @override
+  String get age => 'Aois';
+
+  @override
+  String get nameRequired => 'Tá ainm riachtanach';
+
+  @override
+  String get roleRequired => 'Tá ról riachtanach';
+
+  @override
+  String get ageRequired => 'Tá aois riachtanach';
+
+  @override
+  String get ageNumberRequired => 'Caithfidh an aois a bheith ina huimhir';
+
+  @override
+  String get addStaffProfile => 'Cuir Próifíl Foirne Leis';
+
+  @override
+  String get addChildProfile => 'Cuir Próifíl Páiste Leis';
+
+  @override
+  String get profilesSavedToClassroom =>
+      'Sábhálfar próifílí nua sa seomra ranga seo.';
+
+  @override
+  String get createStaffProfile => 'Cruthaigh próifíl foirne';
+
+  @override
+  String get createChildProfile => 'Cruthaigh próifíl páiste';
+
+  @override
+  String get staffProfileAccessInfo =>
+      'Úsáideann próifílí foirne PIN an chuntais nó an tseomra ranga chun rochtain a fháil.';
+
+  @override
+  String get childProfileAccessInfo =>
+      'Is féidir le próifílí páistí seicheamh simplí 3 dheilbhín a úsáid.';
+
+  @override
+  String get staffDetails => 'Sonraí Foirne';
+
+  @override
+  String get childDetails => 'Sonraí an Pháiste';
+
+  @override
+  String get confirmChildUnlock => 'Deimhnigh Seicheamh Díghlasála an Pháiste';
+
+  @override
+  String get setChildUnlock => 'Socraigh Seicheamh Díghlasála an Pháiste';
+
+  @override
+  String get tapSameIconsConfirm =>
+      'Tapáil na 3 dheilbhín chéanna arís lena ndeimhniú.';
+
+  @override
+  String get askChildPickIcons =>
+      'Iarr ar an bpáiste 3 dheilbhín a roghnú in ord.';
+
+  @override
+  String get chooseThreeIconsFirst => 'Roghnaigh 3 dheilbhín ar dtús';
+
+  @override
+  String get chooseUnlockSequence =>
+      'Roghnaigh seicheamh díghlasála 3 dheilbhín';
+
+  @override
+  String get confirmChildUnlockPrompt =>
+      'Deimhnigh seicheamh díghlasála an pháiste';
+
+  @override
+  String get confirmThreeIconsPrompt =>
+      'Tapáil na 3 dheilbhín chéanna arís lena ndeimhniú';
+
+  @override
+  String get sequencesDoNotMatch =>
+      'Níor mheaitseáil na seichimh. Bain triail eile as.';
+
+  @override
+  String profileCreated(Object name) {
+    return 'Cruthaíodh próifíl \"$name\" go rathúil.';
+  }
+
+  @override
+  String profileSaveError(Object error) {
+    return 'Earráid agus an phróifíl á sábháil: $error';
+  }
+
+  @override
+  String get saveStaffProfile => 'Sábháil Próifíl Foirne';
+
+  @override
+  String get saveChildProfile => 'Sábháil Próifíl Páiste';
+
+  @override
+  String get selectedNone => 'Roghnaithe: Dada';
+
+  @override
+  String selectedIcons(Object icons) {
+    return 'Roghnaithe: $icons';
+  }
+
+  @override
+  String selectedCount(Object selected, Object required) {
+    return '$selected/$required roghnaithe';
+  }
+
+  @override
+  String get wrongIconSequence => 'Seicheamh mícheart, bain triail eile as';
+
+  @override
+  String unlockChild(Object childName) {
+    return 'Díghlasáil $childName';
+  }
+
+  @override
+  String get tapPicturesInOrder => 'Tapáil do 3 phictiúr in ord';
+
+  @override
+  String enteredCount(Object entered, Object required) {
+    return 'Curtha isteach: $entered/$required';
+  }
+
+  @override
+  String resetUnlockForChild(Object childName) {
+    return 'Athshocraigh díghlasáil do $childName';
+  }
+
+  @override
+  String get chooseIconsInOrder => 'Roghnaigh 3 dheilbhín in ord';
+
+  @override
+  String get confirmIconSequence => 'Deimhnigh an seicheamh 3 dheilbhín';
+
+  @override
+  String get iconSequencesDoNotMatch =>
+      'Níor mheaitseáil na seichimh. Bain triail eile as.';
+
+  @override
+  String get iconStar => 'Réalta';
+
+  @override
+  String get iconCar => 'Carr';
+
+  @override
+  String get iconDog => 'Madra';
+
+  @override
+  String get iconApple => 'Úll';
+
+  @override
+  String get iconBall => 'Liathróid';
+
+  @override
+  String get iconMusic => 'Ceol';
+
+  @override
+  String get iconSun => 'Grian';
+
+  @override
+  String get iconHeart => 'Croí';
+
+  @override
+  String schoolAdminTitle(Object schoolName) {
+    return 'Riarthóir $schoolName';
+  }
+
+  @override
+  String get schoolSettings => 'Socruithe Scoile';
+
+  @override
+  String schoolCodeValue(Object code) {
+    return 'Cód Scoile: $code';
+  }
+
+  @override
+  String classroomsUsed(Object used, Object limit) {
+    return 'Seomraí Ranga Úsáidte: $used / $limit';
+  }
+
+  @override
+  String statusValue(Object status) {
+    return 'Stádas: $status';
+  }
+
+  @override
+  String get active => 'Gníomhach';
+
+  @override
+  String get inactive => 'Neamhghníomhach';
+
+  @override
+  String classroomsLoadError(Object error) {
+    return 'Earráid agus seomraí ranga á lódáil: $error';
+  }
+
+  @override
+  String get noClassroomsYet =>
+      'Níl aon seomra ranga ann fós.\nTapáil + Cuir Seomra Ranga Leis chun ceann a chruthú.';
+
+  @override
+  String classroomListSummary(Object code, Object active) {
+    return 'Cód: $code • Gníomhach: $active';
+  }
+
+  @override
+  String get yes => 'Tá';
+
+  @override
+  String get no => 'Níl';
+
+  @override
+  String get addClassroom => 'Cuir Seomra Ranga Leis';
+
+  @override
+  String get classroomCreated => 'Cruthaíodh an seomra ranga';
+
+  @override
+  String classroomCreateError(Object error) {
+    return 'Earráid agus an seomra ranga á chruthú: $error';
+  }
+
+  @override
+  String get createClassroom => 'Cruthaigh Seomra Ranga';
+
+  @override
+  String get classroomDetails => 'Sonraí an tSeomra Ranga';
+
+  @override
+  String get classroomName => 'Ainm an tSeomra Ranga';
+
+  @override
+  String get classroomNameHint => 'Sampla: Aonad ASD 1';
+
+  @override
+  String get enterClassroomName => 'Cuir ainm seomra ranga isteach';
+
+  @override
+  String get enterClassroomCode => 'Cuir cód seomra ranga isteach';
+
+  @override
+  String get classroomCodeMinLength =>
+      'Caithfidh 3 charachtar ar a laghad a bheith sa chód seomra ranga';
+
+  @override
+  String get classroomPinHint => 'Sampla: 1234';
+
+  @override
+  String get enterClassroomPin => 'Cuir PIN seomra ranga isteach';
+
+  @override
+  String get classroomPinMinLength =>
+      'Caithfidh 4 dhigit ar a laghad a bheith sa PIN';
+
+  @override
+  String get classroomNotFound => 'Níor aimsíodh an seomra ranga';
+
+  @override
+  String classroomLoadError(Object error) {
+    return 'Earráid agus an seomra ranga á lódáil: $error';
+  }
+
+  @override
+  String get classroomUpdated => 'Nuashonraíodh an seomra ranga';
+
+  @override
+  String get deleteClassroom => 'Scrios an Seomra Ranga';
+
+  @override
+  String get deleteClassroomConfirmation =>
+      'An bhfuil tú cinnte gur mhaith leat an seomra ranga seo a scriosadh? Ní féidir é seo a chealú.';
+
+  @override
+  String get classroomDeleted => 'Scriosadh an seomra ranga';
+
+  @override
+  String classroomDeleteError(Object error) {
+    return 'Earráid agus an seomra ranga á scriosadh: $error';
+  }
+
+  @override
+  String get classroomInformation => 'Eolas faoin Seomra Ranga';
+
+  @override
+  String get classroomAccessInfo =>
+      'Rialaíonn na sonraí seo conas a fhaigheann an fhoireann rochtain ar an seomra ranga seo.';
+
+  @override
+  String get classroomCodeChangeInfo =>
+      'Má athraítear an cód seo, athrófar an méid a chuireann an fhoireann isteach ar scáileán logála isteach an tseomra ranga.';
+
+  @override
+  String get classroomActive => 'Seomra Ranga Gníomhach';
+
+  @override
+  String get classroomInactiveInfo =>
+      'Má dhíchumasaítear é, cuirfear bac ar logáil isteach sa seomra ranga seo.';
+
+  @override
+  String get saveClassroom => 'Sábháil an Seomra Ranga';
+
+  @override
+  String get schoolNotFound => 'Níor aimsíodh an scoil';
+
+  @override
+  String schoolSettingsLoadError(Object error) {
+    return 'Earráid agus socruithe scoile á lódáil: $error';
+  }
+
+  @override
+  String get schoolSettingsUpdated => 'Nuashonraíodh socruithe na scoile';
+
+  @override
+  String get schoolInformation => 'Eolas faoin Scoil';
+
+  @override
+  String get schoolAccountInfo =>
+      'Rialaíonn na sonraí seo cuntas na scoile agus logáil isteach an tseomra ranga.';
+
+  @override
+  String get enterSchoolName => 'Cuir ainm scoile isteach';
+
+  @override
+  String get enterSchoolCode => 'Cuir cód scoile isteach';
+
+  @override
+  String get schoolCodeMinLength =>
+      'Caithfidh 3 charachtar ar a laghad a bheith sa chód scoile';
+
+  @override
+  String get schoolCodeChangeInfo =>
+      'Má athraítear cód na scoile, athrófar an méid a chuireann an fhoireann isteach ar scáileán logála isteach an tseomra ranga.';
+
+  @override
+  String get classroomLimit => 'Teorainn Seomraí Ranga';
+
+  @override
+  String get enterClassroomLimit => 'Cuir teorainn seomraí ranga isteach';
+
+  @override
+  String get enterValidNumber => 'Cuir uimhir bhailí isteach';
+
+  @override
+  String get classroomLimitMinimum =>
+      'Caithfidh teorainn na seomraí ranga a bheith 1 ar a laghad';
+
+  @override
+  String get contactDetails => 'Sonraí Teagmhála';
+
+  @override
+  String get principalName => 'Ainm an Phríomhoide';
+
+  @override
+  String get vicePrincipalName => 'Ainm an Leas-Phríomhoide';
+
+  @override
+  String get schoolEmail => 'Ríomhphost na Scoile';
+
+  @override
+  String get phoneNumber => 'Uimhir Theileafóin';
+
+  @override
+  String get schoolAddress => 'Seoladh na Scoile';
+
+  @override
+  String get schoolActive => 'Scoil Ghníomhach';
+
+  @override
+  String get schoolInactiveInfo =>
+      'Má dhíchumasaítear í amach anseo, is féidir bac a chur ar logáil isteach do sheomraí ranga na scoile seo.';
+
+  @override
+  String get saveSchoolSettings => 'Sábháil Socruithe Scoile';
+
+  @override
+  String get schoolCodeInUse => 'Tá an cód scoile sin in úsáid cheana féin.';
+
+  @override
+  String get classroomCodeInUse =>
+      'Tá an cód seomra ranga sin in úsáid cheana féin.';
+
+  @override
+  String get classroomLimitReached =>
+      'Sroicheadh teorainn na seomraí ranga. Méadaigh an teorainn i Socruithe Scoile.';
+
+  @override
+  String get classroomUpdateError =>
+      'Níorbh fhéidir an seomra ranga a nuashonrú.';
+
+  @override
+  String get schoolSettingsUpdateError =>
+      'Níorbh fhéidir socruithe na scoile a nuashonrú.';
+
+  @override
+  String get bodyPartHead => 'Ceann';
+
+  @override
+  String get bodyPartThroat => 'Scornach';
+
+  @override
+  String get bodyPartChest => 'Cliabhrach';
+
+  @override
+  String get bodyPartTummy => 'Bolg';
+
+  @override
+  String get bodyPartLeftArm => 'Lámh chlé';
+
+  @override
+  String get bodyPartRightArm => 'Lámh dheas';
+
+  @override
+  String get bodyPartLeftHand => 'Bos chlé';
+
+  @override
+  String get bodyPartRightHand => 'Bos dheas';
+
+  @override
+  String get bodyPartLeftLeg => 'Cos chlé';
+
+  @override
+  String get bodyPartRightLeg => 'Cos dheas';
+
+  @override
+  String get bodyPartLeftFoot => 'Crúb chlé';
+
+  @override
+  String get bodyPartRightFoot => 'Crúb dheas';
+
+  @override
+  String get bodyPartBackOfHead => 'Cúl an chinn';
+
+  @override
+  String get bodyPartNeck => 'Muineál';
+
+  @override
+  String get bodyPartUpperBack => 'Uachtar an droma';
+
+  @override
+  String get bodyPartLowerBack => 'Íochtar an droma';
+
+  @override
+  String get bodyMapFront => 'Aghaidh';
+
+  @override
+  String get bodyMapBack => 'Cúl';
+
+  @override
+  String bodyDiagramSemantics(Object side) {
+    return 'Léaráid choirp ón $side. Tapáil an áit a bhfuil pian uirthi.';
+  }
+
+  @override
+  String get tapSoreBodyPart =>
+      'Tapáil an corp san áit a bhfuil pian nó míchompord ort.';
+
+  @override
+  String bodyPartSelected(Object bodyPart) {
+    return 'Roghnaigh tú: $bodyPart';
+  }
+
+  @override
+  String get chooseBodyPartList => 'Roghnaigh ó liosta ina ionad';
+
+  @override
+  String get painLittleSore => 'Beagán pianmhar';
+
+  @override
+  String get painLittleSoreDescription =>
+      'Tugaim faoi deara é, ach níl ach beagán pian orm.';
+
+  @override
+  String get painHurts => 'Tá pian orm';
+
+  @override
+  String get painHurtsShort => 'Pianmhar';
+
+  @override
+  String get painHurtsDescription =>
+      'Tá sé míchompordach agus teastaíonn cabhair uaim.';
+
+  @override
+  String get painHurtsALot => 'Tá go leor pian orm';
+
+  @override
+  String get painHurtsALotShort => 'An-phianmhar';
+
+  @override
+  String get painHurtsALotDescription =>
+      'Tá sé an-phianmhar agus teastaíonn duine fásta uaim anois.';
+
+  @override
+  String get painUnknown => 'Anaithnid';
+
+  @override
+  String get painSoreAching => 'Tinn nó pianmhar';
+
+  @override
+  String get painSoreAchingDescription => 'Pian mhaol nó throm.';
+
+  @override
+  String get painSharp => 'Géar';
+
+  @override
+  String get painSharpDescription => 'Pian thobann nó ghéar.';
+
+  @override
+  String get painBurningHot => 'Dó nó te';
+
+  @override
+  String get painBurningHotDescription => 'Mothaíonn sé te nó ar dhó.';
+
+  @override
+  String get painItchy => 'Tochasach';
+
+  @override
+  String get painItchyDescription => 'Ba mhaith liom é a scríobadh.';
+
+  @override
+  String get painThrobbing => 'Ag preabadh';
+
+  @override
+  String get painThrobbingDescription => 'Preabann nó buaileann sé.';
+
+  @override
+  String get painTinglyNumb => 'Griofadach nó marbhánta';
+
+  @override
+  String get painTinglyNumbDescription =>
+      'Mothaíonn sé ina chodladh nó aisteach.';
+
+  @override
+  String get painSick => 'Tinn';
+
+  @override
+  String get painSickDescription => 'Mothaím go mb\'fhéidir go mbeinn tinn.';
+
+  @override
+  String get painNotSure => 'Nílim cinnte';
+
+  @override
+  String get painNotSureDescription => 'Ní féidir liom an mothúchán a mhíniú.';
+
+  @override
+  String get chooseSoreLocation => 'Roghnaigh an áit a bhfuil pian ort.';
+
+  @override
+  String get choosePainAmount => 'Roghnaigh cé mhéad pian atá ort.';
+
+  @override
+  String get choosePainFeeling => 'Roghnaigh conas a mhothaíonn sé.';
+
+  @override
+  String get bodyCheckSendFailed =>
+      'Níorbh fhéidir do Sheiceáil Coirp a sheoladh. Inis do dhuine fásta anois.';
+
+  @override
+  String get staffHaveBeenTold => 'Cuireadh an Fhoireann ar an Eolas';
+
+  @override
+  String get bodyCheckSentMessage =>
+      'Seoladh do Sheiceáil Coirp.\n\nInis do dhuine fásta anois má theastaíonn cabhair uait.';
+
+  @override
+  String get okay => 'Ceart go leor';
+
+  @override
+  String get bodyCheckWhere => 'Cá háit?';
+
+  @override
+  String get bodyCheckHowMuch => 'Cé mhéad?';
+
+  @override
+  String get bodyCheckWhatFeeling => 'Cén mothúchán?';
+
+  @override
+  String get review => 'Athbhreithniú';
+
+  @override
+  String bodyCheckStep(Object current, Object total, Object name) {
+    return 'Céim $current as $total: $name';
+  }
+
+  @override
+  String get whereDoesItHurt => 'Cá bhfuil an phian?';
+
+  @override
+  String get howMuchDoesItHurt => 'Cé mhéad pian atá ort?';
+
+  @override
+  String get choosePainFace =>
+      'Roghnaigh an aghaidh is fearr a léiríonn conas a mhothaíonn tú.';
+
+  @override
+  String get whatDoesItFeelLike => 'Conas a mhothaíonn sé?';
+
+  @override
+  String get choosePainDescription =>
+      'Roghnaigh an cur síos is gaire don mhothúchán. Tá sé ceart go leor mura bhfuil tú cinnte.';
+
+  @override
+  String get checkYourBodyCheck => 'Seiceáil do Sheiceáil Coirp';
+
+  @override
+  String get reviewBodyCheckMessage =>
+      'Cinntigh go léiríonn sé seo conas a mhothaíonn tú sula n-insíonn tú don fhoireann.';
+
+  @override
+  String get tellAdultBodyCheck =>
+      'Má theastaíonn cabhair uait anois, inis do dhuine fásta chomh maith leis an tSeiceáil Coirp seo a sheoladh.';
+
+  @override
+  String changeBodyCheckAnswer(Object label) {
+    return 'Athraigh $label';
+  }
+
+  @override
+  String get back => 'Siar';
+
+  @override
+  String get sending => 'Á sheoladh...';
+
+  @override
+  String get tellStaff => 'Inis don Fhoireann';
+
+  @override
+  String get continueButton => 'Lean ar aghaidh';
+
+  @override
+  String checkChildReport(Object childName) {
+    return 'Seiceáil Tuairisc $childName';
+  }
+
+  @override
+  String get optionalStaffNote => 'Nóta roghnach foirne';
+
+  @override
+  String get staffNoteHint =>
+      'Taifead an méid a seiceáladh nó an tacaíocht a tugadh.';
+
+  @override
+  String get markChecked => 'Marcáil mar Seiceáilte';
+
+  @override
+  String reportMarkedChecked(Object childName) {
+    return 'Marcáladh tuairisc $childName mar sheiceáilte.';
+  }
+
+  @override
+  String get reportUpdateFailed => 'Níorbh fhéidir an tuairisc a nuashonrú.';
+
+  @override
+  String get deleteReportQuestion => 'Scrios an Tuairisc?';
+
+  @override
+  String deleteBodyCheckReport(Object childName) {
+    return 'Scrios an tuairisc Seiceáil Coirp seo do $childName?\n\nNí féidir é seo a chealú.';
+  }
+
+  @override
+  String get reportDeleteFailed => 'Níorbh fhéidir an tuairisc a scriosadh.';
+
+  @override
+  String get classroomBodyChecks => 'Seiceálacha Coirp an tSeomra Ranga';
+
+  @override
+  String get classroomBodyChecksIntro =>
+      'Athbhreithnigh tuairiscí agus taifead nuair a tugadh tacaíocht.';
+
+  @override
+  String get urgent => 'Práinneach';
+
+  @override
+  String get unchecked => 'Gan Seiceáil';
+
+  @override
+  String get checked => 'Seiceáilte';
+
+  @override
+  String get reports => 'Tuairiscí';
+
+  @override
+  String get urgentBodyCheckMessage =>
+      'Roghnaigh an páiste seo “An-phianmhar” agus níor seiceáladh an tuairisc fós.';
+
+  @override
+  String get checkedByStaff => 'Seiceáilte ag an bhfoireann';
+
+  @override
+  String checkedAt(Object time) {
+    return 'Seiceáilte $time';
+  }
+
+  @override
+  String get deleteReport => 'Scrios tuairisc';
+
+  @override
+  String get needsChecking => 'Le seiceáil';
+
+  @override
+  String get noBodyCheckReports => 'Níl aon tuairisc Seiceáil Coirp ann fós';
+
+  @override
+  String get bodyCheckReportsAppearHere =>
+      'Beidh tuairiscí a sheolann páistí le feiceáil anseo.';
+
+  @override
+  String get noReportsMatchFilters =>
+      'Ní mheaitseálann aon tuairisc na scagairí seo.';
+
+  @override
+  String get bodyCheckReportsLoadFailed =>
+      'Tharla earráid agus tuairiscí Seiceáil Coirp á lódáil.';
+
+  @override
+  String dateTimeAt(Object date, Object time) {
+    return '$date ag $time';
+  }
+
+  @override
+  String get quizStyleGeneral => 'Ginearálta';
+
+  @override
+  String get quizStyleNumbers => 'Uimhreacha';
+
+  @override
+  String get quizStyleWords => 'Focail';
+
+  @override
+  String get quizStyleScience => 'Eolaíocht';
+
+  @override
+  String get quizStyleWorld => 'Ár nDomhan';
+
+  @override
+  String get quizStyleMemory => 'Cuimhne';
+
+  @override
+  String get quizStyleFun => 'Spraoi';
+
+  @override
+  String get enterQuizTitle => 'Cuir teideal tráth na gceist isteach.';
+
+  @override
+  String get chooseQuizAudience =>
+      'Roghnaigh páiste amháin ar a laghad nó cuir an tráth na gceist ar fáil do chách.';
+
+  @override
+  String get addAtLeastOneQuestion => 'Cuir ceist amháin ar a laghad leis.';
+
+  @override
+  String get quizUpdatedSuccess => 'Nuashonraíodh an tráth na gceist!';
+
+  @override
+  String get quizCreatedSuccess => 'Cruthaíodh an tráth na gceist!';
+
+  @override
+  String quizSaveFailed(Object error) {
+    return 'Níorbh fhéidir an tráth na gceist a shábháil: $error';
+  }
+
+  @override
+  String get editYourQuiz => 'Cuir do thráth na gceist in eagar';
+
+  @override
+  String get createNewQuiz => 'Cruthaigh tráth na gceist nua';
+
+  @override
+  String get quizEditorIntro =>
+      'Coinnigh na ceisteanna soiléir, spreagúil agus éasca le tuiscint.';
+
+  @override
+  String get quizDetails => 'Sonraí an tráth na gceist';
+
+  @override
+  String get quizDetailsIntro =>
+      'Tabhair ainm soiléir agus cur síos gairid don tráth na gceist.';
+
+  @override
+  String get quizTitle => 'Teideal an tráth na gceist';
+
+  @override
+  String get quizTitleHint => 'Mar shampla: Fuaimeanna Ainmhithe';
+
+  @override
+  String get quizDescriptionHint =>
+      'Cad a chleachtfaidh páistí sa tráth na gceist seo?';
+
+  @override
+  String get quizStyle => 'Stíl an tráth na gceist';
+
+  @override
+  String get quizStyleIntro => 'Roghnaigh téama cairdiúil amhairc.';
+
+  @override
+  String get whoCanPlay => 'Cé atá in ann imirt?';
+
+  @override
+  String get quizAudienceIntro =>
+      'Cuir ar fáil do chách nó do pháistí roghnaithe é.';
+
+  @override
+  String get questions => 'Ceisteanna';
+
+  @override
+  String questionCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ceist',
+      one: '1 cheist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addQuestion => 'Cuir ceist leis';
+
+  @override
+  String get addAnotherQuestion => 'Cuir ceist eile leis';
+
+  @override
+  String get editQuiz => 'Cuir Tráth na gCeist in Eagar';
+
+  @override
+  String get createQuiz => 'Cruthaigh Tráth na gCeist';
+
+  @override
+  String questionNumber(Object number) {
+    return 'Ceist $number';
+  }
+
+  @override
+  String get moveUp => 'Bog suas';
+
+  @override
+  String get moveDown => 'Bog síos';
+
+  @override
+  String get deleteQuestion => 'Scrios an cheist';
+
+  @override
+  String get question => 'Ceist';
+
+  @override
+  String get questionHint => 'Cad ba mhaith leat a fhiafraí?';
+
+  @override
+  String get answers => 'Freagraí';
+
+  @override
+  String get correctAnswerInstruction =>
+      'Tapáil an ciorcal in aice leis an bhfreagra ceart.';
+
+  @override
+  String get correctAnswer => 'Freagra ceart';
+
+  @override
+  String get markAsCorrect => 'Marcáil mar cheart';
+
+  @override
+  String answerLabel(Object letter) {
+    return 'Freagra $letter';
+  }
+
+  @override
+  String get removeAnswer => 'Bain an freagra';
+
+  @override
+  String get addAnswer => 'Cuir freagra leis';
+
+  @override
+  String get helpfulExplanation => 'Míniú cabhrach (roghnach)';
+
+  @override
+  String get helpfulExplanationHint =>
+      'Taispeántar é tar éis don pháiste an cheist a fhreagairt.';
+
+  @override
+  String questionNeedsText(Object number) {
+    return 'Teastaíonn téacs ó cheist $number.';
+  }
+
+  @override
+  String questionNeedsAnswers(Object number) {
+    return 'Teastaíonn dhá fhreagra ar a laghad ó cheist $number.';
+  }
+
+  @override
+  String completeQuestionAnswers(Object number) {
+    return 'Comhlánaigh gach freagra do cheist $number.';
+  }
+
+  @override
+  String questionDuplicateAnswers(Object number) {
+    return 'Tá freagraí dúblacha i gceist $number.';
+  }
+
+  @override
+  String chooseCorrectAnswer(Object number) {
+    return 'Roghnaigh an freagra ceart do cheist $number.';
+  }
+
+  @override
+  String get previewNeedsQuestion =>
+      'Cuir ceist amháin ar a laghad leis roimh réamhamharc.';
+
+  @override
+  String quizCopyTitle(Object title) {
+    return 'Cóip de $title';
+  }
+
+  @override
+  String get quizDuplicated => 'Dúbláladh an tráth na gceist.';
+
+  @override
+  String quizDuplicateFailed(Object error) {
+    return 'Níorbh fhéidir an tráth na gceist a dhúbláil: $error';
+  }
+
+  @override
+  String get deleteQuizQuestion => 'Scrios an tráth na gceist?';
+
+  @override
+  String deleteQuizConfirmation(Object title) {
+    return 'An bhfuil tú cinnte gur mhaith leat “$title” a scriosadh? Coinneofar stair na dtorthaí reatha.';
+  }
+
+  @override
+  String get quizDeleted => 'Scriosadh an tráth na gceist.';
+
+  @override
+  String quizDeleteFailed(Object error) {
+    return 'Níorbh fhéidir an tráth na gceist a scriosadh: $error';
+  }
+
+  @override
+  String get quizzesLoadFailed => 'Níorbh fhéidir tráthanna na gceist a lódáil';
+
+  @override
+  String get quizLibraryEmpty =>
+      'Tá leabharlann na dtráthanna na gceist folamh';
+
+  @override
+  String get createFirstQuiz => 'Cruthaigh do chéad tráth na gceist chun tosú.';
+
+  @override
+  String get quizResultsLoadFailed => 'Níorbh fhéidir torthaí a lódáil';
+
+  @override
+  String get childProfilesLoadFailedShort =>
+      'Níorbh fhéidir próifílí páistí a lódáil.';
+
+  @override
+  String get noChildProfiles => 'Níl aon phróifíl páiste ann';
+
+  @override
+  String get quizResultsAfterProfiles =>
+      'Beidh torthaí tráth na gceist le feiceáil tar éis próifílí a chur leis.';
+
+  @override
+  String get quizResults => 'Torthaí tráth na gceist';
+
+  @override
+  String get quizResultsIntro =>
+      'Iarrachtaí agus scóir le déanaí do gach páiste.';
+
+  @override
+  String get quizLibrary => 'Leabharlann Tráth na gCeist';
+
+  @override
+  String get results => 'Torthaí';
+
+  @override
+  String audienceSelectedCount(Object count) {
+    return '$count roghnaithe';
+  }
+
+  @override
+  String get moreOptions => 'Tuilleadh roghanna';
+
+  @override
+  String get duplicate => 'Dúblaigh';
+
+  @override
+  String get noDescriptionAdded => 'Níor cuireadh cur síos leis.';
+
+  @override
+  String get preview => 'Réamhamharc';
+
+  @override
+  String get loadingAttempts => 'Iarrachtaí á lódáil...';
+
+  @override
+  String get noQuizAttempts => 'Níl aon iarracht déanta fós';
+
+  @override
+  String attemptCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count iarracht',
+      one: '1 iarracht',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get attemptsLoadFailed => 'Níorbh fhéidir iarrachtaí a lódáil.';
+
+  @override
+  String get resultsAfterQuiz =>
+      'Beidh torthaí le feiceáil tar éis don pháiste tráth na gceist a chríochnú.';
+
+  @override
+  String get deletedQuiz => 'Tráth na gceist scriosta';
+
+  @override
+  String scoreSummary(Object score, Object total, Object percentage) {
+    return '$score/$total • $percentage%';
+  }
+
+  @override
+  String pointsValue(Object score) {
+    return '$score pointe';
+  }
+
+  @override
+  String get noQuizzesNow => 'Níl aon tráth na gceist ann anois';
+
+  @override
+  String get quizWillAppear =>
+      'Beidh tráth na gceist nua le feiceáil anseo nuair a bheidh sé réidh duit.';
+
+  @override
+  String get childQuizzesLoadFailed =>
+      'Níorbh fhéidir do thráthanna na gceist a lódáil';
+
+  @override
+  String readyToPlay(Object childName) {
+    return 'Réidh le himirt, $childName?';
+  }
+
+  @override
+  String quizzesToExplore(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tá $count tráth na gceist agat le fiosrú.',
+      one: 'Tá 1 tráth na gceist agat le fiosrú.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quizzesPlayed(Object count) {
+    return '$count imeartha';
+  }
+
+  @override
+  String get myQuizzes => 'Mo Thráthanna na gCeist';
+
+  @override
+  String quizCardSemantics(Object title, num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ceist',
+      one: '1 cheist',
+    );
+    return '$title, $_temp0';
+  }
+
+  @override
+  String get played => 'Imeartha';
+
+  @override
+  String get tapToStartQuiz => 'Tapáil chun an tráth na gceist seo a thosú!';
+
+  @override
+  String get playAgain => 'Imir Arís';
+
+  @override
+  String get letsPlay => 'Imrímis!';
+
+  @override
+  String get resultSaveFailed =>
+      'Níorbh fhéidir do thoradh a shábháil. Bain triail eile as.';
+
+  @override
+  String get leaveQuizQuestion => 'Fág an tráth na gceist?';
+
+  @override
+  String get closeQuizPreview => 'Dún réamhamharc an tráth na gceist?';
+
+  @override
+  String get unsavedQuizAnswers =>
+      'Ní shábhálfar do chuid freagraí san iarracht seo.';
+
+  @override
+  String get keepPlaying => 'Lean den Imirt';
+
+  @override
+  String get leave => 'Fág';
+
+  @override
+  String get quizHasNoQuestions => 'Níl aon cheist sa tráth na gceist seo fós';
+
+  @override
+  String get goBack => 'Téigh Siar';
+
+  @override
+  String get staffPreviewBanner => 'Réamhamharc Foirne — ní shábhálfar torthaí';
+
+  @override
+  String get questionUppercase => 'CEIST';
+
+  @override
+  String questionProgress(Object current, Object total) {
+    return '$current as $total';
+  }
+
+  @override
+  String get tapCorrectAnswer => 'Tapáil an freagra a cheapann tú atá ceart.';
+
+  @override
+  String get brilliant => 'Thar barr!';
+
+  @override
+  String answerIs(Object answer) {
+    return 'Is é $answer an freagra.';
+  }
+
+  @override
+  String get savingResult => 'Do thoradh á shábháil...';
+
+  @override
+  String get seeMyResult => 'Féach ar mo Thoradh';
+
+  @override
+  String get nextQuestion => 'An Chéad Cheist Eile';
+
+  @override
+  String get resultAmazing => 'Iontach!';
+
+  @override
+  String get resultPerfectMessage => 'Fuair tú gach ceist ceart!';
+
+  @override
+  String get resultGreatWork => 'Obair den scoth!';
+
+  @override
+  String get resultGreatMessage => 'Rinne tú jab iontach!';
+
+  @override
+  String get resultWellDone => 'Maith thú!';
+
+  @override
+  String get resultWellDoneMessage =>
+      'Lean tú ort ag iarraidh agus d\'fhoghlaim tú rud nua!';
+
+  @override
+  String get resultGoodEffort => 'Iarracht mhaith!';
+
+  @override
+  String get resultGoodEffortMessage =>
+      'Cuidíonn gach iarracht le d\'intinn fás!';
+
+  @override
+  String get previewComplete => 'Réamhamharc críochnaithe';
+
+  @override
+  String get previewResultMessage =>
+      'Seo mar a bheidh scáileán torthaí an pháiste.';
+
+  @override
+  String get closePreview => 'Dún an Réamhamharc';
+
+  @override
+  String get backToMyQuizzes => 'Ar Ais chuig Mo Thráthanna na gCeist';
+
+  @override
+  String answerSemantics(Object letter, Object answer) {
+    return 'Freagra $letter: $answer';
+  }
+
+  @override
+  String get zoneBlue => 'Crios Gorm';
+
+  @override
+  String get zoneGreen => 'Crios Glas';
+
+  @override
+  String get zoneYellow => 'Crios Buí';
+
+  @override
+  String get zoneRed => 'Crios Dearg';
+
+  @override
+  String get zoneBlueChildDescription =>
+      'Tá mo chorp ag obair go mall. B\'fhéidir go dteastaíonn scíth, compord nó gluaiseacht shéimh uaim.';
+
+  @override
+  String get zoneGreenChildDescription =>
+      'Mothaíonn mo chorp socair agus compordach. B\'fhéidir go bhfuilim réidh le foghlaim nó le himirt.';
+
+  @override
+  String get zoneYellowChildDescription =>
+      'Tá mo chuid fuinnimh ag ardú. B\'fhéidir go dteastaíonn cabhair uaim chun moilliú nó díriú.';
+
+  @override
+  String get zoneRedChildDescription =>
+      'Tá mo mhothúcháin an-láidir. B\'fhéidir go dteastaíonn spás, sábháilteacht agus tacaíocht uaim.';
+
+  @override
+  String get zoneBlueStaffDescription =>
+      'Fuinneamh íseal, tuirseach, brónach nó tinn.';
+
+  @override
+  String get zoneGreenStaffDescription =>
+      'Socair, dírithe, compordach agus réidh.';
+
+  @override
+  String get zoneYellowStaffDescription =>
+      'Buartha, ar bís, frustrach nó corraitheach.';
+
+  @override
+  String get zoneRedStaffDescription =>
+      'Mothúcháin an-láidir a dteastaíonn tacaíocht uathu.';
+
+  @override
+  String get feelingTired => 'Tuirseach';
+
+  @override
+  String get feelingSad => 'Brónach';
+
+  @override
+  String get feelingBored => 'Leamh';
+
+  @override
+  String get feelingUnwell => 'Tinn';
+
+  @override
+  String get feelingSlow => 'Mall';
+
+  @override
+  String get feelingCalm => 'Socair';
+
+  @override
+  String get feelingFocused => 'Dírithe';
+
+  @override
+  String get feelingHappy => 'Sásta';
+
+  @override
+  String get feelingContent => 'Sásta compordach';
+
+  @override
+  String get feelingReady => 'Réidh';
+
+  @override
+  String get feelingWorried => 'Buartha';
+
+  @override
+  String get feelingExcited => 'Ar bís';
+
+  @override
+  String get feelingFrustrated => 'Frustrach';
+
+  @override
+  String get feelingSilly => 'Amaideach';
+
+  @override
+  String get feelingRestless => 'Corraitheach';
+
+  @override
+  String get feelingAngry => 'Feargach';
+
+  @override
+  String get feelingPanicked => 'Scanraithe';
+
+  @override
+  String get feelingTerrified => 'An-scanraithe';
+
+  @override
+  String get feelingOverwhelmed => 'Faoi léigear';
+
+  @override
+  String get feelingOutOfControl => 'As smacht';
+
+  @override
+  String zoneSelected(Object zoneName) {
+    return 'Roghnaigh tú an $zoneName.';
+  }
+
+  @override
+  String zoneUpdateFailed(Object error) {
+    return 'Níorbh fhéidir do chrios a nuashonrú: $error';
+  }
+
+  @override
+  String get howAreYouFeeling => 'Conas atá Tú ag Mothú?';
+
+  @override
+  String helloChild(Object childName) {
+    return 'Dia duit, $childName';
+  }
+
+  @override
+  String get chooseCurrentZone =>
+      'Roghnaigh an crios is cosúla le conas a mhothaíonn tú anois.';
+
+  @override
+  String get everyZoneOkay => 'Tá gach crios ceart go leor.';
+
+  @override
+  String get thisIsMyZone => 'Seo é mo chrios';
+
+  @override
+  String chooseZone(Object zoneName) {
+    return 'Roghnaigh $zoneName';
+  }
+
+  @override
+  String get noBadZones =>
+      'Níl aon droch-chrios ann. Tugann ár mothúcháin eolas dúinn faoin méid a d\'fhéadfadh a bheith ag teastáil ónár gcorp.';
+
+  @override
+  String get zonesOverview => 'Forbhreathnú ar na Criosanna';
+
+  @override
+  String get classroomZonesLoadFailed =>
+      'Níorbh fhéidir criosanna an tseomra ranga a lódáil.';
+
+  @override
+  String get classroomZones => 'Criosanna an tSeomra Ranga';
+
+  @override
+  String get classroomZonesIntro =>
+      'Léargas beo ar conas atá na páistí ag mothú.';
+
+  @override
+  String get checkedIn => 'Seiceáilte isteach';
+
+  @override
+  String get noChildrenInZone => 'Níl aon pháiste sa chrios seo faoi láthair.';
+
+  @override
+  String get allChildrenCheckedIn =>
+      'Tá a seiceáil isteach criosanna déanta ag gach páiste.';
+
+  @override
+  String get notCheckedIn => 'Gan seiceáil isteach';
+
+  @override
+  String get noChildProfilesFoundShort => 'Níor aimsíodh próifílí páistí';
+
+  @override
+  String get createChildBeforeZones =>
+      'Cruthaigh próifíl páiste sula n-úsáideann tú Forbhreathnú na gCriosanna.';
+
+  @override
+  String get viewBodyCheckReports => 'Féach ar Thuairiscí Seiceáil Coirp';
+
+  @override
+  String get openIncidentLog => 'Oscail Loga na dTeagmhas';
+
+  @override
+  String get openSchedule => 'Oscail an Sceideal';
+
+  @override
+  String get openZonesOverview => 'Oscail Forbhreathnú na gCriosanna';
+
+  @override
+  String get totalChildProfiles => 'Próifílí páistí san iomlán';
+
+  @override
+  String get zonesCheckedIn => 'Criosanna seiceáilte isteach';
+
+  @override
+  String get childrenWithSelectedZone => 'Páistí a bhfuil crios roghnaithe acu';
+
+  @override
+  String get noChildProfilesYet => 'Níl aon phróifíl páiste ann fós.';
+
+  @override
+  String get noZone => 'Gan chrios';
+
+  @override
+  String childZoneSummary(Object childName, Object zone) {
+    return '$childName: $zone';
+  }
+
+  @override
+  String get noUncheckedBodyChecks =>
+      'Níl aon tuairisc Seiceáil Coirp gan seiceáil';
+
+  @override
+  String get nothingNeedsReview =>
+      'Níl aon rud le hathbhreithniú faoi láthair.';
+
+  @override
+  String get uncheckedBodyChecksIntro =>
+      'Tuairiscí gan seiceáil a dteastaíonn athbhreithniú foirne uathu';
+
+  @override
+  String bodyCheckSummary(Object bodyPart, Object painType, Object date) {
+    return '$bodyPart • $painType • $date';
+  }
+
+  @override
+  String viewAllBodyChecks(Object count) {
+    return 'Féach ar gach ceann de na $count tuairisc Seiceáil Coirp';
+  }
+
+  @override
+  String get scheduleSaturday => 'Dé Sathairn';
+
+  @override
+  String get scheduleSunday => 'Dé Domhnaigh';
+
+  @override
+  String noScheduleEntriesForDay(Object day) {
+    return 'Níl aon iontráil sceidil do $day';
+  }
+
+  @override
+  String get nothingScheduledTodayYet =>
+      'Níor cuireadh aon rud leis don lá inniu fós.';
+
+  @override
+  String get noImportantIncidents => 'Níl aon teagmhas tábhachtach le déanaí';
+
+  @override
+  String get noImportantIncidentsIntro =>
+      'Níor aimsíodh aon teagmhas meánach/ard le hathbhreithniú.';
+
+  @override
+  String get severityHigh => 'Ard';
+
+  @override
+  String get severityMedium => 'Meánach';
+
+  @override
+  String get severityLow => 'Íseal';
+
+  @override
+  String incidentSummary(Object severity, Object date, Object description) {
+    return '$severity • $date\n$description';
+  }
+
+  @override
+  String todayOverviewForStaff(Object staffName) {
+    return 'Forbhreathnú tapa ar an seomra ranga do $staffName.';
+  }
+
+  @override
+  String get quickActions => 'Gníomhartha Tapa';
+
+  @override
+  String get zonesSnapshot => 'Léargas ar na Criosanna';
+
+  @override
+  String get bodyCheckAttention => 'Aird ar Sheiceáil Coirp';
+
+  @override
+  String get todaysSchedule => 'Sceideal an Lae Inniu';
+
+  @override
+  String get recentImportantIncidents => 'Teagmhais Tábhachtacha / le Déanaí';
+
+  @override
+  String get iMightFeel => 'B\'fhéidir go mothóinn:';
 }

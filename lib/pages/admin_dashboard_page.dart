@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/classroom.dart';
 import '../models/school.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
 
 class AdminDashboardPage extends StatelessWidget {
   final String schoolId;
@@ -21,41 +22,40 @@ class AdminDashboardPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$schoolName Admin'),
+        title: Text(context.l10n.schoolAdminTitle(schoolName)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            tooltip: 'School Settings',
+            tooltip: context.l10n.schoolSettings,
             onPressed: () {
               Navigator.pushNamed(
                 context,
                 '/school-settings',
-                arguments: {
-                  'schoolId': schoolId,
-                },
+                arguments: {'schoolId': schoolId},
               );
             },
           ),
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
+            tooltip: context.l10n.logout,
             onPressed: () async {
               final shouldLogout = await showDialog<bool>(
                 context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Logout'),
-                  content: const Text('Are you sure you want to logout?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
+                builder:
+                    (context) => AlertDialog(
+                      title: Text(context.l10n.logout),
+                      content: Text(context.l10n.logoutConfirmation),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text(context.l10n.cancel),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text(context.l10n.logout),
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: const Text('Logout'),
-                    ),
-                  ],
-                ),
               );
 
               if (shouldLogout == true) {
@@ -63,10 +63,9 @@ class AdminDashboardPage extends StatelessWidget {
 
                 if (!context.mounted) return;
 
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/',
-                  (route) => false,
-                );
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/', (route) => false);
               }
             },
           ),
@@ -103,15 +102,24 @@ class AdminDashboardPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'School Code: ${school?.schoolCode ?? "Loading..."}',
+                              context.l10n.schoolCodeValue(
+                                school?.schoolCode ?? context.l10n.loading,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Classrooms Used: $usedClassrooms / $classroomLimit',
+                              context.l10n.classroomsUsed(
+                                usedClassrooms,
+                                classroomLimit,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Status: ${(school?.active ?? true) ? "Active" : "Inactive"}',
+                              context.l10n.statusValue(
+                                (school?.active ?? true)
+                                    ? context.l10n.active
+                                    : context.l10n.inactive,
+                              ),
                             ),
                           ],
                         ),
@@ -135,7 +143,9 @@ class AdminDashboardPage extends StatelessWidget {
                   if (snapshot.hasError) {
                     return Center(
                       child: Text(
-                        'Error loading classrooms: ${snapshot.error}',
+                        context.l10n.classroomsLoadError(
+                          snapshot.error.toString(),
+                        ),
                       ),
                     );
                   }
@@ -143,9 +153,9 @@ class AdminDashboardPage extends StatelessWidget {
                   final classrooms = snapshot.data ?? [];
 
                   if (classrooms.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
-                        'No classrooms yet.\nTap + Add Classroom to create one.',
+                        context.l10n.noClassroomsYet,
                         textAlign: TextAlign.center,
                       ),
                     );
@@ -161,7 +171,12 @@ class AdminDashboardPage extends StatelessWidget {
                           leading: const Icon(Icons.meeting_room),
                           title: Text(classroom.name),
                           subtitle: Text(
-                            'Code: ${classroom.classroomCode} • Active: ${classroom.active ? "Yes" : "No"}',
+                            context.l10n.classroomListSummary(
+                              classroom.classroomCode,
+                              classroom.active
+                                  ? context.l10n.yes
+                                  : context.l10n.no,
+                            ),
                           ),
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () {
@@ -188,14 +203,12 @@ class AdminDashboardPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.add),
-                label: const Text('Add Classroom'),
+                label: Text(context.l10n.addClassroom),
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
                     '/create-classroom',
-                    arguments: {
-                      'schoolId': schoolId,
-                    },
+                    arguments: {'schoolId': schoolId},
                   );
                 },
               ),

@@ -48,7 +48,7 @@
   "@delete": {
     "description": "Text used in the app for delete."
   },
-  "edit": "Cuir in Eagar",
+  "edit": "Cuir in eagar",
   "@edit": {
     "description": "Text used in the app for edit."
   },
@@ -72,7 +72,7 @@
   "@retry": {
     "description": "Text used in the app for retry."
   },
-  "loading": "Á Lódáil...",
+  "loading": "Á lódáil...",
   "@loading": {
     "description": "Text used in the app for loading."
   },
@@ -80,7 +80,7 @@
   "@error": {
     "description": "Text used in the app for error."
   },
-  "all": "Uile",
+  "all": "Gach Ceann",
   "@all": {
     "description": "Text used in the app for all."
   },
@@ -354,7 +354,7 @@
   "@resetToCurrentTime": {
     "description": "Text used in the app for reset to current time."
   },
-  "description": "Cur Síos",
+  "description": "Cur síos",
   "@description": {
     "description": "Text used in the app for description."
   },
@@ -807,7 +807,7 @@
   "@fun": {
     "description": "Text used in the app for fun."
   },
-  "selectedChildren": "Páistí Roghnaithe",
+  "selectedChildren": "Páistí roghnaithe",
   "@selectedChildren": {
     "description": "Text used in the app for selected children."
   },
@@ -1845,11 +1845,11 @@
   "@childPointsBalanceUpdated": {
     "description": "Point balance confirmation.",
     "placeholders": {
-      "childName": {
-        "type": "String"
-      },
       "balance": {
         "type": "int"
+      },
+      "childName": {
+        "type": "String"
       }
     }
   },
@@ -1964,67 +1964,2443 @@
     "description": "Point reason."
   },
   "scheduleMonday": "Dé Luain",
+  "@scheduleMonday": {
+    "description": "Text used in the app for schedule monday."
+  },
   "scheduleTuesday": "Dé Máirt",
+  "@scheduleTuesday": {
+    "description": "Text used in the app for schedule tuesday."
+  },
   "scheduleWednesday": "Dé Céadaoin",
+  "@scheduleWednesday": {
+    "description": "Text used in the app for schedule wednesday."
+  },
   "scheduleThursday": "Déardaoin",
+  "@scheduleThursday": {
+    "description": "Text used in the app for schedule thursday."
+  },
   "scheduleFriday": "Dé hAoine",
+  "@scheduleFriday": {
+    "description": "Text used in the app for schedule friday."
+  },
   "scheduleMinutes": "{count, plural, =1{1 nóiméad} other{{count} nóiméad}}",
+  "@scheduleMinutes": {
+    "description": "Text used in the app for schedule minutes.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "scheduleHours": "{count, plural, =1{1 uair} other{{count} uair}}",
+  "@scheduleHours": {
+    "description": "Text used in the app for schedule hours.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "scheduleHoursMinutes": "{hours}u {minutes}n",
+  "@scheduleHoursMinutes": {
+    "description": "Text used in the app for schedule hours minutes.",
+    "placeholders": {
+      "hours": {},
+      "minutes": {}
+    }
+  },
   "scheduleActivityCount": "{count, plural, =0{Gan aon ghníomhaíocht} =1{1 ghníomhaíocht} other{{count} ghníomhaíocht}}",
+  "@scheduleActivityCount": {
+    "description": "Text used in the app for schedule activity count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "scheduleActivityCountToday": "{count, plural, =0{Gan aon ghníomhaíocht inniu} =1{1 ghníomhaíocht} other{{count} ghníomhaíocht}}",
+  "@scheduleActivityCountToday": {
+    "description": "Text used in the app for schedule activity count today.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "classroomScheduleTitle": "Sceideal {classroomName}",
+  "@classroomScheduleTitle": {
+    "description": "Text used in the app for classroom schedule title.",
+    "placeholders": {
+      "classroomName": {}
+    }
+  },
   "staffScheduleTitle": "Sceideal Foirne",
+  "@staffScheduleTitle": {
+    "description": "Text used in the app for staff schedule title."
+  },
   "scheduleLoadFailed": "Níorbh fhéidir an sceideal a lódáil.",
+  "@scheduleLoadFailed": {
+    "description": "Text used in the app for schedule load failed."
+  },
   "classroomScheduleLoadFailed": "Níorbh fhéidir sceideal an tseomra ranga a lódáil.",
+  "@classroomScheduleLoadFailed": {
+    "description": "Text used in the app for classroom schedule load failed."
+  },
   "fillTimeSlot": "Líon an Bearna Ama",
+  "@fillTimeSlot": {
+    "description": "Text used in the app for fill time slot."
+  },
   "duration": "Fad",
+  "@duration": {
+    "description": "Text used in the app for duration."
+  },
   "activityName": "Ainm na gníomhaíochta",
+  "@activityName": {
+    "description": "Text used in the app for activity name."
+  },
   "activityNameHint": "Sampla: Léitheoireacht na maidine",
+  "@activityNameHint": {
+    "description": "Text used in the app for activity name hint."
+  },
   "activityType": "Cineál gníomhaíochta",
+  "@activityType": {
+    "description": "Text used in the app for activity type."
+  },
   "enterActivityName": "Cuir ainm gníomhaíochta isteach.",
+  "@enterActivityName": {
+    "description": "Text used in the app for enter activity name."
+  },
   "activityOverlap": "Forluíonn an fad seo le gníomhaíocht eile sa sceideal.",
+  "@activityOverlap": {
+    "description": "Text used in the app for activity overlap."
+  },
   "activitySaveFailed": "Níorbh fhéidir an ghníomhaíocht a shábháil.",
+  "@activitySaveFailed": {
+    "description": "Text used in the app for activity save failed."
+  },
   "fillSlot": "Líon an Bhearna",
+  "@fillSlot": {
+    "description": "Text used in the app for fill slot."
+  },
   "saveChanges": "Sábháil Athruithe",
+  "@saveChanges": {
+    "description": "Text used in the app for save changes."
+  },
   "clearThisSlot": "Glan an Bhearna Seo?",
+  "@clearThisSlot": {
+    "description": "Text used in the app for clear this slot."
+  },
   "removeActivityFromDay": "Bain \"{activity}\" de {day}?",
+  "@removeActivityFromDay": {
+    "description": "Text used in the app for remove activity from day.",
+    "placeholders": {
+      "activity": {},
+      "day": {}
+    }
+  },
   "clearSlot": "Glan an Bhearna",
+  "@clearSlot": {
+    "description": "Text used in the app for clear slot."
+  },
   "activityRemoveFailed": "Níorbh fhéidir an ghníomhaíocht a bhaint.",
+  "@activityRemoveFailed": {
+    "description": "Text used in the app for activity remove failed."
+  },
   "copySchedule": "Cóipeáil an Sceideal",
+  "@copySchedule": {
+    "description": "Text used in the app for copy schedule."
+  },
   "copyActivitiesToDay": "Cóipeáil gach gníomhaíocht ó {sourceDay} go:",
+  "@copyActivitiesToDay": {
+    "description": "Text used in the app for copy activities to day.",
+    "placeholders": {
+      "sourceDay": {}
+    }
+  },
   "targetDay": "Sprioclá",
+  "@targetDay": {
+    "description": "Text used in the app for target day."
+  },
   "continueLabel": "Lean ar aghaidh",
+  "@continueLabel": {
+    "description": "Text used in the app for continue label."
+  },
   "replaceExistingSchedule": "Ionadaigh an Sceideal Reatha?",
+  "@replaceExistingSchedule": {
+    "description": "Text used in the app for replace existing schedule."
+  },
   "dayExistingActivityCount": "Tá {count, plural, =1{1 ghníomhaíocht} other{{count} ghníomhaíocht}} ag {day} cheana féin.",
+  "@dayExistingActivityCount": {
+    "description": "Text used in the app for day existing activity count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      },
+      "day": {}
+    }
+  },
   "replace": "Ionadaigh",
+  "@replace": {
+    "description": "Text used in the app for replace."
+  },
   "scheduleCopied": "Cóipeáladh {sourceDay} go {targetDay}.",
+  "@scheduleCopied": {
+    "description": "Text used in the app for schedule copied.",
+    "placeholders": {
+      "sourceDay": {},
+      "targetDay": {}
+    }
+  },
   "scheduleCopyFailed": "Níorbh fhéidir an sceideal a chóipeáil.",
+  "@scheduleCopyFailed": {
+    "description": "Text used in the app for schedule copy failed."
+  },
   "copyThisDay": "Cóipeáil an lá seo",
+  "@copyThisDay": {
+    "description": "Text used in the app for copy this day."
+  },
   "copyDay": "Cóipeáil an Lá",
+  "@copyDay": {
+    "description": "Text used in the app for copy day."
+  },
   "tapBlankSlot": "Tapáil bearna fholamh chun tosú",
+  "@tapBlankSlot": {
+    "description": "Text used in the app for tap blank slot."
+  },
   "addFifteenMinuteActivity": "Cuir gníomhaíocht 15 nóiméad leis",
+  "@addFifteenMinuteActivity": {
+    "description": "Text used in the app for add fifteen minute activity."
+  },
   "tapToAddActivity": "Tapáil chun gníomhaíocht a chur leis",
+  "@tapToAddActivity": {
+    "description": "Text used in the app for tap to add activity."
+  },
   "editActivityTooltip": "Cuir an ghníomhaíocht in eagar",
+  "@editActivityTooltip": {
+    "description": "Text used in the app for edit activity tooltip."
+  },
   "clearSlotTooltip": "Glan an bhearna",
+  "@clearSlotTooltip": {
+    "description": "Text used in the app for clear slot tooltip."
+  },
   "happeningNow": "Ar Siúl Anois",
+  "@happeningNow": {
+    "description": "Text used in the app for happening now."
+  },
   "comingNext": "Ag Teacht Aníos",
+  "@comingNext": {
+    "description": "Text used in the app for coming next."
+  },
   "nextActivity": "Ar aghaidh: {activity}",
+  "@nextActivity": {
+    "description": "Text used in the app for next activity.",
+    "placeholders": {
+      "activity": {}
+    }
+  },
   "startsAt": "Tosaíonn ag {time}",
+  "@startsAt": {
+    "description": "Text used in the app for starts at.",
+    "placeholders": {
+      "time": {}
+    }
+  },
   "todaysActivitiesFinished": "Tá gníomhaíochtaí uile an lae inniu críochnaithe.",
+  "@todaysActivitiesFinished": {
+    "description": "Text used in the app for todays activities finished."
+  },
   "dayToday": "{day} • Inniu",
+  "@dayToday": {
+    "description": "Text used in the app for day today.",
+    "placeholders": {
+      "day": {}
+    }
+  },
   "statusNow": "ANOIS",
+  "@statusNow": {
+    "description": "Text used in the app for status now."
+  },
   "statusNext": "AR AGHAIDH",
+  "@statusNext": {
+    "description": "Text used in the app for status next."
+  },
   "statusFinished": "CRÍOCHNAITHE",
+  "@statusFinished": {
+    "description": "Text used in the app for status finished."
+  },
   "nothingScheduledForDay": "Níl aon rud sa sceideal do {day}",
+  "@nothingScheduledForDay": {
+    "description": "Text used in the app for nothing scheduled for day.",
+    "placeholders": {
+      "day": {}
+    }
+  },
   "enjoyYourDay": "Bain sult as do lá!",
+  "@enjoyYourDay": {
+    "description": "Text used in the app for enjoy your day."
+  },
   "activityTypeLearning": "Foghlaim",
+  "@activityTypeLearning": {
+    "description": "Text used in the app for activity type learning."
+  },
   "activityTypeBreak": "Sos",
+  "@activityTypeBreak": {
+    "description": "Text used in the app for activity type break."
+  },
   "activityTypeFood": "Bia",
+  "@activityTypeFood": {
+    "description": "Text used in the app for activity type food."
+  },
   "activityTypeMovement": "Gluaiseacht",
+  "@activityTypeMovement": {
+    "description": "Text used in the app for activity type movement."
+  },
   "activityTypeTherapy": "Teiripe",
+  "@activityTypeTherapy": {
+    "description": "Text used in the app for activity type therapy."
+  },
   "activityTypeCreative": "Cruthaitheacht",
+  "@activityTypeCreative": {
+    "description": "Text used in the app for activity type creative."
+  },
   "activityTypeArrival": "Teacht",
+  "@activityTypeArrival": {
+    "description": "Text used in the app for activity type arrival."
+  },
   "activityTypeHome": "Am Dul Abhaile",
-  "activityTypeOther": "Eile"
+  "@activityTypeHome": {
+    "description": "Text used in the app for activity type home."
+  },
+  "activityTypeOther": "Eile",
+  "@activityTypeOther": {
+    "description": "Text used in the app for activity type other."
+  },
+  "schoolName": "Ainm na Scoile",
+  "@schoolName": {
+    "description": "Text used in the app for school name."
+  },
+  "schoolNameHint": "Sampla: Bunscoil Mhuire",
+  "@schoolNameHint": {
+    "description": "Text used in the app for school name hint."
+  },
+  "schoolCode": "Cód Scoile",
+  "@schoolCode": {
+    "description": "Text used in the app for school code."
+  },
+  "schoolCodeHint": "Sampla: STM123",
+  "@schoolCodeHint": {
+    "description": "Text used in the app for school code hint."
+  },
+  "adminEmail": "Ríomhphost an Riarthóra",
+  "@adminEmail": {
+    "description": "Text used in the app for admin email."
+  },
+  "password": "Focal Faire",
+  "@password": {
+    "description": "Text used in the app for password."
+  },
+  "pleaseWait": "Fan go fóill...",
+  "@pleaseWait": {
+    "description": "Text used in the app for please wait."
+  },
+  "createSchoolAdminAccount": "Cruthaigh Cuntas Riarthóra Scoile",
+  "@createSchoolAdminAccount": {
+    "description": "Text used in the app for create school admin account."
+  },
+  "adminLogin": "Logáil Isteach mar Riarthóir",
+  "@adminLogin": {
+    "description": "Text used in the app for admin login."
+  },
+  "existingAdminLogin": "An bhfuil cuntas riarthóra agat? Logáil isteach",
+  "@existingAdminLogin": {
+    "description": "Text used in the app for existing admin login."
+  },
+  "registerSchoolPrompt": "Gan cuntas riarthóra? Cláraigh scoil",
+  "@registerSchoolPrompt": {
+    "description": "Text used in the app for register school prompt."
+  },
+  "classroomCode": "Cód Seomra Ranga",
+  "@classroomCode": {
+    "description": "Text used in the app for classroom code."
+  },
+  "classroomCodeHint": "Sampla: ASD1",
+  "@classroomCodeHint": {
+    "description": "Text used in the app for classroom code hint."
+  },
+  "classroomPin": "PIN an tSeomra Ranga",
+  "@classroomPin": {
+    "description": "Text used in the app for classroom pin."
+  },
+  "checking": "Á sheiceáil...",
+  "@checking": {
+    "description": "Text used in the app for checking."
+  },
+  "enterClassroom": "Téigh Isteach sa Seomra Ranga",
+  "@enterClassroom": {
+    "description": "Text used in the app for enter classroom."
+  },
+  "createSchoolAdminIntro": "Cruthaigh cuntas riarthóra scoile",
+  "@createSchoolAdminIntro": {
+    "description": "Text used in the app for create school admin intro."
+  },
+  "adminLoginIntro": "Logáil isteach mar riarthóir",
+  "@adminLoginIntro": {
+    "description": "Text used in the app for admin login intro."
+  },
+  "classroomLoginIntro": "Logáil isteach sa seomra ranga",
+  "@classroomLoginIntro": {
+    "description": "Text used in the app for classroom login intro."
+  },
+  "admin": "Riarthóir",
+  "@admin": {
+    "description": "Text used in the app for admin."
+  },
+  "classroom": "Seomra Ranga",
+  "@classroom": {
+    "description": "Text used in the app for classroom."
+  },
+  "enterSchoolDetails": "Cuir ainm scoile agus cód scoile isteach.",
+  "@enterSchoolDetails": {
+    "description": "Text used in the app for enter school details."
+  },
+  "adminAccountCreateFailed": "Níorbh fhéidir cuntas riarthóra a chruthú.",
+  "@adminAccountCreateFailed": {
+    "description": "Text used in the app for admin account create failed."
+  },
+  "loginFailed": "Níorbh fhéidir logáil isteach.",
+  "@loginFailed": {
+    "description": "Text used in the app for login failed."
+  },
+  "enterClassroomDetails": "Cuir cód scoile, cód seomra ranga agus PIN isteach.",
+  "@enterClassroomDetails": {
+    "description": "Text used in the app for enter classroom details."
+  },
+  "classroomLoginIncorrect": "Tá sonraí logála isteach an tseomra ranga mícheart.",
+  "@classroomLoginIncorrect": {
+    "description": "Text used in the app for classroom login incorrect."
+  },
+  "checkLoginFields": "Seiceáil na réimsí logála isteach go léir.",
+  "@checkLoginFields": {
+    "description": "Text used in the app for check login fields."
+  },
+  "adminLoginIncorrect": "Tá ríomhphost nó focal faire an riarthóra mícheart.",
+  "@adminLoginIncorrect": {
+    "description": "Text used in the app for admin login incorrect."
+  },
+  "logout": "Logáil Amach",
+  "@logout": {
+    "description": "Text used in the app for logout."
+  },
+  "logoutConfirmation": "An bhfuil tú cinnte gur mhaith leat logáil amach?",
+  "@logoutConfirmation": {
+    "description": "Text used in the app for logout confirmation."
+  },
+  "accessDeniedIncorrectPin": "Diúltaíodh rochtain: PIN mícheart",
+  "@accessDeniedIncorrectPin": {
+    "description": "Text used in the app for access denied incorrect pin."
+  },
+  "staffProfileDeleted": "Scriosadh próifíl na foirne",
+  "@staffProfileDeleted": {
+    "description": "Text used in the app for staff profile deleted."
+  },
+  "childProfileDeleted": "Scriosadh próifíl an pháiste",
+  "@childProfileDeleted": {
+    "description": "Text used in the app for child profile deleted."
+  },
+  "staffProfileDeleteFailed": "Níorbh fhéidir próifíl na foirne a scriosadh: {error}",
+  "@staffProfileDeleteFailed": {
+    "description": "Text used in the app for staff profile delete failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "childProfileDeleteFailed": "Níorbh fhéidir próifíl an pháiste a scriosadh: {error}",
+  "@childProfileDeleteFailed": {
+    "description": "Text used in the app for child profile delete failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "chooseProfile": "Roghnaigh próifíl chun leanúint ar aghaidh",
+  "@chooseProfile": {
+    "description": "Text used in the app for choose profile."
+  },
+  "staffProfiles": "Próifílí Foirne",
+  "@staffProfiles": {
+    "description": "Text used in the app for staff profiles."
+  },
+  "childProfiles": "Próifílí Páistí",
+  "@childProfiles": {
+    "description": "Text used in the app for child profiles."
+  },
+  "staffProfile": "Próifíl foirne",
+  "@staffProfile": {
+    "description": "Text used in the app for staff profile."
+  },
+  "noChildProfilesShort": "Níor aimsíodh próifílí páistí",
+  "@noChildProfilesShort": {
+    "description": "Text used in the app for no child profiles short."
+  },
+  "ageValue": "Aois: {age}",
+  "@ageValue": {
+    "description": "Text used in the app for age value.",
+    "placeholders": {
+      "age": {}
+    }
+  },
+  "adminActions": "Gníomhartha Riaracháin",
+  "@adminActions": {
+    "description": "Text used in the app for admin actions."
+  },
+  "addProfile": "Cuir Próifíl Leis",
+  "@addProfile": {
+    "description": "Text used in the app for add profile."
+  },
+  "createProfilesIntro": "Cruthaigh próifílí foirne nó páistí",
+  "@createProfilesIntro": {
+    "description": "Text used in the app for create profiles intro."
+  },
+  "appSettings": "Socruithe Aipe",
+  "@appSettings": {
+    "description": "Text used in the app for app settings."
+  },
+  "accountSettings": "Socruithe Cuntais",
+  "@accountSettings": {
+    "description": "Text used in the app for account settings."
+  },
+  "languageAppOptions": "Teanga agus roghanna aipe",
+  "@languageAppOptions": {
+    "description": "Text used in the app for language app options."
+  },
+  "managePinAccountOptions": "Bainistigh PIN agus roghanna cuntais",
+  "@managePinAccountOptions": {
+    "description": "Text used in the app for manage pin account options."
+  },
+  "staffLoadError": "Earráid agus an fhoireann á lódáil: {error}",
+  "@staffLoadError": {
+    "description": "Text used in the app for staff load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "childrenLoadError": "Earráid agus páistí á lódáil: {error}",
+  "@childrenLoadError": {
+    "description": "Text used in the app for children load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteProfile": "Scrios próifíl",
+  "@deleteProfile": {
+    "description": "Text used in the app for delete profile."
+  },
+  "enterPin": "Cuir PIN isteach",
+  "@enterPin": {
+    "description": "Text used in the app for enter pin."
+  },
+  "pin": "PIN",
+  "@pin": {
+    "description": "Text used in the app for pin."
+  },
+  "incorrectPin": "PIN mícheart",
+  "@incorrectPin": {
+    "description": "Text used in the app for incorrect pin."
+  },
+  "submit": "Cuir isteach",
+  "@submit": {
+    "description": "Text used in the app for submit."
+  },
+  "clear": "Glan",
+  "@clear": {
+    "description": "Text used in the app for clear."
+  },
+  "next": "Ar Aghaidh",
+  "@next": {
+    "description": "Text used in the app for next."
+  },
+  "startOver": "Tosaigh Arís",
+  "@startOver": {
+    "description": "Text used in the app for start over."
+  },
+  "success": "D'éirigh leis",
+  "@success": {
+    "description": "Text used in the app for success."
+  },
+  "ok": "Ceart go leor",
+  "@ok": {
+    "description": "Text used in the app for ok."
+  },
+  "role": "Ról",
+  "@role": {
+    "description": "Text used in the app for role."
+  },
+  "age": "Aois",
+  "@age": {
+    "description": "Text used in the app for age."
+  },
+  "nameRequired": "Tá ainm riachtanach",
+  "@nameRequired": {
+    "description": "Text used in the app for name required."
+  },
+  "roleRequired": "Tá ról riachtanach",
+  "@roleRequired": {
+    "description": "Text used in the app for role required."
+  },
+  "ageRequired": "Tá aois riachtanach",
+  "@ageRequired": {
+    "description": "Text used in the app for age required."
+  },
+  "ageNumberRequired": "Caithfidh an aois a bheith ina huimhir",
+  "@ageNumberRequired": {
+    "description": "Text used in the app for age number required."
+  },
+  "addStaffProfile": "Cuir Próifíl Foirne Leis",
+  "@addStaffProfile": {
+    "description": "Text used in the app for add staff profile."
+  },
+  "addChildProfile": "Cuir Próifíl Páiste Leis",
+  "@addChildProfile": {
+    "description": "Text used in the app for add child profile."
+  },
+  "profilesSavedToClassroom": "Sábhálfar próifílí nua sa seomra ranga seo.",
+  "@profilesSavedToClassroom": {
+    "description": "Text used in the app for profiles saved to classroom."
+  },
+  "createStaffProfile": "Cruthaigh próifíl foirne",
+  "@createStaffProfile": {
+    "description": "Text used in the app for create staff profile."
+  },
+  "createChildProfile": "Cruthaigh próifíl páiste",
+  "@createChildProfile": {
+    "description": "Text used in the app for create child profile."
+  },
+  "staffProfileAccessInfo": "Úsáideann próifílí foirne PIN an chuntais nó an tseomra ranga chun rochtain a fháil.",
+  "@staffProfileAccessInfo": {
+    "description": "Text used in the app for staff profile access info."
+  },
+  "childProfileAccessInfo": "Is féidir le próifílí páistí seicheamh simplí 3 dheilbhín a úsáid.",
+  "@childProfileAccessInfo": {
+    "description": "Text used in the app for child profile access info."
+  },
+  "staffDetails": "Sonraí Foirne",
+  "@staffDetails": {
+    "description": "Text used in the app for staff details."
+  },
+  "childDetails": "Sonraí an Pháiste",
+  "@childDetails": {
+    "description": "Text used in the app for child details."
+  },
+  "confirmChildUnlock": "Deimhnigh Seicheamh Díghlasála an Pháiste",
+  "@confirmChildUnlock": {
+    "description": "Text used in the app for confirm child unlock."
+  },
+  "setChildUnlock": "Socraigh Seicheamh Díghlasála an Pháiste",
+  "@setChildUnlock": {
+    "description": "Text used in the app for set child unlock."
+  },
+  "tapSameIconsConfirm": "Tapáil na 3 dheilbhín chéanna arís lena ndeimhniú.",
+  "@tapSameIconsConfirm": {
+    "description": "Text used in the app for tap same icons confirm."
+  },
+  "askChildPickIcons": "Iarr ar an bpáiste 3 dheilbhín a roghnú in ord.",
+  "@askChildPickIcons": {
+    "description": "Text used in the app for ask child pick icons."
+  },
+  "chooseThreeIconsFirst": "Roghnaigh 3 dheilbhín ar dtús",
+  "@chooseThreeIconsFirst": {
+    "description": "Text used in the app for choose three icons first."
+  },
+  "chooseUnlockSequence": "Roghnaigh seicheamh díghlasála 3 dheilbhín",
+  "@chooseUnlockSequence": {
+    "description": "Text used in the app for choose unlock sequence."
+  },
+  "confirmChildUnlockPrompt": "Deimhnigh seicheamh díghlasála an pháiste",
+  "@confirmChildUnlockPrompt": {
+    "description": "Text used in the app for confirm child unlock prompt."
+  },
+  "confirmThreeIconsPrompt": "Tapáil na 3 dheilbhín chéanna arís lena ndeimhniú",
+  "@confirmThreeIconsPrompt": {
+    "description": "Text used in the app for confirm three icons prompt."
+  },
+  "sequencesDoNotMatch": "Níor mheaitseáil na seichimh. Bain triail eile as.",
+  "@sequencesDoNotMatch": {
+    "description": "Text used in the app for sequences do not match."
+  },
+  "profileCreated": "Cruthaíodh próifíl \"{name}\" go rathúil.",
+  "@profileCreated": {
+    "description": "Text used in the app for profile created.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "profileSaveError": "Earráid agus an phróifíl á sábháil: {error}",
+  "@profileSaveError": {
+    "description": "Text used in the app for profile save error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "saveStaffProfile": "Sábháil Próifíl Foirne",
+  "@saveStaffProfile": {
+    "description": "Text used in the app for save staff profile."
+  },
+  "saveChildProfile": "Sábháil Próifíl Páiste",
+  "@saveChildProfile": {
+    "description": "Text used in the app for save child profile."
+  },
+  "selectedNone": "Roghnaithe: Dada",
+  "@selectedNone": {
+    "description": "Text used in the app for selected none."
+  },
+  "selectedIcons": "Roghnaithe: {icons}",
+  "@selectedIcons": {
+    "description": "Text used in the app for selected icons.",
+    "placeholders": {
+      "icons": {}
+    }
+  },
+  "selectedCount": "{selected}/{required} roghnaithe",
+  "@selectedCount": {
+    "description": "Text used in the app for selected count.",
+    "placeholders": {
+      "selected": {},
+      "required": {}
+    }
+  },
+  "wrongIconSequence": "Seicheamh mícheart, bain triail eile as",
+  "@wrongIconSequence": {
+    "description": "Text used in the app for wrong icon sequence."
+  },
+  "unlockChild": "Díghlasáil {childName}",
+  "@unlockChild": {
+    "description": "Text used in the app for unlock child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "tapPicturesInOrder": "Tapáil do 3 phictiúr in ord",
+  "@tapPicturesInOrder": {
+    "description": "Text used in the app for tap pictures in order."
+  },
+  "enteredCount": "Curtha isteach: {entered}/{required}",
+  "@enteredCount": {
+    "description": "Text used in the app for entered count.",
+    "placeholders": {
+      "entered": {},
+      "required": {}
+    }
+  },
+  "resetUnlockForChild": "Athshocraigh díghlasáil do {childName}",
+  "@resetUnlockForChild": {
+    "description": "Text used in the app for reset unlock for child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "chooseIconsInOrder": "Roghnaigh 3 dheilbhín in ord",
+  "@chooseIconsInOrder": {
+    "description": "Text used in the app for choose icons in order."
+  },
+  "confirmIconSequence": "Deimhnigh an seicheamh 3 dheilbhín",
+  "@confirmIconSequence": {
+    "description": "Text used in the app for confirm icon sequence."
+  },
+  "iconSequencesDoNotMatch": "Níor mheaitseáil na seichimh. Bain triail eile as.",
+  "@iconSequencesDoNotMatch": {
+    "description": "Text used in the app for icon sequences do not match."
+  },
+  "iconStar": "Réalta",
+  "@iconStar": {
+    "description": "Text used in the app for icon star."
+  },
+  "iconCar": "Carr",
+  "@iconCar": {
+    "description": "Text used in the app for icon car."
+  },
+  "iconDog": "Madra",
+  "@iconDog": {
+    "description": "Text used in the app for icon dog."
+  },
+  "iconApple": "Úll",
+  "@iconApple": {
+    "description": "Text used in the app for icon apple."
+  },
+  "iconBall": "Liathróid",
+  "@iconBall": {
+    "description": "Text used in the app for icon ball."
+  },
+  "iconMusic": "Ceol",
+  "@iconMusic": {
+    "description": "Text used in the app for icon music."
+  },
+  "iconSun": "Grian",
+  "@iconSun": {
+    "description": "Text used in the app for icon sun."
+  },
+  "iconHeart": "Croí",
+  "@iconHeart": {
+    "description": "Text used in the app for icon heart."
+  },
+  "schoolAdminTitle": "Riarthóir {schoolName}",
+  "@schoolAdminTitle": {
+    "description": "Text used in the app for school admin title.",
+    "placeholders": {
+      "schoolName": {}
+    }
+  },
+  "schoolSettings": "Socruithe Scoile",
+  "@schoolSettings": {
+    "description": "Text used in the app for school settings."
+  },
+  "schoolCodeValue": "Cód Scoile: {code}",
+  "@schoolCodeValue": {
+    "description": "Text used in the app for school code value.",
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "classroomsUsed": "Seomraí Ranga Úsáidte: {used} / {limit}",
+  "@classroomsUsed": {
+    "description": "Text used in the app for classrooms used.",
+    "placeholders": {
+      "used": {},
+      "limit": {}
+    }
+  },
+  "statusValue": "Stádas: {status}",
+  "@statusValue": {
+    "description": "Text used in the app for status value.",
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "active": "Gníomhach",
+  "@active": {
+    "description": "Text used in the app for active."
+  },
+  "inactive": "Neamhghníomhach",
+  "@inactive": {
+    "description": "Text used in the app for inactive."
+  },
+  "classroomsLoadError": "Earráid agus seomraí ranga á lódáil: {error}",
+  "@classroomsLoadError": {
+    "description": "Text used in the app for classrooms load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "noClassroomsYet": "Níl aon seomra ranga ann fós.\nTapáil + Cuir Seomra Ranga Leis chun ceann a chruthú.",
+  "@noClassroomsYet": {
+    "description": "Text used in the app for no classrooms yet."
+  },
+  "classroomListSummary": "Cód: {code} • Gníomhach: {active}",
+  "@classroomListSummary": {
+    "description": "Text used in the app for classroom list summary.",
+    "placeholders": {
+      "code": {},
+      "active": {}
+    }
+  },
+  "yes": "Tá",
+  "@yes": {
+    "description": "Text used in the app for yes."
+  },
+  "no": "Níl",
+  "@no": {
+    "description": "Text used in the app for no."
+  },
+  "addClassroom": "Cuir Seomra Ranga Leis",
+  "@addClassroom": {
+    "description": "Text used in the app for add classroom."
+  },
+  "classroomCreated": "Cruthaíodh an seomra ranga",
+  "@classroomCreated": {
+    "description": "Text used in the app for classroom created."
+  },
+  "classroomCreateError": "Earráid agus an seomra ranga á chruthú: {error}",
+  "@classroomCreateError": {
+    "description": "Text used in the app for classroom create error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "createClassroom": "Cruthaigh Seomra Ranga",
+  "@createClassroom": {
+    "description": "Text used in the app for create classroom."
+  },
+  "classroomDetails": "Sonraí an tSeomra Ranga",
+  "@classroomDetails": {
+    "description": "Text used in the app for classroom details."
+  },
+  "classroomName": "Ainm an tSeomra Ranga",
+  "@classroomName": {
+    "description": "Text used in the app for classroom name."
+  },
+  "classroomNameHint": "Sampla: Aonad ASD 1",
+  "@classroomNameHint": {
+    "description": "Text used in the app for classroom name hint."
+  },
+  "enterClassroomName": "Cuir ainm seomra ranga isteach",
+  "@enterClassroomName": {
+    "description": "Text used in the app for enter classroom name."
+  },
+  "enterClassroomCode": "Cuir cód seomra ranga isteach",
+  "@enterClassroomCode": {
+    "description": "Text used in the app for enter classroom code."
+  },
+  "classroomCodeMinLength": "Caithfidh 3 charachtar ar a laghad a bheith sa chód seomra ranga",
+  "@classroomCodeMinLength": {
+    "description": "Text used in the app for classroom code min length."
+  },
+  "classroomPinHint": "Sampla: 1234",
+  "@classroomPinHint": {
+    "description": "Text used in the app for classroom pin hint."
+  },
+  "enterClassroomPin": "Cuir PIN seomra ranga isteach",
+  "@enterClassroomPin": {
+    "description": "Text used in the app for enter classroom pin."
+  },
+  "classroomPinMinLength": "Caithfidh 4 dhigit ar a laghad a bheith sa PIN",
+  "@classroomPinMinLength": {
+    "description": "Text used in the app for classroom pin min length."
+  },
+  "classroomNotFound": "Níor aimsíodh an seomra ranga",
+  "@classroomNotFound": {
+    "description": "Text used in the app for classroom not found."
+  },
+  "classroomLoadError": "Earráid agus an seomra ranga á lódáil: {error}",
+  "@classroomLoadError": {
+    "description": "Text used in the app for classroom load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "classroomUpdated": "Nuashonraíodh an seomra ranga",
+  "@classroomUpdated": {
+    "description": "Text used in the app for classroom updated."
+  },
+  "deleteClassroom": "Scrios an Seomra Ranga",
+  "@deleteClassroom": {
+    "description": "Text used in the app for delete classroom."
+  },
+  "deleteClassroomConfirmation": "An bhfuil tú cinnte gur mhaith leat an seomra ranga seo a scriosadh? Ní féidir é seo a chealú.",
+  "@deleteClassroomConfirmation": {
+    "description": "Text used in the app for delete classroom confirmation."
+  },
+  "classroomDeleted": "Scriosadh an seomra ranga",
+  "@classroomDeleted": {
+    "description": "Text used in the app for classroom deleted."
+  },
+  "classroomDeleteError": "Earráid agus an seomra ranga á scriosadh: {error}",
+  "@classroomDeleteError": {
+    "description": "Text used in the app for classroom delete error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "classroomInformation": "Eolas faoin Seomra Ranga",
+  "@classroomInformation": {
+    "description": "Text used in the app for classroom information."
+  },
+  "classroomAccessInfo": "Rialaíonn na sonraí seo conas a fhaigheann an fhoireann rochtain ar an seomra ranga seo.",
+  "@classroomAccessInfo": {
+    "description": "Text used in the app for classroom access info."
+  },
+  "classroomCodeChangeInfo": "Má athraítear an cód seo, athrófar an méid a chuireann an fhoireann isteach ar scáileán logála isteach an tseomra ranga.",
+  "@classroomCodeChangeInfo": {
+    "description": "Text used in the app for classroom code change info."
+  },
+  "classroomActive": "Seomra Ranga Gníomhach",
+  "@classroomActive": {
+    "description": "Text used in the app for classroom active."
+  },
+  "classroomInactiveInfo": "Má dhíchumasaítear é, cuirfear bac ar logáil isteach sa seomra ranga seo.",
+  "@classroomInactiveInfo": {
+    "description": "Text used in the app for classroom inactive info."
+  },
+  "saveClassroom": "Sábháil an Seomra Ranga",
+  "@saveClassroom": {
+    "description": "Text used in the app for save classroom."
+  },
+  "schoolNotFound": "Níor aimsíodh an scoil",
+  "@schoolNotFound": {
+    "description": "Text used in the app for school not found."
+  },
+  "schoolSettingsLoadError": "Earráid agus socruithe scoile á lódáil: {error}",
+  "@schoolSettingsLoadError": {
+    "description": "Text used in the app for school settings load error.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "schoolSettingsUpdated": "Nuashonraíodh socruithe na scoile",
+  "@schoolSettingsUpdated": {
+    "description": "Text used in the app for school settings updated."
+  },
+  "schoolInformation": "Eolas faoin Scoil",
+  "@schoolInformation": {
+    "description": "Text used in the app for school information."
+  },
+  "schoolAccountInfo": "Rialaíonn na sonraí seo cuntas na scoile agus logáil isteach an tseomra ranga.",
+  "@schoolAccountInfo": {
+    "description": "Text used in the app for school account info."
+  },
+  "enterSchoolName": "Cuir ainm scoile isteach",
+  "@enterSchoolName": {
+    "description": "Text used in the app for enter school name."
+  },
+  "enterSchoolCode": "Cuir cód scoile isteach",
+  "@enterSchoolCode": {
+    "description": "Text used in the app for enter school code."
+  },
+  "schoolCodeMinLength": "Caithfidh 3 charachtar ar a laghad a bheith sa chód scoile",
+  "@schoolCodeMinLength": {
+    "description": "Text used in the app for school code min length."
+  },
+  "schoolCodeChangeInfo": "Má athraítear cód na scoile, athrófar an méid a chuireann an fhoireann isteach ar scáileán logála isteach an tseomra ranga.",
+  "@schoolCodeChangeInfo": {
+    "description": "Text used in the app for school code change info."
+  },
+  "classroomLimit": "Teorainn Seomraí Ranga",
+  "@classroomLimit": {
+    "description": "Text used in the app for classroom limit."
+  },
+  "enterClassroomLimit": "Cuir teorainn seomraí ranga isteach",
+  "@enterClassroomLimit": {
+    "description": "Text used in the app for enter classroom limit."
+  },
+  "enterValidNumber": "Cuir uimhir bhailí isteach",
+  "@enterValidNumber": {
+    "description": "Text used in the app for enter valid number."
+  },
+  "classroomLimitMinimum": "Caithfidh teorainn na seomraí ranga a bheith 1 ar a laghad",
+  "@classroomLimitMinimum": {
+    "description": "Text used in the app for classroom limit minimum."
+  },
+  "contactDetails": "Sonraí Teagmhála",
+  "@contactDetails": {
+    "description": "Text used in the app for contact details."
+  },
+  "principalName": "Ainm an Phríomhoide",
+  "@principalName": {
+    "description": "Text used in the app for principal name."
+  },
+  "vicePrincipalName": "Ainm an Leas-Phríomhoide",
+  "@vicePrincipalName": {
+    "description": "Text used in the app for vice principal name."
+  },
+  "schoolEmail": "Ríomhphost na Scoile",
+  "@schoolEmail": {
+    "description": "Text used in the app for school email."
+  },
+  "phoneNumber": "Uimhir Theileafóin",
+  "@phoneNumber": {
+    "description": "Text used in the app for phone number."
+  },
+  "schoolAddress": "Seoladh na Scoile",
+  "@schoolAddress": {
+    "description": "Text used in the app for school address."
+  },
+  "schoolActive": "Scoil Ghníomhach",
+  "@schoolActive": {
+    "description": "Text used in the app for school active."
+  },
+  "schoolInactiveInfo": "Má dhíchumasaítear í amach anseo, is féidir bac a chur ar logáil isteach do sheomraí ranga na scoile seo.",
+  "@schoolInactiveInfo": {
+    "description": "Text used in the app for school inactive info."
+  },
+  "saveSchoolSettings": "Sábháil Socruithe Scoile",
+  "@saveSchoolSettings": {
+    "description": "Text used in the app for save school settings."
+  },
+  "schoolCodeInUse": "Tá an cód scoile sin in úsáid cheana féin.",
+  "@schoolCodeInUse": {
+    "description": "Text used in the app for school code in use."
+  },
+  "classroomCodeInUse": "Tá an cód seomra ranga sin in úsáid cheana féin.",
+  "@classroomCodeInUse": {
+    "description": "Text used in the app for classroom code in use."
+  },
+  "classroomLimitReached": "Sroicheadh teorainn na seomraí ranga. Méadaigh an teorainn i Socruithe Scoile.",
+  "@classroomLimitReached": {
+    "description": "Text used in the app for classroom limit reached."
+  },
+  "classroomUpdateError": "Níorbh fhéidir an seomra ranga a nuashonrú.",
+  "@classroomUpdateError": {
+    "description": "Text used in the app for classroom update error."
+  },
+  "schoolSettingsUpdateError": "Níorbh fhéidir socruithe na scoile a nuashonrú.",
+  "@schoolSettingsUpdateError": {
+    "description": "Text used in the app for school settings update error."
+  },
+  "bodyPartHead": "Ceann",
+  "@bodyPartHead": {
+    "description": "Text used in the app for body part head."
+  },
+  "bodyPartThroat": "Scornach",
+  "@bodyPartThroat": {
+    "description": "Text used in the app for body part throat."
+  },
+  "bodyPartChest": "Cliabhrach",
+  "@bodyPartChest": {
+    "description": "Text used in the app for body part chest."
+  },
+  "bodyPartTummy": "Bolg",
+  "@bodyPartTummy": {
+    "description": "Text used in the app for body part tummy."
+  },
+  "bodyPartLeftArm": "Lámh chlé",
+  "@bodyPartLeftArm": {
+    "description": "Text used in the app for body part left arm."
+  },
+  "bodyPartRightArm": "Lámh dheas",
+  "@bodyPartRightArm": {
+    "description": "Text used in the app for body part right arm."
+  },
+  "bodyPartLeftHand": "Bos chlé",
+  "@bodyPartLeftHand": {
+    "description": "Text used in the app for body part left hand."
+  },
+  "bodyPartRightHand": "Bos dheas",
+  "@bodyPartRightHand": {
+    "description": "Text used in the app for body part right hand."
+  },
+  "bodyPartLeftLeg": "Cos chlé",
+  "@bodyPartLeftLeg": {
+    "description": "Text used in the app for body part left leg."
+  },
+  "bodyPartRightLeg": "Cos dheas",
+  "@bodyPartRightLeg": {
+    "description": "Text used in the app for body part right leg."
+  },
+  "bodyPartLeftFoot": "Crúb chlé",
+  "@bodyPartLeftFoot": {
+    "description": "Text used in the app for body part left foot."
+  },
+  "bodyPartRightFoot": "Crúb dheas",
+  "@bodyPartRightFoot": {
+    "description": "Text used in the app for body part right foot."
+  },
+  "bodyPartBackOfHead": "Cúl an chinn",
+  "@bodyPartBackOfHead": {
+    "description": "Text used in the app for body part back of head."
+  },
+  "bodyPartNeck": "Muineál",
+  "@bodyPartNeck": {
+    "description": "Text used in the app for body part neck."
+  },
+  "bodyPartUpperBack": "Uachtar an droma",
+  "@bodyPartUpperBack": {
+    "description": "Text used in the app for body part upper back."
+  },
+  "bodyPartLowerBack": "Íochtar an droma",
+  "@bodyPartLowerBack": {
+    "description": "Text used in the app for body part lower back."
+  },
+  "bodyMapFront": "Aghaidh",
+  "@bodyMapFront": {
+    "description": "Text used in the app for body map front."
+  },
+  "bodyMapBack": "Cúl",
+  "@bodyMapBack": {
+    "description": "Text used in the app for body map back."
+  },
+  "bodyDiagramSemantics": "Léaráid choirp ón {side}. Tapáil an áit a bhfuil pian uirthi.",
+  "@bodyDiagramSemantics": {
+    "description": "Text used in the app for body diagram semantics.",
+    "placeholders": {
+      "side": {}
+    }
+  },
+  "tapSoreBodyPart": "Tapáil an corp san áit a bhfuil pian nó míchompord ort.",
+  "@tapSoreBodyPart": {
+    "description": "Text used in the app for tap sore body part."
+  },
+  "bodyPartSelected": "Roghnaigh tú: {bodyPart}",
+  "@bodyPartSelected": {
+    "description": "Text used in the app for body part selected.",
+    "placeholders": {
+      "bodyPart": {}
+    }
+  },
+  "chooseBodyPartList": "Roghnaigh ó liosta ina ionad",
+  "@chooseBodyPartList": {
+    "description": "Text used in the app for choose body part list."
+  },
+  "painLittleSore": "Beagán pianmhar",
+  "@painLittleSore": {
+    "description": "Text used in the app for pain little sore."
+  },
+  "painLittleSoreDescription": "Tugaim faoi deara é, ach níl ach beagán pian orm.",
+  "@painLittleSoreDescription": {
+    "description": "Text used in the app for pain little sore description."
+  },
+  "painHurts": "Tá pian orm",
+  "@painHurts": {
+    "description": "Text used in the app for pain hurts."
+  },
+  "painHurtsShort": "Pianmhar",
+  "@painHurtsShort": {
+    "description": "Text used in the app for pain hurts short."
+  },
+  "painHurtsDescription": "Tá sé míchompordach agus teastaíonn cabhair uaim.",
+  "@painHurtsDescription": {
+    "description": "Text used in the app for pain hurts description."
+  },
+  "painHurtsALot": "Tá go leor pian orm",
+  "@painHurtsALot": {
+    "description": "Text used in the app for pain hurts alot."
+  },
+  "painHurtsALotShort": "An-phianmhar",
+  "@painHurtsALotShort": {
+    "description": "Text used in the app for pain hurts alot short."
+  },
+  "painHurtsALotDescription": "Tá sé an-phianmhar agus teastaíonn duine fásta uaim anois.",
+  "@painHurtsALotDescription": {
+    "description": "Text used in the app for pain hurts alot description."
+  },
+  "painUnknown": "Anaithnid",
+  "@painUnknown": {
+    "description": "Text used in the app for pain unknown."
+  },
+  "painSoreAching": "Tinn nó pianmhar",
+  "@painSoreAching": {
+    "description": "Text used in the app for pain sore aching."
+  },
+  "painSoreAchingDescription": "Pian mhaol nó throm.",
+  "@painSoreAchingDescription": {
+    "description": "Text used in the app for pain sore aching description."
+  },
+  "painSharp": "Géar",
+  "@painSharp": {
+    "description": "Text used in the app for pain sharp."
+  },
+  "painSharpDescription": "Pian thobann nó ghéar.",
+  "@painSharpDescription": {
+    "description": "Text used in the app for pain sharp description."
+  },
+  "painBurningHot": "Dó nó te",
+  "@painBurningHot": {
+    "description": "Text used in the app for pain burning hot."
+  },
+  "painBurningHotDescription": "Mothaíonn sé te nó ar dhó.",
+  "@painBurningHotDescription": {
+    "description": "Text used in the app for pain burning hot description."
+  },
+  "painItchy": "Tochasach",
+  "@painItchy": {
+    "description": "Text used in the app for pain itchy."
+  },
+  "painItchyDescription": "Ba mhaith liom é a scríobadh.",
+  "@painItchyDescription": {
+    "description": "Text used in the app for pain itchy description."
+  },
+  "painThrobbing": "Ag preabadh",
+  "@painThrobbing": {
+    "description": "Text used in the app for pain throbbing."
+  },
+  "painThrobbingDescription": "Preabann nó buaileann sé.",
+  "@painThrobbingDescription": {
+    "description": "Text used in the app for pain throbbing description."
+  },
+  "painTinglyNumb": "Griofadach nó marbhánta",
+  "@painTinglyNumb": {
+    "description": "Text used in the app for pain tingly numb."
+  },
+  "painTinglyNumbDescription": "Mothaíonn sé ina chodladh nó aisteach.",
+  "@painTinglyNumbDescription": {
+    "description": "Text used in the app for pain tingly numb description."
+  },
+  "painSick": "Tinn",
+  "@painSick": {
+    "description": "Text used in the app for pain sick."
+  },
+  "painSickDescription": "Mothaím go mb'fhéidir go mbeinn tinn.",
+  "@painSickDescription": {
+    "description": "Text used in the app for pain sick description."
+  },
+  "painNotSure": "Nílim cinnte",
+  "@painNotSure": {
+    "description": "Text used in the app for pain not sure."
+  },
+  "painNotSureDescription": "Ní féidir liom an mothúchán a mhíniú.",
+  "@painNotSureDescription": {
+    "description": "Text used in the app for pain not sure description."
+  },
+  "chooseSoreLocation": "Roghnaigh an áit a bhfuil pian ort.",
+  "@chooseSoreLocation": {
+    "description": "Text used in the app for choose sore location."
+  },
+  "choosePainAmount": "Roghnaigh cé mhéad pian atá ort.",
+  "@choosePainAmount": {
+    "description": "Text used in the app for choose pain amount."
+  },
+  "choosePainFeeling": "Roghnaigh conas a mhothaíonn sé.",
+  "@choosePainFeeling": {
+    "description": "Text used in the app for choose pain feeling."
+  },
+  "bodyCheckSendFailed": "Níorbh fhéidir do Sheiceáil Coirp a sheoladh. Inis do dhuine fásta anois.",
+  "@bodyCheckSendFailed": {
+    "description": "Text used in the app for body check send failed."
+  },
+  "staffHaveBeenTold": "Cuireadh an Fhoireann ar an Eolas",
+  "@staffHaveBeenTold": {
+    "description": "Text used in the app for staff have been told."
+  },
+  "bodyCheckSentMessage": "Seoladh do Sheiceáil Coirp.\n\nInis do dhuine fásta anois má theastaíonn cabhair uait.",
+  "@bodyCheckSentMessage": {
+    "description": "Text used in the app for body check sent message."
+  },
+  "okay": "Ceart go leor",
+  "@okay": {
+    "description": "Text used in the app for okay."
+  },
+  "bodyCheckWhere": "Cá háit?",
+  "@bodyCheckWhere": {
+    "description": "Text used in the app for body check where."
+  },
+  "bodyCheckHowMuch": "Cé mhéad?",
+  "@bodyCheckHowMuch": {
+    "description": "Text used in the app for body check how much."
+  },
+  "bodyCheckWhatFeeling": "Cén mothúchán?",
+  "@bodyCheckWhatFeeling": {
+    "description": "Text used in the app for body check what feeling."
+  },
+  "review": "Athbhreithniú",
+  "@review": {
+    "description": "Text used in the app for review."
+  },
+  "bodyCheckStep": "Céim {current} as {total}: {name}",
+  "@bodyCheckStep": {
+    "description": "Text used in the app for body check step.",
+    "placeholders": {
+      "current": {},
+      "total": {},
+      "name": {}
+    }
+  },
+  "whereDoesItHurt": "Cá bhfuil an phian?",
+  "@whereDoesItHurt": {
+    "description": "Text used in the app for where does it hurt."
+  },
+  "howMuchDoesItHurt": "Cé mhéad pian atá ort?",
+  "@howMuchDoesItHurt": {
+    "description": "Text used in the app for how much does it hurt."
+  },
+  "choosePainFace": "Roghnaigh an aghaidh is fearr a léiríonn conas a mhothaíonn tú.",
+  "@choosePainFace": {
+    "description": "Text used in the app for choose pain face."
+  },
+  "whatDoesItFeelLike": "Conas a mhothaíonn sé?",
+  "@whatDoesItFeelLike": {
+    "description": "Text used in the app for what does it feel like."
+  },
+  "choosePainDescription": "Roghnaigh an cur síos is gaire don mhothúchán. Tá sé ceart go leor mura bhfuil tú cinnte.",
+  "@choosePainDescription": {
+    "description": "Text used in the app for choose pain description."
+  },
+  "checkYourBodyCheck": "Seiceáil do Sheiceáil Coirp",
+  "@checkYourBodyCheck": {
+    "description": "Text used in the app for check your body check."
+  },
+  "reviewBodyCheckMessage": "Cinntigh go léiríonn sé seo conas a mhothaíonn tú sula n-insíonn tú don fhoireann.",
+  "@reviewBodyCheckMessage": {
+    "description": "Text used in the app for review body check message."
+  },
+  "tellAdultBodyCheck": "Má theastaíonn cabhair uait anois, inis do dhuine fásta chomh maith leis an tSeiceáil Coirp seo a sheoladh.",
+  "@tellAdultBodyCheck": {
+    "description": "Text used in the app for tell adult body check."
+  },
+  "changeBodyCheckAnswer": "Athraigh {label}",
+  "@changeBodyCheckAnswer": {
+    "description": "Text used in the app for change body check answer.",
+    "placeholders": {
+      "label": {}
+    }
+  },
+  "back": "Siar",
+  "@back": {
+    "description": "Text used in the app for back."
+  },
+  "sending": "Á sheoladh...",
+  "@sending": {
+    "description": "Text used in the app for sending."
+  },
+  "tellStaff": "Inis don Fhoireann",
+  "@tellStaff": {
+    "description": "Text used in the app for tell staff."
+  },
+  "continueButton": "Lean ar aghaidh",
+  "@continueButton": {
+    "description": "Text used in the app for continue button."
+  },
+  "checkChildReport": "Seiceáil Tuairisc {childName}",
+  "@checkChildReport": {
+    "description": "Text used in the app for check child report.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "optionalStaffNote": "Nóta roghnach foirne",
+  "@optionalStaffNote": {
+    "description": "Text used in the app for optional staff note."
+  },
+  "staffNoteHint": "Taifead an méid a seiceáladh nó an tacaíocht a tugadh.",
+  "@staffNoteHint": {
+    "description": "Text used in the app for staff note hint."
+  },
+  "markChecked": "Marcáil mar Seiceáilte",
+  "@markChecked": {
+    "description": "Text used in the app for mark checked."
+  },
+  "reportMarkedChecked": "Marcáladh tuairisc {childName} mar sheiceáilte.",
+  "@reportMarkedChecked": {
+    "description": "Text used in the app for report marked checked.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "reportUpdateFailed": "Níorbh fhéidir an tuairisc a nuashonrú.",
+  "@reportUpdateFailed": {
+    "description": "Text used in the app for report update failed."
+  },
+  "deleteReportQuestion": "Scrios an Tuairisc?",
+  "@deleteReportQuestion": {
+    "description": "Text used in the app for delete report question."
+  },
+  "deleteBodyCheckReport": "Scrios an tuairisc Seiceáil Coirp seo do {childName}?\n\nNí féidir é seo a chealú.",
+  "@deleteBodyCheckReport": {
+    "description": "Text used in the app for delete body check report.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "reportDeleteFailed": "Níorbh fhéidir an tuairisc a scriosadh.",
+  "@reportDeleteFailed": {
+    "description": "Text used in the app for report delete failed."
+  },
+  "classroomBodyChecks": "Seiceálacha Coirp an tSeomra Ranga",
+  "@classroomBodyChecks": {
+    "description": "Text used in the app for classroom body checks."
+  },
+  "classroomBodyChecksIntro": "Athbhreithnigh tuairiscí agus taifead nuair a tugadh tacaíocht.",
+  "@classroomBodyChecksIntro": {
+    "description": "Text used in the app for classroom body checks intro."
+  },
+  "urgent": "Práinneach",
+  "@urgent": {
+    "description": "Text used in the app for urgent."
+  },
+  "unchecked": "Gan Seiceáil",
+  "@unchecked": {
+    "description": "Text used in the app for unchecked."
+  },
+  "checked": "Seiceáilte",
+  "@checked": {
+    "description": "Text used in the app for checked."
+  },
+  "reports": "Tuairiscí",
+  "@reports": {
+    "description": "Text used in the app for reports."
+  },
+  "urgentBodyCheckMessage": "Roghnaigh an páiste seo “An-phianmhar” agus níor seiceáladh an tuairisc fós.",
+  "@urgentBodyCheckMessage": {
+    "description": "Text used in the app for urgent body check message."
+  },
+  "checkedByStaff": "Seiceáilte ag an bhfoireann",
+  "@checkedByStaff": {
+    "description": "Text used in the app for checked by staff."
+  },
+  "checkedAt": "Seiceáilte {time}",
+  "@checkedAt": {
+    "description": "Text used in the app for checked at.",
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "deleteReport": "Scrios tuairisc",
+  "@deleteReport": {
+    "description": "Text used in the app for delete report."
+  },
+  "needsChecking": "Le seiceáil",
+  "@needsChecking": {
+    "description": "Text used in the app for needs checking."
+  },
+  "noBodyCheckReports": "Níl aon tuairisc Seiceáil Coirp ann fós",
+  "@noBodyCheckReports": {
+    "description": "Text used in the app for no body check reports."
+  },
+  "bodyCheckReportsAppearHere": "Beidh tuairiscí a sheolann páistí le feiceáil anseo.",
+  "@bodyCheckReportsAppearHere": {
+    "description": "Text used in the app for body check reports appear here."
+  },
+  "noReportsMatchFilters": "Ní mheaitseálann aon tuairisc na scagairí seo.",
+  "@noReportsMatchFilters": {
+    "description": "Text used in the app for no reports match filters."
+  },
+  "bodyCheckReportsLoadFailed": "Tharla earráid agus tuairiscí Seiceáil Coirp á lódáil.",
+  "@bodyCheckReportsLoadFailed": {
+    "description": "Text used in the app for body check reports load failed."
+  },
+  "dateTimeAt": "{date} ag {time}",
+  "@dateTimeAt": {
+    "description": "Text used in the app for date time at.",
+    "placeholders": {
+      "date": {},
+      "time": {}
+    }
+  },
+  "quizStyleGeneral": "Ginearálta",
+  "@quizStyleGeneral": {
+    "description": "Text used in the app for quiz style general."
+  },
+  "quizStyleNumbers": "Uimhreacha",
+  "@quizStyleNumbers": {
+    "description": "Text used in the app for quiz style numbers."
+  },
+  "quizStyleWords": "Focail",
+  "@quizStyleWords": {
+    "description": "Text used in the app for quiz style words."
+  },
+  "quizStyleScience": "Eolaíocht",
+  "@quizStyleScience": {
+    "description": "Text used in the app for quiz style science."
+  },
+  "quizStyleWorld": "Ár nDomhan",
+  "@quizStyleWorld": {
+    "description": "Text used in the app for quiz style world."
+  },
+  "quizStyleMemory": "Cuimhne",
+  "@quizStyleMemory": {
+    "description": "Text used in the app for quiz style memory."
+  },
+  "quizStyleFun": "Spraoi",
+  "@quizStyleFun": {
+    "description": "Text used in the app for quiz style fun."
+  },
+  "enterQuizTitle": "Cuir teideal tráth na gceist isteach.",
+  "@enterQuizTitle": {
+    "description": "Text used in the app for enter quiz title."
+  },
+  "chooseQuizAudience": "Roghnaigh páiste amháin ar a laghad nó cuir an tráth na gceist ar fáil do chách.",
+  "@chooseQuizAudience": {
+    "description": "Text used in the app for choose quiz audience."
+  },
+  "addAtLeastOneQuestion": "Cuir ceist amháin ar a laghad leis.",
+  "@addAtLeastOneQuestion": {
+    "description": "Text used in the app for add at least one question."
+  },
+  "quizUpdatedSuccess": "Nuashonraíodh an tráth na gceist!",
+  "@quizUpdatedSuccess": {
+    "description": "Text used in the app for quiz updated success."
+  },
+  "quizCreatedSuccess": "Cruthaíodh an tráth na gceist!",
+  "@quizCreatedSuccess": {
+    "description": "Text used in the app for quiz created success."
+  },
+  "quizSaveFailed": "Níorbh fhéidir an tráth na gceist a shábháil: {error}",
+  "@quizSaveFailed": {
+    "description": "Text used in the app for quiz save failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "editYourQuiz": "Cuir do thráth na gceist in eagar",
+  "@editYourQuiz": {
+    "description": "Text used in the app for edit your quiz."
+  },
+  "createNewQuiz": "Cruthaigh tráth na gceist nua",
+  "@createNewQuiz": {
+    "description": "Text used in the app for create new quiz."
+  },
+  "quizEditorIntro": "Coinnigh na ceisteanna soiléir, spreagúil agus éasca le tuiscint.",
+  "@quizEditorIntro": {
+    "description": "Text used in the app for quiz editor intro."
+  },
+  "quizDetails": "Sonraí an tráth na gceist",
+  "@quizDetails": {
+    "description": "Text used in the app for quiz details."
+  },
+  "quizDetailsIntro": "Tabhair ainm soiléir agus cur síos gairid don tráth na gceist.",
+  "@quizDetailsIntro": {
+    "description": "Text used in the app for quiz details intro."
+  },
+  "quizTitle": "Teideal an tráth na gceist",
+  "@quizTitle": {
+    "description": "Text used in the app for quiz title."
+  },
+  "quizTitleHint": "Mar shampla: Fuaimeanna Ainmhithe",
+  "@quizTitleHint": {
+    "description": "Text used in the app for quiz title hint."
+  },
+  "quizDescriptionHint": "Cad a chleachtfaidh páistí sa tráth na gceist seo?",
+  "@quizDescriptionHint": {
+    "description": "Text used in the app for quiz description hint."
+  },
+  "quizStyle": "Stíl an tráth na gceist",
+  "@quizStyle": {
+    "description": "Text used in the app for quiz style."
+  },
+  "quizStyleIntro": "Roghnaigh téama cairdiúil amhairc.",
+  "@quizStyleIntro": {
+    "description": "Text used in the app for quiz style intro."
+  },
+  "whoCanPlay": "Cé atá in ann imirt?",
+  "@whoCanPlay": {
+    "description": "Text used in the app for who can play."
+  },
+  "quizAudienceIntro": "Cuir ar fáil do chách nó do pháistí roghnaithe é.",
+  "@quizAudienceIntro": {
+    "description": "Text used in the app for quiz audience intro."
+  },
+  "questions": "Ceisteanna",
+  "@questions": {
+    "description": "Text used in the app for questions."
+  },
+  "questionCount": "{count, plural, =1{1 cheist} other{{count} ceist}}",
+  "@questionCount": {
+    "description": "Text used in the app for question count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "addQuestion": "Cuir ceist leis",
+  "@addQuestion": {
+    "description": "Text used in the app for add question."
+  },
+  "addAnotherQuestion": "Cuir ceist eile leis",
+  "@addAnotherQuestion": {
+    "description": "Text used in the app for add another question."
+  },
+  "editQuiz": "Cuir Tráth na gCeist in Eagar",
+  "@editQuiz": {
+    "description": "Text used in the app for edit quiz."
+  },
+  "createQuiz": "Cruthaigh Tráth na gCeist",
+  "@createQuiz": {
+    "description": "Text used in the app for create quiz."
+  },
+  "questionNumber": "Ceist {number}",
+  "@questionNumber": {
+    "description": "Text used in the app for question number.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "moveUp": "Bog suas",
+  "@moveUp": {
+    "description": "Text used in the app for move up."
+  },
+  "moveDown": "Bog síos",
+  "@moveDown": {
+    "description": "Text used in the app for move down."
+  },
+  "deleteQuestion": "Scrios an cheist",
+  "@deleteQuestion": {
+    "description": "Text used in the app for delete question."
+  },
+  "question": "Ceist",
+  "@question": {
+    "description": "Text used in the app for question."
+  },
+  "questionHint": "Cad ba mhaith leat a fhiafraí?",
+  "@questionHint": {
+    "description": "Text used in the app for question hint."
+  },
+  "answers": "Freagraí",
+  "@answers": {
+    "description": "Text used in the app for answers."
+  },
+  "correctAnswerInstruction": "Tapáil an ciorcal in aice leis an bhfreagra ceart.",
+  "@correctAnswerInstruction": {
+    "description": "Text used in the app for correct answer instruction."
+  },
+  "correctAnswer": "Freagra ceart",
+  "@correctAnswer": {
+    "description": "Text used in the app for correct answer."
+  },
+  "markAsCorrect": "Marcáil mar cheart",
+  "@markAsCorrect": {
+    "description": "Text used in the app for mark as correct."
+  },
+  "answerLabel": "Freagra {letter}",
+  "@answerLabel": {
+    "description": "Text used in the app for answer label.",
+    "placeholders": {
+      "letter": {}
+    }
+  },
+  "removeAnswer": "Bain an freagra",
+  "@removeAnswer": {
+    "description": "Text used in the app for remove answer."
+  },
+  "addAnswer": "Cuir freagra leis",
+  "@addAnswer": {
+    "description": "Text used in the app for add answer."
+  },
+  "helpfulExplanation": "Míniú cabhrach (roghnach)",
+  "@helpfulExplanation": {
+    "description": "Text used in the app for helpful explanation."
+  },
+  "helpfulExplanationHint": "Taispeántar é tar éis don pháiste an cheist a fhreagairt.",
+  "@helpfulExplanationHint": {
+    "description": "Text used in the app for helpful explanation hint."
+  },
+  "questionNeedsText": "Teastaíonn téacs ó cheist {number}.",
+  "@questionNeedsText": {
+    "description": "Text used in the app for question needs text.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "questionNeedsAnswers": "Teastaíonn dhá fhreagra ar a laghad ó cheist {number}.",
+  "@questionNeedsAnswers": {
+    "description": "Text used in the app for question needs answers.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "completeQuestionAnswers": "Comhlánaigh gach freagra do cheist {number}.",
+  "@completeQuestionAnswers": {
+    "description": "Text used in the app for complete question answers.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "questionDuplicateAnswers": "Tá freagraí dúblacha i gceist {number}.",
+  "@questionDuplicateAnswers": {
+    "description": "Text used in the app for question duplicate answers.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "chooseCorrectAnswer": "Roghnaigh an freagra ceart do cheist {number}.",
+  "@chooseCorrectAnswer": {
+    "description": "Text used in the app for choose correct answer.",
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "previewNeedsQuestion": "Cuir ceist amháin ar a laghad leis roimh réamhamharc.",
+  "@previewNeedsQuestion": {
+    "description": "Text used in the app for preview needs question."
+  },
+  "quizCopyTitle": "Cóip de {title}",
+  "@quizCopyTitle": {
+    "description": "Text used in the app for quiz copy title.",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "quizDuplicated": "Dúbláladh an tráth na gceist.",
+  "@quizDuplicated": {
+    "description": "Text used in the app for quiz duplicated."
+  },
+  "quizDuplicateFailed": "Níorbh fhéidir an tráth na gceist a dhúbláil: {error}",
+  "@quizDuplicateFailed": {
+    "description": "Text used in the app for quiz duplicate failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteQuizQuestion": "Scrios an tráth na gceist?",
+  "@deleteQuizQuestion": {
+    "description": "Text used in the app for delete quiz question."
+  },
+  "deleteQuizConfirmation": "An bhfuil tú cinnte gur mhaith leat “{title}” a scriosadh? Coinneofar stair na dtorthaí reatha.",
+  "@deleteQuizConfirmation": {
+    "description": "Text used in the app for delete quiz confirmation.",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "quizDeleted": "Scriosadh an tráth na gceist.",
+  "@quizDeleted": {
+    "description": "Text used in the app for quiz deleted."
+  },
+  "quizDeleteFailed": "Níorbh fhéidir an tráth na gceist a scriosadh: {error}",
+  "@quizDeleteFailed": {
+    "description": "Text used in the app for quiz delete failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "quizzesLoadFailed": "Níorbh fhéidir tráthanna na gceist a lódáil",
+  "@quizzesLoadFailed": {
+    "description": "Text used in the app for quizzes load failed."
+  },
+  "quizLibraryEmpty": "Tá leabharlann na dtráthanna na gceist folamh",
+  "@quizLibraryEmpty": {
+    "description": "Text used in the app for quiz library empty."
+  },
+  "createFirstQuiz": "Cruthaigh do chéad tráth na gceist chun tosú.",
+  "@createFirstQuiz": {
+    "description": "Text used in the app for create first quiz."
+  },
+  "quizResultsLoadFailed": "Níorbh fhéidir torthaí a lódáil",
+  "@quizResultsLoadFailed": {
+    "description": "Text used in the app for quiz results load failed."
+  },
+  "childProfilesLoadFailedShort": "Níorbh fhéidir próifílí páistí a lódáil.",
+  "@childProfilesLoadFailedShort": {
+    "description": "Text used in the app for child profiles load failed short."
+  },
+  "noChildProfiles": "Níl aon phróifíl páiste ann",
+  "@noChildProfiles": {
+    "description": "Text used in the app for no child profiles."
+  },
+  "quizResultsAfterProfiles": "Beidh torthaí tráth na gceist le feiceáil tar éis próifílí a chur leis.",
+  "@quizResultsAfterProfiles": {
+    "description": "Text used in the app for quiz results after profiles."
+  },
+  "quizResults": "Torthaí tráth na gceist",
+  "@quizResults": {
+    "description": "Text used in the app for quiz results."
+  },
+  "quizResultsIntro": "Iarrachtaí agus scóir le déanaí do gach páiste.",
+  "@quizResultsIntro": {
+    "description": "Text used in the app for quiz results intro."
+  },
+  "quizLibrary": "Leabharlann Tráth na gCeist",
+  "@quizLibrary": {
+    "description": "Text used in the app for quiz library."
+  },
+  "results": "Torthaí",
+  "@results": {
+    "description": "Text used in the app for results."
+  },
+  "audienceSelectedCount": "{count} roghnaithe",
+  "@audienceSelectedCount": {
+    "description": "Text used in the app for audience selected count.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "moreOptions": "Tuilleadh roghanna",
+  "@moreOptions": {
+    "description": "Text used in the app for more options."
+  },
+  "duplicate": "Dúblaigh",
+  "@duplicate": {
+    "description": "Text used in the app for duplicate."
+  },
+  "noDescriptionAdded": "Níor cuireadh cur síos leis.",
+  "@noDescriptionAdded": {
+    "description": "Text used in the app for no description added."
+  },
+  "preview": "Réamhamharc",
+  "@preview": {
+    "description": "Text used in the app for preview."
+  },
+  "loadingAttempts": "Iarrachtaí á lódáil...",
+  "@loadingAttempts": {
+    "description": "Text used in the app for loading attempts."
+  },
+  "noQuizAttempts": "Níl aon iarracht déanta fós",
+  "@noQuizAttempts": {
+    "description": "Text used in the app for no quiz attempts."
+  },
+  "attemptCount": "{count, plural, =1{1 iarracht} other{{count} iarracht}}",
+  "@attemptCount": {
+    "description": "Text used in the app for attempt count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "attemptsLoadFailed": "Níorbh fhéidir iarrachtaí a lódáil.",
+  "@attemptsLoadFailed": {
+    "description": "Text used in the app for attempts load failed."
+  },
+  "resultsAfterQuiz": "Beidh torthaí le feiceáil tar éis don pháiste tráth na gceist a chríochnú.",
+  "@resultsAfterQuiz": {
+    "description": "Text used in the app for results after quiz."
+  },
+  "deletedQuiz": "Tráth na gceist scriosta",
+  "@deletedQuiz": {
+    "description": "Text used in the app for deleted quiz."
+  },
+  "scoreSummary": "{score}/{total} • {percentage}%",
+  "@scoreSummary": {
+    "description": "Text used in the app for score summary.",
+    "placeholders": {
+      "score": {},
+      "total": {},
+      "percentage": {}
+    }
+  },
+  "pointsValue": "{score} pointe",
+  "@pointsValue": {
+    "description": "Text used in the app for points value.",
+    "placeholders": {
+      "score": {}
+    }
+  },
+  "noQuizzesNow": "Níl aon tráth na gceist ann anois",
+  "@noQuizzesNow": {
+    "description": "Text used in the app for no quizzes now."
+  },
+  "quizWillAppear": "Beidh tráth na gceist nua le feiceáil anseo nuair a bheidh sé réidh duit.",
+  "@quizWillAppear": {
+    "description": "Text used in the app for quiz will appear."
+  },
+  "childQuizzesLoadFailed": "Níorbh fhéidir do thráthanna na gceist a lódáil",
+  "@childQuizzesLoadFailed": {
+    "description": "Text used in the app for child quizzes load failed."
+  },
+  "readyToPlay": "Réidh le himirt, {childName}?",
+  "@readyToPlay": {
+    "description": "Text used in the app for ready to play.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "quizzesToExplore": "{count, plural, =1{Tá 1 tráth na gceist agat le fiosrú.} other{Tá {count} tráth na gceist agat le fiosrú.}}",
+  "@quizzesToExplore": {
+    "description": "Text used in the app for quizzes to explore.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "quizzesPlayed": "{count} imeartha",
+  "@quizzesPlayed": {
+    "description": "Text used in the app for quizzes played.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "myQuizzes": "Mo Thráthanna na gCeist",
+  "@myQuizzes": {
+    "description": "Text used in the app for my quizzes."
+  },
+  "quizCardSemantics": "{title}, {count, plural, =1{1 cheist} other{{count} ceist}}",
+  "@quizCardSemantics": {
+    "description": "Text used in the app for quiz card semantics.",
+    "placeholders": {
+      "title": {},
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "played": "Imeartha",
+  "@played": {
+    "description": "Text used in the app for played."
+  },
+  "tapToStartQuiz": "Tapáil chun an tráth na gceist seo a thosú!",
+  "@tapToStartQuiz": {
+    "description": "Text used in the app for tap to start quiz."
+  },
+  "playAgain": "Imir Arís",
+  "@playAgain": {
+    "description": "Text used in the app for play again."
+  },
+  "letsPlay": "Imrímis!",
+  "@letsPlay": {
+    "description": "Text used in the app for lets play."
+  },
+  "resultSaveFailed": "Níorbh fhéidir do thoradh a shábháil. Bain triail eile as.",
+  "@resultSaveFailed": {
+    "description": "Text used in the app for result save failed."
+  },
+  "leaveQuizQuestion": "Fág an tráth na gceist?",
+  "@leaveQuizQuestion": {
+    "description": "Text used in the app for leave quiz question."
+  },
+  "closeQuizPreview": "Dún réamhamharc an tráth na gceist?",
+  "@closeQuizPreview": {
+    "description": "Text used in the app for close quiz preview."
+  },
+  "unsavedQuizAnswers": "Ní shábhálfar do chuid freagraí san iarracht seo.",
+  "@unsavedQuizAnswers": {
+    "description": "Text used in the app for unsaved quiz answers."
+  },
+  "keepPlaying": "Lean den Imirt",
+  "@keepPlaying": {
+    "description": "Text used in the app for keep playing."
+  },
+  "leave": "Fág",
+  "@leave": {
+    "description": "Text used in the app for leave."
+  },
+  "quizHasNoQuestions": "Níl aon cheist sa tráth na gceist seo fós",
+  "@quizHasNoQuestions": {
+    "description": "Text used in the app for quiz has no questions."
+  },
+  "goBack": "Téigh Siar",
+  "@goBack": {
+    "description": "Text used in the app for go back."
+  },
+  "staffPreviewBanner": "Réamhamharc Foirne — ní shábhálfar torthaí",
+  "@staffPreviewBanner": {
+    "description": "Text used in the app for staff preview banner."
+  },
+  "questionUppercase": "CEIST",
+  "@questionUppercase": {
+    "description": "Text used in the app for question uppercase."
+  },
+  "questionProgress": "{current} as {total}",
+  "@questionProgress": {
+    "description": "Text used in the app for question progress.",
+    "placeholders": {
+      "current": {},
+      "total": {}
+    }
+  },
+  "tapCorrectAnswer": "Tapáil an freagra a cheapann tú atá ceart.",
+  "@tapCorrectAnswer": {
+    "description": "Text used in the app for tap correct answer."
+  },
+  "brilliant": "Thar barr!",
+  "@brilliant": {
+    "description": "Text used in the app for brilliant."
+  },
+  "answerIs": "Is é {answer} an freagra.",
+  "@answerIs": {
+    "description": "Text used in the app for answer is.",
+    "placeholders": {
+      "answer": {}
+    }
+  },
+  "savingResult": "Do thoradh á shábháil...",
+  "@savingResult": {
+    "description": "Text used in the app for saving result."
+  },
+  "seeMyResult": "Féach ar mo Thoradh",
+  "@seeMyResult": {
+    "description": "Text used in the app for see my result."
+  },
+  "nextQuestion": "An Chéad Cheist Eile",
+  "@nextQuestion": {
+    "description": "Text used in the app for next question."
+  },
+  "resultAmazing": "Iontach!",
+  "@resultAmazing": {
+    "description": "Text used in the app for result amazing."
+  },
+  "resultPerfectMessage": "Fuair tú gach ceist ceart!",
+  "@resultPerfectMessage": {
+    "description": "Text used in the app for result perfect message."
+  },
+  "resultGreatWork": "Obair den scoth!",
+  "@resultGreatWork": {
+    "description": "Text used in the app for result great work."
+  },
+  "resultGreatMessage": "Rinne tú jab iontach!",
+  "@resultGreatMessage": {
+    "description": "Text used in the app for result great message."
+  },
+  "resultWellDone": "Maith thú!",
+  "@resultWellDone": {
+    "description": "Text used in the app for result well done."
+  },
+  "resultWellDoneMessage": "Lean tú ort ag iarraidh agus d'fhoghlaim tú rud nua!",
+  "@resultWellDoneMessage": {
+    "description": "Text used in the app for result well done message."
+  },
+  "resultGoodEffort": "Iarracht mhaith!",
+  "@resultGoodEffort": {
+    "description": "Text used in the app for result good effort."
+  },
+  "resultGoodEffortMessage": "Cuidíonn gach iarracht le d'intinn fás!",
+  "@resultGoodEffortMessage": {
+    "description": "Text used in the app for result good effort message."
+  },
+  "previewComplete": "Réamhamharc críochnaithe",
+  "@previewComplete": {
+    "description": "Text used in the app for preview complete."
+  },
+  "previewResultMessage": "Seo mar a bheidh scáileán torthaí an pháiste.",
+  "@previewResultMessage": {
+    "description": "Text used in the app for preview result message."
+  },
+  "closePreview": "Dún an Réamhamharc",
+  "@closePreview": {
+    "description": "Text used in the app for close preview."
+  },
+  "backToMyQuizzes": "Ar Ais chuig Mo Thráthanna na gCeist",
+  "@backToMyQuizzes": {
+    "description": "Text used in the app for back to my quizzes."
+  },
+  "answerSemantics": "Freagra {letter}: {answer}",
+  "@answerSemantics": {
+    "description": "Text used in the app for answer semantics.",
+    "placeholders": {
+      "letter": {},
+      "answer": {}
+    }
+  },
+  "zoneBlue": "Crios Gorm",
+  "@zoneBlue": {
+    "description": "Text used in the app for zone blue."
+  },
+  "zoneGreen": "Crios Glas",
+  "@zoneGreen": {
+    "description": "Text used in the app for zone green."
+  },
+  "zoneYellow": "Crios Buí",
+  "@zoneYellow": {
+    "description": "Text used in the app for zone yellow."
+  },
+  "zoneRed": "Crios Dearg",
+  "@zoneRed": {
+    "description": "Text used in the app for zone red."
+  },
+  "zoneBlueChildDescription": "Tá mo chorp ag obair go mall. B'fhéidir go dteastaíonn scíth, compord nó gluaiseacht shéimh uaim.",
+  "@zoneBlueChildDescription": {
+    "description": "Text used in the app for zone blue child description."
+  },
+  "zoneGreenChildDescription": "Mothaíonn mo chorp socair agus compordach. B'fhéidir go bhfuilim réidh le foghlaim nó le himirt.",
+  "@zoneGreenChildDescription": {
+    "description": "Text used in the app for zone green child description."
+  },
+  "zoneYellowChildDescription": "Tá mo chuid fuinnimh ag ardú. B'fhéidir go dteastaíonn cabhair uaim chun moilliú nó díriú.",
+  "@zoneYellowChildDescription": {
+    "description": "Text used in the app for zone yellow child description."
+  },
+  "zoneRedChildDescription": "Tá mo mhothúcháin an-láidir. B'fhéidir go dteastaíonn spás, sábháilteacht agus tacaíocht uaim.",
+  "@zoneRedChildDescription": {
+    "description": "Text used in the app for zone red child description."
+  },
+  "zoneBlueStaffDescription": "Fuinneamh íseal, tuirseach, brónach nó tinn.",
+  "@zoneBlueStaffDescription": {
+    "description": "Text used in the app for zone blue staff description."
+  },
+  "zoneGreenStaffDescription": "Socair, dírithe, compordach agus réidh.",
+  "@zoneGreenStaffDescription": {
+    "description": "Text used in the app for zone green staff description."
+  },
+  "zoneYellowStaffDescription": "Buartha, ar bís, frustrach nó corraitheach.",
+  "@zoneYellowStaffDescription": {
+    "description": "Text used in the app for zone yellow staff description."
+  },
+  "zoneRedStaffDescription": "Mothúcháin an-láidir a dteastaíonn tacaíocht uathu.",
+  "@zoneRedStaffDescription": {
+    "description": "Text used in the app for zone red staff description."
+  },
+  "feelingTired": "Tuirseach",
+  "@feelingTired": {
+    "description": "Text used in the app for feeling tired."
+  },
+  "feelingSad": "Brónach",
+  "@feelingSad": {
+    "description": "Text used in the app for feeling sad."
+  },
+  "feelingBored": "Leamh",
+  "@feelingBored": {
+    "description": "Text used in the app for feeling bored."
+  },
+  "feelingUnwell": "Tinn",
+  "@feelingUnwell": {
+    "description": "Text used in the app for feeling unwell."
+  },
+  "feelingSlow": "Mall",
+  "@feelingSlow": {
+    "description": "Text used in the app for feeling slow."
+  },
+  "feelingCalm": "Socair",
+  "@feelingCalm": {
+    "description": "Text used in the app for feeling calm."
+  },
+  "feelingFocused": "Dírithe",
+  "@feelingFocused": {
+    "description": "Text used in the app for feeling focused."
+  },
+  "feelingHappy": "Sásta",
+  "@feelingHappy": {
+    "description": "Text used in the app for feeling happy."
+  },
+  "feelingContent": "Sásta compordach",
+  "@feelingContent": {
+    "description": "Text used in the app for feeling content."
+  },
+  "feelingReady": "Réidh",
+  "@feelingReady": {
+    "description": "Text used in the app for feeling ready."
+  },
+  "feelingWorried": "Buartha",
+  "@feelingWorried": {
+    "description": "Text used in the app for feeling worried."
+  },
+  "feelingExcited": "Ar bís",
+  "@feelingExcited": {
+    "description": "Text used in the app for feeling excited."
+  },
+  "feelingFrustrated": "Frustrach",
+  "@feelingFrustrated": {
+    "description": "Text used in the app for feeling frustrated."
+  },
+  "feelingSilly": "Amaideach",
+  "@feelingSilly": {
+    "description": "Text used in the app for feeling silly."
+  },
+  "feelingRestless": "Corraitheach",
+  "@feelingRestless": {
+    "description": "Text used in the app for feeling restless."
+  },
+  "feelingAngry": "Feargach",
+  "@feelingAngry": {
+    "description": "Text used in the app for feeling angry."
+  },
+  "feelingPanicked": "Scanraithe",
+  "@feelingPanicked": {
+    "description": "Text used in the app for feeling panicked."
+  },
+  "feelingTerrified": "An-scanraithe",
+  "@feelingTerrified": {
+    "description": "Text used in the app for feeling terrified."
+  },
+  "feelingOverwhelmed": "Faoi léigear",
+  "@feelingOverwhelmed": {
+    "description": "Text used in the app for feeling overwhelmed."
+  },
+  "feelingOutOfControl": "As smacht",
+  "@feelingOutOfControl": {
+    "description": "Text used in the app for feeling out of control."
+  },
+  "zoneSelected": "Roghnaigh tú an {zoneName}.",
+  "@zoneSelected": {
+    "description": "Text used in the app for zone selected.",
+    "placeholders": {
+      "zoneName": {}
+    }
+  },
+  "zoneUpdateFailed": "Níorbh fhéidir do chrios a nuashonrú: {error}",
+  "@zoneUpdateFailed": {
+    "description": "Text used in the app for zone update failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "howAreYouFeeling": "Conas atá Tú ag Mothú?",
+  "@howAreYouFeeling": {
+    "description": "Text used in the app for how are you feeling."
+  },
+  "helloChild": "Dia duit, {childName}",
+  "@helloChild": {
+    "description": "Text used in the app for hello child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "chooseCurrentZone": "Roghnaigh an crios is cosúla le conas a mhothaíonn tú anois.",
+  "@chooseCurrentZone": {
+    "description": "Text used in the app for choose current zone."
+  },
+  "everyZoneOkay": "Tá gach crios ceart go leor.",
+  "@everyZoneOkay": {
+    "description": "Text used in the app for every zone okay."
+  },
+  "thisIsMyZone": "Seo é mo chrios",
+  "@thisIsMyZone": {
+    "description": "Text used in the app for this is my zone."
+  },
+  "chooseZone": "Roghnaigh {zoneName}",
+  "@chooseZone": {
+    "description": "Text used in the app for choose zone.",
+    "placeholders": {
+      "zoneName": {}
+    }
+  },
+  "noBadZones": "Níl aon droch-chrios ann. Tugann ár mothúcháin eolas dúinn faoin méid a d'fhéadfadh a bheith ag teastáil ónár gcorp.",
+  "@noBadZones": {
+    "description": "Text used in the app for no bad zones."
+  },
+  "zonesOverview": "Forbhreathnú ar na Criosanna",
+  "@zonesOverview": {
+    "description": "Text used in the app for zones overview."
+  },
+  "classroomZonesLoadFailed": "Níorbh fhéidir criosanna an tseomra ranga a lódáil.",
+  "@classroomZonesLoadFailed": {
+    "description": "Text used in the app for classroom zones load failed."
+  },
+  "classroomZones": "Criosanna an tSeomra Ranga",
+  "@classroomZones": {
+    "description": "Text used in the app for classroom zones."
+  },
+  "classroomZonesIntro": "Léargas beo ar conas atá na páistí ag mothú.",
+  "@classroomZonesIntro": {
+    "description": "Text used in the app for classroom zones intro."
+  },
+  "checkedIn": "Seiceáilte isteach",
+  "@checkedIn": {
+    "description": "Text used in the app for checked in."
+  },
+  "noChildrenInZone": "Níl aon pháiste sa chrios seo faoi láthair.",
+  "@noChildrenInZone": {
+    "description": "Text used in the app for no children in zone."
+  },
+  "allChildrenCheckedIn": "Tá a seiceáil isteach criosanna déanta ag gach páiste.",
+  "@allChildrenCheckedIn": {
+    "description": "Text used in the app for all children checked in."
+  },
+  "notCheckedIn": "Gan seiceáil isteach",
+  "@notCheckedIn": {
+    "description": "Text used in the app for not checked in."
+  },
+  "noChildProfilesFoundShort": "Níor aimsíodh próifílí páistí",
+  "@noChildProfilesFoundShort": {
+    "description": "Text used in the app for no child profiles found short."
+  },
+  "createChildBeforeZones": "Cruthaigh próifíl páiste sula n-úsáideann tú Forbhreathnú na gCriosanna.",
+  "@createChildBeforeZones": {
+    "description": "Text used in the app for create child before zones."
+  },
+  "viewBodyCheckReports": "Féach ar Thuairiscí Seiceáil Coirp",
+  "@viewBodyCheckReports": {
+    "description": "Text used in the app for view body check reports."
+  },
+  "openIncidentLog": "Oscail Loga na dTeagmhas",
+  "@openIncidentLog": {
+    "description": "Text used in the app for open incident log."
+  },
+  "openSchedule": "Oscail an Sceideal",
+  "@openSchedule": {
+    "description": "Text used in the app for open schedule."
+  },
+  "openZonesOverview": "Oscail Forbhreathnú na gCriosanna",
+  "@openZonesOverview": {
+    "description": "Text used in the app for open zones overview."
+  },
+  "totalChildProfiles": "Próifílí páistí san iomlán",
+  "@totalChildProfiles": {
+    "description": "Text used in the app for total child profiles."
+  },
+  "zonesCheckedIn": "Criosanna seiceáilte isteach",
+  "@zonesCheckedIn": {
+    "description": "Text used in the app for zones checked in."
+  },
+  "childrenWithSelectedZone": "Páistí a bhfuil crios roghnaithe acu",
+  "@childrenWithSelectedZone": {
+    "description": "Text used in the app for children with selected zone."
+  },
+  "noChildProfilesYet": "Níl aon phróifíl páiste ann fós.",
+  "@noChildProfilesYet": {
+    "description": "Text used in the app for no child profiles yet."
+  },
+  "noZone": "Gan chrios",
+  "@noZone": {
+    "description": "Text used in the app for no zone."
+  },
+  "childZoneSummary": "{childName}: {zone}",
+  "@childZoneSummary": {
+    "description": "Text used in the app for child zone summary.",
+    "placeholders": {
+      "childName": {},
+      "zone": {}
+    }
+  },
+  "noUncheckedBodyChecks": "Níl aon tuairisc Seiceáil Coirp gan seiceáil",
+  "@noUncheckedBodyChecks": {
+    "description": "Text used in the app for no unchecked body checks."
+  },
+  "nothingNeedsReview": "Níl aon rud le hathbhreithniú faoi láthair.",
+  "@nothingNeedsReview": {
+    "description": "Text used in the app for nothing needs review."
+  },
+  "uncheckedBodyChecksIntro": "Tuairiscí gan seiceáil a dteastaíonn athbhreithniú foirne uathu",
+  "@uncheckedBodyChecksIntro": {
+    "description": "Text used in the app for unchecked body checks intro."
+  },
+  "bodyCheckSummary": "{bodyPart} • {painType} • {date}",
+  "@bodyCheckSummary": {
+    "description": "Text used in the app for body check summary.",
+    "placeholders": {
+      "bodyPart": {},
+      "painType": {},
+      "date": {}
+    }
+  },
+  "viewAllBodyChecks": "Féach ar gach ceann de na {count} tuairisc Seiceáil Coirp",
+  "@viewAllBodyChecks": {
+    "description": "Text used in the app for view all body checks.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "scheduleSaturday": "Dé Sathairn",
+  "@scheduleSaturday": {
+    "description": "Text used in the app for schedule saturday."
+  },
+  "scheduleSunday": "Dé Domhnaigh",
+  "@scheduleSunday": {
+    "description": "Text used in the app for schedule sunday."
+  },
+  "noScheduleEntriesForDay": "Níl aon iontráil sceidil do {day}",
+  "@noScheduleEntriesForDay": {
+    "description": "Text used in the app for no schedule entries for day.",
+    "placeholders": {
+      "day": {}
+    }
+  },
+  "nothingScheduledTodayYet": "Níor cuireadh aon rud leis don lá inniu fós.",
+  "@nothingScheduledTodayYet": {
+    "description": "Text used in the app for nothing scheduled today yet."
+  },
+  "noImportantIncidents": "Níl aon teagmhas tábhachtach le déanaí",
+  "@noImportantIncidents": {
+    "description": "Text used in the app for no important incidents."
+  },
+  "noImportantIncidentsIntro": "Níor aimsíodh aon teagmhas meánach/ard le hathbhreithniú.",
+  "@noImportantIncidentsIntro": {
+    "description": "Text used in the app for no important incidents intro."
+  },
+  "severityHigh": "Ard",
+  "@severityHigh": {
+    "description": "Text used in the app for severity high."
+  },
+  "severityMedium": "Meánach",
+  "@severityMedium": {
+    "description": "Text used in the app for severity medium."
+  },
+  "severityLow": "Íseal",
+  "@severityLow": {
+    "description": "Text used in the app for severity low."
+  },
+  "incidentSummary": "{severity} • {date}\n{description}",
+  "@incidentSummary": {
+    "description": "Text used in the app for incident summary.",
+    "placeholders": {
+      "severity": {},
+      "date": {},
+      "description": {}
+    }
+  },
+  "todayOverviewForStaff": "Forbhreathnú tapa ar an seomra ranga do {staffName}.",
+  "@todayOverviewForStaff": {
+    "description": "Text used in the app for today overview for staff.",
+    "placeholders": {
+      "staffName": {}
+    }
+  },
+  "quickActions": "Gníomhartha Tapa",
+  "@quickActions": {
+    "description": "Text used in the app for quick actions."
+  },
+  "zonesSnapshot": "Léargas ar na Criosanna",
+  "@zonesSnapshot": {
+    "description": "Text used in the app for zones snapshot."
+  },
+  "bodyCheckAttention": "Aird ar Sheiceáil Coirp",
+  "@bodyCheckAttention": {
+    "description": "Text used in the app for body check attention."
+  },
+  "todaysSchedule": "Sceideal an Lae Inniu",
+  "@todaysSchedule": {
+    "description": "Text used in the app for todays schedule."
+  },
+  "recentImportantIncidents": "Teagmhais Tábhachtacha / le Déanaí",
+  "@recentImportantIncidents": {
+    "description": "Text used in the app for recent important incidents."
+  },
+  "iMightFeel": "B'fhéidir go mothóinn:",
+  "@iMightFeel": {
+    "description": "Text used in the app for i might feel."
+  }
 }

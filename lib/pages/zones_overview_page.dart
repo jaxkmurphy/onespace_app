@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
+import '../l10n/zone_localizations.dart';
 
 class ZoneOverviewPage extends StatelessWidget {
   final String? teacherUid;
 
-  const ZoneOverviewPage({
-    super.key,
-    this.teacherUid,
-  });
+  const ZoneOverviewPage({super.key, this.teacherUid});
 
-  static const List<_ZoneDisplay> zones = [
+  static const List<_ZoneDisplay> _zones = [
     _ZoneDisplay(
       value: 'blue',
       name: 'Blue Zone',
@@ -46,23 +45,17 @@ class ZoneOverviewPage extends StatelessWidget {
     final firestoreService = FirestoreService();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Zones Overview'),
-      ),
+      appBar: AppBar(title: Text(context.l10n.zonesOverview)),
       body: SafeArea(
         child: StreamBuilder<List<ChildProfile>>(
           stream: firestoreService.getCurrentChildProfiles(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Center(
-                child: Text('Could not load classroom zones.'),
-              );
+              return Center(child: Text(context.l10n.classroomZonesLoadFailed));
             }
 
             if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             final children = snapshot.data!;
@@ -75,9 +68,7 @@ class ZoneOverviewPage extends StatelessWidget {
                   padding: const EdgeInsets.all(18),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 1100,
-                      ),
+                      constraints: const BoxConstraints(maxWidth: 1100),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -106,14 +97,12 @@ class ZoneOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    BuildContext context,
-    List<ChildProfile> children,
-  ) {
-    final selectedCount = children.where((child) {
-      final zone = child.zone?.trim() ?? '';
-      return zone.isNotEmpty;
-    }).length;
+  Widget _buildHeader(BuildContext context, List<ChildProfile> children) {
+    final selectedCount =
+        children.where((child) {
+          final zone = child.zone?.trim() ?? '';
+          return zone.isNotEmpty;
+        }).length;
 
     return Card(
       margin: EdgeInsets.zero,
@@ -129,16 +118,13 @@ class ZoneOverviewPage extends StatelessWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.primaryContainer,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Icon(
                     Icons.groups_rounded,
                     size: 34,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onPrimaryContainer,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -147,17 +133,13 @@ class ZoneOverviewPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Classroom Zones',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        context.l10n.classroomZones,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'A live view of how children are feeling.',
+                        context.l10n.classroomZonesIntro,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
@@ -171,14 +153,14 @@ class ZoneOverviewPage extends StatelessWidget {
               children: [
                 _buildStat(
                   context,
-                  label: 'Children',
+                  label: context.l10n.children,
                   value: children.length.toString(),
                   icon: Icons.child_care_rounded,
                 ),
                 const SizedBox(width: 10),
                 _buildStat(
                   context,
-                  label: 'Checked in',
+                  label: context.l10n.checkedIn,
                   value: selectedCount.toString(),
                   icon: Icons.check_circle_rounded,
                 ),
@@ -197,11 +179,7 @@ class ZoneOverviewPage extends StatelessWidget {
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                title,
-                const SizedBox(height: 18),
-                totals,
-              ],
+              children: [title, const SizedBox(height: 18), totals],
             );
           },
         ),
@@ -218,65 +196,39 @@ class ZoneOverviewPage extends StatelessWidget {
     return Expanded(
       flex: 0,
       child: Container(
-        constraints: const BoxConstraints(
-          minWidth: 110,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 11,
-        ),
+        constraints: const BoxConstraints(minWidth: 110),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           children: [
-            Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(icon, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 3),
             Text(
               value,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(label, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildWideLayout(
-    BuildContext context,
-    List<ChildProfile> children,
-  ) {
+  Widget _buildWideLayout(BuildContext context, List<ChildProfile> children) {
     return Column(
       children: [
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: _buildZoneCard(
-                  context,
-                  zones[0],
-                  children,
-                ),
-              ),
+              Expanded(child: _buildZoneCard(context, _zones[0], children)),
               const SizedBox(width: 16),
-              Expanded(
-                child: _buildZoneCard(
-                  context,
-                  zones[1],
-                  children,
-                ),
-              ),
+              Expanded(child: _buildZoneCard(context, _zones[1], children)),
             ],
           ),
         ),
@@ -285,21 +237,9 @@ class ZoneOverviewPage extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: _buildZoneCard(
-                  context,
-                  zones[2],
-                  children,
-                ),
-              ),
+              Expanded(child: _buildZoneCard(context, _zones[2], children)),
               const SizedBox(width: 16),
-              Expanded(
-                child: _buildZoneCard(
-                  context,
-                  zones[3],
-                  children,
-                ),
-              ),
+              Expanded(child: _buildZoneCard(context, _zones[3], children)),
             ],
           ),
         ),
@@ -307,20 +247,12 @@ class ZoneOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildNarrowLayout(
-    BuildContext context,
-    List<ChildProfile> children,
-  ) {
+  Widget _buildNarrowLayout(BuildContext context, List<ChildProfile> children) {
     return Column(
       children: [
-        for (int index = 0; index < zones.length; index++) ...[
-          _buildZoneCard(
-            context,
-            zones[index],
-            children,
-          ),
-          if (index < zones.length - 1)
-            const SizedBox(height: 14),
+        for (int index = 0; index < _zones.length; index++) ...[
+          _buildZoneCard(context, _zones[index], children),
+          if (index < _zones.length - 1) const SizedBox(height: 14),
         ],
       ],
     );
@@ -331,12 +263,11 @@ class ZoneOverviewPage extends StatelessWidget {
     _ZoneDisplay zone,
     List<ChildProfile> allChildren,
   ) {
-    final children = allChildren.where((child) {
-      return child.zone?.toLowerCase() == zone.value;
-    }).toList()
-      ..sort(
-        (first, second) => first.name.compareTo(second.name),
-      );
+    final children =
+        allChildren.where((child) {
+            return child.zone?.toLowerCase() == zone.value;
+          }).toList()
+          ..sort((first, second) => first.name.compareTo(second.name));
 
     return Card(
       margin: EdgeInsets.zero,
@@ -365,9 +296,8 @@ class ZoneOverviewPage extends StatelessWidget {
                   ),
                   child: Icon(
                     zone.icon,
-                    color: zone.value == 'yellow'
-                        ? Colors.black87
-                        : Colors.white,
+                    color:
+                        zone.value == 'yellow' ? Colors.black87 : Colors.white,
                     size: 31,
                   ),
                 ),
@@ -377,15 +307,14 @@ class ZoneOverviewPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        zone.name,
-                        style:
-                            Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        localizedZoneName(context.l10n, zone.value),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        zone.description,
+                        localizedZoneStaffDescription(context.l10n, zone.value),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -405,9 +334,10 @@ class ZoneOverviewPage extends StatelessWidget {
                   child: Text(
                     children.length.toString(),
                     style: TextStyle(
-                      color: zone.value == 'yellow'
-                          ? Colors.black87
-                          : Colors.white,
+                      color:
+                          zone.value == 'yellow'
+                              ? Colors.black87
+                              : Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -420,14 +350,13 @@ class ZoneOverviewPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surface
-                      .withValues(alpha: 0.72),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surface.withValues(alpha: 0.72),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Text(
-                  'No children are currently in this zone.',
+                child: Text(
+                  context.l10n.noChildrenInZone,
                   textAlign: TextAlign.center,
                 ),
               )
@@ -435,27 +364,27 @@ class ZoneOverviewPage extends StatelessWidget {
               Wrap(
                 spacing: 9,
                 runSpacing: 9,
-                children: children.map((child) {
-                  return Chip(
-                    avatar: CircleAvatar(
-                      backgroundColor: zone.colour,
-                      foregroundColor: zone.value == 'yellow'
-                          ? Colors.black87
-                          : Colors.white,
-                      child: Text(
-                        child.name.isEmpty
-                            ? '?'
-                            : child.name[0].toUpperCase(),
-                      ),
-                    ),
-                    label: Text(
-                      child.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                }).toList(),
+                children:
+                    children.map((child) {
+                      return Chip(
+                        avatar: CircleAvatar(
+                          backgroundColor: zone.colour,
+                          foregroundColor:
+                              zone.value == 'yellow'
+                                  ? Colors.black87
+                                  : Colors.white,
+                          child: Text(
+                            child.name.isEmpty
+                                ? '?'
+                                : child.name[0].toUpperCase(),
+                          ),
+                        ),
+                        label: Text(
+                          child.name,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      );
+                    }).toList(),
               ),
           ],
         ),
@@ -467,16 +396,13 @@ class ZoneOverviewPage extends StatelessWidget {
     BuildContext context,
     List<ChildProfile> children,
   ) {
-    final unselected = children.where((child) {
-      final zone = child.zone?.trim() ?? '';
+    final unselected =
+        children.where((child) {
+            final zone = child.zone?.trim() ?? '';
 
-      return !zones.any(
-        (item) => item.value == zone.toLowerCase(),
-      );
-    }).toList()
-      ..sort(
-        (first, second) => first.name.compareTo(second.name),
-      );
+            return !_zones.any((item) => item.value == zone.toLowerCase());
+          }).toList()
+          ..sort((first, second) => first.name.compareTo(second.name));
 
     if (unselected.isEmpty) {
       return Container(
@@ -484,23 +410,16 @@ class ZoneOverviewPage extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.green.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: Colors.green.withValues(alpha: 0.35),
-          ),
+          border: Border.all(color: Colors.green.withValues(alpha: 0.35)),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(
-              Icons.check_circle_rounded,
-              color: Colors.green,
-            ),
-            SizedBox(width: 12),
+            const Icon(Icons.check_circle_rounded, color: Colors.green),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Every child has completed their zone check-in.',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
+                context.l10n.allChildrenCheckedIn,
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -517,16 +436,13 @@ class ZoneOverviewPage extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.help_outline_rounded,
-                  color: Colors.grey,
-                ),
+                const Icon(Icons.help_outline_rounded, color: Colors.grey),
                 const SizedBox(width: 10),
                 Text(
-                  'Not checked in',
+                  context.l10n.notCheckedIn,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -534,17 +450,15 @@ class ZoneOverviewPage extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: unselected.map((child) {
-                return Chip(
-                  avatar: const CircleAvatar(
-                    child: Icon(
-                      Icons.person_rounded,
-                      size: 17,
-                    ),
-                  ),
-                  label: Text(child.name),
-                );
-              }).toList(),
+              children:
+                  unselected.map((child) {
+                    return Chip(
+                      avatar: const CircleAvatar(
+                        child: Icon(Icons.person_rounded, size: 17),
+                      ),
+                      label: Text(child.name),
+                    );
+                  }).toList(),
             ),
           ],
         ),
@@ -566,14 +480,14 @@ class ZoneOverviewPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'No child profiles found',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              context.l10n.noChildProfilesFoundShort,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
-            const Text(
-              'Create a child profile before using the Zones Overview.',
+            Text(
+              context.l10n.createChildBeforeZones,
               textAlign: TextAlign.center,
             ),
           ],

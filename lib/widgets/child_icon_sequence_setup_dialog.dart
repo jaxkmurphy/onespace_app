@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'icon_sequence_picker.dart';
+import '../l10n/l10n.dart';
 
 class ChildIconSequenceSetupDialog extends StatefulWidget {
   final String childName;
 
-  const ChildIconSequenceSetupDialog({
-    super.key,
-    required this.childName,
-  });
+  const ChildIconSequenceSetupDialog({super.key, required this.childName});
 
   @override
   State<ChildIconSequenceSetupDialog> createState() =>
@@ -42,7 +40,7 @@ class _ChildIconSequenceSetupDialogState
     if (!confirming) {
       if (firstSequence.length != 3) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please choose 3 icons first')),
+          SnackBar(content: Text(context.l10n.chooseThreeIconsFirst)),
         );
         return;
       }
@@ -56,15 +54,15 @@ class _ChildIconSequenceSetupDialogState
     }
 
     if (confirmSequence.length != 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please confirm the 3-icon sequence')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.confirmIconSequence)));
       return;
     }
 
     if (!_matches(firstSequence, confirmSequence)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sequences did not match. Try again.')),
+        SnackBar(content: Text(context.l10n.iconSequencesDoNotMatch)),
       );
       _restartSetup();
       return;
@@ -76,15 +74,15 @@ class _ChildIconSequenceSetupDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Reset unlock for ${widget.childName}'),
+      title: Text(context.l10n.resetUnlockForChild(widget.childName)),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               confirming
-                  ? 'Tap the same 3 icons again to confirm'
-                  : 'Choose 3 icons in order',
+                  ? context.l10n.tapSameIconsConfirm
+                  : context.l10n.chooseIconsInOrder,
             ),
             const SizedBox(height: 16),
             IconSequencePicker(
@@ -104,15 +102,15 @@ class _ChildIconSequenceSetupDialogState
       actions: [
         TextButton(
           onPressed: _restartSetup,
-          child: const Text('Start Over'),
+          child: Text(context.l10n.startOver),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _continueOrSave,
-          child: Text(confirming ? 'Save' : 'Next'),
+          child: Text(confirming ? context.l10n.save : context.l10n.next),
         ),
       ],
     );

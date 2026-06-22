@@ -4,6 +4,7 @@ import '../data/quiz_visuals.dart';
 import '../models/child_profile.dart';
 import '../models/quiz.dart';
 import '../services/firestore_service.dart';
+import '../l10n/l10n.dart';
 
 class QuizListPage extends StatefulWidget {
   final String teacherUid;
@@ -24,9 +25,7 @@ class _QuizListPageState extends State<QuizListPage> {
     Navigator.pushNamed(
       context,
       '/quiz-create',
-      arguments: {
-        'staffUid': widget.teacherUid,
-      },
+      arguments: {'staffUid': widget.teacherUid},
     );
   }
 
@@ -34,78 +33,65 @@ class _QuizListPageState extends State<QuizListPage> {
     Navigator.pushNamed(
       context,
       '/quiz-create',
-      arguments: {
-        'staffUid': widget.teacherUid,
-        'quiz': quiz,
-      },
+      arguments: {'staffUid': widget.teacherUid, 'quiz': quiz},
     );
   }
 
   void _previewQuiz(Quiz quiz) {
     if (quiz.questions.isEmpty) {
-      _showMessage('Add at least one question before previewing.');
+      _showMessage(context.l10n.previewNeedsQuestion);
       return;
     }
 
-    Navigator.pushNamed(
-      context,
-      '/quiz-play',
-      arguments: {
-        'quiz': quiz,
-      },
-    );
+    Navigator.pushNamed(context, '/quiz-play', arguments: {'quiz': quiz});
   }
 
   void _showMessage(String message) {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   Future<void> _duplicateQuiz(Quiz quiz) async {
+    final l10n = context.l10n;
     final now = DateTime.now();
 
     final duplicate = quiz.copyWith(
       id: widget.firestoreService.generateQuizId(),
-      title: '${quiz.title} Copy',
+      title: l10n.quizCopyTitle(quiz.title),
       createdAt: now,
       updatedAt: now,
     );
 
     try {
       await widget.firestoreService.addCurrentQuiz(duplicate);
-      _showMessage('Quiz duplicated successfully.');
+      _showMessage(l10n.quizDuplicated);
     } catch (error) {
-      _showMessage('Could not duplicate the quiz: $error');
+      _showMessage(l10n.quizDuplicateFailed(error.toString()));
     }
   }
 
   Future<void> _deleteQuiz(Quiz quiz) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Delete quiz?'),
-          content: Text(
-            'Are you sure you want to delete “${quiz.title}”? '
-            'Existing result history will be kept.',
-          ),
+          title: Text(l10n.deleteQuizQuestion),
+          content: Text(l10n.deleteQuizConfirmation(quiz.title)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red.shade700,
               ),
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text('Delete'),
+              child: Text(l10n.delete),
             ),
           ],
         );
@@ -116,9 +102,9 @@ class _QuizListPageState extends State<QuizListPage> {
 
     try {
       await widget.firestoreService.deleteCurrentQuiz(quiz.id);
-      _showMessage('Quiz deleted.');
+      _showMessage(l10n.quizDeleted);
     } catch (error) {
-      _showMessage('Could not delete the quiz: $error');
+      _showMessage(l10n.quizDeleteFailed(error.toString()));
     }
   }
 
@@ -129,7 +115,7 @@ class _QuizListPageState extends State<QuizListPage> {
         if (snapshot.hasError) {
           return _MessageState(
             icon: Icons.cloud_off_rounded,
-            title: 'Could not load quizzes',
+            title: context.l10n.quizzesLoadFailed,
             message: '${snapshot.error}',
           );
         }
@@ -143,17 +129,16 @@ class _QuizListPageState extends State<QuizListPage> {
         if (quizzes.isEmpty) {
           return _MessageState(
             icon: Icons.quiz_rounded,
-            title: 'Your quiz library is empty',
-            message: 'Create your first quiz to get started.',
-            actionLabel: 'Create Quiz',
+            title: context.l10n.quizLibraryEmpty,
+            message: context.l10n.createFirstQuiz,
+            actionLabel: context.l10n.createQuiz,
             onAction: _createQuiz,
           );
         }
 
         return LayoutBuilder(
           builder: (context, constraints) {
-            final horizontalPadding =
-                constraints.maxWidth > 700 ? 24.0 : 14.0;
+            final horizontalPadding = constraints.maxWidth > 700 ? 24.0 : 14.0;
 
             return GridView.builder(
               padding: EdgeInsets.fromLTRB(
@@ -162,8 +147,7 @@ class _QuizListPageState extends State<QuizListPage> {
                 horizontalPadding,
                 100,
               ),
-              gridDelegate:
-                  const SliverGridDelegateWithMaxCrossAxisExtent(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 430,
                 mainAxisExtent: 285,
                 crossAxisSpacing: 16,
@@ -193,10 +177,10 @@ class _QuizListPageState extends State<QuizListPage> {
       stream: widget.firestoreService.getCurrentChildProfiles(),
       builder: (context, childSnapshot) {
         if (childSnapshot.hasError) {
-          return const _MessageState(
+          return _MessageState(
             icon: Icons.cloud_off_rounded,
-            title: 'Could not load results',
-            message: 'Child profiles could not be loaded.',
+            title: context.l10n.quizResultsLoadFailed,
+            message: context.l10n.childProfilesLoadFailedShort,
           );
         }
 
@@ -213,16 +197,13 @@ class _QuizListPageState extends State<QuizListPage> {
 
             final children = childSnapshot.data!;
             final quizzes = quizSnapshot.data!;
-            final quizzesById = {
-              for (final quiz in quizzes) quiz.id: quiz,
-            };
+            final quizzesById = {for (final quiz in quizzes) quiz.id: quiz};
 
             if (children.isEmpty) {
-              return const _MessageState(
+              return _MessageState(
                 icon: Icons.people_outline_rounded,
-                title: 'No child profiles',
-                message:
-                    'Quiz results will appear after profiles are added.',
+                title: context.l10n.noChildProfiles,
+                message: context.l10n.quizResultsAfterProfiles,
               );
             }
 
@@ -230,16 +211,13 @@ class _QuizListPageState extends State<QuizListPage> {
               padding: const EdgeInsets.fromLTRB(16, 18, 16, 40),
               children: [
                 Text(
-                  'Quiz results',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.w900),
+                  context.l10n.quizResults,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'Recent attempts and scores for each child.',
-                ),
+                Text(context.l10n.quizResultsIntro),
                 const SizedBox(height: 18),
                 ...children.map(
                   (child) => Padding(
@@ -265,16 +243,16 @@ class _QuizListPageState extends State<QuizListPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Quizzes'),
-          bottom: const TabBar(
+          title: Text(context.l10n.quizzes),
+          bottom: TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.library_books_rounded),
-                text: 'Quiz Library',
+                icon: const Icon(Icons.library_books_rounded),
+                text: context.l10n.quizLibrary,
               ),
               Tab(
-                icon: Icon(Icons.insights_rounded),
-                text: 'Results',
+                icon: const Icon(Icons.insights_rounded),
+                text: context.l10n.results,
               ),
             ],
           ),
@@ -282,14 +260,9 @@ class _QuizListPageState extends State<QuizListPage> {
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _createQuiz,
           icon: const Icon(Icons.add_rounded),
-          label: const Text('Create Quiz'),
+          label: Text(context.l10n.createQuiz),
         ),
-        body: TabBarView(
-          children: [
-            _buildLibraryTab(),
-            _buildResultsTab(),
-          ],
-        ),
+        body: TabBarView(children: [_buildLibraryTab(), _buildResultsTab()]),
       ),
     );
   }
@@ -315,25 +288,21 @@ class _QuizLibraryCard extends StatelessWidget {
     final style = quizStyleFor(quiz.iconName);
     final color = quizColorFromHex(quiz.colorHex);
 
-    final audienceText = quiz.availableToAll
-        ? 'Everyone'
-        : '${quiz.assignedChildIds.length} selected';
+    final audienceText =
+        quiz.availableToAll
+            ? context.l10n.everyone
+            : context.l10n.audienceSelectedCount(quiz.assignedChildIds.length);
 
     return Card(
       elevation: 0,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-          color: color.withValues(alpha: 0.28),
-        ),
+        side: BorderSide(color: color.withValues(alpha: 0.28)),
       ),
       child: Column(
         children: [
-          Container(
-            height: 8,
-            color: color,
-          ),
+          Container(height: 8, color: color),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(18, 16, 12, 14),
@@ -344,13 +313,8 @@ class _QuizLibraryCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 27,
-                        backgroundColor:
-                            color.withValues(alpha: 0.15),
-                        child: Icon(
-                          style.icon,
-                          color: color,
-                          size: 29,
-                        ),
+                        backgroundColor: color.withValues(alpha: 0.15),
+                        child: Icon(style.icon, color: color, size: 29),
                       ),
                       const SizedBox(width: 13),
                       Expanded(
@@ -358,16 +322,12 @@ class _QuizLibraryCard extends StatelessWidget {
                           quiz.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(
-                                fontWeight: FontWeight.w900,
-                              ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w900),
                         ),
                       ),
                       PopupMenuButton<String>(
-                        tooltip: 'More options',
+                        tooltip: context.l10n.moreOptions,
                         onSelected: (value) {
                           switch (value) {
                             case 'duplicate':
@@ -378,40 +338,39 @@ class _QuizLibraryCard extends StatelessWidget {
                               break;
                           }
                         },
-                        itemBuilder: (context) => const [
-                          PopupMenuItem(
-                            value: 'duplicate',
-                            child: ListTile(
-                              leading: Icon(Icons.copy_rounded),
-                              title: Text('Duplicate'),
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'delete',
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.delete_outline_rounded,
-                                color: Colors.red,
+                        itemBuilder:
+                            (context) => [
+                              PopupMenuItem(
+                                value: 'duplicate',
+                                child: ListTile(
+                                  leading: const Icon(Icons.copy_rounded),
+                                  title: Text(context.l10n.duplicate),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
                               ),
-                              title: Text('Delete'),
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ],
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: Colors.red,
+                                  ),
+                                  title: Text(context.l10n.delete),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                            ],
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Text(
                     quiz.description.isEmpty
-                        ? 'No description added.'
+                        ? context.l10n.noDescriptionAdded
                         : quiz.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade700),
                   ),
                   const Spacer(),
                   Wrap(
@@ -420,14 +379,16 @@ class _QuizLibraryCard extends StatelessWidget {
                     children: [
                       _InfoChip(
                         icon: Icons.help_outline_rounded,
-                        label:
-                            '${quiz.questions.length} ${quiz.questions.length == 1 ? 'question' : 'questions'}',
+                        label: context.l10n.questionCount(
+                          quiz.questions.length,
+                        ),
                         color: color,
                       ),
                       _InfoChip(
-                        icon: quiz.availableToAll
-                            ? Icons.groups_rounded
-                            : Icons.people_alt_rounded,
+                        icon:
+                            quiz.availableToAll
+                                ? Icons.groups_rounded
+                                : Icons.people_alt_rounded,
                         label: audienceText,
                         color: color,
                       ),
@@ -438,11 +399,9 @@ class _QuizLibraryCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: quiz.questions.isEmpty
-                              ? null
-                              : onPreview,
+                          onPressed: quiz.questions.isEmpty ? null : onPreview,
                           icon: const Icon(Icons.play_arrow_rounded),
-                          label: const Text('Preview'),
+                          label: Text(context.l10n.preview),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -450,10 +409,8 @@ class _QuizLibraryCard extends StatelessWidget {
                         child: FilledButton.icon(
                           onPressed: onEdit,
                           icon: const Icon(Icons.edit_rounded),
-                          label: const Text('Edit'),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: color,
-                          ),
+                          label: Text(context.l10n.edit),
+                          style: FilledButton.styleFrom(backgroundColor: color),
                         ),
                       ),
                     ],
@@ -482,10 +439,7 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.11),
         borderRadius: BorderRadius.circular(30),
@@ -497,10 +451,7 @@ class _InfoChip extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(color: color, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -519,7 +470,7 @@ class _ChildQuizResultsCard extends StatelessWidget {
     required this.firestoreService,
   });
 
-  String _formatDate(dynamic value) {
+  String _formatDate(BuildContext context, dynamic value) {
     DateTime? date;
 
     if (value is Timestamp) {
@@ -528,7 +479,7 @@ class _ChildQuizResultsCard extends StatelessWidget {
       date = value;
     }
 
-    if (date == null) return 'Just now';
+    if (date == null) return context.l10n.justNow;
 
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
@@ -539,8 +490,7 @@ class _ChildQuizResultsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream:
-          firestoreService.getCurrentQuizAttemptsForChild(child.id),
+      stream: firestoreService.getCurrentQuizAttemptsForChild(child.id),
       builder: (context, snapshot) {
         final attempts = snapshot.data ?? [];
 
@@ -548,9 +498,7 @@ class _ChildQuizResultsCard extends StatelessWidget {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
-            side: BorderSide(
-              color: Theme.of(context).dividerColor,
-            ),
+            side: BorderSide(color: Theme.of(context).dividerColor),
           ),
           child: ExpansionTile(
             leading: CircleAvatar(
@@ -566,22 +514,22 @@ class _ChildQuizResultsCard extends StatelessWidget {
             ),
             subtitle: Text(
               snapshot.connectionState == ConnectionState.waiting
-                  ? 'Loading attempts...'
+                  ? context.l10n.loadingAttempts
                   : attempts.isEmpty
-                      ? 'No quiz attempts yet'
-                      : '${attempts.length} ${attempts.length == 1 ? 'attempt' : 'attempts'}',
+                  ? context.l10n.noQuizAttempts
+                  : context.l10n.attemptCount(attempts.length),
             ),
             children: [
               if (snapshot.hasError)
-                const Padding(
-                  padding: EdgeInsets.all(18),
-                  child: Text('Could not load attempts.'),
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Text(context.l10n.attemptsLoadFailed),
                 )
               else if (attempts.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(18),
+                Padding(
+                  padding: const EdgeInsets.all(18),
                   child: Text(
-                    'Results will appear after this child completes a quiz.',
+                    context.l10n.resultsAfterQuiz,
                     textAlign: TextAlign.center,
                   ),
                 )
@@ -591,31 +539,21 @@ class _ChildQuizResultsCard extends StatelessWidget {
                   final quiz = quizzesById[quizId];
 
                   final score = attempt['score'] as int? ?? 0;
-                  final total =
-                      attempt['totalQuestions'] as int? ?? 0;
-                  final percentage =
-                      attempt['percentage'] as int? ?? 0;
+                  final total = attempt['totalQuestions'] as int? ?? 0;
+                  final percentage = attempt['percentage'] as int? ?? 0;
 
-                  final style = quizStyleFor(
-                    quiz?.iconName ?? 'quiz',
-                  );
+                  final style = quizStyleFor(quiz?.iconName ?? 'quiz');
 
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor:
-                          style.color.withValues(alpha: 0.14),
-                      child: Icon(
-                        style.icon,
-                        color: style.color,
-                      ),
+                      backgroundColor: style.color.withValues(alpha: 0.14),
+                      child: Icon(style.icon, color: style.color),
                     ),
                     title: Text(
-                      quiz?.title ?? 'Deleted quiz',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      quiz?.title ?? context.l10n.deletedQuiz,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    subtitle: Text(_formatDate(attempt['timestamp'])),
+                    subtitle: Text(_formatDate(context, attempt['timestamp'])),
                     trailing: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -627,8 +565,12 @@ class _ChildQuizResultsCard extends StatelessWidget {
                       ),
                       child: Text(
                         total > 0
-                            ? '$score/$total  •  $percentage%'
-                            : '$score points',
+                            ? context.l10n.scoreSummary(
+                              score,
+                              total,
+                              percentage,
+                            )
+                            : context.l10n.pointsValue(score),
                         style: TextStyle(
                           color: style.color,
                           fontWeight: FontWeight.w900,
@@ -668,25 +610,17 @@ class _MessageState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 74,
-              color: const Color(0xFF7E57C2),
-            ),
+            Icon(icon, size: 74, color: const Color(0xFF7E57C2)),
             const SizedBox(height: 18),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-            ),
+            Text(message, textAlign: TextAlign.center),
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: 20),
               FilledButton.icon(

@@ -608,7 +608,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fun => 'Fun';
 
   @override
-  String get selectedChildren => 'Selected Children';
+  String get selectedChildren => 'Selected children';
 
   @override
   String get availableToEveryone => 'Available to Everyone';
@@ -1597,7 +1597,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get replaceExistingSchedule => 'Replace Existing Schedule?';
 
   @override
-  String dayExistingActivityCount(num count, Object day) {
+  String dayExistingActivityCount(Object day, num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -1707,4 +1707,1652 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityTypeOther => 'Other';
+
+  @override
+  String get schoolName => 'School Name';
+
+  @override
+  String get schoolNameHint => 'Example: St Mary’s Primary School';
+
+  @override
+  String get schoolCode => 'School Code';
+
+  @override
+  String get schoolCodeHint => 'Example: STM123';
+
+  @override
+  String get adminEmail => 'Admin Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get pleaseWait => 'Please wait...';
+
+  @override
+  String get createSchoolAdminAccount => 'Create School Admin Account';
+
+  @override
+  String get adminLogin => 'Admin Login';
+
+  @override
+  String get existingAdminLogin => 'Already have an admin account? Login';
+
+  @override
+  String get registerSchoolPrompt => 'No admin account? Register school';
+
+  @override
+  String get classroomCode => 'Classroom Code';
+
+  @override
+  String get classroomCodeHint => 'Example: ASD1';
+
+  @override
+  String get classroomPin => 'Classroom PIN';
+
+  @override
+  String get checking => 'Checking...';
+
+  @override
+  String get enterClassroom => 'Enter Classroom';
+
+  @override
+  String get createSchoolAdminIntro => 'Create a school admin account';
+
+  @override
+  String get adminLoginIntro => 'Admin login';
+
+  @override
+  String get classroomLoginIntro => 'Classroom login';
+
+  @override
+  String get admin => 'Admin';
+
+  @override
+  String get classroom => 'Classroom';
+
+  @override
+  String get enterSchoolDetails =>
+      'Please enter a school name and school code.';
+
+  @override
+  String get adminAccountCreateFailed => 'Could not create admin account.';
+
+  @override
+  String get loginFailed => 'Could not log in.';
+
+  @override
+  String get enterClassroomDetails =>
+      'Please enter school code, classroom code and PIN.';
+
+  @override
+  String get classroomLoginIncorrect =>
+      'Classroom login details are incorrect.';
+
+  @override
+  String get checkLoginFields => 'Please check all login fields.';
+
+  @override
+  String get adminLoginIncorrect => 'Admin email or password is incorrect.';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logoutConfirmation => 'Are you sure you want to logout?';
+
+  @override
+  String get accessDeniedIncorrectPin => 'Access denied: incorrect PIN';
+
+  @override
+  String get staffProfileDeleted => 'Staff profile deleted';
+
+  @override
+  String get childProfileDeleted => 'Child profile deleted';
+
+  @override
+  String staffProfileDeleteFailed(Object error) {
+    return 'Failed to delete staff profile: $error';
+  }
+
+  @override
+  String childProfileDeleteFailed(Object error) {
+    return 'Failed to delete child profile: $error';
+  }
+
+  @override
+  String get chooseProfile => 'Choose a profile to continue';
+
+  @override
+  String get staffProfiles => 'Staff Profiles';
+
+  @override
+  String get childProfiles => 'Child Profiles';
+
+  @override
+  String get staffProfile => 'Staff profile';
+
+  @override
+  String get noChildProfilesShort => 'No child profiles found';
+
+  @override
+  String ageValue(Object age) {
+    return 'Age: $age';
+  }
+
+  @override
+  String get adminActions => 'Admin Actions';
+
+  @override
+  String get addProfile => 'Add Profile';
+
+  @override
+  String get createProfilesIntro => 'Create staff or child profiles';
+
+  @override
+  String get appSettings => 'App Settings';
+
+  @override
+  String get accountSettings => 'Account Settings';
+
+  @override
+  String get languageAppOptions => 'Language and app options';
+
+  @override
+  String get managePinAccountOptions => 'Manage PIN and account options';
+
+  @override
+  String staffLoadError(Object error) {
+    return 'Error loading staff: $error';
+  }
+
+  @override
+  String childrenLoadError(Object error) {
+    return 'Error loading children: $error';
+  }
+
+  @override
+  String get deleteProfile => 'Delete profile';
+
+  @override
+  String get enterPin => 'Enter PIN';
+
+  @override
+  String get pin => 'PIN';
+
+  @override
+  String get incorrectPin => 'Incorrect PIN';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get startOver => 'Start Over';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get age => 'Age';
+
+  @override
+  String get nameRequired => 'Name is required';
+
+  @override
+  String get roleRequired => 'Role is required';
+
+  @override
+  String get ageRequired => 'Age is required';
+
+  @override
+  String get ageNumberRequired => 'Age must be a number';
+
+  @override
+  String get addStaffProfile => 'Add Staff Profile';
+
+  @override
+  String get addChildProfile => 'Add Child Profile';
+
+  @override
+  String get profilesSavedToClassroom =>
+      'New profiles will be saved to this classroom.';
+
+  @override
+  String get createStaffProfile => 'Create a staff profile';
+
+  @override
+  String get createChildProfile => 'Create a child profile';
+
+  @override
+  String get staffProfileAccessInfo =>
+      'Staff profiles use the account or classroom PIN for access.';
+
+  @override
+  String get childProfileAccessInfo =>
+      'Child profiles can use a simple 3-icon unlock sequence.';
+
+  @override
+  String get staffDetails => 'Staff Details';
+
+  @override
+  String get childDetails => 'Child Details';
+
+  @override
+  String get confirmChildUnlock => 'Confirm Child Unlock Sequence';
+
+  @override
+  String get setChildUnlock => 'Set Child Unlock Sequence';
+
+  @override
+  String get tapSameIconsConfirm => 'Tap the same 3 icons again to confirm.';
+
+  @override
+  String get askChildPickIcons => 'Ask the child to pick 3 icons in order.';
+
+  @override
+  String get chooseThreeIconsFirst => 'Please choose 3 icons first';
+
+  @override
+  String get chooseUnlockSequence => 'Please choose a 3-icon unlock sequence';
+
+  @override
+  String get confirmChildUnlockPrompt =>
+      'Please confirm the child unlock sequence';
+
+  @override
+  String get confirmThreeIconsPrompt =>
+      'Please tap the same 3 icons again to confirm';
+
+  @override
+  String get sequencesDoNotMatch =>
+      'Sequences did not match. Please try again.';
+
+  @override
+  String profileCreated(Object name) {
+    return 'Profile \"$name\" created successfully.';
+  }
+
+  @override
+  String profileSaveError(Object error) {
+    return 'Error saving profile: $error';
+  }
+
+  @override
+  String get saveStaffProfile => 'Save Staff Profile';
+
+  @override
+  String get saveChildProfile => 'Save Child Profile';
+
+  @override
+  String get selectedNone => 'Selected: None';
+
+  @override
+  String selectedIcons(Object icons) {
+    return 'Selected: $icons';
+  }
+
+  @override
+  String selectedCount(Object selected, Object required) {
+    return '$selected/$required selected';
+  }
+
+  @override
+  String get wrongIconSequence => 'Wrong sequence, try again';
+
+  @override
+  String unlockChild(Object childName) {
+    return 'Unlock $childName';
+  }
+
+  @override
+  String get tapPicturesInOrder => 'Tap your 3 pictures in order';
+
+  @override
+  String enteredCount(Object entered, Object required) {
+    return 'Entered: $entered/$required';
+  }
+
+  @override
+  String resetUnlockForChild(Object childName) {
+    return 'Reset unlock for $childName';
+  }
+
+  @override
+  String get chooseIconsInOrder => 'Choose 3 icons in order';
+
+  @override
+  String get confirmIconSequence => 'Please confirm the 3-icon sequence';
+
+  @override
+  String get iconSequencesDoNotMatch => 'Sequences did not match. Try again.';
+
+  @override
+  String get iconStar => 'Star';
+
+  @override
+  String get iconCar => 'Car';
+
+  @override
+  String get iconDog => 'Dog';
+
+  @override
+  String get iconApple => 'Apple';
+
+  @override
+  String get iconBall => 'Ball';
+
+  @override
+  String get iconMusic => 'Music';
+
+  @override
+  String get iconSun => 'Sun';
+
+  @override
+  String get iconHeart => 'Heart';
+
+  @override
+  String schoolAdminTitle(Object schoolName) {
+    return '$schoolName Admin';
+  }
+
+  @override
+  String get schoolSettings => 'School Settings';
+
+  @override
+  String schoolCodeValue(Object code) {
+    return 'School Code: $code';
+  }
+
+  @override
+  String classroomsUsed(Object used, Object limit) {
+    return 'Classrooms Used: $used / $limit';
+  }
+
+  @override
+  String statusValue(Object status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String classroomsLoadError(Object error) {
+    return 'Error loading classrooms: $error';
+  }
+
+  @override
+  String get noClassroomsYet =>
+      'No classrooms yet.\nTap + Add Classroom to create one.';
+
+  @override
+  String classroomListSummary(Object code, Object active) {
+    return 'Code: $code • Active: $active';
+  }
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get addClassroom => 'Add Classroom';
+
+  @override
+  String get classroomCreated => 'Classroom created';
+
+  @override
+  String classroomCreateError(Object error) {
+    return 'Error creating classroom: $error';
+  }
+
+  @override
+  String get createClassroom => 'Create Classroom';
+
+  @override
+  String get classroomDetails => 'Classroom Details';
+
+  @override
+  String get classroomName => 'Classroom Name';
+
+  @override
+  String get classroomNameHint => 'Example: ASD Unit 1';
+
+  @override
+  String get enterClassroomName => 'Enter a classroom name';
+
+  @override
+  String get enterClassroomCode => 'Enter a classroom code';
+
+  @override
+  String get classroomCodeMinLength =>
+      'Classroom code should be at least 3 characters';
+
+  @override
+  String get classroomPinHint => 'Example: 1234';
+
+  @override
+  String get enterClassroomPin => 'Enter a classroom PIN';
+
+  @override
+  String get classroomPinMinLength => 'PIN should be at least 4 digits';
+
+  @override
+  String get classroomNotFound => 'Classroom not found';
+
+  @override
+  String classroomLoadError(Object error) {
+    return 'Error loading classroom: $error';
+  }
+
+  @override
+  String get classroomUpdated => 'Classroom updated';
+
+  @override
+  String get deleteClassroom => 'Delete Classroom';
+
+  @override
+  String get deleteClassroomConfirmation =>
+      'Are you sure you want to delete this classroom? This cannot be undone.';
+
+  @override
+  String get classroomDeleted => 'Classroom deleted';
+
+  @override
+  String classroomDeleteError(Object error) {
+    return 'Error deleting classroom: $error';
+  }
+
+  @override
+  String get classroomInformation => 'Classroom Information';
+
+  @override
+  String get classroomAccessInfo =>
+      'These details control how staff access this classroom.';
+
+  @override
+  String get classroomCodeChangeInfo =>
+      'Changing this code will change what staff enter on the Classroom Login screen.';
+
+  @override
+  String get classroomActive => 'Classroom Active';
+
+  @override
+  String get classroomInactiveInfo =>
+      'If disabled, classroom login will be blocked for this classroom.';
+
+  @override
+  String get saveClassroom => 'Save Classroom';
+
+  @override
+  String get schoolNotFound => 'School not found';
+
+  @override
+  String schoolSettingsLoadError(Object error) {
+    return 'Error loading school settings: $error';
+  }
+
+  @override
+  String get schoolSettingsUpdated => 'School settings updated';
+
+  @override
+  String get schoolInformation => 'School Information';
+
+  @override
+  String get schoolAccountInfo =>
+      'These details control the school account and classroom login.';
+
+  @override
+  String get enterSchoolName => 'Enter a school name';
+
+  @override
+  String get enterSchoolCode => 'Enter a school code';
+
+  @override
+  String get schoolCodeMinLength =>
+      'School code should be at least 3 characters';
+
+  @override
+  String get schoolCodeChangeInfo =>
+      'Changing the school code will change what staff enter on the Classroom Login screen.';
+
+  @override
+  String get classroomLimit => 'Classroom Limit';
+
+  @override
+  String get enterClassroomLimit => 'Enter a classroom limit';
+
+  @override
+  String get enterValidNumber => 'Enter a valid number';
+
+  @override
+  String get classroomLimitMinimum => 'Classroom limit must be at least 1';
+
+  @override
+  String get contactDetails => 'Contact Details';
+
+  @override
+  String get principalName => 'Principal Name';
+
+  @override
+  String get vicePrincipalName => 'Vice Principal Name';
+
+  @override
+  String get schoolEmail => 'School Email';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get schoolAddress => 'School Address';
+
+  @override
+  String get schoolActive => 'School Active';
+
+  @override
+  String get schoolInactiveInfo =>
+      'If disabled later, classroom login can be blocked for this school.';
+
+  @override
+  String get saveSchoolSettings => 'Save School Settings';
+
+  @override
+  String get schoolCodeInUse => 'That school code is already in use.';
+
+  @override
+  String get classroomCodeInUse => 'That classroom code is already in use.';
+
+  @override
+  String get classroomLimitReached =>
+      'Classroom limit reached. Increase the classroom limit in School Settings.';
+
+  @override
+  String get classroomUpdateError => 'The classroom could not be updated.';
+
+  @override
+  String get schoolSettingsUpdateError =>
+      'The school settings could not be updated.';
+
+  @override
+  String get bodyPartHead => 'Head';
+
+  @override
+  String get bodyPartThroat => 'Throat';
+
+  @override
+  String get bodyPartChest => 'Chest';
+
+  @override
+  String get bodyPartTummy => 'Tummy';
+
+  @override
+  String get bodyPartLeftArm => 'Left arm';
+
+  @override
+  String get bodyPartRightArm => 'Right arm';
+
+  @override
+  String get bodyPartLeftHand => 'Left hand';
+
+  @override
+  String get bodyPartRightHand => 'Right hand';
+
+  @override
+  String get bodyPartLeftLeg => 'Left leg';
+
+  @override
+  String get bodyPartRightLeg => 'Right leg';
+
+  @override
+  String get bodyPartLeftFoot => 'Left foot';
+
+  @override
+  String get bodyPartRightFoot => 'Right foot';
+
+  @override
+  String get bodyPartBackOfHead => 'Back of head';
+
+  @override
+  String get bodyPartNeck => 'Neck';
+
+  @override
+  String get bodyPartUpperBack => 'Upper back';
+
+  @override
+  String get bodyPartLowerBack => 'Lower back';
+
+  @override
+  String get bodyMapFront => 'Front';
+
+  @override
+  String get bodyMapBack => 'Back';
+
+  @override
+  String bodyDiagramSemantics(Object side) {
+    return '$side body diagram. Tap where it hurts.';
+  }
+
+  @override
+  String get tapSoreBodyPart =>
+      'Tap the body where you feel sore or uncomfortable.';
+
+  @override
+  String bodyPartSelected(Object bodyPart) {
+    return 'You selected: $bodyPart';
+  }
+
+  @override
+  String get chooseBodyPartList => 'Choose from a list instead';
+
+  @override
+  String get painLittleSore => 'A little sore';
+
+  @override
+  String get painLittleSoreDescription =>
+      'I notice it, but it only hurts a little.';
+
+  @override
+  String get painHurts => 'It hurts';
+
+  @override
+  String get painHurtsShort => 'Hurts';
+
+  @override
+  String get painHurtsDescription => 'It is uncomfortable and I need help.';
+
+  @override
+  String get painHurtsALot => 'It hurts a lot';
+
+  @override
+  String get painHurtsALotShort => 'Hurts a lot';
+
+  @override
+  String get painHurtsALotDescription =>
+      'It hurts badly and I need an adult now.';
+
+  @override
+  String get painUnknown => 'Unknown';
+
+  @override
+  String get painSoreAching => 'Sore or aching';
+
+  @override
+  String get painSoreAchingDescription => 'A dull or heavy pain.';
+
+  @override
+  String get painSharp => 'Sharp';
+
+  @override
+  String get painSharpDescription => 'A sudden or pointed pain.';
+
+  @override
+  String get painBurningHot => 'Burning or hot';
+
+  @override
+  String get painBurningHotDescription => 'It feels hot or burning.';
+
+  @override
+  String get painItchy => 'Itchy';
+
+  @override
+  String get painItchyDescription => 'I want to scratch it.';
+
+  @override
+  String get painThrobbing => 'Throbbing';
+
+  @override
+  String get painThrobbingDescription => 'It pulses or beats.';
+
+  @override
+  String get painTinglyNumb => 'Tingly or numb';
+
+  @override
+  String get painTinglyNumbDescription => 'It feels asleep or strange.';
+
+  @override
+  String get painSick => 'Sick';
+
+  @override
+  String get painSickDescription => 'I feel like I might be sick.';
+
+  @override
+  String get painNotSure => 'Not sure';
+
+  @override
+  String get painNotSureDescription => 'I cannot explain the feeling.';
+
+  @override
+  String get chooseSoreLocation => 'Please choose where you feel sore.';
+
+  @override
+  String get choosePainAmount => 'Please choose how much it hurts.';
+
+  @override
+  String get choosePainFeeling => 'Please choose what it feels like.';
+
+  @override
+  String get bodyCheckSendFailed =>
+      'Your Body Check could not be sent. Please tell an adult now.';
+
+  @override
+  String get staffHaveBeenTold => 'Staff Have Been Told';
+
+  @override
+  String get bodyCheckSentMessage =>
+      'Your Body Check was sent.\n\nPlease tell an adult now if you need help.';
+
+  @override
+  String get okay => 'Okay';
+
+  @override
+  String get bodyCheckWhere => 'Where?';
+
+  @override
+  String get bodyCheckHowMuch => 'How much?';
+
+  @override
+  String get bodyCheckWhatFeeling => 'What feeling?';
+
+  @override
+  String get review => 'Review';
+
+  @override
+  String bodyCheckStep(Object current, Object total, Object name) {
+    return 'Step $current of $total: $name';
+  }
+
+  @override
+  String get whereDoesItHurt => 'Where does it hurt?';
+
+  @override
+  String get howMuchDoesItHurt => 'How much does it hurt?';
+
+  @override
+  String get choosePainFace => 'Choose the face that best shows how you feel.';
+
+  @override
+  String get whatDoesItFeelLike => 'What does it feel like?';
+
+  @override
+  String get choosePainDescription =>
+      'Choose the description that feels closest. It is okay if you are not sure.';
+
+  @override
+  String get checkYourBodyCheck => 'Check Your Body Check';
+
+  @override
+  String get reviewBodyCheckMessage =>
+      'Make sure this shows how you feel before telling staff.';
+
+  @override
+  String get tellAdultBodyCheck =>
+      'If you need help now, please tell an adult as well as sending this Body Check.';
+
+  @override
+  String changeBodyCheckAnswer(Object label) {
+    return 'Change $label';
+  }
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get sending => 'Sending...';
+
+  @override
+  String get tellStaff => 'Tell Staff';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String checkChildReport(Object childName) {
+    return 'Check $childName’s Report';
+  }
+
+  @override
+  String get optionalStaffNote => 'Optional staff note';
+
+  @override
+  String get staffNoteHint =>
+      'Record what was checked or what support was given.';
+
+  @override
+  String get markChecked => 'Mark Checked';
+
+  @override
+  String reportMarkedChecked(Object childName) {
+    return '$childName’s report was marked as checked.';
+  }
+
+  @override
+  String get reportUpdateFailed => 'The report could not be updated.';
+
+  @override
+  String get deleteReportQuestion => 'Delete Report?';
+
+  @override
+  String deleteBodyCheckReport(Object childName) {
+    return 'Delete this Body Check report for $childName?\n\nThis cannot be undone.';
+  }
+
+  @override
+  String get reportDeleteFailed => 'The report could not be deleted.';
+
+  @override
+  String get classroomBodyChecks => 'Classroom Body Checks';
+
+  @override
+  String get classroomBodyChecksIntro =>
+      'Review reports and record when support has been provided.';
+
+  @override
+  String get urgent => 'Urgent';
+
+  @override
+  String get unchecked => 'Unchecked';
+
+  @override
+  String get checked => 'Checked';
+
+  @override
+  String get reports => 'Reports';
+
+  @override
+  String get urgentBodyCheckMessage =>
+      'This child selected “Hurts a lot” and has not been checked.';
+
+  @override
+  String get checkedByStaff => 'Checked by staff';
+
+  @override
+  String checkedAt(Object time) {
+    return 'Checked $time';
+  }
+
+  @override
+  String get deleteReport => 'Delete report';
+
+  @override
+  String get needsChecking => 'Needs checking';
+
+  @override
+  String get noBodyCheckReports => 'No Body Check reports yet';
+
+  @override
+  String get bodyCheckReportsAppearHere =>
+      'Reports sent by children will appear here.';
+
+  @override
+  String get noReportsMatchFilters => 'No reports match these filters.';
+
+  @override
+  String get bodyCheckReportsLoadFailed =>
+      'Something went wrong loading Body Check reports.';
+
+  @override
+  String dateTimeAt(Object date, Object time) {
+    return '$date at $time';
+  }
+
+  @override
+  String get quizStyleGeneral => 'General';
+
+  @override
+  String get quizStyleNumbers => 'Numbers';
+
+  @override
+  String get quizStyleWords => 'Words';
+
+  @override
+  String get quizStyleScience => 'Science';
+
+  @override
+  String get quizStyleWorld => 'Our World';
+
+  @override
+  String get quizStyleMemory => 'Memory';
+
+  @override
+  String get quizStyleFun => 'Fun';
+
+  @override
+  String get enterQuizTitle => 'Please enter a quiz title.';
+
+  @override
+  String get chooseQuizAudience =>
+      'Choose at least one child or make the quiz available to everyone.';
+
+  @override
+  String get addAtLeastOneQuestion => 'Add at least one question.';
+
+  @override
+  String get quizUpdatedSuccess => 'Quiz updated successfully!';
+
+  @override
+  String get quizCreatedSuccess => 'Quiz created successfully!';
+
+  @override
+  String quizSaveFailed(Object error) {
+    return 'Could not save the quiz: $error';
+  }
+
+  @override
+  String get editYourQuiz => 'Edit your quiz';
+
+  @override
+  String get createNewQuiz => 'Create a new quiz';
+
+  @override
+  String get quizEditorIntro =>
+      'Keep questions clear, encouraging and easy to understand.';
+
+  @override
+  String get quizDetails => 'Quiz details';
+
+  @override
+  String get quizDetailsIntro =>
+      'Give the quiz a clear name and short description.';
+
+  @override
+  String get quizTitle => 'Quiz title';
+
+  @override
+  String get quizTitleHint => 'For example: Animal Sounds';
+
+  @override
+  String get quizDescriptionHint => 'What will children practise in this quiz?';
+
+  @override
+  String get quizStyle => 'Quiz style';
+
+  @override
+  String get quizStyleIntro => 'Choose a friendly visual theme.';
+
+  @override
+  String get whoCanPlay => 'Who can play?';
+
+  @override
+  String get quizAudienceIntro =>
+      'Make it available to everyone or selected children.';
+
+  @override
+  String get questions => 'Questions';
+
+  @override
+  String questionCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions',
+      one: '1 question',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addQuestion => 'Add question';
+
+  @override
+  String get addAnotherQuestion => 'Add another question';
+
+  @override
+  String get editQuiz => 'Edit Quiz';
+
+  @override
+  String get createQuiz => 'Create Quiz';
+
+  @override
+  String questionNumber(Object number) {
+    return 'Question $number';
+  }
+
+  @override
+  String get moveUp => 'Move up';
+
+  @override
+  String get moveDown => 'Move down';
+
+  @override
+  String get deleteQuestion => 'Delete question';
+
+  @override
+  String get question => 'Question';
+
+  @override
+  String get questionHint => 'What would you like to ask?';
+
+  @override
+  String get answers => 'Answers';
+
+  @override
+  String get correctAnswerInstruction =>
+      'Tap the circle beside the correct answer.';
+
+  @override
+  String get correctAnswer => 'Correct answer';
+
+  @override
+  String get markAsCorrect => 'Mark as correct';
+
+  @override
+  String answerLabel(Object letter) {
+    return 'Answer $letter';
+  }
+
+  @override
+  String get removeAnswer => 'Remove answer';
+
+  @override
+  String get addAnswer => 'Add answer';
+
+  @override
+  String get helpfulExplanation => 'Helpful explanation (optional)';
+
+  @override
+  String get helpfulExplanationHint =>
+      'Shown after the child answers the question.';
+
+  @override
+  String questionNeedsText(Object number) {
+    return 'Question $number needs some question text.';
+  }
+
+  @override
+  String questionNeedsAnswers(Object number) {
+    return 'Question $number needs at least two answers.';
+  }
+
+  @override
+  String completeQuestionAnswers(Object number) {
+    return 'Please complete every answer for question $number.';
+  }
+
+  @override
+  String questionDuplicateAnswers(Object number) {
+    return 'Question $number has duplicate answers.';
+  }
+
+  @override
+  String chooseCorrectAnswer(Object number) {
+    return 'Choose the correct answer for question $number.';
+  }
+
+  @override
+  String get previewNeedsQuestion =>
+      'Add at least one question before previewing.';
+
+  @override
+  String quizCopyTitle(Object title) {
+    return '$title Copy';
+  }
+
+  @override
+  String get quizDuplicated => 'Quiz duplicated successfully.';
+
+  @override
+  String quizDuplicateFailed(Object error) {
+    return 'Could not duplicate the quiz: $error';
+  }
+
+  @override
+  String get deleteQuizQuestion => 'Delete quiz?';
+
+  @override
+  String deleteQuizConfirmation(Object title) {
+    return 'Are you sure you want to delete “$title”? Existing result history will be kept.';
+  }
+
+  @override
+  String get quizDeleted => 'Quiz deleted.';
+
+  @override
+  String quizDeleteFailed(Object error) {
+    return 'Could not delete the quiz: $error';
+  }
+
+  @override
+  String get quizzesLoadFailed => 'Could not load quizzes';
+
+  @override
+  String get quizLibraryEmpty => 'Your quiz library is empty';
+
+  @override
+  String get createFirstQuiz => 'Create your first quiz to get started.';
+
+  @override
+  String get quizResultsLoadFailed => 'Could not load results';
+
+  @override
+  String get childProfilesLoadFailedShort =>
+      'Child profiles could not be loaded.';
+
+  @override
+  String get noChildProfiles => 'No child profiles';
+
+  @override
+  String get quizResultsAfterProfiles =>
+      'Quiz results will appear after profiles are added.';
+
+  @override
+  String get quizResults => 'Quiz results';
+
+  @override
+  String get quizResultsIntro => 'Recent attempts and scores for each child.';
+
+  @override
+  String get quizLibrary => 'Quiz Library';
+
+  @override
+  String get results => 'Results';
+
+  @override
+  String audienceSelectedCount(Object count) {
+    return '$count selected';
+  }
+
+  @override
+  String get moreOptions => 'More options';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String get noDescriptionAdded => 'No description added.';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get loadingAttempts => 'Loading attempts...';
+
+  @override
+  String get noQuizAttempts => 'No quiz attempts yet';
+
+  @override
+  String attemptCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attempts',
+      one: '1 attempt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get attemptsLoadFailed => 'Could not load attempts.';
+
+  @override
+  String get resultsAfterQuiz =>
+      'Results will appear after this child completes a quiz.';
+
+  @override
+  String get deletedQuiz => 'Deleted quiz';
+
+  @override
+  String scoreSummary(Object score, Object total, Object percentage) {
+    return '$score/$total • $percentage%';
+  }
+
+  @override
+  String pointsValue(Object score) {
+    return '$score points';
+  }
+
+  @override
+  String get noQuizzesNow => 'No quizzes right now';
+
+  @override
+  String get quizWillAppear =>
+      'A new quiz will appear here when it is ready for you.';
+
+  @override
+  String get childQuizzesLoadFailed => 'We could not load your quizzes';
+
+  @override
+  String readyToPlay(Object childName) {
+    return 'Ready to play, $childName?';
+  }
+
+  @override
+  String quizzesToExplore(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You have $count quizzes to explore.',
+      one: 'You have 1 quiz to explore.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quizzesPlayed(Object count) {
+    return '$count played';
+  }
+
+  @override
+  String get myQuizzes => 'My Quizzes';
+
+  @override
+  String quizCardSemantics(Object title, num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions',
+      one: '1 question',
+    );
+    return '$title, $_temp0';
+  }
+
+  @override
+  String get played => 'Played';
+
+  @override
+  String get tapToStartQuiz => 'Tap to start this quiz!';
+
+  @override
+  String get playAgain => 'Play Again';
+
+  @override
+  String get letsPlay => 'Let’s Play!';
+
+  @override
+  String get resultSaveFailed =>
+      'Your result could not be saved. Please try again.';
+
+  @override
+  String get leaveQuizQuestion => 'Leave this quiz?';
+
+  @override
+  String get closeQuizPreview => 'Close the quiz preview?';
+
+  @override
+  String get unsavedQuizAnswers =>
+      'Your answers in this attempt will not be saved.';
+
+  @override
+  String get keepPlaying => 'Keep Playing';
+
+  @override
+  String get leave => 'Leave';
+
+  @override
+  String get quizHasNoQuestions => 'This quiz has no questions yet';
+
+  @override
+  String get goBack => 'Go Back';
+
+  @override
+  String get staffPreviewBanner => 'Staff Preview — results will not be saved';
+
+  @override
+  String get questionUppercase => 'QUESTION';
+
+  @override
+  String questionProgress(Object current, Object total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get tapCorrectAnswer => 'Tap the answer you think is right.';
+
+  @override
+  String get brilliant => 'Brilliant!';
+
+  @override
+  String answerIs(Object answer) {
+    return 'The answer is $answer.';
+  }
+
+  @override
+  String get savingResult => 'Saving your result...';
+
+  @override
+  String get seeMyResult => 'See My Result';
+
+  @override
+  String get nextQuestion => 'Next Question';
+
+  @override
+  String get resultAmazing => 'Amazing!';
+
+  @override
+  String get resultPerfectMessage => 'You got every question right!';
+
+  @override
+  String get resultGreatWork => 'Great work!';
+
+  @override
+  String get resultGreatMessage => 'You did a brilliant job!';
+
+  @override
+  String get resultWellDone => 'Well done!';
+
+  @override
+  String get resultWellDoneMessage =>
+      'You kept trying and learned something new!';
+
+  @override
+  String get resultGoodEffort => 'Good effort!';
+
+  @override
+  String get resultGoodEffortMessage => 'Every try helps your brain grow!';
+
+  @override
+  String get previewComplete => 'Preview complete';
+
+  @override
+  String get previewResultMessage =>
+      'This is how the child’s result screen will look.';
+
+  @override
+  String get closePreview => 'Close Preview';
+
+  @override
+  String get backToMyQuizzes => 'Back to My Quizzes';
+
+  @override
+  String answerSemantics(Object letter, Object answer) {
+    return 'Answer $letter: $answer';
+  }
+
+  @override
+  String get zoneBlue => 'Blue Zone';
+
+  @override
+  String get zoneGreen => 'Green Zone';
+
+  @override
+  String get zoneYellow => 'Yellow Zone';
+
+  @override
+  String get zoneRed => 'Red Zone';
+
+  @override
+  String get zoneBlueChildDescription =>
+      'My body is running slowly. I may need rest, comfort or gentle movement.';
+
+  @override
+  String get zoneGreenChildDescription =>
+      'My body feels calm and comfortable. I may feel ready to learn or play.';
+
+  @override
+  String get zoneYellowChildDescription =>
+      'My energy is rising. I may need help slowing down or finding focus.';
+
+  @override
+  String get zoneRedChildDescription =>
+      'My feelings are very intense. I may need space, safety and support.';
+
+  @override
+  String get zoneBlueStaffDescription => 'Low energy, tired, sad or unwell.';
+
+  @override
+  String get zoneGreenStaffDescription =>
+      'Calm, focused, comfortable and ready.';
+
+  @override
+  String get zoneYellowStaffDescription =>
+      'Worried, excited, frustrated or restless.';
+
+  @override
+  String get zoneRedStaffDescription =>
+      'Very intense feelings requiring support.';
+
+  @override
+  String get feelingTired => 'Tired';
+
+  @override
+  String get feelingSad => 'Sad';
+
+  @override
+  String get feelingBored => 'Bored';
+
+  @override
+  String get feelingUnwell => 'Unwell';
+
+  @override
+  String get feelingSlow => 'Slow';
+
+  @override
+  String get feelingCalm => 'Calm';
+
+  @override
+  String get feelingFocused => 'Focused';
+
+  @override
+  String get feelingHappy => 'Happy';
+
+  @override
+  String get feelingContent => 'Content';
+
+  @override
+  String get feelingReady => 'Ready';
+
+  @override
+  String get feelingWorried => 'Worried';
+
+  @override
+  String get feelingExcited => 'Excited';
+
+  @override
+  String get feelingFrustrated => 'Frustrated';
+
+  @override
+  String get feelingSilly => 'Silly';
+
+  @override
+  String get feelingRestless => 'Restless';
+
+  @override
+  String get feelingAngry => 'Angry';
+
+  @override
+  String get feelingPanicked => 'Panicked';
+
+  @override
+  String get feelingTerrified => 'Terrified';
+
+  @override
+  String get feelingOverwhelmed => 'Overwhelmed';
+
+  @override
+  String get feelingOutOfControl => 'Out of control';
+
+  @override
+  String zoneSelected(Object zoneName) {
+    return 'You selected the $zoneName.';
+  }
+
+  @override
+  String zoneUpdateFailed(Object error) {
+    return 'Could not update your zone: $error';
+  }
+
+  @override
+  String get howAreYouFeeling => 'How Are You Feeling?';
+
+  @override
+  String helloChild(Object childName) {
+    return 'Hello $childName';
+  }
+
+  @override
+  String get chooseCurrentZone =>
+      'Choose the zone that feels most like you right now.';
+
+  @override
+  String get everyZoneOkay => 'Every zone is okay.';
+
+  @override
+  String get thisIsMyZone => 'This is my zone';
+
+  @override
+  String chooseZone(Object zoneName) {
+    return 'Choose $zoneName';
+  }
+
+  @override
+  String get noBadZones =>
+      'There are no bad zones. Our feelings give us information about what our body may need.';
+
+  @override
+  String get zonesOverview => 'Zones Overview';
+
+  @override
+  String get classroomZonesLoadFailed => 'Could not load classroom zones.';
+
+  @override
+  String get classroomZones => 'Classroom Zones';
+
+  @override
+  String get classroomZonesIntro => 'A live view of how children are feeling.';
+
+  @override
+  String get checkedIn => 'Checked in';
+
+  @override
+  String get noChildrenInZone => 'No children are currently in this zone.';
+
+  @override
+  String get allChildrenCheckedIn =>
+      'Every child has completed their zone check-in.';
+
+  @override
+  String get notCheckedIn => 'Not checked in';
+
+  @override
+  String get noChildProfilesFoundShort => 'No child profiles found';
+
+  @override
+  String get createChildBeforeZones =>
+      'Create a child profile before using the Zones Overview.';
+
+  @override
+  String get viewBodyCheckReports => 'View Body Check Reports';
+
+  @override
+  String get openIncidentLog => 'Open Incident Log';
+
+  @override
+  String get openSchedule => 'Open Schedule';
+
+  @override
+  String get openZonesOverview => 'Open Zones Overview';
+
+  @override
+  String get totalChildProfiles => 'Total child profiles';
+
+  @override
+  String get zonesCheckedIn => 'Zones checked in';
+
+  @override
+  String get childrenWithSelectedZone => 'Children with a selected zone';
+
+  @override
+  String get noChildProfilesYet => 'No child profiles yet.';
+
+  @override
+  String get noZone => 'No zone';
+
+  @override
+  String childZoneSummary(Object childName, Object zone) {
+    return '$childName: $zone';
+  }
+
+  @override
+  String get noUncheckedBodyChecks => 'No unchecked Body Check reports';
+
+  @override
+  String get nothingNeedsReview => 'Nothing currently needs review.';
+
+  @override
+  String get uncheckedBodyChecksIntro =>
+      'Unchecked reports needing staff review';
+
+  @override
+  String bodyCheckSummary(Object bodyPart, Object painType, Object date) {
+    return '$bodyPart • $painType • $date';
+  }
+
+  @override
+  String viewAllBodyChecks(Object count) {
+    return 'View all $count Body Check reports';
+  }
+
+  @override
+  String get scheduleSaturday => 'Saturday';
+
+  @override
+  String get scheduleSunday => 'Sunday';
+
+  @override
+  String noScheduleEntriesForDay(Object day) {
+    return 'No schedule entries for $day';
+  }
+
+  @override
+  String get nothingScheduledTodayYet =>
+      'Nothing has been added for today yet.';
+
+  @override
+  String get noImportantIncidents => 'No important recent incidents';
+
+  @override
+  String get noImportantIncidentsIntro =>
+      'No medium/high incidents found for review.';
+
+  @override
+  String get severityHigh => 'High';
+
+  @override
+  String get severityMedium => 'Medium';
+
+  @override
+  String get severityLow => 'Low';
+
+  @override
+  String incidentSummary(Object severity, Object date, Object description) {
+    return '$severity • $date\n$description';
+  }
+
+  @override
+  String todayOverviewForStaff(Object staffName) {
+    return 'Quick classroom overview for $staffName.';
+  }
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get zonesSnapshot => 'Zones Snapshot';
+
+  @override
+  String get bodyCheckAttention => 'Body Check Attention';
+
+  @override
+  String get todaysSchedule => 'Today\'s Schedule';
+
+  @override
+  String get recentImportantIncidents => 'Recent / Important Incidents';
+
+  @override
+  String get iMightFeel => 'I might feel:';
 }
