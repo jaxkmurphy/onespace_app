@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n.dart';
 import '../locale_notifier.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
-import '../simple_localizations.dart';
 import '../utils/hex_colour.dart';
 import '../widgets/child_dashboard_feature_card.dart';
 import 'background_color_picker_page.dart';
@@ -31,12 +30,10 @@ class ChildProfileDashboard extends StatefulWidget {
   });
 
   @override
-  State<ChildProfileDashboard> createState() =>
-      _ChildProfileDashboardState();
+  State<ChildProfileDashboard> createState() => _ChildProfileDashboardState();
 }
 
-class _ChildProfileDashboardState
-    extends State<ChildProfileDashboard> {
+class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   late ChildProfile profile;
   late Color backgroundColor;
 
@@ -47,22 +44,18 @@ class _ChildProfileDashboardState
     super.initState();
 
     profile = widget.profile;
-    backgroundColor = HexColor(
-      profile.backgroundColorHex ?? '#FFFFFF',
-    );
+    backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
 
     _profileSubscription = widget.firestoreService
         .getCurrentChildProfileStream(profile.id)
         .listen((updatedProfile) {
-      if (!mounted) return;
+          if (!mounted) return;
 
-      setState(() {
-        profile = updatedProfile;
-        backgroundColor = HexColor(
-          profile.backgroundColorHex ?? '#FFFFFF',
-        );
-      });
-    });
+          setState(() {
+            profile = updatedProfile;
+            backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
+          });
+        });
   }
 
   @override
@@ -75,60 +68,42 @@ class _ChildProfileDashboardState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => BackgroundColorPickerPage(
-          child: profile,
-          firestoreService: widget.firestoreService,
-        ),
+        builder:
+            (_) => BackgroundColorPickerPage(
+              child: profile,
+              firestoreService: widget.firestoreService,
+            ),
       ),
     );
   }
 
   List<Color> get _backgroundGradient {
-    final softened = Color.lerp(
-      backgroundColor,
-      Colors.white,
-      0.64,
-    )!;
+    final softened = Color.lerp(backgroundColor, Colors.white, 0.64)!;
 
-    final warmer = Color.lerp(
-      backgroundColor,
-      const Color(0xFFFFF5E6),
-      0.76,
-    )!;
+    final warmer = Color.lerp(backgroundColor, const Color(0xFFFFF5E6), 0.76)!;
 
-    final cooler = Color.lerp(
-      backgroundColor,
-      const Color(0xFFF3F0FF),
-      0.78,
-    )!;
+    final cooler = Color.lerp(backgroundColor, const Color(0xFFF3F0FF), 0.78)!;
 
-    return [
-      softened,
-      warmer,
-      cooler,
-    ];
+    return [softened, warmer, cooler];
   }
 
-  Widget _buildWelcomeCard(SimpleLocalizations loc) {
-    final initial = profile.name.trim().isEmpty
-        ? '?'
-        : profile.name.trim().substring(0, 1).toUpperCase();
+  Widget _buildWelcomeCard(AppLocalizations l10n) {
+    final initial =
+        profile.name.trim().isEmpty
+            ? '?'
+            : profile.name.trim().substring(0, 1).toUpperCase();
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF7E57C2),
-            Color(0xFF5C6BC0),
-          ],
+          colors: [Color(0xFF7E57C2), Color(0xFF5C6BC0)],
         ),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7E57C2)
-                .withValues(alpha: 0.25),
+            color: const Color(0xFF7E57C2).withValues(alpha: 0.25),
             blurRadius: 24,
             offset: const Offset(0, 11),
           ),
@@ -177,7 +152,7 @@ class _ChildProfileDashboardState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${loc.getString("welcome")}, ${profile.name}!',
+                  l10n.welcomeChild(profile.name),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 27,
@@ -185,22 +160,16 @@ class _ChildProfileDashboardState
                   ),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'What would you like to do?',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                  ),
+                Text(
+                  l10n.whatWouldYouLikeToDo,
+                  style: const TextStyle(color: Colors.white, fontSize: 17),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 10),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(22),
@@ -228,30 +197,25 @@ class _ChildProfileDashboardState
     );
   }
 
-  List<_DashboardFeature> _myDayFeatures(
-    SimpleLocalizations loc,
-  ) {
+  List<_DashboardFeature> _myDayFeatures(AppLocalizations l10n) {
     return [
       _DashboardFeature(
         icon: Icons.groups_rounded,
-        title: 'Circle Time',
-        subtitle: 'Start the day together.',
+        title: l10n.circleTime,
+        subtitle: l10n.childCircleTimeSubtitle,
         color: const Color(0xFF7E57C2),
         onTap: () {
           Navigator.pushNamed(
             context,
             '/circle-time',
-            arguments: {
-              'teacherUid': profile.teacherUid,
-              'child': profile,
-            },
+            arguments: {'teacherUid': profile.teacherUid, 'child': profile},
           );
         },
       ),
       _DashboardFeature(
         icon: Icons.calendar_today_rounded,
-        title: loc.getString('my_schedule'),
-        subtitle: 'See what is happening today.',
+        title: l10n.my_schedule,
+        subtitle: l10n.childScheduleSubtitle,
         color: const Color(0xFF42A5F5),
         onTap: () {
           Navigator.pushNamed(context, '/childSchedule');
@@ -259,8 +223,8 @@ class _ChildProfileDashboardState
       ),
       _DashboardFeature(
         icon: Icons.view_agenda_rounded,
-        title: loc.getString('when_then'),
-        subtitle: 'See your next activity and reward.',
+        title: l10n.whenThen,
+        subtitle: l10n.childWhenThenSubtitle,
         color: const Color(0xFFFFA726),
         onTap: () {
           Navigator.pushNamed(
@@ -276,29 +240,25 @@ class _ChildProfileDashboardState
     ];
   }
 
-  List<_DashboardFeature> _feelingsFeatures(
-    SimpleLocalizations loc,
-  ) {
+  List<_DashboardFeature> _feelingsFeatures(AppLocalizations l10n) {
     return [
       _DashboardFeature(
         icon: Icons.color_lens_rounded,
-        title: loc.getString('zones_regulation'),
-        subtitle: 'Share how you are feeling.',
+        title: l10n.zones_regulation,
+        subtitle: l10n.childZonesSubtitle,
         color: const Color(0xFF26A69A),
         onTap: () {
           Navigator.pushNamed(
             context,
             '/zone-select',
-            arguments: {
-              'child': profile,
-            },
+            arguments: {'child': profile},
           );
         },
       ),
       _DashboardFeature(
         icon: Icons.accessibility_new_rounded,
-        title: 'Body Check',
-        subtitle: 'Show where your body feels sore.',
+        title: l10n.bodyCheck,
+        subtitle: l10n.childBodyCheckSubtitle,
         color: const Color(0xFFEF5350),
         onTap: () {
           Navigator.pushNamed(
@@ -313,22 +273,20 @@ class _ChildProfileDashboardState
       ),
       _DashboardFeature(
         icon: Icons.headphones_rounded,
-        title: loc.getString('calming_sounds'),
-        subtitle: 'Listen and take a calm moment.',
+        title: l10n.calming_sounds,
+        subtitle: l10n.childCalmingSoundsSubtitle,
         color: const Color(0xFF5C6BC0),
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => CalmingSoundsPage(),
-            ),
+            MaterialPageRoute(builder: (_) => CalmingSoundsPage()),
           );
         },
       ),
       _DashboardFeature(
         icon: Icons.record_voice_over_rounded,
-        title: loc.getString('voice_lines'),
-        subtitle: 'Listen to helpful words and phrases.',
+        title: l10n.voiceLines,
+        subtitle: l10n.childVoiceLinesSubtitle,
         color: const Color(0xFF29B6F6),
         onTap: () {
           Navigator.pushNamed(
@@ -344,27 +302,21 @@ class _ChildProfileDashboardState
     ];
   }
 
-  List<_DashboardFeature> _learningFeatures(
-    SimpleLocalizations loc,
-  ) {
+  List<_DashboardFeature> _learningFeatures(AppLocalizations l10n) {
     return [
       _DashboardFeature(
         icon: Icons.star_rounded,
-        title: loc.getString('my_points'),
-        subtitle: 'See your points and rewards.',
+        title: l10n.my_points,
+        subtitle: l10n.childPointsSubtitle,
         color: const Color(0xFFFFB300),
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/child-points',
-            arguments: profile,
-          );
+          Navigator.pushNamed(context, '/child-points', arguments: profile);
         },
       ),
       _DashboardFeature(
         icon: Icons.quiz_rounded,
-        title: loc.getString('take_quiz'),
-        subtitle: 'Play a quiz and learn something new.',
+        title: l10n.take_quiz,
+        subtitle: l10n.childQuizSubtitle,
         color: const Color(0xFFAB47BC),
         onTap: () {
           Navigator.pushNamed(
@@ -379,25 +331,26 @@ class _ChildProfileDashboardState
       ),
       _DashboardFeature(
         icon: Icons.menu_book_rounded,
-        title: 'Word Practice',
-        subtitle: 'Practise words at your own pace.',
+        title: l10n.wordPractice,
+        subtitle: l10n.childWordPracticeSubtitle,
         color: const Color(0xFF66BB6A),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ChildWordLearningPage(
-                firestoreService: widget.firestoreService,
-                child: profile,
-              ),
+              builder:
+                  (_) => ChildWordLearningPage(
+                    firestoreService: widget.firestoreService,
+                    child: profile,
+                  ),
             ),
           );
         },
       ),
       _DashboardFeature(
         icon: Icons.timer_rounded,
-        title: loc.getString('visual_timer'),
-        subtitle: 'See how much time is left.',
+        title: l10n.visualTimer,
+        subtitle: l10n.childTimerSubtitle,
         color: const Color(0xFFFF7043),
         onTap: () {
           Navigator.pushNamed(context, '/visual-timer');
@@ -411,12 +364,12 @@ class _ChildProfileDashboardState
     return ValueListenableBuilder<Locale>(
       valueListenable: widget.localeNotifier,
       builder: (context, locale, _) {
-        final loc = SimpleLocalizations(locale);
+        final l10n = context.l10n;
 
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              tooltip: 'Profiles',
+              tooltip: l10n.profiles,
               icon: const Icon(Icons.home_rounded),
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
@@ -426,10 +379,10 @@ class _ChildProfileDashboardState
                 );
               },
             ),
-            title: Text('${profile.name}’s Space'),
+            title: Text(l10n.childSpaceTitle(profile.name)),
             actions: [
               IconButton(
-                tooltip: loc.getString('change_background'),
+                tooltip: l10n.change_background,
                 onPressed: _openBackgroundPicker,
                 icon: const Icon(Icons.palette_rounded),
               ),
@@ -447,45 +400,36 @@ class _ChildProfileDashboardState
             ),
             child: SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  16,
-                  18,
-                  16,
-                  36,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 980,
-                    ),
+                    constraints: const BoxConstraints(maxWidth: 980),
                     child: Column(
                       children: [
-                        _buildWelcomeCard(loc),
+                        _buildWelcomeCard(l10n),
                         const SizedBox(height: 26),
                         _DashboardSection(
                           icon: Icons.wb_sunny_rounded,
-                          title: 'My Day',
-                          subtitle: 'See what is happening next.',
+                          title: l10n.myDay,
+                          subtitle: l10n.myDaySubtitle,
                           color: const Color(0xFFFFA726),
-                          features: _myDayFeatures(loc),
+                          features: _myDayFeatures(l10n),
                         ),
                         const SizedBox(height: 24),
                         _DashboardSection(
                           icon: Icons.favorite_rounded,
-                          title: 'How I Feel',
-                          subtitle:
-                              'Check in with your body and feelings.',
+                          title: l10n.howIFeel,
+                          subtitle: l10n.howIFeelSubtitle,
                           color: const Color(0xFFEC407A),
-                          features: _feelingsFeatures(loc),
+                          features: _feelingsFeatures(l10n),
                         ),
                         const SizedBox(height: 24),
                         _DashboardSection(
                           icon: Icons.auto_awesome_rounded,
-                          title: 'Learn & Play',
-                          subtitle:
-                              'Practise, explore and have some fun.',
+                          title: l10n.learnAndPlay,
+                          subtitle: l10n.learnAndPlaySubtitle,
                           color: const Color(0xFF7E57C2),
-                          features: _learningFeatures(loc),
+                          features: _learningFeatures(l10n),
                         ),
                       ],
                     ),
@@ -539,9 +483,7 @@ class _DashboardSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.86),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.86)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,11 +497,7 @@ class _DashboardSection extends StatelessWidget {
                   color: color.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 27,
-                ),
+                child: Icon(icon, color: color, size: 27),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -568,16 +506,13 @@ class _DashboardSection extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(fontWeight: FontWeight.w900),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     Text(
                       subtitle,
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                      ),
+                      style: TextStyle(color: Colors.grey.shade700),
                     ),
                   ],
                 ),
@@ -592,8 +527,7 @@ class _DashboardSection extends StatelessWidget {
               return GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: columns,
                   mainAxisExtent: 126,
                   crossAxisSpacing: 14,

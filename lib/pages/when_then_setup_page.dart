@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import '../data/when_then_icons.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../models/when_then_option.dart';
 import '../services/firestore_service.dart';
-import '../simple_localizations.dart';
 
 enum WhenThenTargetMode { single, multiple, all }
 
 class WhenThenSetupPage extends StatefulWidget {
   final String teacherUid;
 
-  const WhenThenSetupPage({
-    super.key,
-    required this.teacherUid,
-  });
+  const WhenThenSetupPage({super.key, required this.teacherUid});
 
   @override
   State<WhenThenSetupPage> createState() => _WhenThenSetupPageState();
@@ -48,30 +46,32 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
   void _showMessage(String message) {
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   List<String>? _targetChildIds(List<ChildProfile> children) {
+    final l10n = context.l10n;
+
     switch (_targetMode) {
       case WhenThenTargetMode.single:
         if (_singleChildId == null) {
-          _showMessage('Please choose a child.');
+          _showMessage(l10n.pleaseChooseChild);
           return null;
         }
         return [_singleChildId!];
 
       case WhenThenTargetMode.multiple:
         if (_selectedChildIds.isEmpty) {
-          _showMessage('Please choose at least one child.');
+          _showMessage(l10n.chooseAtLeastOneChild);
           return null;
         }
         return _selectedChildIds.toList();
 
       case WhenThenTargetMode.all:
         if (children.isEmpty) {
-          _showMessage('No child profiles were found.');
+          _showMessage(l10n.noChildProfilesFound);
           return null;
         }
         return children.map((child) => child.id).toList();
@@ -81,24 +81,25 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
   Future<void> _createBoard({
     required List<ChildProfile> children,
     required List<WhenThenOption> rewards,
-    required SimpleLocalizations loc,
+    required AppLocalizations l10n,
   }) async {
     if (_selectedActivity == null) {
-      _showMessage('Choose the WHEN activity first.');
+      _showMessage(l10n.chooseWhenActivityFirst);
       return;
     }
 
     if (_selectedRewardIds.isEmpty || _selectedRewardIds.length > 3) {
-      _showMessage('Choose between 1 and 3 THEN rewards.');
+      _showMessage(l10n.chooseOneToThreeRewards);
       return;
     }
 
-    final selectedRewards = rewards
-        .where((reward) => _selectedRewardIds.contains(reward.id))
-        .toList();
+    final selectedRewards =
+        rewards
+            .where((reward) => _selectedRewardIds.contains(reward.id))
+            .toList();
 
     if (selectedRewards.length != _selectedRewardIds.length) {
-      _showMessage('One of the selected rewards is no longer available.');
+      _showMessage(l10n.selectedRewardUnavailable);
       return;
     }
 
@@ -120,7 +121,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(loc.getString('when_then_applied')),
+          content: Text(l10n.whenThenBoardCreated),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -132,9 +133,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
         _selectedChildIds.clear();
       });
     } catch (error) {
-      _showMessage(
-        '${loc.getString('failed_to_apply_when_then')}: $error',
-      );
+      _showMessage(l10n.whenThenCreateFailed(error.toString()));
     } finally {
       if (mounted) {
         setState(() {
@@ -149,6 +148,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
     WhenThenOption? existingOption,
   }) async {
     final isEditing = existingOption != null;
+    final l10n = context.l10n;
 
     final labelController = TextEditingController(
       text: existingOption?.label ?? '',
@@ -164,8 +164,12 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
             return AlertDialog(
               title: Text(
                 isEditing
-                    ? 'Edit ${type == 'activities' ? 'activity' : 'reward'}'
-                    : 'Add ${type == 'activities' ? 'activity' : 'reward'}',
+                    ? type == 'activities'
+                        ? l10n.editActivity
+                        : l10n.editReward
+                    : type == 'activities'
+                    ? l10n.addActivity
+                    : l10n.addReward,
               ),
               content: SizedBox(
                 width: 480,
@@ -177,55 +181,63 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                       TextField(
                         controller: labelController,
                         autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Name',
-                          hintText: 'Enter a clear, short name',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.nameLabel,
+                          hintText: l10n.shortClearNameHint,
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Choose an icon',
+                        l10n.chooseIcon,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 12),
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
-                        children: whenThenIconStyles.map((style) {
-                          final selected = style.key == selectedIcon;
+                        children:
+                            whenThenIconStyles.map((style) {
+                              final selected = style.key == selectedIcon;
 
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () {
-                              setDialogState(() {
-                                selectedIcon = style.key;
-                              });
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 180),
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                color: selected
-                                    ? style.color
-                                    : style.color.withValues(alpha: 0.12),
+                              return InkWell(
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: selected
-                                      ? style.color
-                                      : style.color.withValues(alpha: 0.35),
-                                  width: selected ? 3 : 1,
+                                onTap: () {
+                                  setDialogState(() {
+                                    selectedIcon = style.key;
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 180),
+                                  width: 64,
+                                  height: 64,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        selected
+                                            ? style.color
+                                            : style.color.withValues(
+                                              alpha: 0.12,
+                                            ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color:
+                                          selected
+                                              ? style.color
+                                              : style.color.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                      width: selected ? 3 : 1,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    style.icon,
+                                    color:
+                                        selected ? Colors.white : style.color,
+                                    size: 30,
+                                  ),
                                 ),
-                              ),
-                              child: Icon(
-                                style.icon,
-                                color: selected ? Colors.white : style.color,
-                                size: 30,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                              );
+                            }).toList(),
                       ),
                     ],
                   ),
@@ -234,7 +246,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 FilledButton(
                   onPressed: () {
@@ -251,7 +263,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                       ),
                     );
                   },
-                  child: Text(isEditing ? 'Save' : 'Add'),
+                  child: Text(isEditing ? l10n.save : l10n.add),
                 ),
               ],
             );
@@ -277,7 +289,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
         );
       }
     } catch (error) {
-      _showMessage('Could not save this option: $error');
+      _showMessage(l10n.optionSaveFailed(error.toString()));
     }
   }
 
@@ -285,25 +297,25 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
     required String type,
     required WhenThenOption option,
   }) async {
+    final l10n = context.l10n;
+
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Delete option?'),
-          content: Text(
-            'Are you sure you want to delete “${option.label}”?',
-          ),
+          title: Text(l10n.deleteOptionQuestion),
+          content: Text(l10n.deleteOptionMessage(option.label)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(dialogContext, true),
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red.shade700,
               ),
-              child: const Text('Delete'),
+              child: Text(l10n.delete),
             ),
           ],
         );
@@ -318,35 +330,35 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
         optionId: option.id,
       );
     } catch (error) {
-      _showMessage('Could not delete this option: $error');
+      _showMessage(l10n.optionDeleteFailed(error.toString()));
     }
   }
 
   Widget _buildWhoSection(List<ChildProfile> children) {
     return _StepCard(
       number: 1,
-      title: 'WHO',
-      subtitle: 'Who should see this board?',
+      title: context.l10n.whoLabel,
+      subtitle: context.l10n.whoShouldSeeBoard,
       color: const Color(0xFF5C6BC0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SegmentedButton<WhenThenTargetMode>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: WhenThenTargetMode.single,
-                icon: Icon(Icons.person_rounded),
-                label: Text('One'),
+                icon: const Icon(Icons.person_rounded),
+                label: Text(context.l10n.one),
               ),
               ButtonSegment(
                 value: WhenThenTargetMode.multiple,
-                icon: Icon(Icons.people_alt_rounded),
-                label: Text('Some'),
+                icon: const Icon(Icons.people_alt_rounded),
+                label: Text(context.l10n.some),
               ),
               ButtonSegment(
                 value: WhenThenTargetMode.all,
-                icon: Icon(Icons.groups_rounded),
-                label: Text('Everyone'),
+                icon: const Icon(Icons.groups_rounded),
+                label: Text(context.l10n.everyone),
               ),
             ],
             selected: {_targetMode},
@@ -362,17 +374,18 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
           if (_targetMode == WhenThenTargetMode.single)
             DropdownButtonFormField<String>(
               initialValue: _singleChildId,
-              decoration: const InputDecoration(
-                labelText: 'Choose a child',
-                prefixIcon: Icon(Icons.person_search_rounded),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: context.l10n.selectChild,
+                prefixIcon: const Icon(Icons.person_search_rounded),
+                border: const OutlineInputBorder(),
               ),
-              items: children.map((child) {
-                return DropdownMenuItem(
-                  value: child.id,
-                  child: Text(child.name),
-                );
-              }).toList(),
+              items:
+                  children.map((child) {
+                    return DropdownMenuItem(
+                      value: child.id,
+                      child: Text(child.name),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 setState(() {
                   _singleChildId = value;
@@ -383,28 +396,29 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
             Wrap(
               spacing: 10,
               runSpacing: 10,
-              children: children.map((child) {
-                final selected = _selectedChildIds.contains(child.id);
+              children:
+                  children.map((child) {
+                    final selected = _selectedChildIds.contains(child.id);
 
-                return FilterChip(
-                  selected: selected,
-                  avatar: Icon(
-                    selected
-                        ? Icons.check_circle_rounded
-                        : Icons.face_rounded,
-                  ),
-                  label: Text(child.name),
-                  onSelected: (value) {
-                    setState(() {
-                      if (value) {
-                        _selectedChildIds.add(child.id);
-                      } else {
-                        _selectedChildIds.remove(child.id);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
+                    return FilterChip(
+                      selected: selected,
+                      avatar: Icon(
+                        selected
+                            ? Icons.check_circle_rounded
+                            : Icons.face_rounded,
+                      ),
+                      label: Text(child.name),
+                      onSelected: (value) {
+                        setState(() {
+                          if (value) {
+                            _selectedChildIds.add(child.id);
+                          } else {
+                            _selectedChildIds.remove(child.id);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
             ),
           if (_targetMode == WhenThenTargetMode.all)
             Container(
@@ -423,17 +437,16 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'This board will be sent to all '
-                      '${children.length} child profiles.',
+                      context.l10n.boardSentToAllChildren(children.length),
                     ),
                   ),
                 ],
               ),
             ),
           if (children.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Text('No child profiles are available.'),
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(context.l10n.noChildProfilesAvailable),
             ),
         ],
       ),
@@ -443,33 +456,31 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
   Widget _buildWhenSection(List<WhenThenOption> activities) {
     return _StepCard(
       number: 2,
-      title: 'WHEN',
-      subtitle: 'What needs to happen first?',
+      title: context.l10n.whenLabel,
+      subtitle: context.l10n.whatHappensFirst,
       color: const Color(0xFF42A5F5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (activities.isEmpty)
-            const Text(
-              'No activities yet. Add one in Manage Options.',
-            ),
+          if (activities.isEmpty) Text(context.l10n.noActivitiesManageOptions),
           Wrap(
             spacing: 12,
             runSpacing: 12,
-            children: activities.map((activity) {
-              final selected = _selectedActivity?.id == activity.id;
+            children:
+                activities.map((activity) {
+                  final selected = _selectedActivity?.id == activity.id;
 
-              return _OptionChoiceCard(
-                label: activity.label,
-                iconName: activity.iconName,
-                selected: selected,
-                onTap: () {
-                  setState(() {
-                    _selectedActivity = activity;
-                  });
-                },
-              );
-            }).toList(),
+                  return _OptionChoiceCard(
+                    label: activity.label,
+                    iconName: activity.iconName,
+                    selected: selected,
+                    onTap: () {
+                      setState(() {
+                        _selectedActivity = activity;
+                      });
+                    },
+                  );
+                }).toList(),
           ),
         ],
       ),
@@ -479,39 +490,37 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
   Widget _buildThenSection(List<WhenThenOption> rewards) {
     return _StepCard(
       number: 3,
-      title: 'THEN',
-      subtitle: 'Choose between 1 and 3 possible rewards.',
+      title: context.l10n.thenLabel,
+      subtitle: context.l10n.possibleRewardsInstruction,
       color: const Color(0xFFFFA726),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (rewards.isEmpty)
-            const Text(
-              'No rewards yet. Add one in Manage Options.',
-            ),
+          if (rewards.isEmpty) Text(context.l10n.noRewardsManageOptions),
           Wrap(
             spacing: 12,
             runSpacing: 12,
-            children: rewards.map((reward) {
-              final selected = _selectedRewardIds.contains(reward.id);
-              final canSelect = selected || _selectedRewardIds.length < 3;
+            children:
+                rewards.map((reward) {
+                  final selected = _selectedRewardIds.contains(reward.id);
+                  final canSelect = selected || _selectedRewardIds.length < 3;
 
-              return _OptionChoiceCard(
-                label: reward.label,
-                iconName: reward.iconName,
-                selected: selected,
-                enabled: canSelect,
-                onTap: () {
-                  setState(() {
-                    if (selected) {
-                      _selectedRewardIds.remove(reward.id);
-                    } else if (_selectedRewardIds.length < 3) {
-                      _selectedRewardIds.add(reward.id);
-                    }
-                  });
-                },
-              );
-            }).toList(),
+                  return _OptionChoiceCard(
+                    label: reward.label,
+                    iconName: reward.iconName,
+                    selected: selected,
+                    enabled: canSelect,
+                    onTap: () {
+                      setState(() {
+                        if (selected) {
+                          _selectedRewardIds.remove(reward.id);
+                        } else if (_selectedRewardIds.length < 3) {
+                          _selectedRewardIds.add(reward.id);
+                        }
+                      });
+                    },
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 14),
           Row(
@@ -520,13 +529,14 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                 _selectedRewardIds.isEmpty
                     ? Icons.info_outline_rounded
                     : Icons.check_circle_rounded,
-                color: _selectedRewardIds.isEmpty
-                    ? Colors.orange.shade700
-                    : Colors.green.shade700,
+                color:
+                    _selectedRewardIds.isEmpty
+                        ? Colors.orange.shade700
+                        : Colors.green.shade700,
               ),
               const SizedBox(width: 8),
               Text(
-                '${_selectedRewardIds.length} of 3 rewards selected',
+                context.l10n.rewardsSelectedCount(_selectedRewardIds.length),
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ],
@@ -536,19 +546,16 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
     );
   }
 
-  Widget _buildPreview(
-    List<WhenThenOption> rewards,
-  ) {
-    final selectedRewards = rewards
-        .where((reward) => _selectedRewardIds.contains(reward.id))
-        .toList();
+  Widget _buildPreview(List<WhenThenOption> rewards) {
+    final selectedRewards =
+        rewards
+            .where((reward) => _selectedRewardIds.contains(reward.id))
+            .toList();
 
     return Card(
       elevation: 0,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -558,10 +565,10 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                 const Icon(Icons.visibility_rounded),
                 const SizedBox(width: 8),
                 Text(
-                  'Board preview',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  context.l10n.boardPreview,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -570,30 +577,29 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
               children: [
                 Expanded(
                   child: _PreviewPanel(
-                    heading: 'WHEN',
+                    heading: context.l10n.whenLabel,
                     option: _selectedActivity,
-                    emptyText: 'Choose an activity',
+                    emptyText: context.l10n.chooseActivity,
                     color: const Color(0xFF42A5F5),
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 34,
-                  ),
+                  child: Icon(Icons.arrow_forward_rounded, size: 34),
                 ),
                 Expanded(
                   child: _PreviewPanel(
-                    heading: 'THEN',
-                    option: selectedRewards.isEmpty
-                        ? null
-                        : selectedRewards.first,
-                    emptyText: selectedRewards.isEmpty
-                        ? 'Choose rewards'
-                        : selectedRewards.length == 1
+                    heading: context.l10n.thenLabel,
+                    option:
+                        selectedRewards.isEmpty ? null : selectedRewards.first,
+                    emptyText:
+                        selectedRewards.isEmpty
+                            ? context.l10n.chooseRewards
+                            : selectedRewards.length == 1
                             ? selectedRewards.first.label
-                            : '${selectedRewards.length} reward choices',
+                            : context.l10n.rewardChoicesCount(
+                              selectedRewards.length,
+                            ),
                     color: const Color(0xFFFFA726),
                   ),
                 ),
@@ -605,7 +611,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
     );
   }
 
-  Widget _buildCreateTab(SimpleLocalizations loc) {
+  Widget _buildCreateTab(AppLocalizations l10n) {
     return StreamBuilder<List<ChildProfile>>(
       stream: _firestoreService.getCurrentChildProfiles(),
       builder: (context, childSnapshot) {
@@ -622,11 +628,11 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                 if (childSnapshot.hasError ||
                     activitySnapshot.hasError ||
                     rewardSnapshot.hasError) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: Text(
-                        'Something went wrong loading the board options.',
+                        l10n.boardOptionsLoadFailed,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -636,9 +642,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                 if (!childSnapshot.hasData ||
                     !activitySnapshot.hasData ||
                     !rewardSnapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 final children = childSnapshot.data!;
@@ -649,16 +653,13 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                   padding: const EdgeInsets.all(18),
                   children: [
                     Text(
-                      'Create a clear visual board',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                      l10n.createClearVisualBoard,
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Choose who it is for, what happens WHEN, '
-                      'and what they can enjoy THEN.',
+                      l10n.createBoardIntro,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 20),
@@ -673,26 +674,28 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                     SizedBox(
                       height: 56,
                       child: FilledButton.icon(
-                        onPressed: _isApplying
-                            ? null
-                            : () => _createBoard(
+                        onPressed:
+                            _isApplying
+                                ? null
+                                : () => _createBoard(
                                   children: children,
                                   rewards: rewards,
-                                  loc: loc,
+                                  l10n: l10n,
                                 ),
-                        icon: _isApplying
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(Icons.send_rounded),
+                        icon:
+                            _isApplying
+                                ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : const Icon(Icons.send_rounded),
                         label: Text(
                           _isApplying
-                              ? 'Creating board...'
-                              : 'Create When–Then Board',
+                              ? l10n.creatingBoard
+                              : l10n.createWhenThenBoard,
                         ),
                       ),
                     ),
@@ -712,9 +715,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
       stream: _firestoreService.getCurrentChildProfiles(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Center(
-            child: Text('Could not load child profiles.'),
-          );
+          return Center(child: Text(context.l10n.childProfilesLoadFailed));
         }
 
         if (!snapshot.hasData) {
@@ -724,24 +725,20 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
         final children = snapshot.data!;
 
         if (children.isEmpty) {
-          return const Center(
-            child: Text('No child profiles were found.'),
-          );
+          return Center(child: Text(context.l10n.noChildProfilesFound));
         }
 
         return ListView(
           padding: const EdgeInsets.all(18),
           children: [
             Text(
-              'Active boards',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              context.l10n.activeBoards,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
-            const Text(
-              'See each child’s current board and clear it when complete.',
-            ),
+            Text(context.l10n.activeBoardsIntro),
             const SizedBox(height: 18),
             ...children.map(
               (child) => Padding(
@@ -772,7 +769,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
           return Card(
             child: Padding(
               padding: const EdgeInsets.all(18),
-              child: Text('Could not load $title.'),
+              child: Text(context.l10n.optionsLoadFailed(title)),
             ),
           );
         }
@@ -783,9 +780,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
-            side: BorderSide(
-              color: color.withValues(alpha: 0.25),
-            ),
+            side: BorderSide(color: color.withValues(alpha: 0.25)),
           ),
           child: Padding(
             padding: const EdgeInsets.all(18),
@@ -814,9 +809,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                         children: [
                           Text(
                             title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           Text(description),
@@ -826,7 +819,7 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                     FilledButton.icon(
                       onPressed: () => _showOptionDialog(type: type),
                       icon: const Icon(Icons.add_rounded),
-                      label: const Text('Add'),
+                      label: Text(context.l10n.add),
                     ),
                   ],
                 ),
@@ -834,9 +827,9 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                 if (!snapshot.hasData)
                   const Center(child: CircularProgressIndicator())
                 else if (options.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text('No options have been added yet.'),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(context.l10n.noOptionsAdded),
                   )
                 else
                   ...options.map((option) {
@@ -845,33 +838,32 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: CircleAvatar(
-                        backgroundColor:
-                            style.color.withValues(alpha: 0.14),
+                        backgroundColor: style.color.withValues(alpha: 0.14),
                         child: Icon(style.icon, color: style.color),
                       ),
                       title: Text(
                         option.label,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            tooltip: 'Edit',
-                            onPressed: () => _showOptionDialog(
-                              type: type,
-                              existingOption: option,
-                            ),
+                            tooltip: context.l10n.edit,
+                            onPressed:
+                                () => _showOptionDialog(
+                                  type: type,
+                                  existingOption: option,
+                                ),
                             icon: const Icon(Icons.edit_rounded),
                           ),
                           IconButton(
-                            tooltip: 'Delete',
-                            onPressed: () => _confirmDeleteOption(
-                              type: type,
-                              option: option,
-                            ),
+                            tooltip: context.l10n.delete,
+                            onPressed:
+                                () => _confirmDeleteOption(
+                                  type: type,
+                                  option: option,
+                                ),
                             icon: const Icon(Icons.delete_outline_rounded),
                           ),
                         ],
@@ -891,26 +883,24 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
       padding: const EdgeInsets.all(18),
       children: [
         Text(
-          'Manage options',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          context.l10n.manageOptions,
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Keep names short and clear so children can understand them quickly.',
-        ),
+        Text(context.l10n.manageOptionsIntro),
         const SizedBox(height: 18),
         _buildOptionsList(
-          title: 'WHEN activities',
-          description: 'Tasks and activities to complete.',
+          title: context.l10n.whenActivities,
+          description: context.l10n.whenActivitiesDescription,
           type: 'activities',
           color: const Color(0xFF42A5F5),
         ),
         const SizedBox(height: 16),
         _buildOptionsList(
-          title: 'THEN rewards',
-          description: 'Positive choices offered afterwards.',
+          title: context.l10n.thenRewards,
+          description: context.l10n.thenRewardsDescription,
           type: 'rewards',
           color: const Color(0xFFFFA726),
         ),
@@ -920,33 +910,27 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = SimpleLocalizations(Localizations.localeOf(context));
+    final l10n = context.l10n;
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(loc.getString('when_then_setup')),
-          bottom: const TabBar(
+          title: Text(l10n.whenThenSetup),
+          bottom: TabBar(
             tabs: [
+              Tab(icon: const Icon(Icons.add_task_rounded), text: l10n.create),
               Tab(
-                icon: Icon(Icons.add_task_rounded),
-                text: 'Create',
+                icon: const Icon(Icons.view_carousel_rounded),
+                text: l10n.activeBoards,
               ),
-              Tab(
-                icon: Icon(Icons.view_carousel_rounded),
-                text: 'Active Boards',
-              ),
-              Tab(
-                icon: Icon(Icons.tune_rounded),
-                text: 'Options',
-              ),
+              Tab(icon: const Icon(Icons.tune_rounded), text: l10n.options),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            _buildCreateTab(loc),
+            _buildCreateTab(l10n),
             _buildActiveBoardsTab(),
             _buildManageOptionsTab(),
           ],
@@ -977,9 +961,7 @@ class _StepCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(22),
-        side: BorderSide(
-          color: color.withValues(alpha: 0.28),
-        ),
+        side: BorderSide(color: color.withValues(alpha: 0.28)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(18),
@@ -1003,12 +985,11 @@ class _StepCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style:
-                            Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: color,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1.2,
-                                ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                        ),
                       ),
                       Text(subtitle),
                     ],
@@ -1054,14 +1035,13 @@ class _OptionChoiceCard extends StatelessWidget {
           width: 170,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: selected
-                ? style.color.withValues(alpha: 0.18)
-                : Theme.of(context).colorScheme.surface,
+            color:
+                selected
+                    ? style.color.withValues(alpha: 0.18)
+                    : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected
-                  ? style.color
-                  : Theme.of(context).dividerColor,
+              color: selected ? style.color : Theme.of(context).dividerColor,
               width: selected ? 3 : 1,
             ),
           ),
@@ -1081,10 +1061,7 @@ class _OptionChoiceCard extends StatelessWidget {
                 ),
               ),
               if (selected)
-                Icon(
-                  Icons.check_circle_rounded,
-                  color: style.color,
-                ),
+                Icon(Icons.check_circle_rounded, color: style.color),
             ],
           ),
         ),
@@ -1108,9 +1085,7 @@ class _PreviewPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = option == null
-        ? null
-        : whenThenStyleFor(option!.iconName);
+    final style = option == null ? null : whenThenStyleFor(option!.iconName);
 
     return Container(
       constraints: const BoxConstraints(minHeight: 145),
@@ -1118,9 +1093,7 @@ class _PreviewPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withValues(alpha: 0.35),
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Column(
         children: [
@@ -1164,9 +1137,7 @@ class _ActiveBoardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, dynamic>?>(
-      stream: firestoreService.getCurrentWhenThenStream(
-        childId: child.id,
-      ),
+      stream: firestoreService.getCurrentWhenThenStream(childId: child.id),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Card(
@@ -1180,9 +1151,8 @@ class _ActiveBoardCard extends StatelessWidget {
         final board = snapshot.data;
         final isActive = board?['isActive'] == true;
         final rawActivity = board?['activity'];
-        final activity = rawActivity is Map
-            ? Map<String, dynamic>.from(rawActivity)
-            : null;
+        final activity =
+            rawActivity is Map ? Map<String, dynamic>.from(rawActivity) : null;
 
         if (!isActive || activity == null) {
           return Card(
@@ -1196,27 +1166,27 @@ class _ActiveBoardCard extends StatelessWidget {
                 ),
               ),
               title: Text(child.name),
-              subtitle: const Text('No active board'),
-              trailing: const Icon(
-                Icons.radio_button_unchecked_rounded,
-              ),
+              subtitle: Text(context.l10n.noActiveBoard),
+              trailing: const Icon(Icons.radio_button_unchecked_rounded),
             ),
           );
         }
 
         final rawRewards = board?['rewards'];
-        final rewards = rawRewards is List
-            ? rawRewards
-                .whereType<Map>()
-                .map((reward) => Map<String, dynamic>.from(reward))
-                .toList()
-            : <Map<String, dynamic>>[];
+        final rewards =
+            rawRewards is List
+                ? rawRewards
+                    .whereType<Map>()
+                    .map((reward) => Map<String, dynamic>.from(reward))
+                    .toList()
+                : <Map<String, dynamic>>[];
 
         final selectedRewardId = board?['selectedRewardId'] as String?;
 
-        final selectedReward = selectedRewardId == null
-            ? null
-            : rewards.cast<Map<String, dynamic>?>().firstWhere(
+        final selectedReward =
+            selectedRewardId == null
+                ? null
+                : rewards.cast<Map<String, dynamic>?>().firstWhere(
                   (reward) => reward?['id'] == selectedRewardId,
                   orElse: () => null,
                 );
@@ -1229,21 +1199,15 @@ class _ActiveBoardCard extends StatelessWidget {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: activityStyle.color.withValues(alpha: 0.3),
-            ),
+            side: BorderSide(color: activityStyle.color.withValues(alpha: 0.3)),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor:
-                      activityStyle.color.withValues(alpha: 0.14),
-                  child: Icon(
-                    activityStyle.icon,
-                    color: activityStyle.color,
-                  ),
+                  backgroundColor: activityStyle.color.withValues(alpha: 0.14),
+                  child: Icon(activityStyle.icon, color: activityStyle.color),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -1252,33 +1216,40 @@ class _ActiveBoardCard extends StatelessWidget {
                     children: [
                       Text(
                         child.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
-                      Text('WHEN: ${activity['label'] ?? ''}'),
+                      Text(
+                        context.l10n.whenActivitySummary(
+                          activity['label'] as String? ?? '',
+                        ),
+                      ),
                       Text(
                         selectedReward == null
-                            ? 'THEN: Waiting for reward choice'
-                            : 'THEN: ${selectedReward['label'] ?? ''}',
+                            ? context.l10n.thenWaitingForReward
+                            : context.l10n.thenRewardSummary(
+                              selectedReward['label'] as String? ?? '',
+                            ),
                       ),
                     ],
                   ),
                 ),
                 TextButton.icon(
                   onPressed: () async {
+                    final l10n = context.l10n;
+
                     try {
-                      await firestoreService
-                          .clearCurrentWhenThenForChild(child.id);
-                      onMessage('${child.name}’s board was cleared.');
+                      await firestoreService.clearCurrentWhenThenForChild(
+                        child.id,
+                      );
+                      onMessage(l10n.childBoardCleared(child.name));
                     } catch (error) {
-                      onMessage('Could not clear the board: $error');
+                      onMessage(l10n.boardClearFailed(error.toString()));
                     }
                   },
                   icon: const Icon(Icons.check_circle_outline_rounded),
-                  label: const Text('Complete'),
+                  label: Text(context.l10n.complete),
                 ),
               ],
             ),

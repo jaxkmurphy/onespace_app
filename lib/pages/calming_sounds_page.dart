@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import '../simple_localizations.dart';
+import '../l10n/l10n.dart';
 
 class CalmingSoundsPage extends StatefulWidget {
   const CalmingSoundsPage({super.key});
@@ -28,10 +28,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       subtitleGa: 'Tonnta séimhe agus fuaimeanna farraige',
       emoji: '🌊',
       icon: Icons.waves_rounded,
-      colors: [
-        Color(0xFF26A69A),
-        Color(0xFF29B6F6),
-      ],
+      colors: [Color(0xFF26A69A), Color(0xFF29B6F6)],
       tracks: [
         CalmingSoundTrack(
           titleEn: 'Gentle Waves',
@@ -68,10 +65,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       subtitleGa: 'Báisteach bhog le haghaidh scíthe',
       emoji: '🌧️',
       icon: Icons.water_drop_rounded,
-      colors: [
-        Color(0xFF42A5F5),
-        Color(0xFF5C6BC0),
-      ],
+      colors: [Color(0xFF42A5F5), Color(0xFF5C6BC0)],
       tracks: [
         CalmingSoundTrack(
           titleEn: 'Soft Rain',
@@ -108,10 +102,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       subtitleGa: 'Leoithne bhog agus aer suaimhneach',
       emoji: '🌬️',
       icon: Icons.air_rounded,
-      colors: [
-        Color(0xFF66BB6A),
-        Color(0xFF26A69A),
-      ],
+      colors: [Color(0xFF66BB6A), Color(0xFF26A69A)],
       tracks: [
         CalmingSoundTrack(
           titleEn: 'Soft Breeze',
@@ -148,10 +139,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       subtitleGa: 'Fuaim sheasta le haghaidh fócas agus ciúnais',
       emoji: '🤍',
       icon: Icons.blur_on_rounded,
-      colors: [
-        Color(0xFF78909C),
-        Color(0xFFB0BEC5),
-      ],
+      colors: [Color(0xFF78909C), Color(0xFFB0BEC5)],
       tracks: [
         CalmingSoundTrack(
           titleEn: 'Soft Static',
@@ -197,18 +185,6 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     _player.stop();
     _player.dispose();
     super.dispose();
-  }
-
-  bool _isIrish(BuildContext context) {
-    return Localizations.localeOf(context).languageCode == 'ga';
-  }
-
-  String _text({
-    required BuildContext context,
-    required String en,
-    required String ga,
-  }) {
-    return _isIrish(context) ? ga : en;
   }
 
   Future<void> _playTrack(CalmingSoundTrack track) async {
@@ -263,13 +239,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            _text(
-              context: context,
-              en: 'Could not play this sound. Check the asset file.',
-              ga: 'Níorbh fhéidir an fhuaim seo a sheinm. Seiceáil an comhad.',
-            ),
-          ),
+          content: Text(context.l10n.soundPlaybackFailed),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -301,16 +271,13 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     await _player.setVolume(value);
   }
 
-  Widget _buildHeader(BuildContext context, SimpleLocalizations loc) {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 18, 16, 12),
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF5E35B1),
-            Color(0xFF26A69A),
-          ],
+          colors: [Color(0xFF5E35B1), Color(0xFF26A69A)],
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
@@ -330,11 +297,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
               color: Colors.white.withValues(alpha: 0.20),
               borderRadius: BorderRadius.circular(22),
             ),
-            child: const Icon(
-              Icons.spa_rounded,
-              color: Colors.white,
-              size: 44,
-            ),
+            child: const Icon(Icons.spa_rounded, color: Colors.white, size: 44),
           ),
           const SizedBox(width: 18),
           Expanded(
@@ -342,7 +305,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  loc.getString('calming_sounds'),
+                  context.l10n.calming_sounds,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -351,11 +314,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  _text(
-                    context: context,
-                    en: 'Choose a relaxing sound to listen to',
-                    ga: 'Roghnaigh fuaim shuaimhneach le héisteacht léi',
-                  ),
+                  context.l10n.calmingSoundsIntro,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -375,9 +334,8 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     if (track == null) return const SizedBox.shrink();
 
     final category = _categories.firstWhere(
-      (category) => category.tracks.any(
-        (item) => item.assetPath == track.assetPath,
-      ),
+      (category) =>
+          category.tracks.any((item) => item.assetPath == track.assetPath),
       orElse: () => _categories.first,
     );
 
@@ -389,9 +347,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       constraints: const BoxConstraints(maxWidth: 760),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: category.colors,
-        ),
+        gradient: LinearGradient(colors: category.colors),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -403,23 +359,10 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       ),
       child: Column(
         children: [
-          Text(
-            category.emoji,
-            style: const TextStyle(fontSize: 54),
-          ),
+          Text(category.emoji, style: const TextStyle(fontSize: 54)),
           const SizedBox(height: 8),
           Text(
-            _isPaused
-                ? _text(
-                    context: context,
-                    en: 'Paused',
-                    ga: 'Ar Sos',
-                  )
-                : _text(
-                    context: context,
-                    en: 'Now Playing',
-                    ga: 'Á Sheinm Anois',
-                  ),
+            _isPaused ? context.l10n.paused : context.l10n.nowPlaying,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 17,
@@ -447,10 +390,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
               children: [
                 Row(
                   children: [
-                    const Icon(
-                      Icons.volume_down_rounded,
-                      color: Colors.white,
-                    ),
+                    const Icon(Icons.volume_down_rounded, color: Colors.white),
                     Expanded(
                       child: Slider(
                         value: _volume,
@@ -459,18 +399,11 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                         onChanged: _changeVolume,
                       ),
                     ),
-                    const Icon(
-                      Icons.volume_up_rounded,
-                      color: Colors.white,
-                    ),
+                    const Icon(Icons.volume_up_rounded, color: Colors.white),
                   ],
                 ),
                 Text(
-                  _text(
-                    context: context,
-                    en: 'Volume',
-                    ga: 'Airde Fuaime',
-                  ),
+                  context.l10n.volume,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -495,25 +428,11 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                     foregroundColor: mainColor,
                   ),
                   icon: Icon(
-                    _isPaused
-                        ? Icons.play_arrow_rounded
-                        : Icons.pause_rounded,
+                    _isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
                   ),
                   label: Text(
-                    _isPaused
-                        ? _text(
-                            context: context,
-                            en: 'Play',
-                            ga: 'Seinn',
-                          )
-                        : _text(
-                            context: context,
-                            en: 'Pause',
-                            ga: 'Sos',
-                          ),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                    ),
+                    _isPaused ? context.l10n.play : context.l10n.pause,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
@@ -524,21 +443,12 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                   onPressed: _isLoading ? null : _stopSound,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    side: const BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    ),
+                    side: const BorderSide(color: Colors.white, width: 2),
                   ),
                   icon: const Icon(Icons.stop_rounded),
                   label: Text(
-                    _text(
-                      context: context,
-                      en: 'Stop',
-                      ga: 'Stop',
-                    ),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                    ),
+                    context.l10n.stop,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
@@ -567,15 +477,14 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         width: 240,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: selected
-              ? LinearGradient(colors: category.colors)
-              : null,
+          gradient: selected ? LinearGradient(colors: category.colors) : null,
           color: selected ? null : Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
-            color: selected
-                ? Colors.transparent
-                : category.colors.first.withValues(alpha: 0.20),
+            color:
+                selected
+                    ? Colors.transparent
+                    : category.colors.first.withValues(alpha: 0.20),
             width: 2,
           ),
           boxShadow: [
@@ -590,10 +499,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         ),
         child: Column(
           children: [
-            Text(
-              category.emoji,
-              style: const TextStyle(fontSize: 46),
-            ),
+            Text(category.emoji, style: const TextStyle(fontSize: 46)),
             const SizedBox(height: 10),
             Text(
               category.title(context),
@@ -627,9 +533,10 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         alignment: WrapAlignment.center,
         spacing: 14,
         runSpacing: 14,
-        children: _categories.map((category) {
-          return _buildCategoryCard(context, category);
-        }).toList(),
+        children:
+            _categories.map((category) {
+              return _buildCategoryCard(context, category);
+            }).toList(),
       ),
     );
   }
@@ -649,14 +556,13 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         duration: const Duration(milliseconds: 220),
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: isCurrent
-              ? mainColor.withValues(alpha: 0.12)
-              : Colors.white.withValues(alpha: 0.96),
+          color:
+              isCurrent
+                  ? mainColor.withValues(alpha: 0.12)
+                  : Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(26),
           border: Border.all(
-            color: isCurrent
-                ? mainColor
-                : Colors.black.withValues(alpha: 0.06),
+            color: isCurrent ? mainColor : Colors.black.withValues(alpha: 0.06),
             width: isCurrent ? 3 : 1,
           ),
           boxShadow: [
@@ -673,16 +579,11 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
               width: 62,
               height: 62,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: category.colors,
-                ),
+                gradient: LinearGradient(colors: category.colors),
                 borderRadius: BorderRadius.circular(20),
               ),
               alignment: Alignment.center,
-              child: Text(
-                category.emoji,
-                style: const TextStyle(fontSize: 30),
-              ),
+              child: Text(category.emoji, style: const TextStyle(fontSize: 30)),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -700,21 +601,9 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                   Text(
                     isCurrent
                         ? _isPaused
-                            ? _text(
-                                context: context,
-                                en: 'Paused - tap to play',
-                                ga: 'Ar sos - tapáil chun seinm',
-                              )
-                            : _text(
-                                context: context,
-                                en: 'Playing - tap to pause',
-                                ga: 'Á sheinm - tapáil chun sos',
-                              )
-                        : _text(
-                            context: context,
-                            en: 'Tap to play',
-                            ga: 'Tapáil chun seinm',
-                          ),
+                            ? context.l10n.pausedTapToPlay
+                            : context.l10n.playingTapToPause
+                        : context.l10n.tapToPlay,
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontWeight: FontWeight.w700,
@@ -804,11 +693,9 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = SimpleLocalizations(Localizations.localeOf(context));
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.getString('calming_sounds')),
+        title: Text(context.l10n.calming_sounds),
         centerTitle: true,
       ),
       body: AnimatedContainer(
@@ -818,11 +705,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF7F2FF),
-              Color(0xFFF3FFF5),
-              Color(0xFFFFF8E8),
-            ],
+            colors: [Color(0xFFF7F2FF), Color(0xFFF3FFF5), Color(0xFFFFF8E8)],
           ),
         ),
         child: SafeArea(
@@ -830,7 +713,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
             child: Center(
               child: Column(
                 children: [
-                  _buildHeader(context, loc),
+                  _buildHeader(context),
                   _buildNowPlayingCard(context),
                   _buildCategorySelector(context),
                   _buildTrackList(context),

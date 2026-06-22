@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../data/schedule_activity_types.dart';
+import '../l10n/l10n.dart';
 import '../models/schedule_entry.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
@@ -9,17 +10,13 @@ class StaffSchedulePage extends StatefulWidget {
   const StaffSchedulePage({super.key});
 
   @override
-  State<StaffSchedulePage> createState() =>
-      _StaffSchedulePageState();
+  State<StaffSchedulePage> createState() => _StaffSchedulePageState();
 }
 
-class _StaffSchedulePageState
-    extends State<StaffSchedulePage> {
-  final FirestoreService _firestoreService =
-      FirestoreService();
+class _StaffSchedulePageState extends State<StaffSchedulePage> {
+  final FirestoreService _firestoreService = FirestoreService();
 
-  final ClassroomSessionService _session =
-      ClassroomSessionService.instance;
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
 
   static const int dayStartMinutes = (8 * 60) + 30;
   static const int dayEndMinutes = 17 * 60;
@@ -50,7 +47,14 @@ class _StaffSchedulePageState
   }
 
   String _dayLabel(String day) {
-    return '${day[0].toUpperCase()}${day.substring(1)}';
+    return switch (day) {
+      'monday' => context.l10n.scheduleMonday,
+      'tuesday' => context.l10n.scheduleTuesday,
+      'wednesday' => context.l10n.scheduleWednesday,
+      'thursday' => context.l10n.scheduleThursday,
+      'friday' => context.l10n.scheduleFriday,
+      _ => day,
+    };
   }
 
   String _minutesToTime(int totalMinutes) {
@@ -63,14 +67,14 @@ class _StaffSchedulePageState
 
   String _formatTimeFromMinutes(int totalMinutes) {
     final hour = totalMinutes ~/ 60;
-    final minute =
-        (totalMinutes % 60).toString().padLeft(2, '0');
+    final minute = (totalMinutes % 60).toString().padLeft(2, '0');
 
     final suffix = hour >= 12 ? 'PM' : 'AM';
 
-    final displayHour = hour == 0
-        ? 12
-        : hour > 12
+    final displayHour =
+        hour == 0
+            ? 12
+            : hour > 12
             ? hour - 12
             : hour;
 
@@ -78,30 +82,38 @@ class _StaffSchedulePageState
   }
 
   String _formatTime(String time) {
-    return _formatTimeFromMinutes(
-      ScheduleEntry.timeToMinutes(time),
-    );
+    return _formatTimeFromMinutes(ScheduleEntry.timeToMinutes(time));
   }
 
   String _durationLabel(int minutes) {
     if (minutes < 60) {
-      return '$minutes min';
+      return context.l10n.scheduleMinutes(minutes);
     }
 
     final hours = minutes ~/ 60;
     final remainingMinutes = minutes % 60;
 
     if (remainingMinutes == 0) {
-      return hours == 1 ? '1 hour' : '$hours hours';
+      return context.l10n.scheduleHours(hours);
     }
 
-    return '${hours}h ${remainingMinutes}m';
+    return context.l10n.scheduleHoursMinutes(hours, remainingMinutes);
   }
 
+  String _activityTypeLabel(String key) => switch (key) {
+    'learning' => context.l10n.activityTypeLearning,
+    'break' => context.l10n.activityTypeBreak,
+    'food' => context.l10n.activityTypeFood,
+    'movement' => context.l10n.activityTypeMovement,
+    'therapy' => context.l10n.activityTypeTherapy,
+    'creative' => context.l10n.activityTypeCreative,
+    'arrival' => context.l10n.activityTypeArrival,
+    'home' => context.l10n.activityTypeHome,
+    _ => context.l10n.activityTypeOther,
+  };
+
   String _newEntryId() {
-    return DateTime.now()
-        .microsecondsSinceEpoch
-        .toString();
+    return DateTime.now().microsecondsSinceEpoch.toString();
   }
 
   Future<void> _loadSchedule() async {
@@ -112,11 +124,9 @@ class _StaffSchedulePageState
     }
 
     try {
-      final rawSchedule =
-          await _firestoreService.getCurrentSchedule();
+      final rawSchedule = await _firestoreService.getCurrentSchedule();
 
-      final parsedSchedule =
-          <String, List<ScheduleEntry>>{
+      final parsedSchedule = <String, List<ScheduleEntry>>{
         for (final day in daysOfWeek) day: [],
       };
 
@@ -124,9 +134,7 @@ class _StaffSchedulePageState
         final rawEntries = rawSchedule[day] ?? [];
         final entries = <ScheduleEntry>[];
 
-        for (int index = 0;
-            index < rawEntries.length;
-            index++) {
+        for (int index = 0; index < rawEntries.length; index++) {
           final rawEntry = rawEntries[index];
 
           entries.add(
@@ -141,10 +149,7 @@ class _StaffSchedulePageState
         }
 
         entries.sort(
-          (first, second) =>
-              first.startMinutes.compareTo(
-            second.startMinutes,
-          ),
+          (first, second) => first.startMinutes.compareTo(second.startMinutes),
         );
 
         parsedSchedule[day] = entries;
@@ -164,37 +169,24 @@ class _StaffSchedulePageState
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'The classroom schedule could not be loaded.',
-          ),
-        ),
+        SnackBar(content: Text(context.l10n.classroomScheduleLoadFailed)),
       );
     }
   }
 
-  Future<void> _saveDay(
-    String day,
-    List<ScheduleEntry> entries,
-  ) async {
+  Future<void> _saveDay(String day, List<ScheduleEntry> entries) async {
     setState(() {
       _isSaving = true;
     });
 
     try {
-      final sortedEntries = [...entries]
-        ..sort(
-          (first, second) =>
-              first.startMinutes.compareTo(
-            second.startMinutes,
-          ),
-        );
+      final sortedEntries = [...entries]..sort(
+        (first, second) => first.startMinutes.compareTo(second.startMinutes),
+      );
 
       await _firestoreService.setCurrentScheduleForDay(
         day: day,
-        entries: sortedEntries
-            .map((entry) => entry.toMap())
-            .toList(),
+        entries: sortedEntries.map((entry) => entry.toMap()).toList(),
       );
 
       if (!mounted) return;
@@ -211,10 +203,7 @@ class _StaffSchedulePageState
     }
   }
 
-  bool _hasOverlap(
-    ScheduleEntry candidate, {
-    String? ignoredId,
-  }) {
+  bool _hasOverlap(ScheduleEntry candidate, {String? ignoredId}) {
     final entries = _schedule[_selectedDay] ?? [];
 
     return entries.any((entry) {
@@ -223,16 +212,10 @@ class _StaffSchedulePageState
     });
   }
 
-  List<_ScheduleTimelineItem> _buildTimeline(
-    List<ScheduleEntry> entries,
-  ) {
-    final sortedEntries = [...entries]
-      ..sort(
-        (first, second) =>
-            first.startMinutes.compareTo(
-          second.startMinutes,
-        ),
-      );
+  List<_ScheduleTimelineItem> _buildTimeline(List<ScheduleEntry> entries) {
+    final sortedEntries = [...entries]..sort(
+      (first, second) => first.startMinutes.compareTo(second.startMinutes),
+    );
 
     final items = <_ScheduleTimelineItem>[];
     int cursor = dayStartMinutes;
@@ -241,22 +224,15 @@ class _StaffSchedulePageState
       final start = entry.startMinutes;
       final end = entry.endMinutes;
 
-      if (end <= dayStartMinutes ||
-          start >= dayEndMinutes) {
+      if (end <= dayStartMinutes || start >= dayEndMinutes) {
         continue;
       }
 
       if (start > cursor) {
-        _addEmptySlots(
-          items,
-          cursor,
-          math.min(start, dayEndMinutes),
-        );
+        _addEmptySlots(items, cursor, math.min(start, dayEndMinutes));
       }
 
-      items.add(
-        _ScheduleTimelineItem.activity(entry),
-      );
+      items.add(_ScheduleTimelineItem.activity(entry));
 
       cursor = math.max(cursor, end);
 
@@ -266,34 +242,20 @@ class _StaffSchedulePageState
     }
 
     if (cursor < dayEndMinutes) {
-      _addEmptySlots(
-        items,
-        cursor,
-        dayEndMinutes,
-      );
+      _addEmptySlots(items, cursor, dayEndMinutes);
     }
 
     return items;
   }
 
-  void _addEmptySlots(
-    List<_ScheduleTimelineItem> items,
-    int start,
-    int end,
-  ) {
+  void _addEmptySlots(List<_ScheduleTimelineItem> items, int start, int end) {
     int cursor = start;
 
     while (cursor < end) {
-      final slotEnd = math.min(
-        cursor + slotMinutes,
-        end,
-      );
+      final slotEnd = math.min(cursor + slotMinutes, end);
 
       items.add(
-        _ScheduleTimelineItem.empty(
-          startMinutes: cursor,
-          endMinutes: slotEnd,
-        ),
+        _ScheduleTimelineItem.empty(startMinutes: cursor, endMinutes: slotEnd),
       );
 
       cursor = slotEnd;
@@ -305,30 +267,26 @@ class _StaffSchedulePageState
     int? initialStartMinutes,
     int? availableSlotMinutes,
   }) async {
-    final descriptionController =
-        TextEditingController(
+    final descriptionController = TextEditingController(
       text: existingEntry?.description ?? '',
     );
 
-    final startMinutes = existingEntry?.startMinutes ??
-        initialStartMinutes ??
-        dayStartMinutes;
+    final startMinutes =
+        existingEntry?.startMinutes ?? initialStartMinutes ?? dayStartMinutes;
 
-    int durationMinutes = existingEntry == null
-        ? math.min(
-            slotMinutes,
-            availableSlotMinutes ??
-                (dayEndMinutes - startMinutes),
-          )
-        : existingEntry.endMinutes -
-            existingEntry.startMinutes;
+    int durationMinutes =
+        existingEntry == null
+            ? math.min(
+              slotMinutes,
+              availableSlotMinutes ?? (dayEndMinutes - startMinutes),
+            )
+            : existingEntry.endMinutes - existingEntry.startMinutes;
 
     if (durationMinutes < durationStepMinutes) {
       durationMinutes = durationStepMinutes;
     }
 
-    String selectedIcon =
-        existingEntry?.iconName ?? 'learning';
+    String selectedIcon = existingEntry?.iconName ?? 'learning';
 
     bool dialogSaving = false;
 
@@ -337,141 +295,98 @@ class _StaffSchedulePageState
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
-            final maximumDuration =
-                dayEndMinutes - startMinutes;
+            final maximumDuration = dayEndMinutes - startMinutes;
 
-            final endMinutes =
-                startMinutes + durationMinutes;
+            final endMinutes = startMinutes + durationMinutes;
 
             return AlertDialog(
               title: Text(
                 existingEntry == null
-                    ? 'Fill Time Slot'
-                    : 'Edit Activity',
+                    ? context.l10n.fillTimeSlot
+                    : context.l10n.editActivity,
               ),
               content: SizedBox(
                 width: 570,
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Container(
-                        padding:
-                            const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryContainer,
-                          borderRadius:
-                              BorderRadius.circular(18),
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(18),
                         ),
                         child: Column(
                           children: [
                             Text(
                               _dayLabel(_selectedDay),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               '${_formatTimeFromMinutes(startMinutes)}'
                               ' – '
                               '${_formatTimeFromMinutes(endMinutes)}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 5),
-                            Text(
-                              _durationLabel(
-                                durationMinutes,
-                              ),
-                            ),
+                            Text(_durationLabel(durationMinutes)),
                           ],
                         ),
                       ),
                       const SizedBox(height: 18),
                       Text(
-                        'Duration',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
+                        context.l10n.duration,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
-                            child:
-                                OutlinedButton.icon(
+                            child: OutlinedButton.icon(
                               onPressed:
                                   dialogSaving ||
-                                          durationMinutes <=
-                                              durationStepMinutes
+                                          durationMinutes <= durationStepMinutes
                                       ? null
                                       : () {
-                                          setDialogState(
-                                            () {
-                                              durationMinutes -=
-                                                  durationStepMinutes;
-                                            },
-                                          );
-                                        },
-                              icon: const Icon(
-                                Icons.remove_rounded,
-                              ),
-                              label: const Text(
-                                '15 minutes',
-                              ),
+                                        setDialogState(() {
+                                          durationMinutes -=
+                                              durationStepMinutes;
+                                        });
+                                      },
+                              icon: const Icon(Icons.remove_rounded),
+                              label: Text(context.l10n.scheduleMinutes(15)),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Container(
-                            constraints:
-                                const BoxConstraints(
-                              minWidth: 95,
-                            ),
-                            padding:
-                                const EdgeInsets.symmetric(
+                            constraints: const BoxConstraints(minWidth: 95),
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 13,
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerHighest,
-                              borderRadius:
-                                  BorderRadius.circular(15),
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(15),
                             ),
                             child: Text(
-                              _durationLabel(
-                                durationMinutes,
-                              ),
-                              textAlign:
-                                  TextAlign.center,
+                              _durationLabel(durationMinutes),
+                              textAlign: TextAlign.center,
                               style: const TextStyle(
-                                fontWeight:
-                                    FontWeight.bold,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child:
-                                OutlinedButton.icon(
+                            child: OutlinedButton.icon(
                               onPressed:
                                   dialogSaving ||
                                           durationMinutes +
@@ -479,84 +394,60 @@ class _StaffSchedulePageState
                                               maximumDuration
                                       ? null
                                       : () {
-                                          setDialogState(
-                                            () {
-                                              durationMinutes +=
-                                                  durationStepMinutes;
-                                            },
-                                          );
-                                        },
-                              icon: const Icon(
-                                Icons.add_rounded,
-                              ),
-                              label: const Text(
-                                '15 minutes',
-                              ),
+                                        setDialogState(() {
+                                          durationMinutes +=
+                                              durationStepMinutes;
+                                        });
+                                      },
+                              icon: const Icon(Icons.add_rounded),
+                              label: Text(context.l10n.scheduleMinutes(15)),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       TextField(
-                        controller:
-                            descriptionController,
+                        controller: descriptionController,
                         enabled: !dialogSaving,
                         maxLength: 80,
-                        textCapitalization:
-                            TextCapitalization.sentences,
-                        decoration:
-                            const InputDecoration(
-                          labelText: 'Activity name',
-                          hintText:
-                              'Example: Morning reading',
-                          prefixIcon: Icon(
-                            Icons.edit_note_rounded,
-                          ),
-                          border: OutlineInputBorder(),
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.activityName,
+                          hintText: context.l10n.activityNameHint,
+                          prefixIcon: const Icon(Icons.edit_note_rounded),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 14),
                       Text(
-                        'Activity type',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
+                        context.l10n.activityType,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children:
-                            scheduleActivityTypes
-                                .map((type) {
-                          return ChoiceChip(
-                            selected:
-                                selectedIcon ==
-                                    type.key,
-                            avatar: Icon(
-                              type.icon,
-                              color: type.colour,
-                              size: 20,
-                            ),
-                            label:
-                                Text(type.label),
-                            onSelected:
-                                dialogSaving
-                                    ? null
-                                    : (_) {
-                                        setDialogState(
-                                          () {
-                                            selectedIcon =
-                                                type.key;
-                                          },
-                                        );
-                                      },
-                          );
-                        }).toList(),
+                            scheduleActivityTypes.map((type) {
+                              return ChoiceChip(
+                                selected: selectedIcon == type.key,
+                                avatar: Icon(
+                                  type.icon,
+                                  color: type.colour,
+                                  size: 20,
+                                ),
+                                label: Text(_activityTypeLabel(type.key)),
+                                onSelected:
+                                    dialogSaving
+                                        ? null
+                                        : (_) {
+                                          setDialogState(() {
+                                            selectedIcon = type.key;
+                                          });
+                                        },
+                              );
+                            }).toList(),
                       ),
                     ],
                   ),
@@ -564,140 +455,109 @@ class _StaffSchedulePageState
               ),
               actions: [
                 TextButton(
-                  onPressed: dialogSaving
-                      ? null
-                      : () {
-                          Navigator.pop(
-                            dialogContext,
-                          );
-                        },
-                  child: const Text('Cancel'),
+                  onPressed:
+                      dialogSaving
+                          ? null
+                          : () {
+                            Navigator.pop(dialogContext);
+                          },
+                  child: Text(context.l10n.cancel),
                 ),
                 FilledButton.icon(
-                  onPressed: dialogSaving
-                      ? null
-                      : () async {
-                          final description =
-                              descriptionController
-                                  .text
-                                  .trim();
+                  onPressed:
+                      dialogSaving
+                          ? null
+                          : () async {
+                            final description =
+                                descriptionController.text.trim();
 
-                          if (description.isEmpty) {
-                            _showDialogMessage(
-                              dialogContext,
-                              'Please enter an activity name.',
-                            );
-                            return;
-                          }
-
-                          final endMinutes =
-                              startMinutes +
-                                  durationMinutes;
-
-                          final entry =
-                              ScheduleEntry(
-                            id: existingEntry?.id ??
-                                _newEntryId(),
-                            start: _minutesToTime(
-                              startMinutes,
-                            ),
-                            end: _minutesToTime(
-                              endMinutes,
-                            ),
-                            description:
-                                description,
-                            iconName:
-                                selectedIcon,
-                          );
-
-                          if (_hasOverlap(
-                            entry,
-                            ignoredId:
-                                existingEntry?.id,
-                          )) {
-                            _showDialogMessage(
-                              dialogContext,
-                              'This duration overlaps another scheduled activity.',
-                            );
-                            return;
-                          }
-
-                          setDialogState(() {
-                            dialogSaving = true;
-                          });
-
-                          try {
-                            final entries = [
-                              ...?_schedule[
-                                  _selectedDay],
-                            ];
-
-                            if (existingEntry ==
-                                null) {
-                              entries.add(entry);
-                            } else {
-                              final index =
-                                  entries.indexWhere(
-                                (item) =>
-                                    item.id ==
-                                    existingEntry.id,
+                            if (description.isEmpty) {
+                              _showDialogMessage(
+                                dialogContext,
+                                context.l10n.enterActivityName,
                               );
-
-                              if (index >= 0) {
-                                entries[index] =
-                                    entry;
-                              }
-                            }
-
-                            await _saveDay(
-                              _selectedDay,
-                              entries,
-                            );
-
-                            if (!dialogContext
-                                .mounted) {
                               return;
                             }
 
-                            Navigator.pop(
-                              dialogContext,
+                            final endMinutes = startMinutes + durationMinutes;
+
+                            final entry = ScheduleEntry(
+                              id: existingEntry?.id ?? _newEntryId(),
+                              start: _minutesToTime(startMinutes),
+                              end: _minutesToTime(endMinutes),
+                              description: description,
+                              iconName: selectedIcon,
                             );
-                          } catch (e) {
-                            if (!dialogContext
-                                .mounted) {
+
+                            if (_hasOverlap(
+                              entry,
+                              ignoredId: existingEntry?.id,
+                            )) {
+                              _showDialogMessage(
+                                dialogContext,
+                                context.l10n.activityOverlap,
+                              );
                               return;
                             }
 
                             setDialogState(() {
-                              dialogSaving =
-                                  false;
+                              dialogSaving = true;
                             });
 
-                            _showDialogMessage(
-                              dialogContext,
-                              'The activity could not be saved.',
-                            );
-                          }
-                        },
-                  icon: dialogSaving
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child:
-                              CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(
-                          Icons.save_rounded,
-                        ),
+                            try {
+                              final entries = [...?_schedule[_selectedDay]];
+
+                              if (existingEntry == null) {
+                                entries.add(entry);
+                              } else {
+                                final index = entries.indexWhere(
+                                  (item) => item.id == existingEntry.id,
+                                );
+
+                                if (index >= 0) {
+                                  entries[index] = entry;
+                                }
+                              }
+
+                              await _saveDay(_selectedDay, entries);
+
+                              if (!dialogContext.mounted) {
+                                return;
+                              }
+
+                              Navigator.pop(dialogContext);
+                            } catch (e) {
+                              if (!dialogContext.mounted) {
+                                return;
+                              }
+
+                              setDialogState(() {
+                                dialogSaving = false;
+                              });
+
+                              _showDialogMessage(
+                                dialogContext,
+                                context.l10n.activitySaveFailed,
+                              );
+                            }
+                          },
+                  icon:
+                      dialogSaving
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                          : const Icon(Icons.save_rounded),
                   label: Text(
                     dialogSaving
-                        ? 'Saving...'
+                        ? context.l10n.saving
                         : existingEntry == null
-                            ? 'Fill Slot'
-                            : 'Save Changes',
+                        ? context.l10n.fillSlot
+                        : context.l10n.saveChanges,
                   ),
                 ),
               ],
@@ -707,43 +567,35 @@ class _StaffSchedulePageState
       },
     );
 
-    await Future<void>.delayed(
-      const Duration(milliseconds: 350),
-    );
+    await Future<void>.delayed(const Duration(milliseconds: 350));
 
     descriptionController.dispose();
   }
 
-  void _showDialogMessage(
-    BuildContext dialogContext,
-    String message,
-  ) {
-    ScaffoldMessenger.of(dialogContext).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  void _showDialogMessage(BuildContext dialogContext, String message) {
+    ScaffoldMessenger.of(
+      dialogContext,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _deleteEntry(
-    ScheduleEntry entry,
-  ) async {
+  Future<void> _deleteEntry(ScheduleEntry entry) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Clear This Slot?'),
+          title: Text(context.l10n.clearThisSlot),
           content: Text(
-            'Remove "${entry.description}" from '
-            '${_dayLabel(_selectedDay)}?',
+            context.l10n.removeActivityFromDay(
+              entry.description,
+              _dayLabel(_selectedDay),
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  false,
-                );
+                Navigator.pop(dialogContext, false);
               },
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -751,12 +603,9 @@ class _StaffSchedulePageState
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  true,
-                );
+                Navigator.pop(dialogContext, true);
               },
-              child: const Text('Clear Slot'),
+              child: Text(context.l10n.clearSlot),
             ),
           ],
         );
@@ -765,34 +614,23 @@ class _StaffSchedulePageState
 
     if (confirmed != true || !mounted) return;
 
-    final entries = [
-      ...?_schedule[_selectedDay],
-    ]..removeWhere(
-        (item) => item.id == entry.id,
-      );
+    final entries = [...?_schedule[_selectedDay]]
+      ..removeWhere((item) => item.id == entry.id);
 
     try {
-      await _saveDay(
-        _selectedDay,
-        entries,
-      );
+      await _saveDay(_selectedDay, entries);
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'The activity could not be removed.',
-          ),
-        ),
+        SnackBar(content: Text(context.l10n.activityRemoveFailed)),
       );
     }
   }
 
   Future<void> _copyCurrentDay() async {
-    final availableDays = daysOfWeek
-        .where((day) => day != _selectedDay)
-        .toList();
+    final availableDays =
+        daysOfWeek.where((day) => day != _selectedDay).toList();
 
     String selectedTarget = availableDays.first;
 
@@ -802,38 +640,32 @@ class _StaffSchedulePageState
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text('Copy Schedule'),
+              title: Text(context.l10n.copySchedule),
               content: SizedBox(
                 width: 420,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment:
-                      CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Copy all activities from '
-                      '${_dayLabel(_selectedDay)} to:',
+                      context.l10n.copyActivitiesToDay(_dayLabel(_selectedDay)),
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       initialValue: selectedTarget,
-                      decoration:
-                          const InputDecoration(
-                        labelText: 'Target day',
-                        border:
-                            OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.targetDay,
+                        border: const OutlineInputBorder(),
                       ),
-                      items: availableDays
-                          .map(
-                            (day) =>
-                                DropdownMenuItem(
-                              value: day,
-                              child: Text(
-                                _dayLabel(day),
-                              ),
-                            ),
-                          )
-                          .toList(),
+                      items:
+                          availableDays
+                              .map(
+                                (day) => DropdownMenuItem(
+                                  value: day,
+                                  child: Text(_dayLabel(day)),
+                                ),
+                              )
+                              .toList(),
                       onChanged: (value) {
                         if (value == null) return;
 
@@ -848,23 +680,16 @@ class _StaffSchedulePageState
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(
-                      dialogContext,
-                    );
+                    Navigator.pop(dialogContext);
                   },
-                  child: const Text('Cancel'),
+                  child: Text(context.l10n.cancel),
                 ),
                 FilledButton.icon(
                   onPressed: () {
-                    Navigator.pop(
-                      dialogContext,
-                      selectedTarget,
-                    );
+                    Navigator.pop(dialogContext, selectedTarget);
                   },
-                  icon: const Icon(
-                    Icons.copy_rounded,
-                  ),
-                  label: const Text('Continue'),
+                  icon: const Icon(Icons.copy_rounded),
+                  label: Text(context.l10n.continueLabel),
                 ),
               ],
             );
@@ -875,40 +700,32 @@ class _StaffSchedulePageState
 
     if (targetDay == null || !mounted) return;
 
-    final targetEntries =
-        _schedule[targetDay] ?? [];
+    final targetEntries = _schedule[targetDay] ?? [];
 
     if (targetEntries.isNotEmpty) {
       final overwrite = await showDialog<bool>(
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text(
-              'Replace Existing Schedule?',
-            ),
+            title: Text(context.l10n.replaceExistingSchedule),
             content: Text(
-              '${_dayLabel(targetDay)} already has '
-              '${targetEntries.length} '
-              '${targetEntries.length == 1 ? "activity" : "activities"}.',
+              context.l10n.dayExistingActivityCount(
+                targetEntries.length,
+                _dayLabel(targetDay),
+              ),
             ),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(
-                    dialogContext,
-                    false,
-                  );
+                  Navigator.pop(dialogContext, false);
                 },
-                child: const Text('Cancel'),
+                child: Text(context.l10n.cancel),
               ),
               FilledButton(
                 onPressed: () {
-                  Navigator.pop(
-                    dialogContext,
-                    true,
-                  );
+                  Navigator.pop(dialogContext, true);
                 },
-                child: const Text('Replace'),
+                child: Text(context.l10n.replace),
               ),
             ],
           );
@@ -918,29 +735,25 @@ class _StaffSchedulePageState
       if (overwrite != true || !mounted) return;
     }
 
-    final sourceEntries =
-        _schedule[_selectedDay] ?? [];
+    final sourceEntries = _schedule[_selectedDay] ?? [];
 
     final copiedEntries = List.generate(
       sourceEntries.length,
-      (index) => sourceEntries[index].copyWith(
-        id: '${_newEntryId()}-$index',
-      ),
+      (index) => sourceEntries[index].copyWith(id: '${_newEntryId()}-$index'),
     );
 
     try {
-      await _saveDay(
-        targetDay,
-        copiedEntries,
-      );
+      await _saveDay(targetDay, copiedEntries);
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${_dayLabel(_selectedDay)} was copied to '
-            '${_dayLabel(targetDay)}.',
+            context.l10n.scheduleCopied(
+              _dayLabel(_selectedDay),
+              _dayLabel(targetDay),
+            ),
           ),
           behavior: SnackBarBehavior.floating,
         ),
@@ -948,20 +761,15 @@ class _StaffSchedulePageState
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'The schedule could not be copied.',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.scheduleCopyFailed)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final entries =
-        _schedule[_selectedDay] ?? [];
+    final entries = _schedule[_selectedDay] ?? [];
 
     final timeline = _buildTimeline(entries);
 
@@ -969,83 +777,56 @@ class _StaffSchedulePageState
       appBar: AppBar(
         title: Text(
           _session.hasClassroomSession
-              ? '${_session.currentClassroomName} Schedule'
-              : 'Staff Schedule',
+              ? context.l10n.classroomScheduleTitle(
+                _session.currentClassroomName,
+              )
+              : context.l10n.staffScheduleTitle,
         ),
         actions: [
           IconButton(
-            tooltip: 'Copy this day',
-            onPressed:
-                _isSaving || entries.isEmpty
-                    ? null
-                    : _copyCurrentDay,
-            icon: const Icon(
-              Icons.copy_all_rounded,
-            ),
+            tooltip: context.l10n.copyThisDay,
+            onPressed: _isSaving || entries.isEmpty ? null : _copyCurrentDay,
+            icon: const Icon(Icons.copy_all_rounded),
           ),
         ],
       ),
       body: SafeArea(
-        child: _isLoading
-            ? const Center(
-                child:
-                    CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  _buildHeader(entries),
-                  _buildDaySelector(),
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: _loadSchedule,
-                      child: ListView.separated(
-                        padding:
-                            const EdgeInsets.fromLTRB(
-                          18,
-                          10,
-                          18,
-                          30,
-                        ),
-                        itemCount: timeline.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(
-                          height: 6,
-                        ),
-                        itemBuilder:
-                            (context, index) {
-                          final item =
-                              timeline[index];
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                  children: [
+                    _buildHeader(entries),
+                    _buildDaySelector(),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _loadSchedule,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(18, 10, 18, 30),
+                          itemCount: timeline.length,
+                          separatorBuilder:
+                              (_, __) => const SizedBox(height: 6),
+                          itemBuilder: (context, index) {
+                            final item = timeline[index];
 
-                          if (item.entry != null) {
-                            return _buildActivitySlot(
-                              item.entry!,
-                            );
-                          }
+                            if (item.entry != null) {
+                              return _buildActivitySlot(item.entry!);
+                            }
 
-                          return _buildEmptySlot(
-                            item,
-                          );
-                        },
+                            return _buildEmptySlot(item);
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
       ),
     );
   }
 
-  Widget _buildHeader(
-    List<ScheduleEntry> entries,
-  ) {
+  Widget _buildHeader(List<ScheduleEntry> entries) {
     return Padding(
-      padding:
-          const EdgeInsets.fromLTRB(
-        18,
-        18,
-        18,
-        8,
-      ),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
       child: Card(
         margin: EdgeInsets.zero,
         child: Padding(
@@ -1056,54 +837,39 @@ class _StaffSchedulePageState
                 width: 58,
                 height: 58,
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryContainer,
-                  borderRadius:
-                      BorderRadius.circular(19),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(19),
                 ),
                 child: Icon(
                   Icons.view_timeline_rounded,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onPrimaryContainer,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                   size: 33,
                 ),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       _dayLabel(_selectedDay),
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(
-                            fontWeight:
-                                FontWeight.bold,
-                          ),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       entries.isEmpty
-                          ? 'Tap a blank slot to begin'
-                          : '${entries.length} '
-                              '${entries.length == 1 ? "activity" : "activities"} scheduled',
+                          ? context.l10n.tapBlankSlot
+                          : context.l10n.scheduleActivityCount(entries.length),
                     ),
                   ],
                 ),
               ),
               FilledButton.tonalIcon(
                 onPressed:
-                    _isSaving || entries.isEmpty
-                        ? null
-                        : _copyCurrentDay,
-                icon: const Icon(
-                  Icons.copy_rounded,
-                ),
-                label: const Text('Copy Day'),
+                    _isSaving || entries.isEmpty ? null : _copyCurrentDay,
+                icon: const Icon(Icons.copy_rounded),
+                label: Text(context.l10n.copyDay),
               ),
             ],
           ),
@@ -1115,77 +881,52 @@ class _StaffSchedulePageState
   Widget _buildDaySelector() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: Row(
-        children: daysOfWeek.map((day) {
-          final selected =
-              day == _selectedDay;
+        children:
+            daysOfWeek.map((day) {
+              final selected = day == _selectedDay;
 
-          return Padding(
-            padding:
-                const EdgeInsets.only(
-              right: 9,
-            ),
-            child: ChoiceChip(
-              selected: selected,
-              showCheckmark: false,
-              avatar: Icon(
-                selected
-                    ? Icons
-                        .calendar_today_rounded
-                    : Icons
-                        .calendar_today_outlined,
-                size: 19,
-              ),
-              label: Text(
-                _dayLabel(day),
-              ),
-              onSelected: (_) {
-                setState(() {
-                  _selectedDay = day;
-                });
-              },
-            ),
-          );
-        }).toList(),
+              return Padding(
+                padding: const EdgeInsets.only(right: 9),
+                child: ChoiceChip(
+                  selected: selected,
+                  showCheckmark: false,
+                  avatar: Icon(
+                    selected
+                        ? Icons.calendar_today_rounded
+                        : Icons.calendar_today_outlined,
+                    size: 19,
+                  ),
+                  label: Text(_dayLabel(day)),
+                  onSelected: (_) {
+                    setState(() {
+                      _selectedDay = day;
+                    });
+                  },
+                ),
+              );
+            }).toList(),
       ),
     );
   }
 
-  Widget _buildEmptySlot(
-    _ScheduleTimelineItem item,
-  ) {
-    final duration =
-        item.endMinutes - item.startMinutes;
+  Widget _buildEmptySlot(_ScheduleTimelineItem item) {
+    final duration = item.endMinutes - item.startMinutes;
 
     return Row(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: 82,
           child: Padding(
-            padding:
-                const EdgeInsets.only(
-              top: 18,
-              right: 10,
-            ),
+            padding: const EdgeInsets.only(top: 18, right: 10),
             child: Text(
-              _formatTimeFromMinutes(
-                item.startMinutes,
-              ),
+              _formatTimeFromMinutes(item.startMinutes),
               textAlign: TextAlign.right,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -1194,68 +935,52 @@ class _StaffSchedulePageState
             margin: EdgeInsets.zero,
             clipBehavior: Clip.antiAlias,
             child: InkWell(
-              onTap: _isSaving
-                  ? null
-                  : () {
-                      _showActivityEditor(
-                        initialStartMinutes:
-                            item.startMinutes,
-                        availableSlotMinutes:
-                            duration,
-                      );
-                    },
+              onTap:
+                  _isSaving
+                      ? null
+                      : () {
+                        _showActivityEditor(
+                          initialStartMinutes: item.startMinutes,
+                          availableSlotMinutes: duration,
+                        );
+                      },
               child: Container(
                 constraints: BoxConstraints(
-                  minHeight:
-                      duration <= 15 ? 54 : 68,
+                  minHeight: duration <= 15 ? 54 : 68,
                 ),
-                padding:
-                    const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surfaceContainerLowest,
+                  color: Theme.of(context).colorScheme.surfaceContainerLowest,
                   border: Border.all(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .outlineVariant,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                     style: BorderStyle.solid,
                   ),
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.add_circle_outline_rounded,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         duration <= 15
-                            ? 'Add 15-minute activity'
-                            : 'Tap to add activity',
+                            ? context.l10n.addFifteenMinuteActivity
+                            : context.l10n.tapToAddActivity,
                         style: TextStyle(
-                          color:
-                              Theme.of(context)
-                                  .colorScheme
-                                  .primary,
-                          fontWeight:
-                              FontWeight.w600,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                     Text(
                       _durationLabel(duration),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -1267,42 +992,26 @@ class _StaffSchedulePageState
     );
   }
 
-  Widget _buildActivitySlot(
-    ScheduleEntry entry,
-  ) {
-    final type =
-        scheduleActivityTypeFor(
-      entry.iconName,
-    );
+  Widget _buildActivitySlot(ScheduleEntry entry) {
+    final type = scheduleActivityTypeFor(entry.iconName);
 
-    final duration =
-        entry.endMinutes - entry.startMinutes;
+    final duration = entry.endMinutes - entry.startMinutes;
 
-    final minimumHeight =
-        math.max(82.0, duration * 1.65);
+    final minimumHeight = math.max(82.0, duration * 1.65);
 
     return Row(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: 82,
           child: Padding(
-            padding:
-                const EdgeInsets.only(
-              top: 19,
-              right: 10,
-            ),
+            padding: const EdgeInsets.only(top: 19, right: 10),
             child: Text(
               _formatTime(entry.start),
               textAlign: TextAlign.right,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -1311,27 +1020,19 @@ class _StaffSchedulePageState
             margin: EdgeInsets.zero,
             clipBehavior: Clip.antiAlias,
             child: InkWell(
-              onTap: _isSaving
-                  ? null
-                  : () {
-                      _showActivityEditor(
-                        existingEntry: entry,
-                      );
-                    },
+              onTap:
+                  _isSaving
+                      ? null
+                      : () {
+                        _showActivityEditor(existingEntry: entry);
+                      },
               child: Container(
-                constraints: BoxConstraints(
-                  minHeight: minimumHeight,
-                ),
-                padding:
-                    const EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: minimumHeight),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: type.colour
-                      .withValues(alpha: 0.12),
+                  color: type.colour.withValues(alpha: 0.12),
                   border: Border(
-                    left: BorderSide(
-                      color: type.colour,
-                      width: 7,
-                    ),
+                    left: BorderSide(color: type.colour, width: 7),
                   ),
                 ),
                 child: Row(
@@ -1340,34 +1041,21 @@ class _StaffSchedulePageState
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: type.colour
-                            .withValues(
-                          alpha: 0.17,
-                        ),
-                        borderRadius:
-                            BorderRadius.circular(
-                          17,
-                        ),
+                        color: type.colour.withValues(alpha: 0.17),
+                        borderRadius: BorderRadius.circular(17),
                       ),
-                      child: Icon(
-                        type.icon,
-                        color: type.colour,
-                        size: 29,
-                      ),
+                      child: Icon(type.icon, color: type.colour, size: 29),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.center,
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             entry.description,
                             style: const TextStyle(
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               fontSize: 17,
                             ),
                           ),
@@ -1381,39 +1069,30 @@ class _StaffSchedulePageState
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            type.label,
+                            _activityTypeLabel(type.key),
                             style: TextStyle(
                               color: type.colour,
-                              fontWeight:
-                                  FontWeight.w600,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                      tooltip: 'Edit activity',
-                      onPressed: _isSaving
-                          ? null
-                          : () {
-                              _showActivityEditor(
-                                existingEntry:
-                                    entry,
-                              );
-                            },
-                      icon: const Icon(
-                        Icons.edit_rounded,
-                      ),
+                      tooltip: context.l10n.editActivityTooltip,
+                      onPressed:
+                          _isSaving
+                              ? null
+                              : () {
+                                _showActivityEditor(existingEntry: entry);
+                              },
+                      icon: const Icon(Icons.edit_rounded),
                     ),
                     IconButton(
-                      tooltip: 'Clear slot',
-                      onPressed: _isSaving
-                          ? null
-                          : () =>
-                              _deleteEntry(entry),
+                      tooltip: context.l10n.clearSlotTooltip,
+                      onPressed: _isSaving ? null : () => _deleteEntry(entry),
                       icon: const Icon(
-                        Icons
-                            .delete_outline_rounded,
+                        Icons.delete_outline_rounded,
                         color: Colors.red,
                       ),
                     ),
@@ -1450,9 +1129,7 @@ class _ScheduleTimelineItem {
     );
   }
 
-  factory _ScheduleTimelineItem.activity(
-    ScheduleEntry entry,
-  ) {
+  factory _ScheduleTimelineItem.activity(ScheduleEntry entry) {
     return _ScheduleTimelineItem._(
       startMinutes: entry.startMinutes,
       endMinutes: entry.endMinutes,

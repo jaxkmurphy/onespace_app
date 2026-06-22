@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../simple_localizations.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n.dart';
 
 class VisualTimerPage extends StatefulWidget {
   const VisualTimerPage({super.key});
@@ -132,32 +133,25 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
     return const Color(0xFF26A69A);
   }
 
-  String _timerMessage(SimpleLocalizations loc) {
+  String _timerMessage(AppLocalizations l10n) {
     if (_isFinished) {
-      return loc.getString('time_finished');
+      return l10n.timeFinished;
     }
 
     if (_isRunning) {
-      return Localizations.localeOf(context).languageCode == 'ga'
-          ? 'Tá an t-am ag comhaireamh síos'
-          : 'The timer is counting down';
+      return l10n.timerCountingDown;
     }
 
-    return Localizations.localeOf(context).languageCode == 'ga'
-        ? 'Roghnaigh am agus brúigh tosaigh'
-        : 'Choose a time and press start';
+    return l10n.chooseTimeAndStart;
   }
 
-  Widget _buildHeader(SimpleLocalizations loc) {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 18, 16, 12),
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF26A69A),
-            Color(0xFF66BB6A),
-          ],
+          colors: [Color(0xFF26A69A), Color(0xFF66BB6A)],
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
@@ -189,7 +183,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  loc.getString('visual_timer'),
+                  l10n.visualTimer,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -198,7 +192,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  _timerMessage(loc),
+                  _timerMessage(l10n),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -231,10 +225,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
       child: Column(
         children: [
           TweenAnimationBuilder<double>(
-            tween: Tween<double>(
-              begin: 0,
-              end: _progress,
-            ),
+            tween: Tween<double>(begin: 0, end: _progress),
             duration: const Duration(milliseconds: 350),
             builder: (context, animatedProgress, _) {
               return SizedBox(
@@ -250,17 +241,15 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
                       child: Column(
-                        key: ValueKey(
-                          '${_remainingSeconds}_$_isFinished',
-                        ),
+                        key: ValueKey('${_remainingSeconds}_$_isFinished'),
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             _isFinished
                                 ? Icons.celebration_rounded
                                 : _isRunning
-                                    ? Icons.timer_rounded
-                                    : Icons.timer_outlined,
+                                ? Icons.timer_rounded
+                                : Icons.timer_outlined,
                             color: color,
                             size: 50,
                           ),
@@ -298,7 +287,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
   Widget _buildPresetCard({
     required int minutes,
     required bool selected,
-    required SimpleLocalizations loc,
+    required AppLocalizations l10n,
   }) {
     final color = selected ? _timerColor() : const Color(0xFF5E35B1);
 
@@ -308,19 +297,15 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         width: 128,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 18,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
         decoration: BoxDecoration(
-          color: selected
-              ? color.withValues(alpha: 0.13)
-              : Colors.white.withValues(alpha: 0.96),
+          color:
+              selected
+                  ? color.withValues(alpha: 0.13)
+                  : Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: selected
-                ? color
-                : Colors.black.withValues(alpha: 0.08),
+            color: selected ? color : Colors.black.withValues(alpha: 0.08),
             width: selected ? 3 : 1,
           ),
           boxShadow: [
@@ -350,7 +335,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
               ),
             ),
             Text(
-              loc.getString('min'),
+              l10n.minutesShort,
               style: TextStyle(
                 color: Colors.grey.shade700,
                 fontWeight: FontWeight.w700,
@@ -362,7 +347,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
     );
   }
 
-  Widget _buildTimeSelector(SimpleLocalizations loc) {
+  Widget _buildTimeSelector(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 18, 16, 0),
       constraints: const BoxConstraints(maxWidth: 900),
@@ -370,32 +355,29 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.88),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: Colors.black.withValues(alpha: 0.05),
-        ),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
           Text(
-            Localizations.localeOf(context).languageCode == 'ga'
-                ? 'Roghnaigh fad ama'
-                : 'Choose a timer length',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+            l10n.chooseTimerLength,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 16),
           Wrap(
             alignment: WrapAlignment.center,
             spacing: 12,
             runSpacing: 12,
-            children: _presetMinutes.map((minutes) {
-              return _buildPresetCard(
-                minutes: minutes,
-                selected: _selectedSeconds == minutes * 60,
-                loc: loc,
-              );
-            }).toList(),
+            children:
+                _presetMinutes.map((minutes) {
+                  return _buildPresetCard(
+                    minutes: minutes,
+                    selected: _selectedSeconds == minutes * 60,
+                    l10n: l10n,
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 20),
           Container(
@@ -408,24 +390,19 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton.filledTonal(
-                  onPressed:
-                      _isRunning ? null : () => _changeCustomMinutes(-1),
+                  onPressed: _isRunning ? null : () => _changeCustomMinutes(-1),
                   icon: const Icon(Icons.remove_rounded),
                 ),
                 const SizedBox(width: 14),
                 Column(
                   children: [
                     Text(
-                      Localizations.localeOf(context).languageCode == 'ga'
-                          ? 'Am saincheaptha'
-                          : 'Custom time',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                      ),
+                      l10n.customTime,
+                      style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '$_selectedMinutes ${loc.getString('min')}',
+                      l10n.timerMinutes(_selectedMinutes),
                       style: const TextStyle(
                         color: Color(0xFF5E35B1),
                         fontSize: 22,
@@ -436,8 +413,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
                 ),
                 const SizedBox(width: 14),
                 IconButton.filledTonal(
-                  onPressed:
-                      _isRunning ? null : () => _changeCustomMinutes(1),
+                  onPressed: _isRunning ? null : () => _changeCustomMinutes(1),
                   icon: const Icon(Icons.add_rounded),
                 ),
               ],
@@ -448,7 +424,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
     );
   }
 
-  Widget _buildControls(SimpleLocalizations loc, Color color) {
+  Widget _buildControls(AppLocalizations l10n, Color color) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 18, 16, 0),
       constraints: const BoxConstraints(maxWidth: 720),
@@ -462,12 +438,10 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
             width: 180,
             child: FilledButton.icon(
               onPressed: _isRunning ? null : _startTimer,
-              style: FilledButton.styleFrom(
-                backgroundColor: color,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: color),
               icon: const Icon(Icons.play_arrow_rounded),
               label: Text(
-                loc.getString('start'),
+                l10n.start,
                 style: const TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -479,7 +453,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
               onPressed: _isRunning ? _pauseTimer : null,
               icon: const Icon(Icons.pause_rounded),
               label: Text(
-                loc.getString('pause'),
+                l10n.pause,
                 style: const TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -491,7 +465,7 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
               onPressed: _resetTimer,
               icon: const Icon(Icons.replay_rounded),
               label: Text(
-                loc.getString('reset'),
+                l10n.reset,
                 style: const TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -501,83 +475,74 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
     );
   }
 
-  Widget _buildFinishedCard(SimpleLocalizations loc) {
+  Widget _buildFinishedCard(AppLocalizations l10n) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 260),
-      child: !_isFinished
-          ? const SizedBox.shrink()
-          : Container(
-              key: const ValueKey('finished'),
-              margin: const EdgeInsets.fromLTRB(16, 20, 16, 36),
-              constraints: const BoxConstraints(maxWidth: 560),
-              padding: const EdgeInsets.all(26),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.96),
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color:
-                        const Color(0xFF43A047).withValues(alpha: 0.20),
-                    blurRadius: 24,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  const Icon(
-                    Icons.celebration_rounded,
-                    color: Color(0xFFFFB300),
-                    size: 76,
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    loc.getString('time_finished'),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF43A047),
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
+      child:
+          !_isFinished
+              ? const SizedBox.shrink()
+              : Container(
+                key: const ValueKey('finished'),
+                margin: const EdgeInsets.fromLTRB(16, 20, 16, 36),
+                constraints: const BoxConstraints(maxWidth: 560),
+                padding: const EdgeInsets.all(26),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.96),
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF43A047).withValues(alpha: 0.20),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    Localizations.localeOf(context).languageCode == 'ga'
-                        ? 'Maith thú!'
-                        : 'Great job!',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.celebration_rounded,
+                      color: Color(0xFFFFB300),
+                      size: 76,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 14),
+                    Text(
+                      l10n.timeFinished,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFF43A047),
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.greatJob,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final loc = SimpleLocalizations(Localizations.localeOf(context));
+    final l10n = context.l10n;
     final color = _timerColor();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.getString('visual_timer')),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.visualTimer), centerTitle: true),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF3FFF5),
-              Color(0xFFFFF8E8),
-              Color(0xFFF7F2FF),
-            ],
+            colors: [Color(0xFFF3FFF5), Color(0xFFFFF8E8), Color(0xFFF7F2FF)],
           ),
         ),
         child: SafeArea(
@@ -585,11 +550,11 @@ class _VisualTimerPageState extends State<VisualTimerPage> {
             child: Center(
               child: Column(
                 children: [
-                  _buildHeader(loc),
+                  _buildHeader(l10n),
                   _buildTimerCircle(color),
-                  _buildTimeSelector(loc),
-                  _buildControls(loc, color),
-                  _buildFinishedCard(loc),
+                  _buildTimeSelector(l10n),
+                  _buildControls(l10n, color),
+                  _buildFinishedCard(l10n),
                 ],
               ),
             ),
@@ -617,17 +582,19 @@ class _TimerRingPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
 
-    final backgroundPaint = Paint()
-      ..color = backgroundColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final backgroundPaint =
+        Paint()
+          ..color = backgroundColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
-    final progressPaint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final progressPaint =
+        Paint()
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawCircle(center, radius, backgroundPaint);
 

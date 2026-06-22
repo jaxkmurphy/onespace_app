@@ -12,6 +12,9 @@ class PointRewardsPage extends StatefulWidget {
 class _PointRewardsPageState extends State<PointRewardsPage> {
   final FirestoreService _firestoreService = FirestoreService();
 
+  String _t(String en, String ga) =>
+      Localizations.localeOf(context).languageCode == 'ga' ? ga : en;
+
   static const Map<String, IconData> rewardIcons = {
     'gift': Icons.card_giftcard_rounded,
     'game': Icons.sports_esports_rounded,
@@ -23,12 +26,8 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
     'star': Icons.star_rounded,
   };
 
-  Future<void> _showRewardDialog({
-    PointReward? reward,
-  }) async {
-    final nameController = TextEditingController(
-      text: reward?.name ?? '',
-    );
+  Future<void> _showRewardDialog({PointReward? reward}) async {
+    final nameController = TextEditingController(text: reward?.name ?? '');
 
     final descriptionController = TextEditingController(
       text: reward?.description ?? '',
@@ -48,7 +47,9 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
           builder: (context, setDialogState) {
             return AlertDialog(
               title: Text(
-                reward == null ? 'Create Reward' : 'Edit Reward',
+                reward == null
+                    ? _t('Create Reward', 'Cruthaigh Luaíocht')
+                    : _t('Edit Reward', 'Cuir Luaíocht in Eagar'),
               ),
               content: SizedBox(
                 width: 520,
@@ -60,10 +61,13 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                         controller: nameController,
                         enabled: !isSaving,
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                          labelText: 'Reward name',
-                          hintText: 'Example: Extra computer time',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: _t('Reward name', 'Ainm na luaíochta'),
+                          hintText: _t(
+                            'Example: Extra computer time',
+                            'Sampla: Am breise ar an ríomhaire',
+                          ),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -72,11 +76,13 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                         enabled: !isSaving,
                         maxLength: 120,
                         maxLines: 3,
-                        decoration: const InputDecoration(
-                          labelText: 'Description',
-                          hintText:
-                              'Add a short explanation of the reward.',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: _t('Description', 'Cur síos'),
+                          hintText: _t(
+                            'Add a short explanation of the reward.',
+                            'Cuir míniú gearr ar an luaíocht leis.',
+                          ),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -84,46 +90,40 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                         controller: costController,
                         enabled: !isSaving,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Points needed',
-                          prefixIcon: Icon(Icons.star_rounded),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: _t('Points needed', 'Pointí de dhíth'),
+                          prefixIcon: const Icon(Icons.star_rounded),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 18),
                       Text(
-                        'Choose an icon',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        _t('Choose an icon', 'Roghnaigh deilbhín'),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       Wrap(
                         spacing: 9,
                         runSpacing: 9,
-                        children: rewardIcons.entries.map((entry) {
-                          final selected =
-                              selectedIcon == entry.key;
+                        children:
+                            rewardIcons.entries.map((entry) {
+                              final selected = selectedIcon == entry.key;
 
-                          return ChoiceChip(
-                            selected: selected,
-                            avatar: Icon(
-                              entry.value,
-                              size: 21,
-                            ),
-                            label: Text(
-                              _iconLabel(entry.key),
-                            ),
-                            onSelected: isSaving
-                                ? null
-                                : (_) {
-                                    setDialogState(() {
-                                      selectedIcon = entry.key;
-                                    });
-                                  },
-                          );
-                        }).toList(),
+                              return ChoiceChip(
+                                selected: selected,
+                                avatar: Icon(entry.value, size: 21),
+                                label: Text(_iconLabel(entry.key)),
+                                onSelected:
+                                    isSaving
+                                        ? null
+                                        : (_) {
+                                          setDialogState(() {
+                                            selectedIcon = entry.key;
+                                          });
+                                        },
+                              );
+                            }).toList(),
                       ),
                     ],
                   ),
@@ -131,93 +131,106 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: isSaving
-                      ? null
-                      : () {
-                          Navigator.pop(dialogContext);
-                        },
-                  child: const Text('Cancel'),
+                  onPressed:
+                      isSaving
+                          ? null
+                          : () {
+                            Navigator.pop(dialogContext);
+                          },
+                  child: Text(_t('Cancel', 'Cealaigh')),
                 ),
                 FilledButton.icon(
-                  onPressed: isSaving
-                      ? null
-                      : () async {
-                          final name = nameController.text.trim();
-                          final description =
-                              descriptionController.text.trim();
-                          final cost = int.tryParse(
-                            costController.text.trim(),
-                          );
-
-                          if (name.isEmpty) {
-                            _showDialogMessage(
-                              dialogContext,
-                              'Please enter a reward name.',
+                  onPressed:
+                      isSaving
+                          ? null
+                          : () async {
+                            final name = nameController.text.trim();
+                            final description =
+                                descriptionController.text.trim();
+                            final cost = int.tryParse(
+                              costController.text.trim(),
                             );
-                            return;
-                          }
 
-                          if (cost == null || cost <= 0) {
-                            _showDialogMessage(
-                              dialogContext,
-                              'Please enter a valid points cost.',
-                            );
-                            return;
-                          }
-
-                          setDialogState(() {
-                            isSaving = true;
-                          });
-
-                          try {
-                            if (reward == null) {
-                              await _firestoreService
-                                  .addCurrentPointReward(
-                                name: name,
-                                description: description,
-                                cost: cost,
-                                iconName: selectedIcon,
+                            if (name.isEmpty) {
+                              _showDialogMessage(
+                                dialogContext,
+                                _t(
+                                  'Please enter a reward name.',
+                                  'Cuir ainm luaíochta isteach.',
+                                ),
                               );
-                            } else {
-                              await _firestoreService
-                                  .updateCurrentPointReward(
-                                reward.copyWith(
+                              return;
+                            }
+
+                            if (cost == null || cost <= 0) {
+                              _showDialogMessage(
+                                dialogContext,
+                                _t(
+                                  'Please enter a valid points cost.',
+                                  'Cuir costas bailí pointí isteach.',
+                                ),
+                              );
+                              return;
+                            }
+
+                            setDialogState(() {
+                              isSaving = true;
+                            });
+
+                            try {
+                              if (reward == null) {
+                                await _firestoreService.addCurrentPointReward(
                                   name: name,
                                   description: description,
                                   cost: cost,
                                   iconName: selectedIcon,
+                                );
+                              } else {
+                                await _firestoreService
+                                    .updateCurrentPointReward(
+                                      reward.copyWith(
+                                        name: name,
+                                        description: description,
+                                        cost: cost,
+                                        iconName: selectedIcon,
+                                      ),
+                                    );
+                              }
+
+                              if (!dialogContext.mounted) return;
+
+                              Navigator.pop(dialogContext);
+                            } catch (e) {
+                              if (!dialogContext.mounted) return;
+
+                              setDialogState(() {
+                                isSaving = false;
+                              });
+
+                              _showDialogMessage(
+                                dialogContext,
+                                _t(
+                                  'Could not save the reward: $e',
+                                  'Níorbh fhéidir an luaíocht a shábháil: $e',
                                 ),
                               );
                             }
-
-                            if (!dialogContext.mounted) return;
-
-                            Navigator.pop(dialogContext);
-                          } catch (e) {
-                            if (!dialogContext.mounted) return;
-
-                            setDialogState(() {
-                              isSaving = false;
-                            });
-
-                            _showDialogMessage(
-                              dialogContext,
-                              'Could not save the reward: $e',
-                            );
-                          }
-                        },
-                  icon: isSaving
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(Icons.save_rounded),
+                          },
+                  icon:
+                      isSaving
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                          : const Icon(Icons.save_rounded),
                   label: Text(
-                    isSaving ? 'Saving...' : 'Save Reward',
+                    isSaving
+                        ? _t('Saving...', 'Á shábháil...')
+                        : _t('Save Reward', 'Sábháil Luaíocht'),
                   ),
                 ),
               ],
@@ -229,49 +242,46 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
 
     // Allow the dialog's closing animation to finish before disposing
     // controllers still attached to its text fields.
-    await Future<void>.delayed(
-      const Duration(milliseconds: 350),
-    );
+    await Future<void>.delayed(const Duration(milliseconds: 350));
 
     nameController.dispose();
     descriptionController.dispose();
     costController.dispose();
   }
 
-  void _showDialogMessage(
-    BuildContext context,
-    String message,
-  ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  void _showDialogMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _changeRewardStatus(
-    PointReward reward,
-  ) async {
+  Future<void> _changeRewardStatus(PointReward reward) async {
     if (reward.active) {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Archive Reward?'),
+            title: Text(
+              _t('Archive Reward?', 'Cuir an Luaíocht sa Chartlann?'),
+            ),
             content: Text(
-              '"${reward.name}" will no longer appear to children. '
-              'Its previous history will be preserved.',
+              _t(
+                '"${reward.name}" will no longer appear to children. Its previous history will be preserved.',
+                'Ní bheidh "${reward.name}" le feiceáil ag páistí a thuilleadh. Coinneofar an stair roimhe seo.',
+              ),
             ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(dialogContext, false);
                 },
-                child: const Text('Cancel'),
+                child: Text(_t('Cancel', 'Cealaigh')),
               ),
               FilledButton(
                 onPressed: () {
                   Navigator.pop(dialogContext, true);
                 },
-                child: const Text('Archive'),
+                child: Text(_t('Archive', 'Cuir sa Chartlann')),
               ),
             ],
           );
@@ -291,7 +301,12 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Could not update reward: $e'),
+          content: Text(
+            _t(
+              'Could not update reward: $e',
+              'Níorbh fhéidir an luaíocht a nuashonrú: $e',
+            ),
+          ),
         ),
       );
     }
@@ -300,22 +315,22 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
   String _iconLabel(String iconName) {
     switch (iconName) {
       case 'game':
-        return 'Game';
+        return _t('Game', 'Cluiche');
       case 'music':
-        return 'Music';
+        return _t('Music', 'Ceol');
       case 'art':
-        return 'Art';
+        return _t('Art', 'Ealaín');
       case 'outdoors':
-        return 'Outdoors';
+        return _t('Outdoors', 'Lasmuigh');
       case 'choice':
-        return 'Choice';
+        return _t('Choice', 'Rogha');
       case 'break':
-        return 'Break';
+        return _t('Break', 'Sos');
       case 'star':
-        return 'Star';
+        return _t('Star', 'Réalta');
       case 'gift':
       default:
-        return 'Gift';
+        return _t('Gift', 'Bronntanas');
     }
   }
 
@@ -323,10 +338,10 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reward Manager'),
+        title: Text(_t('Reward Manager', 'Bainisteoir Luaíochtaí')),
         actions: [
           IconButton(
-            tooltip: 'Create reward',
+            tooltip: _t('Create reward', 'Cruthaigh luaíocht'),
             onPressed: _showRewardDialog,
             icon: const Icon(Icons.add_rounded),
           ),
@@ -335,46 +350,43 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showRewardDialog,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Create Reward'),
+        label: Text(_t('Create Reward', 'Cruthaigh Luaíocht')),
       ),
       body: SafeArea(
         child: StreamBuilder<List<PointReward>>(
           stream: _firestoreService.getCurrentPointRewards(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Center(
-                child: Text('Could not load classroom rewards.'),
+              return Center(
+                child: Text(
+                  _t(
+                    'Could not load classroom rewards.',
+                    'Níorbh fhéidir luaíochtaí an tseomra ranga a lódáil.',
+                  ),
+                ),
               );
             }
 
             if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             final rewards = snapshot.data!;
 
             return LayoutBuilder(
               builder: (context, constraints) {
-                final columns = constraints.maxWidth >= 900
-                    ? 3
-                    : constraints.maxWidth >= 620
+                final columns =
+                    constraints.maxWidth >= 900
+                        ? 3
+                        : constraints.maxWidth >= 620
                         ? 2
                         : 1;
 
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(
-                    18,
-                    18,
-                    18,
-                    100,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 1100,
-                      ),
+                      constraints: const BoxConstraints(maxWidth: 1100),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -385,16 +397,15 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                           else
                             GridView.builder(
                               shrinkWrap: true,
-                              physics:
-                                  const NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: rewards.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: columns,
-                                crossAxisSpacing: 16,
-                                mainAxisSpacing: 16,
-                                mainAxisExtent: 300,
-                              ),
+                                    crossAxisCount: columns,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                    mainAxisExtent: 300,
+                                  ),
                               itemBuilder: (context, index) {
                                 return _buildRewardCard(
                                   context,
@@ -441,15 +452,17 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Classroom Rewards',
-                    style:
-                        Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                    _t('Classroom Rewards', 'Luaíochtaí an tSeomra Ranga'),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Create rewards children can work toward with their points.',
+                  Text(
+                    _t(
+                      'Create rewards children can work toward with their points.',
+                      'Cruthaigh luaíochtaí ar féidir le páistí oibriú ina dtreo lena gcuid pointí.',
+                    ),
                   ),
                 ],
               ),
@@ -460,12 +473,8 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
     );
   }
 
-  Widget _buildRewardCard(
-    BuildContext context,
-    PointReward reward,
-  ) {
-    final icon = rewardIcons[reward.iconName] ??
-        Icons.card_giftcard_rounded;
+  Widget _buildRewardCard(BuildContext context, PointReward reward) {
+    final icon = rewardIcons[reward.iconName] ?? Icons.card_giftcard_rounded;
 
     return Opacity(
       opacity: reward.active ? 1 : 0.58,
@@ -483,15 +492,10 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color:
-                          Colors.deepPurple.withValues(alpha: 0.14),
+                      color: Colors.deepPurple.withValues(alpha: 0.14),
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    child: Icon(
-                      icon,
-                      color: Colors.deepPurple,
-                      size: 31,
-                    ),
+                    child: Icon(icon, color: Colors.deepPurple, size: 31),
                   ),
                   const Spacer(),
                   Chip(
@@ -501,10 +505,8 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                       size: 20,
                     ),
                     label: Text(
-                      '${reward.cost} points',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      _t('${reward.cost} points', '${reward.cost} pointe'),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -514,27 +516,29 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                 reward.name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style:
-                    Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 6),
               Expanded(
                 child: Text(
                   reward.description.isEmpty
-                      ? 'No description provided.'
+                      ? _t(
+                        'No description provided.',
+                        'Níor cuireadh cur síos ar fáil.',
+                      )
                       : reward.description,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (!reward.active)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    'Archived',
-                    style: TextStyle(
+                    _t('Archived', 'Sa Chartlann'),
+                    style: const TextStyle(
                       color: Colors.orange,
                       fontWeight: FontWeight.bold,
                     ),
@@ -548,7 +552,7 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                         _showRewardDialog(reward: reward);
                       },
                       icon: const Icon(Icons.edit_rounded),
-                      label: const Text('Edit'),
+                      label: Text(_t('Edit', 'Cuir in Eagar')),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -563,7 +567,9 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                             : Icons.unarchive_rounded,
                       ),
                       label: Text(
-                        reward.active ? 'Archive' : 'Restore',
+                        reward.active
+                            ? _t('Archive', 'Cuir sa Chartlann')
+                            : _t('Restore', 'Athchóirigh'),
                       ),
                     ),
                   ),
@@ -590,21 +596,27 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
             ),
             const SizedBox(height: 14),
             Text(
-              'No rewards created yet',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              _t(
+                'No rewards created yet',
+                'Níor cruthaíodh aon luaíochtaí fós',
+              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 7),
-            const Text(
-              'Create the first classroom reward for children to work toward.',
+            Text(
+              _t(
+                'Create the first classroom reward for children to work toward.',
+                'Cruthaigh an chéad luaíocht seomra ranga do pháistí.',
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 18),
             FilledButton.icon(
               onPressed: _showRewardDialog,
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Create Reward'),
+              label: Text(_t('Create Reward', 'Cruthaigh Luaíocht')),
             ),
           ],
         ),

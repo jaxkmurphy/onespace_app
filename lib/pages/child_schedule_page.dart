@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/schedule_activity_types.dart';
+import '../l10n/l10n.dart';
 import '../models/schedule_entry.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
@@ -8,17 +9,13 @@ class ChildSchedulePage extends StatefulWidget {
   const ChildSchedulePage({super.key});
 
   @override
-  State<ChildSchedulePage> createState() =>
-      _ChildSchedulePageState();
+  State<ChildSchedulePage> createState() => _ChildSchedulePageState();
 }
 
-class _ChildSchedulePageState
-    extends State<ChildSchedulePage> {
-  final FirestoreService _firestoreService =
-      FirestoreService();
+class _ChildSchedulePageState extends State<ChildSchedulePage> {
+  final FirestoreService _firestoreService = FirestoreService();
 
-  final ClassroomSessionService _session =
-      ClassroomSessionService.instance;
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
 
   static const List<String> daysOfWeek = [
     'monday',
@@ -45,8 +42,7 @@ class _ChildSchedulePageState
   String _initialDay() {
     final weekday = DateTime.now().weekday;
 
-    if (weekday >= DateTime.monday &&
-        weekday <= DateTime.friday) {
+    if (weekday >= DateTime.monday && weekday <= DateTime.friday) {
       return daysOfWeek[weekday - 1];
     }
 
@@ -56,8 +52,7 @@ class _ChildSchedulePageState
   String _currentDayKey() {
     final weekday = DateTime.now().weekday;
 
-    if (weekday >= DateTime.monday &&
-        weekday <= DateTime.friday) {
+    if (weekday >= DateTime.monday && weekday <= DateTime.friday) {
       return daysOfWeek[weekday - 1];
     }
 
@@ -69,22 +64,40 @@ class _ChildSchedulePageState
   }
 
   String _dayLabel(String day) {
-    return '${day[0].toUpperCase()}${day.substring(1)}';
+    return switch (day) {
+      'monday' => context.l10n.scheduleMonday,
+      'tuesday' => context.l10n.scheduleTuesday,
+      'wednesday' => context.l10n.scheduleWednesday,
+      'thursday' => context.l10n.scheduleThursday,
+      'friday' => context.l10n.scheduleFriday,
+      _ => day,
+    };
   }
 
+  String _activityTypeLabel(String key) => switch (key) {
+    'learning' => context.l10n.activityTypeLearning,
+    'break' => context.l10n.activityTypeBreak,
+    'food' => context.l10n.activityTypeFood,
+    'movement' => context.l10n.activityTypeMovement,
+    'therapy' => context.l10n.activityTypeTherapy,
+    'creative' => context.l10n.activityTypeCreative,
+    'arrival' => context.l10n.activityTypeArrival,
+    'home' => context.l10n.activityTypeHome,
+    _ => context.l10n.activityTypeOther,
+  };
+
   String _formatTime(String time) {
-    final totalMinutes =
-        ScheduleEntry.timeToMinutes(time);
+    final totalMinutes = ScheduleEntry.timeToMinutes(time);
 
     final hour = totalMinutes ~/ 60;
-    final minute =
-        (totalMinutes % 60).toString().padLeft(2, '0');
+    final minute = (totalMinutes % 60).toString().padLeft(2, '0');
 
     final suffix = hour >= 12 ? 'PM' : 'AM';
 
-    final displayHour = hour == 0
-        ? 12
-        : hour > 12
+    final displayHour =
+        hour == 0
+            ? 12
+            : hour > 12
             ? hour - 12
             : hour;
 
@@ -104,11 +117,9 @@ class _ChildSchedulePageState
     }
 
     try {
-      final rawSchedule =
-          await _firestoreService.getCurrentSchedule();
+      final rawSchedule = await _firestoreService.getCurrentSchedule();
 
-      final parsedSchedule =
-          <String, List<ScheduleEntry>>{
+      final parsedSchedule = <String, List<ScheduleEntry>>{
         for (final day in daysOfWeek) day: [],
       };
 
@@ -116,9 +127,7 @@ class _ChildSchedulePageState
         final rawEntries = rawSchedule[day] ?? [];
         final entries = <ScheduleEntry>[];
 
-        for (int index = 0;
-            index < rawEntries.length;
-            index++) {
+        for (int index = 0; index < rawEntries.length; index++) {
           final rawEntry = rawEntries[index];
 
           entries.add(
@@ -133,10 +142,7 @@ class _ChildSchedulePageState
         }
 
         entries.sort(
-          (first, second) =>
-              first.startMinutes.compareTo(
-            second.startMinutes,
-          ),
+          (first, second) => first.startMinutes.compareTo(second.startMinutes),
         );
 
         parsedSchedule[day] = entries;
@@ -155,19 +161,13 @@ class _ChildSchedulePageState
         _isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'The schedule could not be loaded.',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.scheduleLoadFailed)));
     }
   }
 
-  ScheduleEntry? _currentActivity(
-    List<ScheduleEntry> entries,
-  ) {
+  ScheduleEntry? _currentActivity(List<ScheduleEntry> entries) {
     if (!_selectedDayIsToday) return null;
 
     for (final entry in entries) {
@@ -180,9 +180,7 @@ class _ChildSchedulePageState
     return null;
   }
 
-  ScheduleEntry? _nextActivity(
-    List<ScheduleEntry> entries,
-  ) {
+  ScheduleEntry? _nextActivity(List<ScheduleEntry> entries) {
     if (!_selectedDayIsToday) return null;
 
     for (final entry in entries) {
@@ -220,8 +218,7 @@ class _ChildSchedulePageState
 
   @override
   Widget build(BuildContext context) {
-    final entries =
-        _schedule[_selectedDay] ?? [];
+    final entries = _schedule[_selectedDay] ?? [];
 
     final current = _currentActivity(entries);
     final next = _nextActivity(entries);
@@ -230,37 +227,31 @@ class _ChildSchedulePageState
       appBar: AppBar(
         title: Text(
           _session.hasClassroomSession
-              ? '${_session.currentClassroomName} Schedule'
-              : 'My Schedule',
+              ? context.l10n.classroomScheduleTitle(
+                _session.currentClassroomName,
+              )
+              : context.l10n.my_schedule,
         ),
       ),
       body: SafeArea(
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  _buildSummary(
-                    entries,
-                    current,
-                    next,
-                  ),
-                  _buildDaySelector(),
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: _loadSchedule,
-                      child: entries.isEmpty
-                          ? _buildEmptyDay()
-                          : _buildTimeline(
-                              entries,
-                              current,
-                              next,
-                            ),
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                  children: [
+                    _buildSummary(entries, current, next),
+                    _buildDaySelector(),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _loadSchedule,
+                        child:
+                            entries.isEmpty
+                                ? _buildEmptyDay()
+                                : _buildTimeline(entries, current, next),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
       ),
     );
   }
@@ -271,20 +262,14 @@ class _ChildSchedulePageState
     ScheduleEntry? next,
   ) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        18,
-        18,
-        18,
-        8,
-      ),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
       child: Card(
         margin: EdgeInsets.zero,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final isWide =
-                  constraints.maxWidth >= 700;
+              final isWide = constraints.maxWidth >= 700;
 
               final introduction = Row(
                 children: [
@@ -292,51 +277,39 @@ class _ChildSchedulePageState
                     width: 62,
                     height: 62,
                     decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryContainer,
-                      borderRadius:
-                          BorderRadius.circular(20),
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Icon(
                       Icons.calendar_month_rounded,
                       size: 36,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onPrimaryContainer,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
                   ),
                   const SizedBox(width: 15),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             Text(
                               _dayLabel(_selectedDay),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             if (_selectedDayIsToday) ...[
                               const SizedBox(width: 8),
-                              const Chip(
-                                label: Text('Today'),
-                              ),
+                              Chip(label: Text(context.l10n.today)),
                             ],
                           ],
                         ),
                         Text(
                           entries.isEmpty
-                              ? 'No activities today'
-                              : '${entries.length} '
-                                  '${entries.length == 1 ? "activity" : "activities"}',
+                              ? context.l10n.scheduleActivityCountToday(0)
+                              : context.l10n.scheduleActivityCountToday(
+                                entries.length,
+                              ),
                         ),
                       ],
                     ),
@@ -344,12 +317,7 @@ class _ChildSchedulePageState
                 ],
               );
 
-              final nowAndNext =
-                  _buildNowAndNext(
-                entries,
-                current,
-                next,
-              );
+              final nowAndNext = _buildNowAndNext(entries, current, next);
 
               if (isWide) {
                 return Row(
@@ -362,12 +330,10 @@ class _ChildSchedulePageState
               }
 
               return Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   introduction,
-                  if (_selectedDayIsToday &&
-                      entries.isNotEmpty) ...[
+                  if (_selectedDayIsToday && entries.isNotEmpty) ...[
                     const SizedBox(height: 18),
                     nowAndNext,
                   ],
@@ -394,37 +360,26 @@ class _ChildSchedulePageState
     }
 
     if (current != null) {
-      final type =
-          scheduleActivityTypeFor(
-        current.iconName,
-      );
+      final type = scheduleActivityTypeFor(current.iconName);
 
       return Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.green.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color:
-                Colors.green.withValues(alpha: 0.35),
-          ),
+          border: Border.all(color: Colors.green.withValues(alpha: 0.35)),
         ),
         child: Row(
           children: [
-            Icon(
-              type.icon,
-              color: type.colour,
-              size: 31,
-            ),
+            Icon(type.icon, color: type.colour, size: 31),
             const SizedBox(width: 11),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Happening Now',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.happeningNow,
+                    style: const TextStyle(
                       color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
@@ -437,9 +392,7 @@ class _ChildSchedulePageState
                     ),
                   ),
                   if (next != null)
-                    Text(
-                      'Next: ${next.description}',
-                    ),
+                    Text(context.l10n.nextActivity(next.description)),
                 ],
               ),
             ),
@@ -449,37 +402,26 @@ class _ChildSchedulePageState
     }
 
     if (next != null) {
-      final type =
-          scheduleActivityTypeFor(
-        next.iconName,
-      );
+      final type = scheduleActivityTypeFor(next.iconName);
 
       return Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.amber.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color:
-                Colors.amber.withValues(alpha: 0.40),
-          ),
+          border: Border.all(color: Colors.amber.withValues(alpha: 0.40)),
         ),
         child: Row(
           children: [
-            Icon(
-              type.icon,
-              color: type.colour,
-              size: 31,
-            ),
+            Icon(type.icon, color: type.colour, size: 31),
             const SizedBox(width: 11),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Coming Next',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.comingNext,
+                    style: const TextStyle(
                       color: Colors.orange,
                       fontWeight: FontWeight.bold,
                     ),
@@ -491,9 +433,7 @@ class _ChildSchedulePageState
                       fontSize: 16,
                     ),
                   ),
-                  Text(
-                    'Starts at ${_formatTime(next.start)}',
-                  ),
+                  Text(context.l10n.startsAt(_formatTime(next.start))),
                 ],
               ),
             ),
@@ -508,19 +448,14 @@ class _ChildSchedulePageState
         color: Colors.blue.withValues(alpha: 0.09),
         borderRadius: BorderRadius.circular(18),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(
-            Icons.celebration_rounded,
-            color: Colors.blue,
-          ),
-          SizedBox(width: 10),
+          const Icon(Icons.celebration_rounded, color: Colors.blue),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'All of today’s activities are finished.',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              context.l10n.todaysActivitiesFinished,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -531,43 +466,35 @@ class _ChildSchedulePageState
   Widget _buildDaySelector() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: Row(
-        children: daysOfWeek.map((day) {
-          final selected =
-              day == _selectedDay;
-          final today =
-              day == _currentDayKey();
+        children:
+            daysOfWeek.map((day) {
+              final selected = day == _selectedDay;
+              final today = day == _currentDayKey();
 
-          return Padding(
-            padding: const EdgeInsets.only(
-              right: 9,
-            ),
-            child: ChoiceChip(
-              selected: selected,
-              showCheckmark: false,
-              avatar: Icon(
-                today
-                    ? Icons.today_rounded
-                    : Icons.calendar_today_outlined,
-                size: 19,
-              ),
-              label: Text(
-                today
-                    ? '${_dayLabel(day)} • Today'
-                    : _dayLabel(day),
-              ),
-              onSelected: (_) {
-                setState(() {
-                  _selectedDay = day;
-                });
-              },
-            ),
-          );
-        }).toList(),
+              return Padding(
+                padding: const EdgeInsets.only(right: 9),
+                child: ChoiceChip(
+                  selected: selected,
+                  showCheckmark: false,
+                  avatar: Icon(
+                    today ? Icons.today_rounded : Icons.calendar_today_outlined,
+                    size: 19,
+                  ),
+                  label: Text(
+                    today
+                        ? context.l10n.dayToday(_dayLabel(day))
+                        : _dayLabel(day),
+                  ),
+                  onSelected: (_) {
+                    setState(() {
+                      _selectedDay = day;
+                    });
+                  },
+                ),
+              );
+            }).toList(),
       ),
     );
   }
@@ -578,23 +505,14 @@ class _ChildSchedulePageState
     ScheduleEntry? next,
   ) {
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(
-        18,
-        10,
-        18,
-        30,
-      ),
+      padding: const EdgeInsets.fromLTRB(18, 10, 18, 30),
       itemCount: entries.length,
       itemBuilder: (context, index) {
         final entry = entries[index];
 
         return _buildTimelineEntry(
           entry: entry,
-          status: _statusForEntry(
-            entry,
-            current,
-            next,
-          ),
+          status: _statusForEntry(entry, current, next),
           isLast: index == entries.length - 1,
         );
       },
@@ -606,39 +524,30 @@ class _ChildSchedulePageState
     required _ChildScheduleStatus status,
     required bool isLast,
   }) {
-    final type =
-        scheduleActivityTypeFor(
-      entry.iconName,
-    );
+    final type = scheduleActivityTypeFor(entry.iconName);
 
-    final isNow =
-        status == _ChildScheduleStatus.now;
+    final isNow = status == _ChildScheduleStatus.now;
 
-    final isNext =
-        status == _ChildScheduleStatus.next;
+    final isNext = status == _ChildScheduleStatus.next;
 
-    final isFinished =
-        status == _ChildScheduleStatus.finished;
+    final isFinished = status == _ChildScheduleStatus.finished;
 
-    final statusColour = isNow
-        ? Colors.green
-        : isNext
+    final statusColour =
+        isNow
+            ? Colors.green
+            : isNext
             ? Colors.orange
             : type.colour;
 
     return Opacity(
       opacity: isFinished ? 0.58 : 1,
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             width: 76,
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: 19,
-                right: 9,
-              ),
+              padding: const EdgeInsets.only(top: 19, right: 9),
               child: Text(
                 _formatTime(entry.start),
                 textAlign: TextAlign.right,
@@ -660,15 +569,10 @@ class _ChildSchedulePageState
                   decoration: BoxDecoration(
                     color: statusColour,
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 3,
-                    ),
+                    border: Border.all(color: Colors.white, width: 3),
                     boxShadow: [
                       BoxShadow(
-                        color: statusColour.withValues(
-                          alpha: 0.35,
-                        ),
+                        color: statusColour.withValues(alpha: 0.35),
                         blurRadius: 5,
                       ),
                     ],
@@ -678,9 +582,7 @@ class _ChildSchedulePageState
                   Container(
                     width: 3,
                     height: 90,
-                    color: statusColour.withValues(
-                      alpha: 0.25,
-                    ),
+                    color: statusColour.withValues(alpha: 0.25),
                   ),
               ],
             ),
@@ -688,9 +590,7 @@ class _ChildSchedulePageState
           const SizedBox(width: 7),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(
-                bottom: 12,
-              ),
+              padding: const EdgeInsets.only(bottom: 12),
               child: Card(
                 margin: EdgeInsets.zero,
                 elevation: isNow ? 7 : 2,
@@ -698,9 +598,7 @@ class _ChildSchedulePageState
                 child: Container(
                   padding: const EdgeInsets.all(17),
                   decoration: BoxDecoration(
-                    color: statusColour.withValues(
-                      alpha: isNow ? 0.16 : 0.08,
-                    ),
+                    color: statusColour.withValues(alpha: isNow ? 0.16 : 0.08),
                     border: Border(
                       left: BorderSide(
                         color: statusColour,
@@ -714,63 +612,48 @@ class _ChildSchedulePageState
                         width: 56,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: type.colour
-                              .withValues(alpha: 0.16),
-                          borderRadius:
-                              BorderRadius.circular(18),
+                          color: type.colour.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(18),
                         ),
-                        child: Icon(
-                          type.icon,
-                          color: type.colour,
-                          size: 31,
-                        ),
+                        child: Icon(type.icon, color: type.colour, size: 31),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (isNow)
                               _buildStatusLabel(
-                                'NOW',
+                                context.l10n.statusNow,
                                 Colors.green,
                               )
                             else if (isNext)
                               _buildStatusLabel(
-                                'NEXT',
+                                context.l10n.statusNext,
                                 Colors.orange,
                               )
                             else if (isFinished)
                               _buildStatusLabel(
-                                'FINISHED',
+                                context.l10n.statusFinished,
                                 Colors.grey,
                               ),
                             Text(
                               entry.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               '${_formatTime(entry.start)} – '
                               '${_formatTime(entry.end)}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             const SizedBox(height: 3),
                             Text(
-                              type.label,
+                              _activityTypeLabel(type.key),
                               style: TextStyle(
                                 color: type.colour,
-                                fontWeight:
-                                    FontWeight.w600,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -793,14 +676,9 @@ class _ChildSchedulePageState
     );
   }
 
-  Widget _buildStatusLabel(
-    String label,
-    Color colour,
-  ) {
+  Widget _buildStatusLabel(String label, Color colour) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 5,
-      ),
+      padding: const EdgeInsets.only(bottom: 5),
       child: Text(
         label,
         style: TextStyle(
@@ -815,12 +693,7 @@ class _ChildSchedulePageState
 
   Widget _buildEmptyDay() {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        30,
-        60,
-        30,
-        30,
-      ),
+      padding: const EdgeInsets.fromLTRB(30, 60, 30, 30),
       children: [
         const Icon(
           Icons.event_available_rounded,
@@ -829,19 +702,15 @@ class _ChildSchedulePageState
         ),
         const SizedBox(height: 16),
         Text(
-          'Nothing is scheduled for '
-          '${_dayLabel(_selectedDay)}',
+          context.l10n.nothingScheduledForDay(_dayLabel(_selectedDay)),
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 7),
-        const Text(
-          'Enjoy your day!',
+        Text(
+          context.l10n.enjoyYourDay,
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 17),
         ),
@@ -850,9 +719,4 @@ class _ChildSchedulePageState
   }
 }
 
-enum _ChildScheduleStatus {
-  normal,
-  now,
-  next,
-  finished,
-}
+enum _ChildScheduleStatus { normal, now, next, finished }

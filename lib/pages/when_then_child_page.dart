@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../data/when_then_icons.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
-import '../simple_localizations.dart';
 
 class WhenThenChildPage extends StatefulWidget {
   final ChildProfile child;
@@ -26,15 +27,14 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   Future<void> _selectReward(String rewardId) async {
     if (_isSelectingReward || rewardId.isEmpty) return;
+
+    final choiceSaveFailedMessage = context.l10n.whenThenChoiceSaveFailed;
 
     setState(() {
       _isSelectingReward = true;
@@ -46,7 +46,7 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
         rewardId: rewardId,
       );
     } catch (_) {
-      _showMessage('That choice could not be saved. Please try again.');
+      _showMessage(choiceSaveFailedMessage);
 
       _scheduledAutomaticSelections.remove(rewardId);
     } finally {
@@ -59,8 +59,7 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
   }
 
   void _automaticallySelectSingleReward(String rewardId) {
-    if (rewardId.isEmpty ||
-        _scheduledAutomaticSelections.contains(rewardId)) {
+    if (rewardId.isEmpty || _scheduledAutomaticSelections.contains(rewardId)) {
       return;
     }
 
@@ -74,15 +73,15 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
           Text(
-            'Getting your plan ready...',
-            style: TextStyle(fontWeight: FontWeight.w600),
+            context.l10n.gettingPlanReady,
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -110,17 +109,14 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
               ),
               const SizedBox(height: 16),
               Text(
-                'We could not load your plan',
+                context.l10n.planLoadFailed,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Please wait a moment and try again.',
-                textAlign: TextAlign.center,
-              ),
+              Text(context.l10n.waitAndTryAgain, textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -128,7 +124,7 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
     );
   }
 
-  Widget _buildEmptyState(SimpleLocalizations loc) {
+  Widget _buildEmptyState(AppLocalizations l10n) {
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -153,8 +149,7 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
                 width: 110,
                 height: 110,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7E57C2)
-                      .withValues(alpha: 0.12),
+                  color: const Color(0xFF7E57C2).withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -165,26 +160,23 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
               ),
               const SizedBox(height: 22),
               Text(
-                'You’re all caught up!',
+                l10n.allCaughtUp,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               const SizedBox(height: 10),
               Text(
-                loc.getString('no_active_when_then'),
+                l10n.noActiveWhenThen,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
               Text(
-                'A new plan will appear here when it is ready.',
+                l10n.newPlanWillAppear,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey.shade700,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
               ),
             ],
           ),
@@ -195,25 +187,25 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
 
   Widget _buildBoard({
     required Map<String, dynamic> board,
-    required SimpleLocalizations loc,
+    required AppLocalizations l10n,
   }) {
     final isActive = board['isActive'] == true;
 
     final rawActivity = board['activity'];
-    final activity = rawActivity is Map
-        ? Map<String, dynamic>.from(rawActivity)
-        : null;
+    final activity =
+        rawActivity is Map ? Map<String, dynamic>.from(rawActivity) : null;
 
     final rawRewards = board['rewards'];
-    final rewards = rawRewards is List
-        ? rawRewards
-            .whereType<Map>()
-            .map((reward) => Map<String, dynamic>.from(reward))
-            .toList()
-        : <Map<String, dynamic>>[];
+    final rewards =
+        rawRewards is List
+            ? rawRewards
+                .whereType<Map>()
+                .map((reward) => Map<String, dynamic>.from(reward))
+                .toList()
+            : <Map<String, dynamic>>[];
 
     if (!isActive || activity == null || rewards.isEmpty) {
-      return _buildEmptyState(loc);
+      return _buildEmptyState(l10n);
     }
 
     final selectedRewardId = board['selectedRewardId'] as String?;
@@ -235,8 +227,7 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
     }
 
     final activityLabel = activity['label'] as String? ?? '';
-    final activityIconName =
-        activity['iconName'] as String? ?? 'task';
+    final activityIconName = activity['iconName'] as String? ?? 'task';
 
     return Center(
       child: SingleChildScrollView(
@@ -250,7 +241,7 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
               _WhenActivityCard(
                 label: activityLabel,
                 iconName: activityIconName,
-                heading: loc.getString('when'),
+                heading: l10n.whenLabel,
               ),
               const SizedBox(height: 10),
               const _PlanConnector(),
@@ -260,17 +251,18 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
                 selectedRewardId: selectedRewardId,
                 isSelecting: _isSelectingReward,
                 onRewardSelected: _selectReward,
-                heading: loc.getString('then'),
+                heading: l10n.thenLabel,
               ),
               const SizedBox(height: 22),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 350),
-                child: selectedReward == null
-                    ? const _EncouragementCard()
-                    : _SuccessCard(
-                        key: ValueKey(selectedRewardId),
-                        reward: selectedReward,
-                      ),
+                child:
+                    selectedReward == null
+                        ? const _EncouragementCard()
+                        : _SuccessCard(
+                          key: ValueKey(selectedRewardId),
+                          reward: selectedReward,
+                        ),
               ),
             ],
           ),
@@ -281,26 +273,17 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = SimpleLocalizations(
-      Localizations.localeOf(context),
-    );
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.getString('when_then')),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.whenThen), centerTitle: true),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF2F7FF),
-              Color(0xFFFFF7E8),
-              Color(0xFFF7F1FF),
-            ],
+            colors: [Color(0xFFF2F7FF), Color(0xFFFFF7E8), Color(0xFFF7F1FF)],
           ),
         ),
         child: StreamBuilder<Map<String, dynamic>?>(
@@ -320,13 +303,10 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
             final board = snapshot.data;
 
             if (board == null || board.isEmpty) {
-              return _buildEmptyState(loc);
+              return _buildEmptyState(l10n);
             }
 
-            return _buildBoard(
-              board: board,
-              loc: loc,
-            );
+            return _buildBoard(board: board, l10n: l10n);
           },
         ),
       ),
@@ -337,18 +317,13 @@ class _WhenThenChildPageState extends State<WhenThenChildPage> {
 class _GreetingCard extends StatelessWidget {
   final String childName;
 
-  const _GreetingCard({
-    required this.childName,
-  });
+  const _GreetingCard({required this.childName});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 18,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.88),
         borderRadius: BorderRadius.circular(24),
@@ -374,19 +349,15 @@ class _GreetingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Here’s your plan, $childName!',
-                  style:
-                      Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
+                  context.l10n.childPlanGreeting(childName),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  'One step at a time — you’ve got this!',
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 16,
-                  ),
+                  context.l10n.oneStepAtATime,
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
                 ),
               ],
             ),
@@ -425,10 +396,7 @@ class _WhenActivityCard extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              whenColor,
-              whenColor.withValues(alpha: 0.78),
-            ],
+            colors: [whenColor, whenColor.withValues(alpha: 0.78)],
           ),
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
@@ -442,10 +410,7 @@ class _WhenActivityCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.22),
                 borderRadius: BorderRadius.circular(30),
@@ -468,11 +433,7 @@ class _WhenActivityCard extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Icon(
-                style.icon,
-                color: style.color,
-                size: 62,
-              ),
+              child: Icon(style.icon, color: style.color, size: 62),
             ),
             const SizedBox(height: 18),
             Text(
@@ -502,8 +463,7 @@ class _PlanConnector extends StatelessWidget {
           width: 7,
           height: 22,
           decoration: BoxDecoration(
-            color: const Color(0xFF7E57C2)
-                .withValues(alpha: 0.35),
+            color: const Color(0xFF7E57C2).withValues(alpha: 0.35),
             borderRadius: BorderRadius.circular(20),
           ),
         ),
@@ -549,8 +509,7 @@ class _ThenRewardsCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFFA726)
-                .withValues(alpha: 0.14),
+            color: const Color(0xFFFFA726).withValues(alpha: 0.14),
             blurRadius: 22,
             offset: const Offset(0, 10),
           ),
@@ -559,10 +518,7 @@ class _ThenRewardsCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 22,
-              vertical: 9,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 9),
             decoration: BoxDecoration(
               color: const Color(0xFFFFA726),
               borderRadius: BorderRadius.circular(30),
@@ -580,46 +536,44 @@ class _ThenRewardsCard extends StatelessWidget {
           const SizedBox(height: 14),
           Text(
             locked
-                ? 'Great choice!'
+                ? context.l10n.greatChoice
                 : singleReward
-                    ? 'This is what comes next'
-                    : 'Choose your reward',
+                ? context.l10n.thisComesNext
+                : context.l10n.chooseYourReward,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 6),
           if (!locked && !singleReward)
             Text(
-              'Tap the one you would like.',
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                fontSize: 16,
-              ),
+              context.l10n.tapRewardYouWouldLike,
+              style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
             ),
           const SizedBox(height: 20),
           Wrap(
             alignment: WrapAlignment.center,
             spacing: 16,
             runSpacing: 16,
-            children: rewards.map((reward) {
-              final rewardId = reward['id'] as String? ?? '';
-              final selected = rewardId == selectedRewardId;
+            children:
+                rewards.map((reward) {
+                  final rewardId = reward['id'] as String? ?? '';
+                  final selected = rewardId == selectedRewardId;
 
-              return _RewardChoiceCard(
-                label: reward['label'] as String? ?? '',
-                iconName:
-                    reward['iconName'] as String? ?? 'task',
-                selected: selected || singleReward,
-                faded: locked && !selected,
-                loading: isSelecting &&
-                    (selectedRewardId == null || selected),
-                onTap: locked || isSelecting || singleReward
-                    ? null
-                    : () => onRewardSelected(rewardId),
-              );
-            }).toList(),
+                  return _RewardChoiceCard(
+                    label: reward['label'] as String? ?? '',
+                    iconName: reward['iconName'] as String? ?? 'task',
+                    selected: selected || singleReward,
+                    faded: locked && !selected,
+                    loading:
+                        isSelecting && (selectedRewardId == null || selected),
+                    onTap:
+                        locked || isSelecting || singleReward
+                            ? null
+                            : () => onRewardSelected(rewardId),
+                  );
+                }).toList(),
           ),
         ],
       ),
@@ -664,14 +618,11 @@ class _RewardChoiceCard extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 180),
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: selected
-                  ? style.color.withValues(alpha: 0.14)
-                  : Colors.white,
+              color:
+                  selected ? style.color.withValues(alpha: 0.14) : Colors.white,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: selected
-                    ? style.color
-                    : Colors.grey.shade300,
+                color: selected ? style.color : Colors.grey.shade300,
                 width: selected ? 4 : 2,
               ),
             ),
@@ -688,19 +639,16 @@ class _RewardChoiceCard extends StatelessWidget {
                         color: style.color.withValues(alpha: 0.16),
                         shape: BoxShape.circle,
                       ),
-                      child: loading
-                          ? Padding(
-                              padding: const EdgeInsets.all(25),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                                color: style.color,
-                              ),
-                            )
-                          : Icon(
-                              style.icon,
-                              color: style.color,
-                              size: 46,
-                            ),
+                      child:
+                          loading
+                              ? Padding(
+                                padding: const EdgeInsets.all(25),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  color: style.color,
+                                ),
+                              )
+                              : Icon(style.icon, color: style.color, size: 46),
                     ),
                     if (selected && !loading)
                       Positioned(
@@ -745,31 +693,25 @@ class _EncouragementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       key: const ValueKey('encouragement'),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 16,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.86),
         borderRadius: BorderRadius.circular(22),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.favorite_rounded,
             color: Color(0xFFEC407A),
             size: 30,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Flexible(
             child: Text(
-              'Finish your WHEN activity, then enjoy your reward!',
+              context.l10n.finishWhenEnjoyReward,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -781,27 +723,19 @@ class _EncouragementCard extends StatelessWidget {
 class _SuccessCard extends StatelessWidget {
   final Map<String, dynamic> reward;
 
-  const _SuccessCard({
-    super.key,
-    required this.reward,
-  });
+  const _SuccessCard({super.key, required this.reward});
 
   @override
   Widget build(BuildContext context) {
     final label = reward['label'] as String? ?? '';
-    final style = whenThenStyleFor(
-      reward['iconName'] as String? ?? 'task',
-    );
+    final style = whenThenStyleFor(reward['iconName'] as String? ?? 'task');
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF66BB6A),
-            Color(0xFF43A047),
-          ],
+          colors: [Color(0xFF66BB6A), Color(0xFF43A047)],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
@@ -815,19 +749,15 @@ class _SuccessCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.celebration_rounded,
-            color: Colors.white,
-            size: 42,
-          ),
+          const Icon(Icons.celebration_rounded, color: Colors.white, size: 42),
           const SizedBox(width: 14),
           Flexible(
             child: Column(
               children: [
-                const Text(
-                  'Brilliant choice!',
+                Text(
+                  context.l10n.brilliantChoice,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 23,
                     fontWeight: FontWeight.w900,
@@ -837,11 +767,7 @@ class _SuccessCard extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      style.icon,
-                      color: Colors.white,
-                      size: 25,
-                    ),
+                    Icon(style.icon, color: Colors.white, size: 25),
                     const SizedBox(width: 7),
                     Flexible(
                       child: Text(
@@ -860,11 +786,7 @@ class _SuccessCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Icon(
-            Icons.star_rounded,
-            color: Color(0xFFFFEB3B),
-            size: 42,
-          ),
+          const Icon(Icons.star_rounded, color: Color(0xFFFFEB3B), size: 42),
         ],
       ),
     );

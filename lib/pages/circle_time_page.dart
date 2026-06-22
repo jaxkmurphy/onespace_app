@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../models/circle_time_day.dart';
 import '../models/staff_profile.dart';
@@ -110,11 +112,43 @@ class _CircleTimePageState extends State<CircleTimePage> {
     }
   }
 
-  Future<void> _saveWeather(
-    CircleTimeDay day,
-    String weather,
-  ) async {
+  String _seasonLabel(AppLocalizations l10n) {
+    switch (_currentSeason) {
+      case 'Winter':
+        return l10n.winter;
+      case 'Spring':
+        return l10n.spring;
+      case 'Summer':
+        return l10n.summer;
+      case 'Autumn':
+        return l10n.autumn;
+      default:
+        return '';
+    }
+  }
+
+  String _weatherLabel(String weather, AppLocalizations l10n) {
+    switch (weather) {
+      case 'sunny':
+        return l10n.sunny;
+      case 'cloudy':
+        return l10n.cloudy;
+      case 'rainy':
+        return l10n.rainy;
+      case 'windy':
+        return l10n.windy;
+      case 'snowy':
+        return l10n.snowy;
+      case 'foggy':
+        return l10n.foggy;
+      default:
+        return weather;
+    }
+  }
+
+  Future<void> _saveWeather(CircleTimeDay day, String weather) async {
     if (_isSavingWeather) return;
+    final l10n = context.l10n;
 
     setState(() {
       _isSavingWeather = true;
@@ -128,9 +162,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not save the weather: $e'),
-        ),
+        SnackBar(content: Text(l10n.weatherSaveFailed(e.toString()))),
       );
     } finally {
       if (mounted) {
@@ -142,21 +174,22 @@ class _CircleTimePageState extends State<CircleTimePage> {
   }
 
   Future<void> _editMessage(CircleTimeDay day) async {
+    final l10n = context.l10n;
     final controller = TextEditingController(text: day.message);
 
     final result = await showDialog<String>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Today’s Message'),
+          title: Text(l10n.todaysMessage),
           content: TextField(
             controller: controller,
             autofocus: true,
             maxLength: 120,
             maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: 'Example: Today we are going to the library!',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              hintText: l10n.todaysMessageHint,
+              border: const OutlineInputBorder(),
             ),
           ),
           actions: [
@@ -164,16 +197,13 @@ class _CircleTimePageState extends State<CircleTimePage> {
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  controller.text.trim(),
-                );
+                Navigator.pop(dialogContext, controller.text.trim());
               },
-              child: const Text('Save'),
+              child: Text(l10n.save),
             ),
           ],
         );
@@ -196,9 +226,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not save today’s message: $e'),
-        ),
+        SnackBar(content: Text(l10n.messageSaveFailed(e.toString()))),
       );
     } finally {
       if (mounted) {
@@ -214,7 +242,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isChildMode ? 'My Circle Time' : 'Circle Time',
+          isChildMode ? context.l10n.myCircleTime : context.l10n.circleTime,
         ),
       ),
       body: SafeArea(
@@ -222,9 +250,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
           children: [
             _buildDailySection(),
             const SizedBox(height: 4),
-            Expanded(
-              child: _buildPeopleSection(),
-            ),
+            Expanded(child: _buildPeopleSection()),
           ],
         ),
       ),
@@ -242,10 +268,8 @@ class _CircleTimePageState extends State<CircleTimePage> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'Could not load today’s Circle Time information.',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  context.l10n.circleTimeLoadFailed,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
             ),
@@ -275,10 +299,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
                         children: [
                           Expanded(child: dateSection),
                           const SizedBox(width: 24),
-                          Expanded(
-                            flex: 2,
-                            child: weatherSection,
-                          ),
+                          Expanded(flex: 2, child: weatherSection),
                         ],
                       )
                     else ...[
@@ -299,8 +320,9 @@ class _CircleTimePageState extends State<CircleTimePage> {
   }
 
   Widget _buildDateSection() {
-    final formattedDate =
-        MaterialLocalizations.of(context).formatFullDate(DateTime.now());
+    final formattedDate = MaterialLocalizations.of(
+      context,
+    ).formatFullDate(DateTime.now());
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,18 +346,18 @@ class _CircleTimePageState extends State<CircleTimePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Today',
+                context.l10n.today,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 3),
               Text(
                 formattedDate,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 6),
               Row(
@@ -347,7 +369,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    _currentSeason,
+                    _seasonLabel(context.l10n),
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
@@ -364,10 +386,10 @@ class _CircleTimePageState extends State<CircleTimePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'What is the weather like today?',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          context.l10n.weatherTodayQuestion,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         if (isChildMode)
@@ -376,24 +398,27 @@ class _CircleTimePageState extends State<CircleTimePage> {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: weatherOptions.map((option) {
-              final selected = day.weather == option.value;
+            children:
+                weatherOptions.map((option) {
+                  final selected = day.weather == option.value;
 
-              return ChoiceChip(
-                selected: selected,
-                onSelected: _isSavingWeather
-                    ? null
-                    : (_) => _saveWeather(day, option.value),
-                avatar: Icon(
-                  option.icon,
-                  color: selected
-                      ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : option.color,
-                  size: 21,
-                ),
-                label: Text(option.label),
-              );
-            }).toList(),
+                  return ChoiceChip(
+                    selected: selected,
+                    onSelected:
+                        _isSavingWeather
+                            ? null
+                            : (_) => _saveWeather(day, option.value),
+                    avatar: Icon(
+                      option.icon,
+                      color:
+                          selected
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : option.color,
+                      size: 21,
+                    ),
+                    label: Text(_weatherLabel(option.value, context.l10n)),
+                  );
+                }).toList(),
           ),
       ],
     );
@@ -411,37 +436,28 @@ class _CircleTimePageState extends State<CircleTimePage> {
 
     if (selected == null) {
       return Text(
-        'The weather has not been selected yet.',
+        context.l10n.weatherNotSelected,
         style: Theme.of(context).textTheme.bodyLarge,
       );
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: selected.color.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: selected.color.withValues(alpha: 0.45),
-        ),
+        border: Border.all(color: selected.color.withValues(alpha: 0.45)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            selected.icon,
-            color: selected.color,
-            size: 30,
-          ),
+          Icon(selected.icon, color: selected.color, size: 30),
           const SizedBox(width: 10),
           Text(
-            selected.label,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            _weatherLabel(selected.value, context.l10n),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -465,18 +481,18 @@ class _CircleTimePageState extends State<CircleTimePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Today’s Message',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                context.l10n.todaysMessage,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Text(
                 hasMessage
                     ? day.message
                     : isChildMode
-                        ? 'There is no message for today yet.'
-                        : 'Add a short message or special activity for today.',
+                    ? context.l10n.noMessageToday
+                    : context.l10n.addMessageToday,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
@@ -484,20 +500,17 @@ class _CircleTimePageState extends State<CircleTimePage> {
         ),
         if (!isChildMode)
           IconButton(
-            tooltip: hasMessage ? 'Edit message' : 'Add message',
-            onPressed:
-                _isSavingMessage ? null : () => _editMessage(day),
-            icon: _isSavingMessage
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
-                : Icon(
-                    hasMessage ? Icons.edit_rounded : Icons.add_rounded,
-                  ),
+            tooltip:
+                hasMessage ? context.l10n.editMessage : context.l10n.addMessage,
+            onPressed: _isSavingMessage ? null : () => _editMessage(day),
+            icon:
+                _isSavingMessage
+                    ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : Icon(hasMessage ? Icons.edit_rounded : Icons.add_rounded),
           ),
       ],
     );
@@ -508,51 +521,36 @@ class _CircleTimePageState extends State<CircleTimePage> {
       stream: _firestoreService.getCurrentChildProfiles(),
       builder: (context, childSnapshot) {
         if (childSnapshot.hasError) {
-          return const Center(
-            child: Text('Could not load child profiles.'),
-          );
+          return Center(child: Text(context.l10n.childProfilesLoadFailed));
         }
 
         if (!childSnapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         List<ChildProfile> children = childSnapshot.data!;
 
         if (isChildMode) {
-          children = children
-              .where(
-                (child) => child.id == widget.childProfile!.id,
-              )
-              .toList();
+          children =
+              children
+                  .where((child) => child.id == widget.childProfile!.id)
+                  .toList();
 
-          return _buildBoard(
-            children: children,
-            staff: const [],
-          );
+          return _buildBoard(children: children, staff: const []);
         }
 
         return StreamBuilder<List<StaffProfile>>(
           stream: _firestoreService.getCurrentStaffProfiles(),
           builder: (context, staffSnapshot) {
             if (staffSnapshot.hasError) {
-              return const Center(
-                child: Text('Could not load staff profiles.'),
-              );
+              return Center(child: Text(context.l10n.staffProfilesLoadFailed));
             }
 
             if (!staffSnapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
-            return _buildBoard(
-              children: children,
-              staff: staffSnapshot.data!,
-            );
+            return _buildBoard(children: children, staff: staffSnapshot.data!);
           },
         );
       },
@@ -587,11 +585,11 @@ class _CircleTimePageState extends State<CircleTimePage> {
                   }) async {
                     await _firestoreService
                         .updateCurrentChildCircleTimePosition(
-                      childId: children[i].id,
-                      x: x,
-                      y: y,
-                      side: side,
-                    );
+                          childId: children[i].id,
+                          x: x,
+                          y: y,
+                          side: side,
+                        );
                   },
                 ),
               if (!isChildMode)
@@ -609,11 +607,11 @@ class _CircleTimePageState extends State<CircleTimePage> {
                     }) async {
                       await _firestoreService
                           .updateCurrentStaffCircleTimePosition(
-                        staffId: staff[i].id,
-                        x: x,
-                        y: y,
-                        side: side,
-                      );
+                            staffId: staff[i].id,
+                            x: x,
+                            y: y,
+                            side: side,
+                          );
                     },
                   ),
             ];
@@ -627,7 +625,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
                         color: const Color(0xFFFFE0B2),
                         child: _buildBoardSide(
                           icon: Icons.home_rounded,
-                          label: 'Home',
+                          label: context.l10n.homeLabel,
                           color: const Color(0xFFE65100),
                         ),
                       ),
@@ -637,7 +635,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
                         color: const Color(0xFFBBDEFB),
                         child: _buildBoardSide(
                           icon: Icons.school_rounded,
-                          label: 'School',
+                          label: context.l10n.schoolLabel,
                           color: const Color(0xFF1565C0),
                         ),
                       ),
@@ -648,10 +646,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
                   left: (screenWidth / 2) - 1,
                   top: 0,
                   bottom: 0,
-                  child: Container(
-                    width: 2,
-                    color: Colors.black26,
-                  ),
+                  child: Container(width: 2, color: Colors.black26),
                 ),
                 for (final person in people)
                   _buildCircle(
@@ -679,11 +674,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 70,
-              color: color,
-            ),
+            Icon(icon, size: 70, color: color),
             const SizedBox(height: 8),
             Text(
               label,
@@ -705,55 +696,39 @@ class _CircleTimePageState extends State<CircleTimePage> {
     required double screenWidth,
     required double screenHeight,
   }) {
+    final l10n = context.l10n;
     final savedPosition = _getStartingPosition(
       person: person,
       screenWidth: screenWidth,
       screenHeight: screenHeight,
     );
 
-    final currentPosition =
-        _localPositions[person.keyId] ?? savedPosition;
+    final currentPosition = _localPositions[person.keyId] ?? savedPosition;
 
     return Positioned(
       left: currentPosition.dx,
       top: currentPosition.dy,
       child: Semantics(
-        label: '${person.name}, ${person.type}',
+        label:
+            '${person.name}, ${person.type == 'Staff' ? l10n.staffLabel : l10n.childLabel}',
         child: GestureDetector(
           onPanUpdate: (details) {
-            final current =
-                _localPositions[person.keyId] ?? savedPosition;
+            final current = _localPositions[person.keyId] ?? savedPosition;
 
-            final maxLeft = math.max(
-              0.0,
-              screenWidth - circleSize,
-            );
+            final maxLeft = math.max(0.0, screenWidth - circleSize);
 
-            final maxTop = math.max(
-              0.0,
-              screenHeight - circleSize,
-            );
+            final maxTop = math.max(0.0, screenHeight - circleSize);
 
-            final newLeft = (current.dx + details.delta.dx).clamp(
-              0.0,
-              maxLeft,
-            );
+            final newLeft = (current.dx + details.delta.dx).clamp(0.0, maxLeft);
 
-            final newTop = (current.dy + details.delta.dy).clamp(
-              0.0,
-              maxTop,
-            );
+            final newTop = (current.dy + details.delta.dy).clamp(0.0, maxTop);
 
             setState(() {
-              _localPositions[person.keyId] = Offset(
-                newLeft,
-                newTop,
-              );
+              _localPositions[person.keyId] = Offset(newLeft, newTop);
             });
           },
           onPanEnd: (_) async {
-            final position =
-                _localPositions[person.keyId] ?? savedPosition;
+            final position = _localPositions[person.keyId] ?? savedPosition;
 
             final adjusted = _findNearestFreePosition(
               movingKey: person.keyId,
@@ -775,19 +750,13 @@ class _CircleTimePageState extends State<CircleTimePage> {
             final side = normalizedX < 0.5 ? 'home' : 'school';
 
             try {
-              await person.onSave(
-                x: normalizedX,
-                y: normalizedY,
-                side: side,
-              );
+              await person.onSave(x: normalizedX, y: normalizedY, side: side);
             } catch (e) {
               if (!mounted) return;
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    'Could not save ${person.name}’s position.',
-                  ),
+                  content: Text(l10n.personPositionSaveFailed(person.name)),
                 ),
               );
             }
@@ -798,16 +767,11 @@ class _CircleTimePageState extends State<CircleTimePage> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: person.type == 'Staff'
-                  ? Colors.purple
-                  : _getChildCircleColor(
-                      currentPosition,
-                      screenWidth,
-                    ),
-              border: Border.all(
-                color: Colors.white,
-                width: 3,
-              ),
+              color:
+                  person.type == 'Staff'
+                      ? Colors.purple
+                      : _getChildCircleColor(currentPosition, screenWidth),
+              border: Border.all(color: Colors.white, width: 3),
               boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
@@ -834,10 +798,7 @@ class _CircleTimePageState extends State<CircleTimePage> {
     );
   }
 
-  Color _getChildCircleColor(
-    Offset position,
-    double screenWidth,
-  ) {
+  Color _getChildCircleColor(Offset position, double screenWidth) {
     final centerX = position.dx + (circleSize / 2);
 
     return centerX < screenWidth / 2
@@ -853,16 +814,11 @@ class _CircleTimePageState extends State<CircleTimePage> {
     final maxLeft = math.max(0.0, screenWidth - circleSize);
     final maxTop = math.max(0.0, screenHeight - circleSize);
 
-    final savedLeft =
-        (person.savedX * screenWidth) - (circleSize / 2);
+    final savedLeft = (person.savedX * screenWidth) - (circleSize / 2);
 
-    final savedTop =
-        (person.savedY * screenHeight) - (circleSize / 2);
+    final savedTop = (person.savedY * screenHeight) - (circleSize / 2);
 
-    return Offset(
-      savedLeft.clamp(0.0, maxLeft),
-      savedTop.clamp(0.0, maxTop),
-    );
+    return Offset(savedLeft.clamp(0.0, maxLeft), savedTop.clamp(0.0, maxTop));
   }
 
   Offset _findNearestFreePosition({
@@ -914,7 +870,8 @@ class _CircleTimePageState extends State<CircleTimePage> {
     for (final person in people) {
       if (person.keyId == movingKey) continue;
 
-      final otherPosition = _localPositions[person.keyId] ??
+      final otherPosition =
+          _localPositions[person.keyId] ??
           _getStartingPosition(
             person: person,
             screenWidth: screenWidth,
@@ -962,7 +919,8 @@ class _CirclePerson {
     required double x,
     required double y,
     required String side,
-  }) onSave;
+  })
+  onSave;
 
   const _CirclePerson({
     required this.keyId,

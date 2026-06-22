@@ -1,64 +1,209 @@
 {
   "@@locale": "en",
   "appTitle": "OneSpace App",
+  "@appTitle": {
+    "description": "Text used in the app for app title."
+  },
   "settings": "Settings",
+  "@settings": {
+    "description": "Text used in the app for settings."
+  },
   "language": "Language",
+  "@language": {
+    "description": "Text used in the app for language."
+  },
   "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Text used in the app for select language."
+  },
   "pinUpdated": "PIN updated",
+  "@pinUpdated": {
+    "description": "Text used in the app for pin updated."
+  },
   "savePin": "Save PIN",
+  "@savePin": {
+    "description": "Text used in the app for save pin."
+  },
   "newPin": "New PIN",
+  "@newPin": {
+    "description": "Text used in the app for new pin."
+  },
   "confirmPin": "Confirm PIN",
+  "@confirmPin": {
+    "description": "Text used in the app for confirm pin."
+  },
   "pinHint": "PINs must be 4 digits and match",
-
+  "@pinHint": {
+    "description": "Text used in the app for pin hint."
+  },
   "cancel": "Cancel",
+  "@cancel": {
+    "description": "Text used in the app for cancel."
+  },
   "save": "Save",
+  "@save": {
+    "description": "Text used in the app for save."
+  },
   "delete": "Delete",
+  "@delete": {
+    "description": "Text used in the app for delete."
+  },
   "edit": "Edit",
+  "@edit": {
+    "description": "Text used in the app for edit."
+  },
   "add": "Add",
+  "@add": {
+    "description": "Text used in the app for add."
+  },
   "create": "Create",
+  "@create": {
+    "description": "Text used in the app for create."
+  },
   "close": "Close",
+  "@close": {
+    "description": "Text used in the app for close."
+  },
   "done": "Done",
+  "@done": {
+    "description": "Text used in the app for done."
+  },
   "retry": "Try Again",
+  "@retry": {
+    "description": "Text used in the app for retry."
+  },
   "loading": "Loading...",
+  "@loading": {
+    "description": "Text used in the app for loading."
+  },
   "error": "Something went wrong",
+  "@error": {
+    "description": "Text used in the app for error."
+  },
   "all": "All",
+  "@all": {
+    "description": "Text used in the app for all."
+  },
   "everyone": "Everyone",
+  "@everyone": {
+    "description": "Text used in the app for everyone."
+  },
   "viewOnly": "View only",
+  "@viewOnly": {
+    "description": "Text used in the app for view only."
+  },
   "untitled": "Untitled",
+  "@untitled": {
+    "description": "Text used in the app for untitled."
+  },
   "low": "Low",
+  "@low": {
+    "description": "Text used in the app for low."
+  },
   "medium": "Medium",
+  "@medium": {
+    "description": "Text used in the app for medium."
+  },
   "high": "High",
-
+  "@high": {
+    "description": "Text used in the app for high."
+  },
   "zones_regulation": "Zones of Regulation",
+  "@zones_regulation": {
+    "description": "Text used in the app for zones regulation."
+  },
   "points_overview": "Points Overview",
+  "@points_overview": {
+    "description": "Text used in the app for points overview."
+  },
   "view_schedule": "View Schedule",
+  "@view_schedule": {
+    "description": "Text used in the app for view schedule."
+  },
   "create_quiz": "Create Quiz",
+  "@create_quiz": {
+    "description": "Text used in the app for create quiz."
+  },
   "manage_quizzes": "Manage Quizzes",
+  "@manage_quizzes": {
+    "description": "Text used in the app for manage quizzes."
+  },
   "welcome": "Welcome",
+  "@welcome": {
+    "description": "Text used in the app for welcome."
+  },
   "my_points": "My Points",
+  "@my_points": {
+    "description": "Text used in the app for my points."
+  },
   "my_schedule": "My Schedule",
+  "@my_schedule": {
+    "description": "Text used in the app for my schedule."
+  },
   "calming_sounds": "Calming Sounds",
+  "@calming_sounds": {
+    "description": "Text used in the app for calming sounds."
+  },
   "take_quiz": "Take a Quiz",
+  "@take_quiz": {
+    "description": "Text used in the app for take quiz."
+  },
   "change_background": "Change Background Colour",
-
+  "@change_background": {
+    "description": "Text used in the app for change background."
+  },
   "handoverHub": "Handover Hub",
+  "@handoverHub": {
+    "description": "Text used in the app for handover hub."
+  },
   "handoverStartHereTab": "Start Here",
+  "@handoverStartHereTab": {
+    "description": "Text used in the app for handover start here tab."
+  },
   "handoverStaffDocumentsTab": "Staff Documents",
+  "@handoverStaffDocumentsTab": {
+    "description": "Text used in the app for handover staff documents tab."
+  },
   "handoverQuickNotesTab": "Quick Notes",
+  "@handoverQuickNotesTab": {
+    "description": "Text used in the app for handover quick notes tab."
+  },
   "readThisFirst": "Read this first",
+  "@readThisFirst": {
+    "description": "Text used in the app for read this first."
+  },
   "startHereDescription": "This section should contain the most important things a substitute teacher or SNA needs to know immediately.",
+  "@startHereDescription": {
+    "description": "Text used in the app for start here description."
+  },
   "noStartHereInformation": "No Start Here information has been added yet.",
+  "@noStartHereInformation": {
+    "description": "Text used in the app for no start here information."
+  },
   "editStartHere": "Edit Start Here",
+  "@editStartHere": {
+    "description": "Text used in the app for edit start here."
+  },
   "editStartHereTitle": "Edit Start Here",
+  "@editStartHereTitle": {
+    "description": "Text used in the app for edit start here title."
+  },
   "startHereHint": "Write the most important classroom information here...",
+  "@startHereHint": {
+    "description": "Text used in the app for start here hint."
+  },
   "noStaffProfilesFound": "No staff profiles found.",
+  "@noStaffProfilesFound": {
+    "description": "Text used in the app for no staff profiles found."
+  },
   "staffDocumentTitle": "{staffName} Document",
   "@staffDocumentTitle": {
     "placeholders": {
       "staffName": {
         "type": "String"
       }
-    }
+    },
+    "description": "Text used in the app for staff document title."
   },
   "editStaffDocument": "Edit {staffName} Document",
   "@editStaffDocument": {
@@ -66,308 +211,1820 @@
       "staffName": {
         "type": "String"
       }
-    }
+    },
+    "description": "Text used in the app for edit staff document."
   },
   "aboutThisClass": "About This Class",
+  "@aboutThisClass": {
+    "description": "Text used in the app for about this class."
+  },
   "whatWorksWell": "What Works Well",
+  "@whatWorksWell": {
+    "description": "Text used in the app for what works well."
+  },
   "commonTriggers": "Common Triggers",
+  "@commonTriggers": {
+    "description": "Text used in the app for common triggers."
+  },
   "successfulStrategies": "Successful Strategies",
+  "@successfulStrategies": {
+    "description": "Text used in the app for successful strategies."
+  },
   "communicationTips": "Communication Tips",
+  "@communicationTips": {
+    "description": "Text used in the app for communication tips."
+  },
   "otherNotes": "Other Notes",
+  "@otherNotes": {
+    "description": "Text used in the app for other notes."
+  },
   "nothingAddedYet": "Nothing added yet.",
+  "@nothingAddedYet": {
+    "description": "Text used in the app for nothing added yet."
+  },
   "editQuickNote": "Edit Quick Note",
+  "@editQuickNote": {
+    "description": "Text used in the app for edit quick note."
+  },
   "addQuickNote": "Add Quick Note",
+  "@addQuickNote": {
+    "description": "Text used in the app for add quick note."
+  },
   "titleLabel": "Title",
+  "@titleLabel": {
+    "description": "Text used in the app for title label."
+  },
   "noteLabel": "Note",
+  "@noteLabel": {
+    "description": "Text used in the app for note label."
+  },
   "deleteNoteTitle": "Delete note?",
+  "@deleteNoteTitle": {
+    "description": "Text used in the app for delete note title."
+  },
   "deleteNoteMessage": "Are you sure you want to delete this note?",
+  "@deleteNoteMessage": {
+    "description": "Text used in the app for delete note message."
+  },
   "noQuickNotes": "No quick notes yet.",
+  "@noQuickNotes": {
+    "description": "Text used in the app for no quick notes."
+  },
   "quickNoteBy": "By: {staffName}",
   "@quickNoteBy": {
     "placeholders": {
       "staffName": {
         "type": "String"
       }
-    }
+    },
+    "description": "Text used in the app for quick note by."
   },
   "addNote": "Add Note",
+  "@addNote": {
+    "description": "Text used in the app for add note."
+  },
   "handoverLoadError": "Could not load handover information.",
+  "@handoverLoadError": {
+    "description": "Text used in the app for handover load error."
+  },
   "handoverSaveError": "Could not save the handover information.",
+  "@handoverSaveError": {
+    "description": "Text used in the app for handover save error."
+  },
   "handoverDeleteError": "Could not delete the note.",
+  "@handoverDeleteError": {
+    "description": "Text used in the app for handover delete error."
+  },
   "lastUpdated": "Last updated {date}",
   "@lastUpdated": {
     "placeholders": {
       "date": {
         "type": "String"
       }
+    },
+    "description": "Text used in the app for last updated."
+  },
+  "incidentLog": "Incident Log",
+  "@incidentLog": {
+    "description": "Text used in the app for incident log."
+  },
+  "incidentLogClassroom": "{classroomName} Incident Log",
+  "@incidentLogClassroom": {
+    "placeholders": {
+      "classroomName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for incident log classroom."
+  },
+  "incidentLogIntro": "Create and review classroom incident records.",
+  "@incidentLogIntro": {
+    "description": "Text used in the app for incident log intro."
+  },
+  "createIncident": "Create Incident",
+  "@createIncident": {
+    "description": "Text used in the app for create incident."
+  },
+  "viewIncidents": "View Incidents",
+  "@viewIncidents": {
+    "description": "Text used in the app for view incidents."
+  },
+  "selectChild": "Select Child",
+  "@selectChild": {
+    "description": "Text used in the app for select child."
+  },
+  "severity": "Severity",
+  "@severity": {
+    "description": "Text used in the app for severity."
+  },
+  "useCurrentTime": "Use Current Time (Default)",
+  "@useCurrentTime": {
+    "description": "Text used in the app for use current time."
+  },
+  "manualTime": "Manual Time: {date}",
+  "@manualTime": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for manual time."
+  },
+  "resetToCurrentTime": "Reset to current time",
+  "@resetToCurrentTime": {
+    "description": "Text used in the app for reset to current time."
+  },
+  "description": "Description",
+  "@description": {
+    "description": "Text used in the app for description."
+  },
+  "actionTaken": "Action Taken",
+  "@actionTaken": {
+    "description": "Text used in the app for action taken."
+  },
+  "saveIncident": "Save Incident",
+  "@saveIncident": {
+    "description": "Text used in the app for save incident."
+  },
+  "saving": "Saving...",
+  "@saving": {
+    "description": "Text used in the app for saving."
+  },
+  "pleaseSelectChild": "Please select a child.",
+  "@pleaseSelectChild": {
+    "description": "Text used in the app for please select child."
+  },
+  "enterIncidentDetails": "Please enter a description and the action taken.",
+  "@enterIncidentDetails": {
+    "description": "Text used in the app for enter incident details."
+  },
+  "incidentSaved": "Incident saved.",
+  "@incidentSaved": {
+    "description": "Text used in the app for incident saved."
+  },
+  "incidentUpdated": "Incident updated.",
+  "@incidentUpdated": {
+    "description": "Text used in the app for incident updated."
+  },
+  "incidentSaveFailed": "Failed to save the incident.",
+  "@incidentSaveFailed": {
+    "description": "Text used in the app for incident save failed."
+  },
+  "editIncident": "Edit Incident",
+  "@editIncident": {
+    "description": "Text used in the app for edit incident."
+  },
+  "archiveIncident": "Archive Incident",
+  "@archiveIncident": {
+    "description": "Text used in the app for archive incident."
+  },
+  "archiveIncidentQuestion": "Archive this incident?",
+  "@archiveIncidentQuestion": {
+    "description": "Text used in the app for archive incident question."
+  },
+  "archiveIncidentMessage": "Archive the incident for {childName}? It will remain in the audit history.",
+  "@archiveIncidentMessage": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for archive incident message."
+  },
+  "archiveReason": "Reason for archiving",
+  "@archiveReason": {
+    "description": "Text used in the app for archive reason."
+  },
+  "incidentArchived": "Incident archived.",
+  "@incidentArchived": {
+    "description": "Text used in the app for incident archived."
+  },
+  "incidentArchiveFailed": "Failed to archive the incident.",
+  "@incidentArchiveFailed": {
+    "description": "Text used in the app for incident archive failed."
+  },
+  "noIncidents": "No incidents logged yet.",
+  "@noIncidents": {
+    "description": "Text used in the app for no incidents."
+  },
+  "filterByChild": "Filter by child",
+  "@filterByChild": {
+    "description": "Text used in the app for filter by child."
+  },
+  "incidentsShown": "{count, plural, =0{No incidents shown} one{1 incident shown} other{{count} incidents shown}}",
+  "@incidentsShown": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for incidents shown."
+  },
+  "noMatchingIncidents": "No incidents match these filters.",
+  "@noMatchingIncidents": {
+    "description": "Text used in the app for no matching incidents."
+  },
+  "severityLabel": "{severity} severity",
+  "@severityLabel": {
+    "placeholders": {
+      "severity": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for severity label."
+  },
+  "loggedBy": "Logged by {staffName}",
+  "@loggedBy": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for logged by."
+  },
+  "incidentCategory": "Incident Category",
+  "@incidentCategory": {
+    "description": "Text used in the app for incident category."
+  },
+  "behaviour": "Behaviour",
+  "@behaviour": {
+    "description": "Text used in the app for behaviour."
+  },
+  "injury": "Injury",
+  "@injury": {
+    "description": "Text used in the app for injury."
+  },
+  "safety": "Safety",
+  "@safety": {
+    "description": "Text used in the app for safety."
+  },
+  "emotional": "Emotional",
+  "@emotional": {
+    "description": "Text used in the app for emotional."
+  },
+  "other": "Other",
+  "@other": {
+    "description": "Text used in the app for other."
+  },
+  "followUp": "Follow-up",
+  "@followUp": {
+    "description": "Text used in the app for follow up."
+  },
+  "noFollowUp": "No follow-up needed",
+  "@noFollowUp": {
+    "description": "Text used in the app for no follow up."
+  },
+  "followUpRequired": "Follow-up required",
+  "@followUpRequired": {
+    "description": "Text used in the app for follow up required."
+  },
+  "followUpCompleted": "Follow-up completed",
+  "@followUpCompleted": {
+    "description": "Text used in the app for follow up completed."
+  },
+  "followUpNotes": "Follow-up Notes",
+  "@followUpNotes": {
+    "description": "Text used in the app for follow up notes."
+  },
+  "archivedIncidents": "Archived Incidents",
+  "@archivedIncidents": {
+    "description": "Text used in the app for archived incidents."
+  },
+  "wordLearning": "Word Learning",
+  "@wordLearning": {
+    "description": "Text used in the app for word learning."
+  },
+  "wordPractice": "Word Practice",
+  "@wordPractice": {
+    "description": "Text used in the app for word practice."
+  },
+  "wordProgress": "Word Progress",
+  "@wordProgress": {
+    "description": "Text used in the app for word progress."
+  },
+  "createWordPack": "Create Word Pack",
+  "@createWordPack": {
+    "description": "Text used in the app for create word pack."
+  },
+  "editWordPack": "Edit Word Pack",
+  "@editWordPack": {
+    "description": "Text used in the app for edit word pack."
+  },
+  "deleteWordPack": "Delete Word Pack",
+  "@deleteWordPack": {
+    "description": "Text used in the app for delete word pack."
+  },
+  "deleteWordPackMessage": "Delete “{packName}”? Its words will also be deleted.",
+  "@deleteWordPackMessage": {
+    "placeholders": {
+      "packName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for delete word pack message."
+  },
+  "packName": "Pack Name",
+  "@packName": {
+    "description": "Text used in the app for pack name."
+  },
+  "packDescription": "Pack Description",
+  "@packDescription": {
+    "description": "Text used in the app for pack description."
+  },
+  "packDescriptionHint": "What will children practise in this pack?",
+  "@packDescriptionHint": {
+    "description": "Text used in the app for pack description hint."
+  },
+  "createdBy": "Created by {staffName}",
+  "@createdBy": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for created by."
+  },
+  "wordCount": "{count, plural, =0{No words} one{1 word} other{{count} words}}",
+  "@wordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for word count."
+  },
+  "assignedChildCount": "{count, plural, =0{Not assigned} one{Assigned to 1 child} other{Assigned to {count} children}}",
+  "@assignedChildCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for assigned child count."
+  },
+  "noWordPacks": "No word packs yet.",
+  "@noWordPacks": {
+    "description": "Text used in the app for no word packs."
+  },
+  "createFirstWordPack": "Create your first word pack to get started.",
+  "@createFirstWordPack": {
+    "description": "Text used in the app for create first word pack."
+  },
+  "addWord": "Add Word",
+  "@addWord": {
+    "description": "Text used in the app for add word."
+  },
+  "editWord": "Edit Word",
+  "@editWord": {
+    "description": "Text used in the app for edit word."
+  },
+  "deleteWord": "Delete Word",
+  "@deleteWord": {
+    "description": "Text used in the app for delete word."
+  },
+  "deleteWordMessage": "Delete the word “{word}”?",
+  "@deleteWordMessage": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for delete word message."
+  },
+  "word": "Word",
+  "@word": {
+    "description": "Text used in the app for word."
+  },
+  "emoji": "Emoji",
+  "@emoji": {
+    "description": "Text used in the app for emoji."
+  },
+  "difficulty": "Difficulty",
+  "@difficulty": {
+    "description": "Text used in the app for difficulty."
+  },
+  "easy": "Easy",
+  "@easy": {
+    "description": "Text used in the app for easy."
+  },
+  "hard": "Hard",
+  "@hard": {
+    "description": "Text used in the app for hard."
+  },
+  "assignChildren": "Assign Children",
+  "@assignChildren": {
+    "description": "Text used in the app for assign children."
+  },
+  "saveAssignments": "Save Assignments",
+  "@saveAssignments": {
+    "description": "Text used in the app for save assignments."
+  },
+  "noChildrenAvailable": "No child profiles are available.",
+  "@noChildrenAvailable": {
+    "description": "Text used in the app for no children available."
+  },
+  "noWords": "No words have been added yet.",
+  "@noWords": {
+    "description": "Text used in the app for no words."
+  },
+  "addFirstWord": "Add at least two words before assigning this pack.",
+  "@addFirstWord": {
+    "description": "Text used in the app for add first word."
+  },
+  "tapToPractise": "Tap to practise",
+  "@tapToPractise": {
+    "description": "Text used in the app for tap to practise."
+  },
+  "noAssignedWordPacks": "No word packs are assigned right now.",
+  "@noAssignedWordPacks": {
+    "description": "Text used in the app for no assigned word packs."
+  },
+  "packNeedsTwoWords": "This pack needs at least two words before it can be practised.",
+  "@packNeedsTwoWords": {
+    "description": "Text used in the app for pack needs two words."
+  },
+  "practiceComplete": "Practice Complete!",
+  "@practiceComplete": {
+    "description": "Text used in the app for practice complete."
+  },
+  "practisedWords": "{count, plural, one{You practised 1 word.} other{You practised {count} words.}}",
+  "@practisedWords": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for practised words."
+  },
+  "practiseAgain": "Practise Again",
+  "@practiseAgain": {
+    "description": "Text used in the app for practise again."
+  },
+  "backToPacks": "Back to Packs",
+  "@backToPacks": {
+    "description": "Text used in the app for back to packs."
+  },
+  "selectChildForProgress": "Select a child to view their progress.",
+  "@selectChildForProgress": {
+    "description": "Text used in the app for select child for progress."
+  },
+  "noWordAttempts": "No word practice attempts yet.",
+  "@noWordAttempts": {
+    "description": "Text used in the app for no word attempts."
+  },
+  "totalAttempts": "Total attempts: {count}",
+  "@totalAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for total attempts."
+  },
+  "correctAnswers": "Correct answers: {count}",
+  "@correctAnswers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for correct answers."
+  },
+  "accuracy": "Accuracy: {percentage}%",
+  "@accuracy": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for accuracy."
+  },
+  "wordBreakdown": "Word Breakdown",
+  "@wordBreakdown": {
+    "description": "Text used in the app for word breakdown."
+  },
+  "attemptSummary": "Attempts: {attempts} • Correct: {correct} • Accuracy: {accuracy}%",
+  "@attemptSummary": {
+    "placeholders": {
+      "attempts": {
+        "type": "int"
+      },
+      "correct": {
+        "type": "int"
+      },
+      "accuracy": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for attempt summary."
+  },
+  "chooseMatchingWord": "Choose the word that matches the picture.",
+  "@chooseMatchingWord": {
+    "description": "Text used in the app for choose matching word."
+  },
+  "greatJob": "Great job!",
+  "@greatJob": {
+    "description": "Text used in the app for great job."
+  },
+  "goodTry": "Good try!",
+  "@goodTry": {
+    "description": "Text used in the app for good try."
+  },
+  "correctAnswerWas": "The correct answer was {answer}.",
+  "@correctAnswerWas": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for correct answer was."
+  },
+  "nextWord": "Next Word",
+  "@nextWord": {
+    "description": "Text used in the app for next word."
+  },
+  "finishPractice": "Finish Practice",
+  "@finishPractice": {
+    "description": "Text used in the app for finish practice."
+  },
+  "loadingWords": "Getting your words ready...",
+  "@loadingWords": {
+    "description": "Text used in the app for loading words."
+  },
+  "couldNotLoadWords": "Could not load this word pack.",
+  "@couldNotLoadWords": {
+    "description": "Text used in the app for could not load words."
+  },
+  "packStyle": "Pack Style",
+  "@packStyle": {
+    "description": "Text used in the app for pack style."
+  },
+  "words": "Words",
+  "@words": {
+    "description": "Text used in the app for words."
+  },
+  "school": "School",
+  "@school": {
+    "description": "Text used in the app for school."
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Text used in the app for home."
+  },
+  "animals": "Animals",
+  "@animals": {
+    "description": "Text used in the app for animals."
+  },
+  "feelings": "Feelings",
+  "@feelings": {
+    "description": "Text used in the app for feelings."
+  },
+  "ourWorld": "Our World",
+  "@ourWorld": {
+    "description": "Text used in the app for our world."
+  },
+  "fun": "Fun",
+  "@fun": {
+    "description": "Text used in the app for fun."
+  },
+  "selectedChildren": "Selected Children",
+  "@selectedChildren": {
+    "description": "Text used in the app for selected children."
+  },
+  "availableToEveryone": "Available to Everyone",
+  "@availableToEveryone": {
+    "description": "Text used in the app for available to everyone."
+  },
+  "couldNotLoadWordPacks": "Could not load word packs.",
+  "@couldNotLoadWordPacks": {
+    "description": "Text used in the app for could not load word packs."
+  },
+  "wordPackCreated": "Word pack created.",
+  "@wordPackCreated": {
+    "description": "Text used in the app for word pack created."
+  },
+  "wordPackDeleted": "Word pack deleted.",
+  "@wordPackDeleted": {
+    "description": "Text used in the app for word pack deleted."
+  },
+  "wordPackSaveFailed": "Could not save the word pack.",
+  "@wordPackSaveFailed": {
+    "description": "Text used in the app for word pack save failed."
+  },
+  "wordPackDeleteFailed": "Could not delete the word pack.",
+  "@wordPackDeleteFailed": {
+    "description": "Text used in the app for word pack delete failed."
+  },
+  "editPackDetails": "Edit Pack Details",
+  "@editPackDetails": {
+    "description": "Text used in the app for edit pack details."
+  },
+  "wordPackUpdated": "Word pack updated.",
+  "@wordPackUpdated": {
+    "description": "Text used in the app for word pack updated."
+  },
+  "assignmentsSaved": "Assignments saved.",
+  "@assignmentsSaved": {
+    "description": "Text used in the app for assignments saved."
+  },
+  "hint": "Hint",
+  "@hint": {
+    "description": "Text used in the app for hint."
+  },
+  "hintOptional": "Helpful hint (optional)",
+  "@hintOptional": {
+    "description": "Text used in the app for hint optional."
+  },
+  "wordSaved": "Word saved.",
+  "@wordSaved": {
+    "description": "Text used in the app for word saved."
+  },
+  "wordDeleted": "Word deleted.",
+  "@wordDeleted": {
+    "description": "Text used in the app for word deleted."
+  },
+  "wordSaveFailed": "Could not save the word.",
+  "@wordSaveFailed": {
+    "description": "Text used in the app for word save failed."
+  },
+  "wordDeleteFailed": "Could not delete the word.",
+  "@wordDeleteFailed": {
+    "description": "Text used in the app for word delete failed."
+  },
+  "wordProgressCount": "Word {current} of {total}",
+  "@wordProgressCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for word progress count."
+  },
+  "practiceScore": "{score} of {total} correct",
+  "@practiceScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    },
+    "description": "Text used in the app for practice score."
+  },
+  "showHint": "Show Hint",
+  "@showHint": {
+    "description": "Text used in the app for show hint."
+  },
+  "profiles": "Profiles",
+  "@profiles": {
+    "description": "Text used in the app for profiles."
+  },
+  "staffHubTitle": "{staffName} Hub",
+  "@staffHubTitle": {
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for staff hub title."
+  },
+  "staffFeatureHub": "Staff Feature Hub",
+  "@staffFeatureHub": {
+    "description": "Text used in the app for staff feature hub."
+  },
+  "staffHubIntro": "Choose a tool for today's classroom support.",
+  "@staffHubIntro": {
+    "description": "Text used in the app for staff hub intro."
+  },
+  "dailyTools": "Daily Tools",
+  "@dailyTools": {
+    "description": "Text used in the app for daily tools."
+  },
+  "todayOverview": "Today Overview",
+  "@todayOverview": {
+    "description": "Text used in the app for today overview."
+  },
+  "todayOverviewSubtitle": "See zones, reports, schedule and incidents at a glance.",
+  "@todayOverviewSubtitle": {
+    "description": "Text used in the app for today overview subtitle."
+  },
+  "staffZonesSubtitle": "View children's current zones.",
+  "@staffZonesSubtitle": {
+    "description": "Text used in the app for staff zones subtitle."
+  },
+  "staffPointsSubtitle": "View and update child points.",
+  "@staffPointsSubtitle": {
+    "description": "Text used in the app for staff points subtitle."
+  },
+  "staffScheduleSubtitle": "Create and edit the daily schedule.",
+  "@staffScheduleSubtitle": {
+    "description": "Text used in the app for staff schedule subtitle."
+  },
+  "whenThenSetup": "When–Then Setup",
+  "@whenThenSetup": {
+    "description": "Text used in the app for when then setup."
+  },
+  "staffWhenThenSubtitle": "Create When–Then activities and rewards.",
+  "@staffWhenThenSubtitle": {
+    "description": "Text used in the app for staff when then subtitle."
+  },
+  "visualTimer": "Visual Timer",
+  "@visualTimer": {
+    "description": "Text used in the app for visual timer."
+  },
+  "staffTimerSubtitle": "Open the classroom timer.",
+  "@staffTimerSubtitle": {
+    "description": "Text used in the app for staff timer subtitle."
+  },
+  "communication": "Communication",
+  "@communication": {
+    "description": "Text used in the app for communication."
+  },
+  "bodyCheckReports": "Body Check Reports",
+  "@bodyCheckReports": {
+    "description": "Text used in the app for body check reports."
+  },
+  "bodyCheckReportsSubtitle": "Review body check messages from children.",
+  "@bodyCheckReportsSubtitle": {
+    "description": "Text used in the app for body check reports subtitle."
+  },
+  "circleTime": "Circle Time",
+  "@circleTime": {
+    "description": "Text used in the app for circle time."
+  },
+  "staffCircleTimeSubtitle": "Move children between home and school.",
+  "@staffCircleTimeSubtitle": {
+    "description": "Text used in the app for staff circle time subtitle."
+  },
+  "learning": "Learning",
+  "@learning": {
+    "description": "Text used in the app for learning."
+  },
+  "quizzes": "Quizzes",
+  "@quizzes": {
+    "description": "Text used in the app for quizzes."
+  },
+  "staffQuizzesSubtitle": "Create, preview and manage quizzes.",
+  "@staffQuizzesSubtitle": {
+    "description": "Text used in the app for staff quizzes subtitle."
+  },
+  "staffWordLearningSubtitle": "Create word packs and view progress.",
+  "@staffWordLearningSubtitle": {
+    "description": "Text used in the app for staff word learning subtitle."
+  },
+  "staffAdmin": "Staff / Admin",
+  "@staffAdmin": {
+    "description": "Text used in the app for staff admin."
+  },
+  "staffIncidentLogSubtitle": "Record and review classroom incidents.",
+  "@staffIncidentLogSubtitle": {
+    "description": "Text used in the app for staff incident log subtitle."
+  },
+  "staffHandoverSubtitle": "View overview notes and staff documents.",
+  "@staffHandoverSubtitle": {
+    "description": "Text used in the app for staff handover subtitle."
+  },
+  "iconReset": "Icon Reset",
+  "@iconReset": {
+    "description": "Text used in the app for icon reset."
+  },
+  "iconResetSubtitle": "View or reset child profile unlock icons.",
+  "@iconResetSubtitle": {
+    "description": "Text used in the app for icon reset subtitle."
+  },
+  "childSpaceTitle": "{childName}'s Space",
+  "@childSpaceTitle": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for child space title."
+  },
+  "welcomeChild": "Welcome, {childName}!",
+  "@welcomeChild": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    },
+    "description": "Text used in the app for welcome child."
+  },
+  "whatWouldYouLikeToDo": "What would you like to do?",
+  "@whatWouldYouLikeToDo": {
+    "description": "Text used in the app for what would you like to do."
+  },
+  "childCircleTimeSubtitle": "Start the day together.",
+  "@childCircleTimeSubtitle": {
+    "description": "Text used in the app for child circle time subtitle."
+  },
+  "childScheduleSubtitle": "See what is happening today.",
+  "@childScheduleSubtitle": {
+    "description": "Text used in the app for child schedule subtitle."
+  },
+  "whenThen": "When–Then",
+  "@whenThen": {
+    "description": "Text used in the app for when then."
+  },
+  "childWhenThenSubtitle": "See your next activity and reward.",
+  "@childWhenThenSubtitle": {
+    "description": "Text used in the app for child when then subtitle."
+  },
+  "childZonesSubtitle": "Share how you are feeling.",
+  "@childZonesSubtitle": {
+    "description": "Text used in the app for child zones subtitle."
+  },
+  "bodyCheck": "Body Check",
+  "@bodyCheck": {
+    "description": "Text used in the app for body check."
+  },
+  "childBodyCheckSubtitle": "Show where your body feels sore.",
+  "@childBodyCheckSubtitle": {
+    "description": "Text used in the app for child body check subtitle."
+  },
+  "childCalmingSoundsSubtitle": "Listen and take a calm moment.",
+  "@childCalmingSoundsSubtitle": {
+    "description": "Text used in the app for child calming sounds subtitle."
+  },
+  "voiceLines": "Voice Lines",
+  "@voiceLines": {
+    "description": "Text used in the app for voice lines."
+  },
+  "childVoiceLinesSubtitle": "Listen to helpful words and phrases.",
+  "@childVoiceLinesSubtitle": {
+    "description": "Text used in the app for child voice lines subtitle."
+  },
+  "childPointsSubtitle": "See your points and rewards.",
+  "@childPointsSubtitle": {
+    "description": "Text used in the app for child points subtitle."
+  },
+  "childQuizSubtitle": "Play a quiz and learn something new.",
+  "@childQuizSubtitle": {
+    "description": "Text used in the app for child quiz subtitle."
+  },
+  "childWordPracticeSubtitle": "Practise words at your own pace.",
+  "@childWordPracticeSubtitle": {
+    "description": "Text used in the app for child word practice subtitle."
+  },
+  "childTimerSubtitle": "See how much time is left.",
+  "@childTimerSubtitle": {
+    "description": "Text used in the app for child timer subtitle."
+  },
+  "myDay": "My Day",
+  "@myDay": {
+    "description": "Text used in the app for my day."
+  },
+  "myDaySubtitle": "See what is happening next.",
+  "@myDaySubtitle": {
+    "description": "Text used in the app for my day subtitle."
+  },
+  "howIFeel": "How I Feel",
+  "@howIFeel": {
+    "description": "Text used in the app for how ifeel."
+  },
+  "howIFeelSubtitle": "Check in with your body and feelings.",
+  "@howIFeelSubtitle": {
+    "description": "Text used in the app for how ifeel subtitle."
+  },
+  "learnAndPlay": "Learn & Play",
+  "@learnAndPlay": {
+    "description": "Text used in the app for learn and play."
+  },
+  "learnAndPlaySubtitle": "Practise, explore and have some fun.",
+  "@learnAndPlaySubtitle": {
+    "description": "Text used in the app for learn and play subtitle."
+  },
+  "timeFinished": "Time Finished",
+  "@timeFinished": {
+    "description": "Message shown when the visual timer finishes."
+  },
+  "timerCountingDown": "The timer is counting down",
+  "@timerCountingDown": {
+    "description": "Status shown while the visual timer is running."
+  },
+  "chooseTimeAndStart": "Choose a time and press start",
+  "@chooseTimeAndStart": {
+    "description": "Instruction shown before the visual timer starts."
+  },
+  "minutesShort": "min",
+  "@minutesShort": {
+    "description": "Short label for minutes."
+  },
+  "chooseTimerLength": "Choose a timer length",
+  "@chooseTimerLength": {
+    "description": "Heading above the visual timer duration choices."
+  },
+  "customTime": "Custom time",
+  "@customTime": {
+    "description": "Label for the custom visual timer duration."
+  },
+  "timerMinutes": "{minutes} min",
+  "@timerMinutes": {
+    "description": "Selected visual timer duration in minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-"incidentLog": "Incident Log",
-"incidentLogClassroom": "{classroomName} Incident Log",
-"@incidentLogClassroom": {
-  "placeholders": {
-    "classroomName": {
-      "type": "String"
+  "start": "Start",
+  "@start": {
+    "description": "Button that starts the timer."
+  },
+  "pause": "Pause",
+  "@pause": {
+    "description": "Button that pauses the timer."
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Button that resets the current feature."
+  },
+  "calmingSoundsIntro": "Choose a relaxing sound to listen to",
+  "@calmingSoundsIntro": {
+    "description": "Instruction at the top of the calming sounds page."
+  },
+  "soundPlaybackFailed": "Could not play this sound. Check the asset file.",
+  "@soundPlaybackFailed": {
+    "description": "Error shown when a calming sound cannot be played."
+  },
+  "paused": "Paused",
+  "@paused": {
+    "description": "Status shown when media is paused."
+  },
+  "nowPlaying": "Now Playing",
+  "@nowPlaying": {
+    "description": "Heading above the currently playing sound."
+  },
+  "volume": "Volume",
+  "@volume": {
+    "description": "Label for the audio volume control."
+  },
+  "play": "Play",
+  "@play": {
+    "description": "Button that starts or resumes audio."
+  },
+  "stop": "Stop",
+  "@stop": {
+    "description": "Button that stops audio."
+  },
+  "pausedTapToPlay": "Paused - tap to play",
+  "@pausedTapToPlay": {
+    "description": "Instruction for a paused calming sound."
+  },
+  "playingTapToPause": "Playing - tap to pause",
+  "@playingTapToPause": {
+    "description": "Instruction for a playing calming sound."
+  },
+  "tapToPlay": "Tap to play",
+  "@tapToPlay": {
+    "description": "Instruction for starting a calming sound."
+  },
+  "whenThenChoiceSaveFailed": "That choice could not be saved. Please try again.",
+  "@whenThenChoiceSaveFailed": {
+    "description": "Error shown when a child's When–Then reward choice cannot be saved."
+  },
+  "gettingPlanReady": "Getting your plan ready...",
+  "@gettingPlanReady": {
+    "description": "Loading message on the child When–Then page."
+  },
+  "planLoadFailed": "We could not load your plan",
+  "@planLoadFailed": {
+    "description": "Heading shown when a child's When–Then plan cannot load."
+  },
+  "waitAndTryAgain": "Please wait a moment and try again.",
+  "@waitAndTryAgain": {
+    "description": "Instruction shown after a temporary loading error."
+  },
+  "allCaughtUp": "You're all caught up!",
+  "@allCaughtUp": {
+    "description": "Positive heading shown when a child has no active plan."
+  },
+  "noActiveWhenThen": "No active When–Then board right now",
+  "@noActiveWhenThen": {
+    "description": "Message shown when a child has no active When–Then board."
+  },
+  "newPlanWillAppear": "A new plan will appear here when it is ready.",
+  "@newPlanWillAppear": {
+    "description": "Explanation shown when a child has no active plan."
+  },
+  "whenLabel": "WHEN",
+  "@whenLabel": {
+    "description": "Heading for the activity side of a When–Then board."
+  },
+  "thenLabel": "THEN",
+  "@thenLabel": {
+    "description": "Heading for the reward side of a When–Then board."
+  },
+  "childPlanGreeting": "Here's your plan, {childName}!",
+  "@childPlanGreeting": {
+    "description": "Greeting above a child's When–Then plan.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
     }
-  }
-},
-"incidentLogIntro": "Create and review classroom incident records.",
-"createIncident": "Create Incident",
-"viewIncidents": "View Incidents",
-"selectChild": "Select Child",
-"severity": "Severity",
-"useCurrentTime": "Use Current Time (Default)",
-"manualTime": "Manual Time: {date}",
-"@manualTime": {
-  "placeholders": {
-    "date": {
-      "type": "String"
+  },
+  "oneStepAtATime": "One step at a time — you've got this!",
+  "@oneStepAtATime": {
+    "description": "Encouragement above a child's When–Then plan."
+  },
+  "greatChoice": "Great choice!",
+  "@greatChoice": {
+    "description": "Message shown after selecting a reward."
+  },
+  "thisComesNext": "This is what comes next",
+  "@thisComesNext": {
+    "description": "Message shown when a board has one automatic reward."
+  },
+  "chooseYourReward": "Choose your reward",
+  "@chooseYourReward": {
+    "description": "Instruction asking a child to choose a reward."
+  },
+  "tapRewardYouWouldLike": "Tap the one you would like.",
+  "@tapRewardYouWouldLike": {
+    "description": "Instruction below the reward heading."
+  },
+  "finishWhenEnjoyReward": "Finish your WHEN activity, then enjoy your reward!",
+  "@finishWhenEnjoyReward": {
+    "description": "Encouragement shown before a child finishes their activity."
+  },
+  "brilliantChoice": "Brilliant choice!",
+  "@brilliantChoice": {
+    "description": "Celebration shown for a selected reward."
+  },
+  "pleaseChooseChild": "Please choose a child.",
+  "@pleaseChooseChild": {
+    "description": "Validation asking staff to choose one child."
+  },
+  "chooseAtLeastOneChild": "Please choose at least one child.",
+  "@chooseAtLeastOneChild": {
+    "description": "Validation asking staff to choose children."
+  },
+  "noChildProfilesFound": "No child profiles were found.",
+  "@noChildProfilesFound": {
+    "description": "Message shown when there are no child profiles."
+  },
+  "chooseWhenActivityFirst": "Choose the WHEN activity first.",
+  "@chooseWhenActivityFirst": {
+    "description": "Validation for creating a When–Then board."
+  },
+  "chooseOneToThreeRewards": "Choose between 1 and 3 THEN rewards.",
+  "@chooseOneToThreeRewards": {
+    "description": "Validation for selecting When–Then rewards."
+  },
+  "selectedRewardUnavailable": "One of the selected rewards is no longer available.",
+  "@selectedRewardUnavailable": {
+    "description": "Error shown when a selected reward was removed."
+  },
+  "whenThenBoardCreated": "When–Then board created successfully",
+  "@whenThenBoardCreated": {
+    "description": "Confirmation after creating a When–Then board."
+  },
+  "whenThenCreateFailed": "Failed to create the When–Then board: {error}",
+  "@whenThenCreateFailed": {
+    "description": "Error after creating a When–Then board.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
-  }
-},
-"resetToCurrentTime": "Reset to current time",
-"description": "Description",
-"actionTaken": "Action Taken",
-"saveIncident": "Save Incident",
-"saving": "Saving...",
-"pleaseSelectChild": "Please select a child.",
-"enterIncidentDetails": "Please enter a description and the action taken.",
-"incidentSaved": "Incident saved.",
-"incidentUpdated": "Incident updated.",
-"incidentSaveFailed": "Failed to save the incident.",
-"editIncident": "Edit Incident",
-"archiveIncident": "Archive Incident",
-"archiveIncidentQuestion": "Archive this incident?",
-"archiveIncidentMessage": "Archive the incident for {childName}? It will remain in the audit history.",
-"@archiveIncidentMessage": {
-  "placeholders": {
-    "childName": {
-      "type": "String"
+  },
+  "editActivity": "Edit activity",
+  "@editActivity": {
+    "description": "Title for editing a When–Then activity."
+  },
+  "addActivity": "Add activity",
+  "@addActivity": {
+    "description": "Title for adding a When–Then activity."
+  },
+  "editReward": "Edit reward",
+  "@editReward": {
+    "description": "Title for editing a When–Then reward."
+  },
+  "addReward": "Add reward",
+  "@addReward": {
+    "description": "Title for adding a When–Then reward."
+  },
+  "nameLabel": "Name",
+  "@nameLabel": {
+    "description": "Label for a name field."
+  },
+  "shortClearNameHint": "Enter a clear, short name",
+  "@shortClearNameHint": {
+    "description": "Hint for naming a visual option."
+  },
+  "chooseIcon": "Choose an icon",
+  "@chooseIcon": {
+    "description": "Instruction for choosing an icon."
+  },
+  "optionSaveFailed": "Could not save this option: {error}",
+  "@optionSaveFailed": {
+    "description": "Error saving a When–Then option.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
-  }
-},
-"archiveReason": "Reason for archiving",
-"incidentArchived": "Incident archived.",
-"incidentArchiveFailed": "Failed to archive the incident.",
-"noIncidents": "No incidents logged yet.",
-"filterByChild": "Filter by child",
-"incidentsShown": "{count, plural, =0{No incidents shown} one{1 incident shown} other{{count} incidents shown}}",
-"@incidentsShown": {
-  "placeholders": {
-    "count": {
-      "type": "int"
+  },
+  "deleteOptionQuestion": "Delete option?",
+  "@deleteOptionQuestion": {
+    "description": "Title for deleting a When–Then option."
+  },
+  "deleteOptionMessage": "Are you sure you want to delete “{optionName}”?",
+  "@deleteOptionMessage": {
+    "description": "Confirmation for deleting a When–Then option.",
+    "placeholders": {
+      "optionName": {
+        "type": "String"
+      }
     }
-  }
-},
-"noMatchingIncidents": "No incidents match these filters.",
-"severityLabel": "{severity} severity",
-"@severityLabel": {
-  "placeholders": {
-    "severity": {
-      "type": "String"
+  },
+  "optionDeleteFailed": "Could not delete this option: {error}",
+  "@optionDeleteFailed": {
+    "description": "Error deleting a When–Then option.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
-  }
-},
-"loggedBy": "Logged by {staffName}",
-"@loggedBy": {
-  "placeholders": {
-    "staffName": {
-      "type": "String"
+  },
+  "whoLabel": "WHO",
+  "@whoLabel": {
+    "description": "Heading for choosing recipients of a When–Then board."
+  },
+  "whoShouldSeeBoard": "Who should see this board?",
+  "@whoShouldSeeBoard": {
+    "description": "Instruction for choosing board recipients."
+  },
+  "one": "One",
+  "@one": {
+    "description": "Single-recipient choice."
+  },
+  "some": "Some",
+  "@some": {
+    "description": "Multiple-recipient choice."
+  },
+  "boardSentToAllChildren": "This board will be sent to all {count} child profiles.",
+  "@boardSentToAllChildren": {
+    "description": "Summary for an all-children board.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
-  }
-},
-"incidentCategory": "Incident Category",
-"behaviour": "Behaviour",
-"injury": "Injury",
-"safety": "Safety",
-"emotional": "Emotional",
-"other": "Other",
-"followUp": "Follow-up",
-"noFollowUp": "No follow-up needed",
-"followUpRequired": "Follow-up required",
-"followUpCompleted": "Follow-up completed",
-"followUpNotes": "Follow-up Notes",
-"archivedIncidents": "Archived Incidents",
-"wordLearning": "Word Learning",
-"wordPractice": "Word Practice",
-"wordProgress": "Word Progress",
-"createWordPack": "Create Word Pack",
-"editWordPack": "Edit Word Pack",
-"deleteWordPack": "Delete Word Pack",
-"deleteWordPackMessage": "Delete “{packName}”? Its words will also be deleted.",
-"@deleteWordPackMessage": {
-  "placeholders": {
-    "packName": {
-      "type": "String"
+  },
+  "noChildProfilesAvailable": "No child profiles are available.",
+  "@noChildProfilesAvailable": {
+    "description": "Message shown when no child profiles are available."
+  },
+  "whatHappensFirst": "What needs to happen first?",
+  "@whatHappensFirst": {
+    "description": "Instruction for choosing the WHEN activity."
+  },
+  "noActivitiesManageOptions": "No activities yet. Add one in Manage Options.",
+  "@noActivitiesManageOptions": {
+    "description": "Empty state for When–Then activities."
+  },
+  "possibleRewardsInstruction": "Choose between 1 and 3 possible rewards.",
+  "@possibleRewardsInstruction": {
+    "description": "Instruction for choosing THEN rewards."
+  },
+  "noRewardsManageOptions": "No rewards yet. Add one in Manage Options.",
+  "@noRewardsManageOptions": {
+    "description": "Empty state for When–Then rewards."
+  },
+  "rewardsSelectedCount": "{count} of 3 rewards selected",
+  "@rewardsSelectedCount": {
+    "description": "Number of selected When–Then rewards.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
-  }
-},
-"packName": "Pack Name",
-"packDescription": "Pack Description",
-"packDescriptionHint": "What will children practise in this pack?",
-"createdBy": "Created by {staffName}",
-"@createdBy": {
-  "placeholders": {
-    "staffName": {
-      "type": "String"
+  },
+  "boardPreview": "Board preview",
+  "@boardPreview": {
+    "description": "Heading for the When–Then board preview."
+  },
+  "chooseActivity": "Choose an activity",
+  "@chooseActivity": {
+    "description": "Empty text in the WHEN preview."
+  },
+  "chooseRewards": "Choose rewards",
+  "@chooseRewards": {
+    "description": "Empty text in the THEN preview."
+  },
+  "rewardChoicesCount": "{count} reward choices",
+  "@rewardChoicesCount": {
+    "description": "Number of reward choices in the preview.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
-  }
-},
-"wordCount": "{count, plural, =0{No words} one{1 word} other{{count} words}}",
-"@wordCount": {
-  "placeholders": {
-    "count": {
-      "type": "int"
+  },
+  "boardOptionsLoadFailed": "Something went wrong loading the board options.",
+  "@boardOptionsLoadFailed": {
+    "description": "Error loading When–Then setup data."
+  },
+  "createClearVisualBoard": "Create a clear visual board",
+  "@createClearVisualBoard": {
+    "description": "Heading on the board creation tab."
+  },
+  "createBoardIntro": "Choose who it is for, what happens WHEN, and what they can enjoy THEN.",
+  "@createBoardIntro": {
+    "description": "Introduction to creating a When–Then board."
+  },
+  "creatingBoard": "Creating board...",
+  "@creatingBoard": {
+    "description": "Progress label while creating a board."
+  },
+  "createWhenThenBoard": "Create When–Then Board",
+  "@createWhenThenBoard": {
+    "description": "Button for creating a When–Then board."
+  },
+  "childProfilesLoadFailed": "Could not load child profiles.",
+  "@childProfilesLoadFailed": {
+    "description": "Error loading child profiles."
+  },
+  "activeBoards": "Active Boards",
+  "@activeBoards": {
+    "description": "Tab and heading for active When–Then boards."
+  },
+  "activeBoardsIntro": "See each child's current board and clear it when complete.",
+  "@activeBoardsIntro": {
+    "description": "Introduction to active When–Then boards."
+  },
+  "optionsLoadFailed": "Could not load {title}.",
+  "@optionsLoadFailed": {
+    "description": "Error loading an option list.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
     }
-  }
-},
-"assignedChildCount": "{count, plural, =0{Not assigned} one{Assigned to 1 child} other{Assigned to {count} children}}",
-"@assignedChildCount": {
-  "placeholders": {
-    "count": {
-      "type": "int"
+  },
+  "noOptionsAdded": "No options have been added yet.",
+  "@noOptionsAdded": {
+    "description": "Empty state for a When–Then option list."
+  },
+  "manageOptions": "Manage Options",
+  "@manageOptions": {
+    "description": "Heading for managing When–Then options."
+  },
+  "manageOptionsIntro": "Keep names short and clear so children can understand them quickly.",
+  "@manageOptionsIntro": {
+    "description": "Guidance for naming When–Then options."
+  },
+  "whenActivities": "WHEN Activities",
+  "@whenActivities": {
+    "description": "Heading for managed WHEN activities."
+  },
+  "whenActivitiesDescription": "Tasks and activities to complete.",
+  "@whenActivitiesDescription": {
+    "description": "Description of WHEN activities."
+  },
+  "thenRewards": "THEN Rewards",
+  "@thenRewards": {
+    "description": "Heading for managed THEN rewards."
+  },
+  "thenRewardsDescription": "Positive choices offered afterwards.",
+  "@thenRewardsDescription": {
+    "description": "Description of THEN rewards."
+  },
+  "options": "Options",
+  "@options": {
+    "description": "Tab for managing feature options."
+  },
+  "noActiveBoard": "No active board",
+  "@noActiveBoard": {
+    "description": "Status for a child without an active board."
+  },
+  "whenActivitySummary": "WHEN: {activity}",
+  "@whenActivitySummary": {
+    "description": "Activity summary on an active board.",
+    "placeholders": {
+      "activity": {
+        "type": "String"
+      }
     }
-  }
-},
-"noWordPacks": "No word packs yet.",
-"createFirstWordPack": "Create your first word pack to get started.",
-"addWord": "Add Word",
-"editWord": "Edit Word",
-"deleteWord": "Delete Word",
-"deleteWordMessage": "Delete the word “{word}”?",
-"@deleteWordMessage": {
-  "placeholders": {
-    "word": {
-      "type": "String"
+  },
+  "thenWaitingForReward": "THEN: Waiting for reward choice",
+  "@thenWaitingForReward": {
+    "description": "Status before a child chooses a reward."
+  },
+  "thenRewardSummary": "THEN: {reward}",
+  "@thenRewardSummary": {
+    "description": "Selected reward summary.",
+    "placeholders": {
+      "reward": {
+        "type": "String"
+      }
     }
-  }
-},
-"word": "Word",
-"emoji": "Emoji",
-"difficulty": "Difficulty",
-"easy": "Easy",
-"hard": "Hard",
-"assignChildren": "Assign Children",
-"saveAssignments": "Save Assignments",
-"noChildrenAvailable": "No child profiles are available.",
-"noWords": "No words have been added yet.",
-"addFirstWord": "Add at least two words before assigning this pack.",
-"tapToPractise": "Tap to practise",
-"noAssignedWordPacks": "No word packs are assigned right now.",
-"packNeedsTwoWords": "This pack needs at least two words before it can be practised.",
-"practiceComplete": "Practice Complete!",
-"practisedWords": "{count, plural, one{You practised 1 word.} other{You practised {count} words.}}",
-"@practisedWords": {
-  "placeholders": {
-    "count": {
-      "type": "int"
+  },
+  "childBoardCleared": "{childName}'s board was cleared.",
+  "@childBoardCleared": {
+    "description": "Confirmation after clearing a child's board.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
     }
-  }
-},
-"practiseAgain": "Practise Again",
-"backToPacks": "Back to Packs",
-"selectChildForProgress": "Select a child to view their progress.",
-"noWordAttempts": "No word practice attempts yet.",
-"totalAttempts": "Total attempts: {count}",
-"@totalAttempts": {
-  "placeholders": {
-    "count": {
-      "type": "int"
+  },
+  "boardClearFailed": "Could not clear the board: {error}",
+  "@boardClearFailed": {
+    "description": "Error clearing a child's board.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
-  }
-},
-"correctAnswers": "Correct answers: {count}",
-"@correctAnswers": {
-  "placeholders": {
-    "count": {
-      "type": "int"
+  },
+  "complete": "Complete",
+  "@complete": {
+    "description": "Button marking an item complete."
+  },
+  "myCircleTime": "My Circle Time",
+  "@myCircleTime": {
+    "description": "Child title for Circle Time."
+  },
+  "weatherSaveFailed": "Could not save the weather: {error}",
+  "@weatherSaveFailed": {
+    "description": "Error saving Circle Time weather.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
-  }
-},
-"accuracy": "Accuracy: {percentage}%",
-"@accuracy": {
-  "placeholders": {
-    "percentage": {
-      "type": "String"
+  },
+  "todaysMessage": "Today's Message",
+  "@todaysMessage": {
+    "description": "Heading for the daily Circle Time message."
+  },
+  "todaysMessageHint": "Example: Today we are going to the library!",
+  "@todaysMessageHint": {
+    "description": "Example for the daily Circle Time message."
+  },
+  "messageSaveFailed": "Could not save today's message: {error}",
+  "@messageSaveFailed": {
+    "description": "Error saving the Circle Time message.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
-  }
-},
-"wordBreakdown": "Word Breakdown",
-"attemptSummary": "Attempts: {attempts} • Correct: {correct} • Accuracy: {accuracy}%",
-"@attemptSummary": {
-  "placeholders": {
-    "attempts": {
-      "type": "int"
-    },
-    "correct": {
-      "type": "int"
-    },
-    "accuracy": {
-      "type": "String"
+  },
+  "circleTimeLoadFailed": "Could not load today's Circle Time information.",
+  "@circleTimeLoadFailed": {
+    "description": "Error loading daily Circle Time information."
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Label for the current day."
+  },
+  "winter": "Winter",
+  "@winter": {
+    "description": "Winter season."
+  },
+  "spring": "Spring",
+  "@spring": {
+    "description": "Spring season."
+  },
+  "summer": "Summer",
+  "@summer": {
+    "description": "Summer season."
+  },
+  "autumn": "Autumn",
+  "@autumn": {
+    "description": "Autumn season."
+  },
+  "weatherTodayQuestion": "What is the weather like today?",
+  "@weatherTodayQuestion": {
+    "description": "Circle Time weather question."
+  },
+  "sunny": "Sunny",
+  "@sunny": {
+    "description": "Sunny weather."
+  },
+  "cloudy": "Cloudy",
+  "@cloudy": {
+    "description": "Cloudy weather."
+  },
+  "rainy": "Rainy",
+  "@rainy": {
+    "description": "Rainy weather."
+  },
+  "windy": "Windy",
+  "@windy": {
+    "description": "Windy weather."
+  },
+  "snowy": "Snowy",
+  "@snowy": {
+    "description": "Snowy weather."
+  },
+  "foggy": "Foggy",
+  "@foggy": {
+    "description": "Foggy weather."
+  },
+  "weatherNotSelected": "The weather has not been selected yet.",
+  "@weatherNotSelected": {
+    "description": "Weather empty state."
+  },
+  "noMessageToday": "There is no message for today yet.",
+  "@noMessageToday": {
+    "description": "Child empty state for today's message."
+  },
+  "addMessageToday": "Add a short message or special activity for today.",
+  "@addMessageToday": {
+    "description": "Staff prompt to add today's message."
+  },
+  "editMessage": "Edit message",
+  "@editMessage": {
+    "description": "Tooltip for editing a message."
+  },
+  "addMessage": "Add message",
+  "@addMessage": {
+    "description": "Tooltip for adding a message."
+  },
+  "staffProfilesLoadFailed": "Could not load staff profiles.",
+  "@staffProfilesLoadFailed": {
+    "description": "Error loading staff profiles."
+  },
+  "homeLabel": "Home",
+  "@homeLabel": {
+    "description": "Home side of the Circle Time board."
+  },
+  "schoolLabel": "School",
+  "@schoolLabel": {
+    "description": "School side of the Circle Time board."
+  },
+  "childLabel": "Child",
+  "@childLabel": {
+    "description": "Accessibility label for a child."
+  },
+  "staffLabel": "Staff",
+  "@staffLabel": {
+    "description": "Accessibility label for a staff member."
+  },
+  "personPositionSaveFailed": "Could not save {personName}'s position.",
+  "@personPositionSaveFailed": {
+    "description": "Error saving a Circle Time position.",
+    "placeholders": {
+      "personName": {
+        "type": "String"
+      }
     }
-  }
-},
-"chooseMatchingWord": "Choose the word that matches the picture.",
-"greatJob": "Great job!",
-"goodTry": "Good try!",
-"correctAnswerWas": "The correct answer was {answer}.",
-"@correctAnswerWas": {
-  "placeholders": {
-    "answer": {
-      "type": "String"
+  },
+  "pointsLoadFailed": "Could not load your points.",
+  "@pointsLoadFailed": {
+    "description": "Error loading a child's points."
+  },
+  "pointsHistoryLoadFailed": "Could not load your points history.",
+  "@pointsHistoryLoadFailed": {
+    "description": "Error loading a child's point history."
+  },
+  "wellDoneChild": "Well done, {childName}!",
+  "@wellDoneChild": {
+    "description": "Points-page greeting.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
     }
-  }
-},
-"nextWord": "Next Word",
-"finishPractice": "Finish Practice",
-"loadingWords": "Getting your words ready...",
-"couldNotLoadWords": "Could not load this word pack.",
-"packStyle": "Pack Style",
-"words": "Words",
-"school": "School",
-"home": "Home",
-"animals": "Animals",
-"feelings": "Feelings",
-"ourWorld": "Our World",
-"fun": "Fun",
-"selectedChildren": "Selected Children",
-"availableToEveryone": "Available to Everyone",
-"couldNotLoadWordPacks": "Could not load word packs.",
-"wordPackCreated": "Word pack created.",
-"wordPackDeleted": "Word pack deleted.",
-"wordPackSaveFailed": "Could not save the word pack.",
-"wordPackDeleteFailed": "Could not delete the word pack.",
-"editPackDetails": "Edit Pack Details",
-"wordPackUpdated": "Word pack updated.",
-"assignmentsSaved": "Assignments saved.",
-"hint": "Hint",
-"hintOptional": "Helpful hint (optional)",
-"wordSaved": "Word saved.",
-"wordDeleted": "Word deleted.",
-"wordSaveFailed": "Could not save the word.",
-"wordDeleteFailed": "Could not delete the word.",
-"wordProgressCount": "Word {current} of {total}",
-"@wordProgressCount": {
-  "placeholders": {
-    "current": {
-      "type": "int"
-    },
-    "total": {
-      "type": "int"
+  },
+  "pointsCelebrateEffort": "Your points celebrate your effort and achievements.",
+  "@pointsCelebrateEffort": {
+    "description": "Explanation of a child's points."
+  },
+  "pointLabel": "{count, plural, =1{Point} other{Points}}",
+  "@pointLabel": {
+    "description": "Singular or plural points label.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
-  }
-},
-"practiceScore": "{score} of {total} correct",
-"@practiceScore": {
-  "placeholders": {
-    "score": {
-      "type": "int"
-    },
-    "total": {
-      "type": "int"
+  },
+  "nextStarMilestone": "Next Star Milestone",
+  "@nextStarMilestone": {
+    "description": "Heading for the next points milestone."
+  },
+  "milestoneProgress": "{current} of 10 points toward {target}",
+  "@milestoneProgress": {
+    "description": "Progress toward the next points milestone.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
     }
-  }
-},
-"showHint": "Show Hint"
-
+  },
+  "milestonesCompleted": "{count, plural, =1{1 milestone completed!} other{{count} milestones completed!}}",
+  "@milestonesCompleted": {
+    "description": "Completed points milestones.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recentAchievements": "My Recent Achievements",
+  "@recentAchievements": {
+    "description": "Heading for a child's recent point history."
+  },
+  "achievementsWillAppear": "Your achievements will appear here.",
+  "@achievementsWillAppear": {
+    "description": "Empty point-history message."
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Timestamp for a new entry."
+  },
+  "todayAt": "Today at {time}",
+  "@todayAt": {
+    "description": "Timestamp for an entry from today.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardsToWorkToward": "Rewards I Can Work Toward",
+  "@rewardsToWorkToward": {
+    "description": "Heading for child-visible rewards."
+  },
+  "rewardsChildIntro": "Keep earning points and ask a staff member when you are ready to choose a reward.",
+  "@rewardsChildIntro": {
+    "description": "Explanation above child-visible rewards."
+  },
+  "readyToChoose": "Ready to choose!",
+  "@readyToChoose": {
+    "description": "Message when a child can afford a reward."
+  },
+  "pointsNeeded": "{count, plural, =1{1 more point needed} other{{count} more points needed}}",
+  "@pointsNeeded": {
+    "description": "Points still needed for a reward.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updateChildPoints": "Update {childName}'s Points",
+  "@updateChildPoints": {
+    "description": "Point-update dialog title.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPoints": "Earn Points",
+  "@earnPoints": {
+    "description": "Option for adding points."
+  },
+  "removePoints": "Remove Points",
+  "@removePoints": {
+    "description": "Option for removing points."
+  },
+  "howManyPoints": "How many points?",
+  "@howManyPoints": {
+    "description": "Point amount question."
+  },
+  "reason": "Reason",
+  "@reason": {
+    "description": "Point-entry reason label."
+  },
+  "reasonRequiredInfo": "A reason is required for the points history.",
+  "@reasonRequiredInfo": {
+    "description": "Point reason explanation."
+  },
+  "optionalNote": "Optional note",
+  "@optionalNote": {
+    "description": "Optional note field."
+  },
+  "pointNoteHint": "Add any useful detail about this entry.",
+  "@pointNoteHint": {
+    "description": "Point note hint."
+  },
+  "pointsCannotBelowZero": "Points cannot fall below zero.",
+  "@pointsCannotBelowZero": {
+    "description": "Point balance restriction."
+  },
+  "selectReason": "Please select a reason.",
+  "@selectReason": {
+    "description": "Point reason validation."
+  },
+  "childPointsBalanceUpdated": "{childName} now has {balance} points.",
+  "@childPointsBalanceUpdated": {
+    "description": "Point balance confirmation.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      },
+      "balance": {
+        "type": "int"
+      }
+    }
+  },
+  "awardPoints": "Award Points",
+  "@awardPoints": {
+    "description": "Award points button."
+  },
+  "childAlreadyZeroPoints": "This child already has zero points.",
+  "@childAlreadyZeroPoints": {
+    "description": "Zero point warning."
+  },
+  "currentBalance": "Current balance",
+  "@currentBalance": {
+    "description": "Current balance label."
+  },
+  "childPointsHistory": "{childName}'s Points History",
+  "@childPointsHistory": {
+    "description": "Point history title.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "pointsHistoryLoadError": "Could not load points history.",
+  "@pointsHistoryLoadError": {
+    "description": "Point history error."
+  },
+  "noPointsHistory": "No points history yet.",
+  "@noPointsHistory": {
+    "description": "Empty point history."
+  },
+  "balanceValue": "Balance: {balance}",
+  "@balanceValue": {
+    "description": "Balance after entry.",
+    "placeholders": {
+      "balance": {
+        "type": "int"
+      }
+    }
+  },
+  "manageRewards": "Manage rewards",
+  "@manageRewards": {
+    "description": "Reward management tooltip."
+  },
+  "childPointsLoadFailed": "Could not load child points.",
+  "@childPointsLoadFailed": {
+    "description": "Staff points loading error."
+  },
+  "classroomPoints": "Classroom Points",
+  "@classroomPoints": {
+    "description": "Staff points heading."
+  },
+  "classroomPointsIntro": "Recognise effort, progress and positive achievements.",
+  "@classroomPointsIntro": {
+    "description": "Staff points introduction."
+  },
+  "children": "Children",
+  "@children": {
+    "description": "Children count label."
+  },
+  "totalPoints": "Total points",
+  "@totalPoints": {
+    "description": "Total points label."
+  },
+  "updatePoints": "Update Points",
+  "@updatePoints": {
+    "description": "Update points button."
+  },
+  "viewHistory": "View History",
+  "@viewHistory": {
+    "description": "History button."
+  },
+  "createChildBeforePoints": "Create a child profile before awarding points.",
+  "@createChildBeforePoints": {
+    "description": "Empty staff points instruction."
+  },
+  "reasonGreatEffort": "Great effort",
+  "@reasonGreatEffort": {
+    "description": "Point reason."
+  },
+  "reasonCompletedActivity": "Completed an activity",
+  "@reasonCompletedActivity": {
+    "description": "Point reason."
+  },
+  "reasonKindness": "Kindness",
+  "@reasonKindness": {
+    "description": "Point reason."
+  },
+  "reasonHelpingOthers": "Helping others",
+  "@reasonHelpingOthers": {
+    "description": "Point reason."
+  },
+  "reasonGoodListening": "Good listening",
+  "@reasonGoodListening": {
+    "description": "Point reason."
+  },
+  "reasonPersonalGoal": "Personal goal",
+  "@reasonPersonalGoal": {
+    "description": "Point reason."
+  },
+  "reasonOther": "Other",
+  "@reasonOther": {
+    "description": "Point reason."
+  },
+  "reasonRewardRedeemed": "Reward redeemed",
+  "@reasonRewardRedeemed": {
+    "description": "Point reason."
+  },
+  "reasonCorrectEntry": "Correct previous entry",
+  "@reasonCorrectEntry": {
+    "description": "Point reason."
+  },
+  "scheduleMonday": "Monday",
+  "scheduleTuesday": "Tuesday",
+  "scheduleWednesday": "Wednesday",
+  "scheduleThursday": "Thursday",
+  "scheduleFriday": "Friday",
+  "scheduleMinutes": "{count, plural, =1{1 minute} other{{count} minutes}}",
+  "scheduleHours": "{count, plural, =1{1 hour} other{{count} hours}}",
+  "scheduleHoursMinutes": "{hours}h {minutes}m",
+  "scheduleActivityCount": "{count, plural, =0{No activities} =1{1 activity} other{{count} activities}}",
+  "scheduleActivityCountToday": "{count, plural, =0{No activities today} =1{1 activity} other{{count} activities}}",
+  "classroomScheduleTitle": "{classroomName} Schedule",
+  "staffScheduleTitle": "Staff Schedule",
+  "scheduleLoadFailed": "The schedule could not be loaded.",
+  "classroomScheduleLoadFailed": "The classroom schedule could not be loaded.",
+  "fillTimeSlot": "Fill Time Slot",
+  "duration": "Duration",
+  "activityName": "Activity name",
+  "activityNameHint": "Example: Morning reading",
+  "activityType": "Activity type",
+  "enterActivityName": "Please enter an activity name.",
+  "activityOverlap": "This duration overlaps another scheduled activity.",
+  "activitySaveFailed": "The activity could not be saved.",
+  "fillSlot": "Fill Slot",
+  "saveChanges": "Save Changes",
+  "clearThisSlot": "Clear This Slot?",
+  "removeActivityFromDay": "Remove \"{activity}\" from {day}?",
+  "clearSlot": "Clear Slot",
+  "activityRemoveFailed": "The activity could not be removed.",
+  "copySchedule": "Copy Schedule",
+  "copyActivitiesToDay": "Copy all activities from {sourceDay} to:",
+  "targetDay": "Target day",
+  "continueLabel": "Continue",
+  "replaceExistingSchedule": "Replace Existing Schedule?",
+  "dayExistingActivityCount": "{day} already has {count, plural, =1{1 activity} other{{count} activities}}.",
+  "replace": "Replace",
+  "scheduleCopied": "{sourceDay} was copied to {targetDay}.",
+  "scheduleCopyFailed": "The schedule could not be copied.",
+  "copyThisDay": "Copy this day",
+  "copyDay": "Copy Day",
+  "tapBlankSlot": "Tap a blank slot to begin",
+  "addFifteenMinuteActivity": "Add 15-minute activity",
+  "tapToAddActivity": "Tap to add activity",
+  "editActivityTooltip": "Edit activity",
+  "clearSlotTooltip": "Clear slot",
+  "happeningNow": "Happening Now",
+  "comingNext": "Coming Next",
+  "nextActivity": "Next: {activity}",
+  "startsAt": "Starts at {time}",
+  "todaysActivitiesFinished": "All of today’s activities are finished.",
+  "dayToday": "{day} • Today",
+  "statusNow": "NOW",
+  "statusNext": "NEXT",
+  "statusFinished": "FINISHED",
+  "nothingScheduledForDay": "Nothing is scheduled for {day}",
+  "enjoyYourDay": "Enjoy your day!",
+  "activityTypeLearning": "Learning",
+  "activityTypeBreak": "Break",
+  "activityTypeFood": "Food",
+  "activityTypeMovement": "Movement",
+  "activityTypeTherapy": "Therapy",
+  "activityTypeCreative": "Creative",
+  "activityTypeArrival": "Arrival",
+  "activityTypeHome": "Home Time",
+  "activityTypeOther": "Other"
 }
