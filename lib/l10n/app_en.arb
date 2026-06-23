@@ -2476,6 +2476,54 @@
   "@managePinAccountOptions": {
     "description": "Text used in the app for manage pin account options."
   },
+  "manageAppSettings": "Manage app settings",
+  "@manageAppSettings": {
+    "description": "Text used in the app for manage app settings."
+  },
+  "manageYourAccount": "Manage your account",
+  "@manageYourAccount": {
+    "description": "Text used in the app for manage your account."
+  },
+  "appSettingsDescription": "Choose the app language and general app options.",
+  "@appSettingsDescription": {
+    "description": "Text used in the app for app settings description."
+  },
+  "accountSettingsDescription": "Set your PIN and choose the app language.",
+  "@accountSettingsDescription": {
+    "description": "Text used in the app for account settings description."
+  },
+  "overwriteExistingPinQuestion": "Overwrite existing PIN?",
+  "@overwriteExistingPinQuestion": {
+    "description": "Text used in the app for overwrite existing pin question."
+  },
+  "overwriteExistingPinMessage": "This will replace your current PIN. Continue?",
+  "@overwriteExistingPinMessage": {
+    "description": "Text used in the app for overwrite existing pin message."
+  },
+  "pinIsSet": "PIN is set",
+  "@pinIsSet": {
+    "description": "Text used in the app for pin is set."
+  },
+  "noPinSet": "No PIN set",
+  "@noPinSet": {
+    "description": "Text used in the app for no pin set."
+  },
+  "accountPinProtectsStaffAreas": "The account PIN protects staff-only areas.",
+  "@accountPinProtectsStaffAreas": {
+    "description": "Text used in the app for account pin protects staff areas."
+  },
+  "changePin": "Change PIN",
+  "@changePin": {
+    "description": "Text used in the app for change pin."
+  },
+  "newPinInstructions": "Enter a new 4-digit PIN.",
+  "@newPinInstructions": {
+    "description": "Text used in the app for new pin instructions."
+  },
+  "chooseAppLanguage": "Choose the app language.",
+  "@chooseAppLanguage": {
+    "description": "Text used in the app for choose app language."
+  },
   "staffLoadError": "Error loading staff: {error}",
   "@staffLoadError": {
     "description": "Text used in the app for staff load error.",
@@ -4398,6 +4446,203 @@
   "recentImportantIncidents": "Recent / Important Incidents",
   "@recentImportantIncidents": {
     "description": "Text used in the app for recent important incidents."
+  },
+  "chooseMyBackground": "Choose My Background",
+  "@chooseMyBackground": {
+    "description": "Text used in the app for choose my background."
+  },
+  "makeItYours": "Make It Yours",
+  "@makeItYours": {
+    "description": "Text used in the app for make it yours."
+  },
+  "chooseComfortableDashboardColour": "Choose a comfortable colour for your dashboard.",
+  "@chooseComfortableDashboardColour": {
+    "description": "Text used in the app for choose comfortable dashboard colour."
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Text used in the app for preview."
+  },
+  "welcomeChild": "Welcome, {childName}!",
+  "@welcomeChild": {
+    "description": "Text used in the app for welcome child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "myZones": "My Zones",
+  "@myZones": {
+    "description": "Text used in the app for my zones."
+  },
+  "colourChoices": "Colour Choices",
+  "@colourChoices": {
+    "description": "Text used in the app for colour choices."
+  },
+  "useThisBackground": "Use This Background",
+  "@useThisBackground": {
+    "description": "Text used in the app for use this background."
+  },
+  "backgroundColourUpdated": "Background colour updated.",
+  "@backgroundColourUpdated": {
+    "description": "Text used in the app for background colour updated."
+  },
+  "backgroundColourUpdateFailed": "The background colour could not be updated.",
+  "@backgroundColourUpdateFailed": {
+    "description": "Text used in the app for background colour update failed."
+  },
+  "backgroundClassicWhite": "Classic White",
+  "@backgroundClassicWhite": {
+    "description": "Text used in the app for background classic white."
+  },
+  "backgroundClassicWhiteDescription": "Clean and simple",
+  "@backgroundClassicWhiteDescription": {
+    "description": "Text used in the app for background classic white description."
+  },
+  "backgroundSoftRose": "Soft Rose",
+  "@backgroundSoftRose": {
+    "description": "Text used in the app for background soft rose."
+  },
+  "backgroundSoftRoseDescription": "Warm and gentle",
+  "@backgroundSoftRoseDescription": {
+    "description": "Text used in the app for background soft rose description."
+  },
+  "backgroundClearSky": "Clear Sky",
+  "@backgroundClearSky": {
+    "description": "Text used in the app for background clear sky."
+  },
+  "backgroundClearSkyDescription": "Cool and peaceful",
+  "@backgroundClearSkyDescription": {
+    "description": "Text used in the app for background clear sky description."
+  },
+  "backgroundFreshMint": "Fresh Mint",
+  "@backgroundFreshMint": {
+    "description": "Text used in the app for background fresh mint."
+  },
+  "backgroundFreshMintDescription": "Calm and natural",
+  "@backgroundFreshMintDescription": {
+    "description": "Text used in the app for background fresh mint description."
+  },
+  "backgroundWarmSunshine": "Warm Sunshine",
+  "@backgroundWarmSunshine": {
+    "description": "Text used in the app for background warm sunshine."
+  },
+  "backgroundWarmSunshineDescription": "Bright and cheerful",
+  "@backgroundWarmSunshineDescription": {
+    "description": "Text used in the app for background warm sunshine description."
+  },
+  "backgroundSoftLavender": "Soft Lavender",
+  "@backgroundSoftLavender": {
+    "description": "Text used in the app for background soft lavender."
+  },
+  "backgroundSoftLavenderDescription": "Quiet and relaxing",
+  "@backgroundSoftLavenderDescription": {
+    "description": "Text used in the app for background soft lavender description."
+  },
+  "backgroundGentleGrey": "Gentle Grey",
+  "@backgroundGentleGrey": {
+    "description": "Text used in the app for background gentle grey."
+  },
+  "backgroundGentleGreyDescription": "Neutral and focused",
+  "@backgroundGentleGreyDescription": {
+    "description": "Text used in the app for background gentle grey description."
+  },
+  "backgroundWarmPeach": "Warm Peach",
+  "@backgroundWarmPeach": {
+    "description": "Text used in the app for background warm peach."
+  },
+  "backgroundWarmPeachDescription": "Cosy and welcoming",
+  "@backgroundWarmPeachDescription": {
+    "description": "Text used in the app for background warm peach description."
+  },
+  "unlockSequenceResetFor": "Unlock sequence reset for {childName}",
+  "@unlockSequenceResetFor": {
+    "description": "Text used in the app for unlock sequence reset for.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "unlockSequenceResetFailed": "Failed to reset sequence: {error}",
+  "@unlockSequenceResetFailed": {
+    "description": "Text used in the app for unlock sequence reset failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "scheduleTimeRange": "{start} - {end}",
+  "@scheduleTimeRange": {
+    "description": "Text used in the app for schedule time range.",
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "missingAdminDashboardDetails": "Missing admin dashboard details.",
+  "@missingAdminDashboardDetails": {
+    "description": "Text used in the app for missing admin dashboard details."
+  },
+  "missingChildProfile": "Missing child profile.",
+  "@missingChildProfile": {
+    "description": "Text used in the app for missing child profile."
+  },
+  "missingStaffProfile": "Missing staff profile.",
+  "@missingStaffProfile": {
+    "description": "Text used in the app for missing staff profile."
+  },
+  "missingQuizCreator": "Missing quiz creator.",
+  "@missingQuizCreator": {
+    "description": "Text used in the app for missing quiz creator."
+  },
+  "missingTeacherId": "Missing teacher ID.",
+  "@missingTeacherId": {
+    "description": "Text used in the app for missing teacher id."
+  },
+  "missingQuiz": "Missing quiz.",
+  "@missingQuiz": {
+    "description": "Text used in the app for missing quiz."
+  },
+  "missingStudentQuizDetails": "Missing student quiz details.",
+  "@missingStudentQuizDetails": {
+    "description": "Text used in the app for missing student quiz details."
+  },
+  "missingWhenThenChildDetails": "Missing When–Then child details.",
+  "@missingWhenThenChildDetails": {
+    "description": "Text used in the app for missing when then child details."
+  },
+  "missingCircleTimeDetails": "Missing Circle Time details.",
+  "@missingCircleTimeDetails": {
+    "description": "Text used in the app for missing circle time details."
+  },
+  "missingBodyCheckDetails": "Missing Body Check details.",
+  "@missingBodyCheckDetails": {
+    "description": "Text used in the app for missing body check details."
+  },
+  "missingBodyCheckOverviewDetails": "Missing Body Check overview details.",
+  "@missingBodyCheckOverviewDetails": {
+    "description": "Text used in the app for missing body check overview details."
+  },
+  "invalidRouteOrMissingArguments": "Invalid route or missing arguments.",
+  "@invalidRouteOrMissingArguments": {
+    "description": "Text used in the app for invalid route or missing arguments."
+  },
+  "missingSchoolId": "Missing school ID",
+  "@missingSchoolId": {
+    "description": "Text used in the app for missing school id."
+  },
+  "missingClassroomDetails": "Missing classroom details",
+  "@missingClassroomDetails": {
+    "description": "Text used in the app for missing classroom details."
+  },
+  "staffProfileNotFound": "Staff Profile Not Found",
+  "@staffProfileNotFound": {
+    "description": "Text used in the app for staff profile not found."
+  },
+  "childProfileNotFound": "Child Profile Not Found",
+  "@childProfileNotFound": {
+    "description": "Text used in the app for child profile not found."
+  },
+  "returnToProfiles": "Return to Profiles",
+  "@returnToProfiles": {
+    "description": "Text used in the app for return to profiles."
   },
   "iMightFeel": "I might feel:",
   "@iMightFeel": {

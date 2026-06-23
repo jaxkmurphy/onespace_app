@@ -70,7 +70,7 @@ void main() {
     const encoder = JsonEncoder.withIndent('  ');
     file.writeAsStringSync('${encoder.convert(output)}\n');
 
-    print('Metadata updated: $path');
+    stdout.writeln('Metadata updated: $path');
   }
 }
 

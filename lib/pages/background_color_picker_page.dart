@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
 
@@ -17,8 +18,7 @@ class BackgroundColorPickerPage extends StatefulWidget {
       _BackgroundColorPickerPageState();
 }
 
-class _BackgroundColorPickerPageState
-    extends State<BackgroundColorPickerPage> {
+class _BackgroundColorPickerPageState extends State<BackgroundColorPickerPage> {
   static const List<_BackgroundOption> colourOptions = [
     _BackgroundOption(
       name: 'Classic White',
@@ -77,22 +77,16 @@ class _BackgroundColorPickerPageState
   void initState() {
     super.initState();
 
-    final currentHex =
-        widget.child.backgroundColorHex?.toUpperCase();
+    final currentHex = widget.child.backgroundColorHex?.toUpperCase();
 
-    _selectedHex = colourOptions.any(
-      (option) => option.hex == currentHex,
-    )
-        ? currentHex!
-        : '#FFFFFF';
+    _selectedHex =
+        colourOptions.any((option) => option.hex == currentHex)
+            ? currentHex!
+            : '#FFFFFF';
   }
 
   Color _colourFromHex(String hex) {
-    return Color(
-      int.parse(
-        hex.replaceFirst('#', '0xFF'),
-      ),
-    );
+    return Color(int.parse(hex.replaceFirst('#', '0xFF')));
   }
 
   Future<void> _saveColour() async {
@@ -107,15 +101,13 @@ class _BackgroundColorPickerPageState
         backgroundColorHex: _selectedHex,
       );
 
-      await widget.firestoreService.updateCurrentChildProfile(
-        updatedChild,
-      );
+      await widget.firestoreService.updateCurrentChildProfile(updatedChild);
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Background colour updated.'),
+        SnackBar(
+          content: Text(context.l10n.backgroundColourUpdated),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -129,11 +121,7 @@ class _BackgroundColorPickerPageState
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'The background colour could not be updated.',
-          ),
-        ),
+        SnackBar(content: Text(context.l10n.backgroundColourUpdateFailed)),
       );
     }
   }
@@ -143,9 +131,7 @@ class _BackgroundColorPickerPageState
     final selectedColour = _colourFromHex(_selectedHex);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Choose My Background'),
-      ),
+      appBar: AppBar(title: Text(context.l10n.chooseMyBackground)),
       body: SafeArea(
         child: Column(
           children: [
@@ -158,29 +144,21 @@ class _BackgroundColorPickerPageState
                     padding: const EdgeInsets.all(18),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 1100,
-                        ),
+                        constraints: const BoxConstraints(maxWidth: 1100),
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.stretch,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             _buildIntroduction(),
                             const SizedBox(height: 18),
                             if (isWide)
                               Row(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: _buildPreview(
-                                      selectedColour,
-                                    ),
+                                    child: _buildPreview(selectedColour),
                                   ),
                                   const SizedBox(width: 18),
-                                  Expanded(
-                                    child: _buildPalette(),
-                                  ),
+                                  Expanded(child: _buildPalette()),
                                 ],
                               )
                             else ...[
@@ -214,38 +192,28 @@ class _BackgroundColorPickerPageState
               width: 62,
               height: 62,
               decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryContainer,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 Icons.format_paint_rounded,
                 size: 36,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onPrimaryContainer,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Make It Yours',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    context.l10n.makeItYours,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Choose a comfortable colour for your dashboard.',
-                  ),
+                  Text(context.l10n.chooseComfortableDashboardColour),
                 ],
               ),
             ),
@@ -260,17 +228,15 @@ class _BackgroundColorPickerPageState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Preview',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          context.l10n.preview,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
         AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          constraints: const BoxConstraints(
-            minHeight: 390,
-          ),
+          constraints: const BoxConstraints(minHeight: 390),
           padding: const EdgeInsets.all(22),
           decoration: BoxDecoration(
             color: selectedColour,
@@ -287,8 +253,7 @@ class _BackgroundColorPickerPageState
                 children: [
                   CircleAvatar(
                     radius: 27,
-                    backgroundColor:
-                        Colors.blue.withValues(alpha: 0.16),
+                    backgroundColor: Colors.blue.withValues(alpha: 0.16),
                     child: const Icon(
                       Icons.child_care_rounded,
                       color: Colors.blue,
@@ -298,13 +263,10 @@ class _BackgroundColorPickerPageState
                   const SizedBox(width: 13),
                   Expanded(
                     child: Text(
-                      'Welcome, ${widget.child.name}!',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      context.l10n.welcomeChild(widget.child.name),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -312,19 +274,19 @@ class _BackgroundColorPickerPageState
               const SizedBox(height: 22),
               _buildPreviewFeature(
                 icon: Icons.schedule_rounded,
-                label: 'My Schedule',
+                label: context.l10n.my_schedule,
                 colour: Colors.blue,
               ),
               const SizedBox(height: 12),
               _buildPreviewFeature(
                 icon: Icons.star_rounded,
-                label: 'My Points',
+                label: context.l10n.my_points,
                 colour: Colors.amber,
               ),
               const SizedBox(height: 12),
               _buildPreviewFeature(
                 icon: Icons.color_lens_rounded,
-                label: 'My Zones',
+                label: context.l10n.myZones,
                 colour: Colors.green,
               ),
             ],
@@ -344,9 +306,7 @@ class _BackgroundColorPickerPageState
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.82),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: colour.withValues(alpha: 0.22),
-        ),
+        border: Border.all(color: colour.withValues(alpha: 0.22)),
       ),
       child: Row(
         children: [
@@ -357,10 +317,7 @@ class _BackgroundColorPickerPageState
               color: colour.withValues(alpha: 0.17),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(
-              icon,
-              color: colour,
-            ),
+            child: Icon(icon, color: colour),
           ),
           const SizedBox(width: 13),
           Text(
@@ -381,26 +338,21 @@ class _BackgroundColorPickerPageState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Colour Choices',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          context.l10n.colourChoices,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        for (int index = 0;
-            index < colourOptions.length;
-            index++) ...[
+        for (int index = 0; index < colourOptions.length; index++) ...[
           _buildColourOption(colourOptions[index]),
-          if (index < colourOptions.length - 1)
-            const SizedBox(height: 10),
+          if (index < colourOptions.length - 1) const SizedBox(height: 10),
         ],
       ],
     );
   }
 
-  Widget _buildColourOption(
-    _BackgroundOption option,
-  ) {
+  Widget _buildColourOption(_BackgroundOption option) {
     final selected = _selectedHex == option.hex;
     final colour = _colourFromHex(option.hex);
 
@@ -409,22 +361,24 @@ class _BackgroundColorPickerPageState
       elevation: selected ? 5 : 1,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: _isSaving
-            ? null
-            : () {
-                setState(() {
-                  _selectedHex = option.hex;
-                });
-              },
+        onTap:
+            _isSaving
+                ? null
+                : () {
+                  setState(() {
+                    _selectedHex = option.hex;
+                  });
+                },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: colour,
             border: Border.all(
-              color: selected
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.black.withValues(alpha: 0.10),
+              color:
+                  selected
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.black.withValues(alpha: 0.10),
               width: selected ? 4 : 1,
             ),
             borderRadius: BorderRadius.circular(20),
@@ -438,19 +392,15 @@ class _BackgroundColorPickerPageState
                   color: Colors.white.withValues(alpha: 0.70),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(
-                  option.icon,
-                  color: Colors.black87,
-                ),
+                child: Icon(option.icon, color: Colors.black87),
               ),
               const SizedBox(width: 13),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      option.name,
+                      _localizedOptionName(option),
                       style: const TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
@@ -458,10 +408,8 @@ class _BackgroundColorPickerPageState
                       ),
                     ),
                     Text(
-                      option.description,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                      ),
+                      _localizedOptionDescription(option),
+                      style: const TextStyle(color: Colors.black54),
                     ),
                   ],
                 ),
@@ -469,9 +417,7 @@ class _BackgroundColorPickerPageState
               if (selected)
                 Icon(
                   Icons.check_circle_rounded,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary,
+                  color: Theme.of(context).colorScheme.primary,
                   size: 30,
                 ),
             ],
@@ -498,27 +444,26 @@ class _BackgroundColorPickerPageState
         top: false,
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 700,
-            ),
+            constraints: const BoxConstraints(maxWidth: 700),
             child: SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: _isSaving ? null : _saveColour,
-                icon: _isSaving
-                    ? const SizedBox(
-                        width: 21,
-                        height: 21,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Icon(Icons.check_rounded),
+                icon:
+                    _isSaving
+                        ? const SizedBox(
+                          width: 21,
+                          height: 21,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                        : const Icon(Icons.check_rounded),
                 label: Text(
                   _isSaving
-                      ? 'Saving...'
-                      : 'Use This Background',
+                      ? context.l10n.saving
+                      : context.l10n.useThisBackground,
                 ),
               ),
             ),
@@ -527,6 +472,31 @@ class _BackgroundColorPickerPageState
       ),
     );
   }
+
+  String _localizedOptionName(_BackgroundOption option) => switch (option.hex) {
+    '#FFFFFF' => context.l10n.backgroundClassicWhite,
+    '#FFEBEE' => context.l10n.backgroundSoftRose,
+    '#E3F2FD' => context.l10n.backgroundClearSky,
+    '#E8F5E9' => context.l10n.backgroundFreshMint,
+    '#FFFDE7' => context.l10n.backgroundWarmSunshine,
+    '#F3E5F5' => context.l10n.backgroundSoftLavender,
+    '#ECEFF1' => context.l10n.backgroundGentleGrey,
+    '#FFE0B2' => context.l10n.backgroundWarmPeach,
+    _ => option.name,
+  };
+
+  String _localizedOptionDescription(_BackgroundOption option) => switch (option
+      .hex) {
+    '#FFFFFF' => context.l10n.backgroundClassicWhiteDescription,
+    '#FFEBEE' => context.l10n.backgroundSoftRoseDescription,
+    '#E3F2FD' => context.l10n.backgroundClearSkyDescription,
+    '#E8F5E9' => context.l10n.backgroundFreshMintDescription,
+    '#FFFDE7' => context.l10n.backgroundWarmSunshineDescription,
+    '#F3E5F5' => context.l10n.backgroundSoftLavenderDescription,
+    '#ECEFF1' => context.l10n.backgroundGentleGreyDescription,
+    '#FFE0B2' => context.l10n.backgroundWarmPeachDescription,
+    _ => option.description,
+  };
 }
 
 class _BackgroundOption {

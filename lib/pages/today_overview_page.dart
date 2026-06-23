@@ -361,7 +361,7 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
                   child: ListTile(
                     leading: const Icon(Icons.schedule),
                     title: Text(description),
-                    subtitle: Text('$start - $end'),
+                    subtitle: Text(context.l10n.scheduleTimeRange(start, end)),
                   ),
                 );
               }).toList(),

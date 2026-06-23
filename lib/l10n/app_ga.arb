@@ -2476,6 +2476,54 @@
   "@managePinAccountOptions": {
     "description": "Text used in the app for manage pin account options."
   },
+  "manageAppSettings": "Bainistigh socruithe na haipe",
+  "@manageAppSettings": {
+    "description": "Text used in the app for manage app settings."
+  },
+  "manageYourAccount": "Bainistigh do chuntas",
+  "@manageYourAccount": {
+    "description": "Text used in the app for manage your account."
+  },
+  "appSettingsDescription": "Roghnaigh teanga na haipe agus roghanna ginearálta.",
+  "@appSettingsDescription": {
+    "description": "Text used in the app for app settings description."
+  },
+  "accountSettingsDescription": "Socraigh do PIN agus roghnaigh teanga na haipe.",
+  "@accountSettingsDescription": {
+    "description": "Text used in the app for account settings description."
+  },
+  "overwriteExistingPinQuestion": "Forscríobh an PIN reatha?",
+  "@overwriteExistingPinQuestion": {
+    "description": "Text used in the app for overwrite existing pin question."
+  },
+  "overwriteExistingPinMessage": "Cuirfidh sé seo PIN nua in áit do PIN reatha. Lean ar aghaidh?",
+  "@overwriteExistingPinMessage": {
+    "description": "Text used in the app for overwrite existing pin message."
+  },
+  "pinIsSet": "Tá PIN socraithe",
+  "@pinIsSet": {
+    "description": "Text used in the app for pin is set."
+  },
+  "noPinSet": "Níl PIN socraithe",
+  "@noPinSet": {
+    "description": "Text used in the app for no pin set."
+  },
+  "accountPinProtectsStaffAreas": "Cosnaíonn PIN an chuntais limistéir don fhoireann amháin.",
+  "@accountPinProtectsStaffAreas": {
+    "description": "Text used in the app for account pin protects staff areas."
+  },
+  "changePin": "Athraigh PIN",
+  "@changePin": {
+    "description": "Text used in the app for change pin."
+  },
+  "newPinInstructions": "Cuir PIN nua 4 dhigit isteach.",
+  "@newPinInstructions": {
+    "description": "Text used in the app for new pin instructions."
+  },
+  "chooseAppLanguage": "Roghnaigh teanga na haipe.",
+  "@chooseAppLanguage": {
+    "description": "Text used in the app for choose app language."
+  },
   "staffLoadError": "Earráid agus an fhoireann á lódáil: {error}",
   "@staffLoadError": {
     "description": "Text used in the app for staff load error.",
@@ -4398,6 +4446,203 @@
   "recentImportantIncidents": "Teagmhais Tábhachtacha / le Déanaí",
   "@recentImportantIncidents": {
     "description": "Text used in the app for recent important incidents."
+  },
+  "chooseMyBackground": "Roghnaigh Mo Chúlra",
+  "@chooseMyBackground": {
+    "description": "Text used in the app for choose my background."
+  },
+  "makeItYours": "Déan Duit Féin É",
+  "@makeItYours": {
+    "description": "Text used in the app for make it yours."
+  },
+  "chooseComfortableDashboardColour": "Roghnaigh dath compordach do do dheais.",
+  "@chooseComfortableDashboardColour": {
+    "description": "Text used in the app for choose comfortable dashboard colour."
+  },
+  "preview": "Réamhamharc",
+  "@preview": {
+    "description": "Text used in the app for preview."
+  },
+  "welcomeChild": "Fáilte, {childName}!",
+  "@welcomeChild": {
+    "description": "Text used in the app for welcome child.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "myZones": "Mo Chriosanna",
+  "@myZones": {
+    "description": "Text used in the app for my zones."
+  },
+  "colourChoices": "Roghanna Datha",
+  "@colourChoices": {
+    "description": "Text used in the app for colour choices."
+  },
+  "useThisBackground": "Úsáid an Cúlra Seo",
+  "@useThisBackground": {
+    "description": "Text used in the app for use this background."
+  },
+  "backgroundColourUpdated": "Nuashonraíodh dath an chúlra.",
+  "@backgroundColourUpdated": {
+    "description": "Text used in the app for background colour updated."
+  },
+  "backgroundColourUpdateFailed": "Níorbh fhéidir dath an chúlra a nuashonrú.",
+  "@backgroundColourUpdateFailed": {
+    "description": "Text used in the app for background colour update failed."
+  },
+  "backgroundClassicWhite": "Bán Clasaiceach",
+  "@backgroundClassicWhite": {
+    "description": "Text used in the app for background classic white."
+  },
+  "backgroundClassicWhiteDescription": "Glan agus simplí",
+  "@backgroundClassicWhiteDescription": {
+    "description": "Text used in the app for background classic white description."
+  },
+  "backgroundSoftRose": "Rós Bog",
+  "@backgroundSoftRose": {
+    "description": "Text used in the app for background soft rose."
+  },
+  "backgroundSoftRoseDescription": "Te agus séimh",
+  "@backgroundSoftRoseDescription": {
+    "description": "Text used in the app for background soft rose description."
+  },
+  "backgroundClearSky": "Spéir Ghlan",
+  "@backgroundClearSky": {
+    "description": "Text used in the app for background clear sky."
+  },
+  "backgroundClearSkyDescription": "Fionnuar agus síochánta",
+  "@backgroundClearSkyDescription": {
+    "description": "Text used in the app for background clear sky description."
+  },
+  "backgroundFreshMint": "Miontas Úr",
+  "@backgroundFreshMint": {
+    "description": "Text used in the app for background fresh mint."
+  },
+  "backgroundFreshMintDescription": "Socair agus nádúrtha",
+  "@backgroundFreshMintDescription": {
+    "description": "Text used in the app for background fresh mint description."
+  },
+  "backgroundWarmSunshine": "Solas Gréine Te",
+  "@backgroundWarmSunshine": {
+    "description": "Text used in the app for background warm sunshine."
+  },
+  "backgroundWarmSunshineDescription": "Geal agus sona",
+  "@backgroundWarmSunshineDescription": {
+    "description": "Text used in the app for background warm sunshine description."
+  },
+  "backgroundSoftLavender": "Labhandar Bog",
+  "@backgroundSoftLavender": {
+    "description": "Text used in the app for background soft lavender."
+  },
+  "backgroundSoftLavenderDescription": "Ciúin agus suaimhneach",
+  "@backgroundSoftLavenderDescription": {
+    "description": "Text used in the app for background soft lavender description."
+  },
+  "backgroundGentleGrey": "Liath Séimh",
+  "@backgroundGentleGrey": {
+    "description": "Text used in the app for background gentle grey."
+  },
+  "backgroundGentleGreyDescription": "Neodrach agus dírithe",
+  "@backgroundGentleGreyDescription": {
+    "description": "Text used in the app for background gentle grey description."
+  },
+  "backgroundWarmPeach": "Péitseog The",
+  "@backgroundWarmPeach": {
+    "description": "Text used in the app for background warm peach."
+  },
+  "backgroundWarmPeachDescription": "Cluthar agus fáiltiúil",
+  "@backgroundWarmPeachDescription": {
+    "description": "Text used in the app for background warm peach description."
+  },
+  "unlockSequenceResetFor": "Athshocraíodh seicheamh díghlasála do {childName}",
+  "@unlockSequenceResetFor": {
+    "description": "Text used in the app for unlock sequence reset for.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "unlockSequenceResetFailed": "Níorbh fhéidir an seicheamh a athshocrú: {error}",
+  "@unlockSequenceResetFailed": {
+    "description": "Text used in the app for unlock sequence reset failed.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "scheduleTimeRange": "{start} - {end}",
+  "@scheduleTimeRange": {
+    "description": "Text used in the app for schedule time range.",
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "missingAdminDashboardDetails": "Tá sonraí an deais riaracháin ar iarraidh.",
+  "@missingAdminDashboardDetails": {
+    "description": "Text used in the app for missing admin dashboard details."
+  },
+  "missingChildProfile": "Tá próifíl an pháiste ar iarraidh.",
+  "@missingChildProfile": {
+    "description": "Text used in the app for missing child profile."
+  },
+  "missingStaffProfile": "Tá próifíl foirne ar iarraidh.",
+  "@missingStaffProfile": {
+    "description": "Text used in the app for missing staff profile."
+  },
+  "missingQuizCreator": "Tá cruthaitheoir an tráth na gceist ar iarraidh.",
+  "@missingQuizCreator": {
+    "description": "Text used in the app for missing quiz creator."
+  },
+  "missingTeacherId": "Tá aitheantas an mhúinteora ar iarraidh.",
+  "@missingTeacherId": {
+    "description": "Text used in the app for missing teacher id."
+  },
+  "missingQuiz": "Tá an tráth na gceist ar iarraidh.",
+  "@missingQuiz": {
+    "description": "Text used in the app for missing quiz."
+  },
+  "missingStudentQuizDetails": "Tá sonraí thráth na gceist an dalta ar iarraidh.",
+  "@missingStudentQuizDetails": {
+    "description": "Text used in the app for missing student quiz details."
+  },
+  "missingWhenThenChildDetails": "Tá sonraí páiste When–Then ar iarraidh.",
+  "@missingWhenThenChildDetails": {
+    "description": "Text used in the app for missing when then child details."
+  },
+  "missingCircleTimeDetails": "Tá sonraí Circle Time ar iarraidh.",
+  "@missingCircleTimeDetails": {
+    "description": "Text used in the app for missing circle time details."
+  },
+  "missingBodyCheckDetails": "Tá sonraí Seiceáil Coirp ar iarraidh.",
+  "@missingBodyCheckDetails": {
+    "description": "Text used in the app for missing body check details."
+  },
+  "missingBodyCheckOverviewDetails": "Tá sonraí fhorbhreathnú Seiceáil Coirp ar iarraidh.",
+  "@missingBodyCheckOverviewDetails": {
+    "description": "Text used in the app for missing body check overview details."
+  },
+  "invalidRouteOrMissingArguments": "Bealach neamhbhailí nó argóintí ar iarraidh.",
+  "@invalidRouteOrMissingArguments": {
+    "description": "Text used in the app for invalid route or missing arguments."
+  },
+  "missingSchoolId": "Tá aitheantas na scoile ar iarraidh",
+  "@missingSchoolId": {
+    "description": "Text used in the app for missing school id."
+  },
+  "missingClassroomDetails": "Tá sonraí an tseomra ranga ar iarraidh",
+  "@missingClassroomDetails": {
+    "description": "Text used in the app for missing classroom details."
+  },
+  "staffProfileNotFound": "Níor aimsíodh an Phróifíl Foirne",
+  "@staffProfileNotFound": {
+    "description": "Text used in the app for staff profile not found."
+  },
+  "childProfileNotFound": "Níor aimsíodh Próifíl an Pháiste",
+  "@childProfileNotFound": {
+    "description": "Text used in the app for child profile not found."
+  },
+  "returnToProfiles": "Fill ar Phróifílí",
+  "@returnToProfiles": {
+    "description": "Text used in the app for return to profiles."
   },
   "iMightFeel": "B'fhéidir go mothóinn:",
   "@iMightFeel": {

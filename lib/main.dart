@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'l10n/app_localizations.dart';
+import 'l10n/l10n.dart';
 import 'auth_gate.dart';
 import 'firebase_options.dart';
 import 'locale_notifier.dart';
@@ -53,9 +54,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({
-    super.key,
-  });
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -71,21 +70,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   MaterialPageRoute<dynamic> _page(Widget page) {
-    return MaterialPageRoute<dynamic>(
-      builder: (_) => page,
-    );
+    return MaterialPageRoute<dynamic>(builder: (_) => page);
   }
 
-  MaterialPageRoute<dynamic> _errorPage(String message) {
+  MaterialPageRoute<dynamic> _errorPage(
+    String Function(AppLocalizations l10n) messageBuilder,
+  ) {
     return MaterialPageRoute<dynamic>(
-      builder: (_) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Error'),
-        ),
-        body: Center(
-          child: Text(message),
-        ),
-      ),
+      builder:
+          (context) => Scaffold(
+            appBar: AppBar(title: Text(context.l10n.error)),
+            body: Center(child: Text(messageBuilder(context.l10n))),
+          ),
     );
   }
 
@@ -135,10 +131,7 @@ class _MyAppState extends State<MyApp> {
       }
 
       return _page(
-        _StaffDashboardLoader(
-          staffId: staffId,
-          localeNotifier: localeNotifier,
-        ),
+        _StaffDashboardLoader(staffId: staffId, localeNotifier: localeNotifier),
       );
     }
 
@@ -157,10 +150,7 @@ class _MyAppState extends State<MyApp> {
       }
 
       return _page(
-        _ChildDashboardLoader(
-          childId: childId,
-          localeNotifier: localeNotifier,
-        ),
+        _ChildDashboardLoader(childId: childId, localeNotifier: localeNotifier),
       );
     }
 
@@ -176,14 +166,12 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }
-        return _errorPage('Missing admin dashboard details.');
+        return _errorPage((l10n) => l10n.missingAdminDashboardDetails);
 
       case '/zone-overview':
         if (args is Map<String, dynamic> && args['teacherUid'] is String) {
           return _page(
-            ZoneOverviewPage(
-              teacherUid: args['teacherUid'] as String,
-            ),
+            ZoneOverviewPage(teacherUid: args['teacherUid'] as String),
           );
         }
         return _page(const ZoneOverviewPage());
@@ -197,7 +185,7 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }
-        return _errorPage('Missing child profile.');
+        return _errorPage((l10n) => l10n.missingChildProfile);
 
       case '/staff-dashboard':
         final profile = _staffFromArgs(args);
@@ -209,7 +197,7 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }
-        return _errorPage('Missing staff profile.');
+        return _errorPage((l10n) => l10n.missingStaffProfile);
 
       case '/child-dashboard':
         final profile = _childFromArgs(args);
@@ -222,70 +210,49 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }
-        return _errorPage('Missing child profile.');
+        return _errorPage((l10n) => l10n.missingChildProfile);
 
       case '/points-overview':
         if (args is Map<String, dynamic> && args['teacherUid'] is String) {
           return _page(
-            PointsOverviewPage(
-              teacherUid: args['teacherUid'] as String,
-            ),
+            PointsOverviewPage(teacherUid: args['teacherUid'] as String),
           );
         }
         return _page(const PointsOverviewPage());
 
       case '/child-points':
         if (args is ChildProfile) {
-          return _page(
-            ChildPointsPage(
-              child: args,
-            ),
-          );
+          return _page(ChildPointsPage(child: args));
         }
-        return _errorPage('Missing child profile.');
+        return _errorPage((l10n) => l10n.missingChildProfile);
 
-        case '/quiz-create':
+      case '/quiz-create':
         if (args is Map<String, dynamic>) {
           final staffUid = args['staffUid'] as String?;
           final quiz = args['quiz'] as Quiz?;
 
           if (staffUid != null) {
             return _page(
-              QuizCreationPage(
-                staffUid: staffUid,
-                existingQuiz: quiz,
-              ),
+              QuizCreationPage(staffUid: staffUid, existingQuiz: quiz),
             );
           }
         }
 
         if (args is StaffProfile) {
-          return _page(
-            QuizCreationPage(
-              staffUid: args.teacherUid,
-            ),
-          );
+          return _page(QuizCreationPage(staffUid: args.teacherUid));
         }
 
         if (args is String) {
-          return _page(
-            QuizCreationPage(
-              staffUid: args,
-            ),
-          );
+          return _page(QuizCreationPage(staffUid: args));
         }
 
-        return _errorPage('Missing quiz creator.');
+        return _errorPage((l10n) => l10n.missingQuizCreator);
 
       case '/quiz-list':
         if (args is String) {
-          return _page(
-            QuizListPage(
-              teacherUid: args,
-            ),
-          );
+          return _page(QuizListPage(teacherUid: args));
         }
-        return _errorPage('Missing teacher ID.');
+        return _errorPage((l10n) => l10n.missingTeacherId);
 
       case '/quiz-play':
         if (args is Map<String, dynamic> && args['quiz'] is Quiz) {
@@ -296,7 +263,7 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }
-        return _errorPage('Missing quiz.');
+        return _errorPage((l10n) => l10n.missingQuiz);
 
       case '/student-quiz-list':
         if (args is Map<String, dynamic>) {
@@ -313,30 +280,22 @@ class _MyAppState extends State<MyApp> {
             );
           }
         }
-        return _errorPage('Missing student quiz details.');
+        return _errorPage((l10n) => l10n.missingStudentQuizDetails);
 
       case '/voice-lines':
-      return _page(const VoiceLinesPage());
+        return _page(const VoiceLinesPage());
 
       case '/icon-reset':
         if (args is String) {
-          return _page(
-            IconResetPage(
-              teacherUid: args,
-            ),
-          );
+          return _page(IconResetPage(teacherUid: args));
         }
-        return _errorPage('Missing teacher ID.');
+        return _errorPage((l10n) => l10n.missingTeacherId);
 
       case '/when-then-setup':
         if (args is String) {
-          return _page(
-            WhenThenSetupPage(
-              teacherUid: args,
-            ),
-          );
+          return _page(WhenThenSetupPage(teacherUid: args));
         }
-        return _errorPage('Missing teacher ID.');
+        return _errorPage((l10n) => l10n.missingTeacherId);
 
       case '/when-then-child':
         if (args is Map<String, dynamic>) {
@@ -353,7 +312,7 @@ class _MyAppState extends State<MyApp> {
             );
           }
         }
-        return _errorPage('Missing When–Then child details.');
+        return _errorPage((l10n) => l10n.missingWhenThenChildDetails);
 
       case '/circle-time':
         if (args is Map<String, dynamic>) {
@@ -362,24 +321,17 @@ class _MyAppState extends State<MyApp> {
 
           if (teacherUid != null) {
             return _page(
-              CircleTimePage(
-                teacherUid: teacherUid,
-                childProfile: child,
-              ),
+              CircleTimePage(teacherUid: teacherUid, childProfile: child),
             );
           }
         }
-        return _errorPage('Missing Circle Time details.');
+        return _errorPage((l10n) => l10n.missingCircleTimeDetails);
 
       case '/handover-hub':
         if (args is StaffProfile) {
-          return _page(
-            HandoverHubPage(
-              currentStaff: args,
-            ),
-          );
+          return _page(HandoverHubPage(currentStaff: args));
         }
-        return _errorPage('Missing staff profile.');
+        return _errorPage((l10n) => l10n.missingStaffProfile);
 
       case '/body-check':
         if (args is Map<String, dynamic>) {
@@ -389,14 +341,11 @@ class _MyAppState extends State<MyApp> {
 
           if (firestoreService != null && child != null) {
             return _page(
-              BodyCheckPage(
-                firestoreService: firestoreService,
-                child: child,
-              ),
+              BodyCheckPage(firestoreService: firestoreService, child: child),
             );
           }
         }
-        return _errorPage('Missing Body Check details.');
+        return _errorPage((l10n) => l10n.missingBodyCheckDetails);
 
       case '/body-check-overview':
         if (args is Map<String, dynamic>) {
@@ -413,20 +362,16 @@ class _MyAppState extends State<MyApp> {
             );
           }
         }
-        return _errorPage('Missing Body Check overview details.');
+        return _errorPage((l10n) => l10n.missingBodyCheckOverviewDetails);
 
       case '/today-overview':
         if (args is StaffProfile) {
-          return _page(
-            TodayOverviewPage(
-              staffProfile: args,
-            ),
-          );
+          return _page(TodayOverviewPage(staffProfile: args));
         }
-        return _errorPage('Missing staff profile.');
+        return _errorPage((l10n) => l10n.missingStaffProfile);
 
       default:
-        return _errorPage('Invalid route or missing arguments.');
+        return _errorPage((l10n) => l10n.invalidRouteOrMissingArguments);
     }
   }
 
@@ -446,7 +391,8 @@ class _MyAppState extends State<MyApp> {
           initialRoute: '/',
           routes: {
             '/': (context) => const AuthGate(),
-            '/account-settings': (context) => AccountSettingsPage(
+            '/account-settings':
+                (context) => AccountSettingsPage(
                   locale: locale,
                   onLocaleChange: localeNotifier.changeLocale,
                 ),
@@ -488,10 +434,8 @@ class _MyAppState extends State<MyApp> {
                 );
               }
 
-              return const Scaffold(
-                body: Center(
-                  child: Text('Missing school ID'),
-                ),
+              return Scaffold(
+                body: Center(child: Text(context.l10n.missingSchoolId)),
               );
             },
             '/classroom-details': (context) {
@@ -506,25 +450,19 @@ class _MyAppState extends State<MyApp> {
                 );
               }
 
-              return const Scaffold(
-                body: Center(
-                  child: Text('Missing classroom details'),
-                ),
+              return Scaffold(
+                body: Center(child: Text(context.l10n.missingClassroomDetails)),
               );
             },
             '/school-settings': (context) {
               final args = ModalRoute.of(context)!.settings.arguments;
 
               if (args is Map<String, dynamic> && args['schoolId'] is String) {
-                return SchoolSettingsPage(
-                  schoolId: args['schoolId'] as String,
-                );
+                return SchoolSettingsPage(schoolId: args['schoolId'] as String);
               }
 
-              return const Scaffold(
-                body: Center(
-                  child: Text('Missing school ID'),
-                ),
+              return Scaffold(
+                body: Center(child: Text(context.l10n.missingSchoolId)),
               );
             },
           },
@@ -549,7 +487,8 @@ class _StaffDashboardLoader extends StatelessWidget {
 
     await firestoreService.restoreClassroomSessionFromAuthIfNeeded();
 
-    final staffProfiles = await firestoreService.getCurrentStaffProfiles().first;
+    final staffProfiles =
+        await firestoreService.getCurrentStaffProfiles().first;
 
     for (final staff in staffProfiles) {
       if (staff.id == staffId) {
@@ -567,9 +506,7 @@ class _StaffDashboardLoader extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -577,9 +514,7 @@ class _StaffDashboardLoader extends StatelessWidget {
 
         if (profile == null) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Staff Profile Not Found'),
-            ),
+            appBar: AppBar(title: Text(context.l10n.staffProfileNotFound)),
             body: Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -589,7 +524,7 @@ class _StaffDashboardLoader extends StatelessWidget {
                     (route) => false,
                   );
                 },
-                child: const Text('Return to Profiles'),
+                child: Text(context.l10n.returnToProfiles),
               ),
             ),
           );
@@ -618,7 +553,8 @@ class _ChildDashboardLoader extends StatelessWidget {
 
     await firestoreService.restoreClassroomSessionFromAuthIfNeeded();
 
-    final childProfiles = await firestoreService.getCurrentChildProfiles().first;
+    final childProfiles =
+        await firestoreService.getCurrentChildProfiles().first;
 
     for (final child in childProfiles) {
       if (child.id == childId) {
@@ -636,9 +572,7 @@ class _ChildDashboardLoader extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -646,9 +580,7 @@ class _ChildDashboardLoader extends StatelessWidget {
 
         if (profile == null) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Child Profile Not Found'),
-            ),
+            appBar: AppBar(title: Text(context.l10n.childProfileNotFound)),
             body: Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -658,7 +590,7 @@ class _ChildDashboardLoader extends StatelessWidget {
                     (route) => false,
                   );
                 },
-                child: const Text('Return to Profiles'),
+                child: Text(context.l10n.returnToProfiles),
               ),
             ),
           );

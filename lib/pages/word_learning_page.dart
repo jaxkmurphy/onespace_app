@@ -24,8 +24,7 @@ class WordLearningPage extends StatefulWidget {
   });
 
   @override
-  State<WordLearningPage> createState() =>
-      _WordLearningPageState();
+  State<WordLearningPage> createState() => _WordLearningPageState();
 }
 
 class _WordLearningPageState extends State<WordLearningPage> {
@@ -33,10 +32,7 @@ class _WordLearningPageState extends State<WordLearningPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -60,13 +56,13 @@ class _WordLearningPageState extends State<WordLearningPage> {
   }
 
   Future<void> _createWordPack() async {
+    final l10n = context.l10n;
     List<ChildProfile> children;
 
     try {
-      children =
-          await widget.firestoreService.getCurrentChildProfilesOnce();
+      children = await widget.firestoreService.getCurrentChildProfilesOnce();
     } catch (_) {
-      _showMessage(context.l10n.noChildrenAvailable);
+      _showMessage(l10n.noChildrenAvailable);
       return;
     }
 
@@ -74,10 +70,8 @@ class _WordLearningPageState extends State<WordLearningPage> {
 
     final draft = await showDialog<_WordPackDraft>(
       context: context,
-      builder: (_) => _WordPackDialog(
-        children: children,
-        styleLabel: _styleLabel,
-      ),
+      builder:
+          (_) => _WordPackDialog(children: children, styleLabel: _styleLabel),
     );
 
     if (draft == null) return;
@@ -92,9 +86,8 @@ class _WordLearningPageState extends State<WordLearningPage> {
       createdByStaffId: widget.staffId,
       createdByStaffName: widget.staffName,
       availableToAll: draft.availableToAll,
-      assignedChildIds: draft.availableToAll
-          ? const []
-          : draft.selectedChildIds,
+      assignedChildIds:
+          draft.availableToAll ? const [] : draft.selectedChildIds,
       iconName: style.key,
       colorHex: style.colorHex,
       createdAt: now,
@@ -103,38 +96,31 @@ class _WordLearningPageState extends State<WordLearningPage> {
 
     try {
       await widget.firestoreService.addCurrentWordPack(pack);
-      _showMessage(context.l10n.wordPackCreated);
+      _showMessage(l10n.wordPackCreated);
     } catch (_) {
-      _showMessage(context.l10n.wordPackSaveFailed);
+      _showMessage(l10n.wordPackSaveFailed);
     }
   }
 
   Future<void> _deletePack(WordPack pack) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(context.l10n.deleteWordPack),
-          content: Text(
-            context.l10n.deleteWordPackMessage(pack.name),
-          ),
+          title: Text(l10n.deleteWordPack),
+          content: Text(l10n.deleteWordPackMessage(pack.name)),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                false,
-              ),
-              child: Text(context.l10n.cancel),
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red.shade700,
               ),
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                true,
-              ),
-              child: Text(context.l10n.delete),
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(l10n.delete),
             ),
           ],
         );
@@ -144,13 +130,11 @@ class _WordLearningPageState extends State<WordLearningPage> {
     if (confirmed != true) return;
 
     try {
-      await widget.firestoreService.deleteCurrentWordPack(
-        pack.id,
-      );
+      await widget.firestoreService.deleteCurrentWordPack(pack.id);
 
-      _showMessage(context.l10n.wordPackDeleted);
+      _showMessage(l10n.wordPackDeleted);
     } catch (_) {
-      _showMessage(context.l10n.wordPackDeleteFailed);
+      _showMessage(l10n.wordPackDeleteFailed);
     }
   }
 
@@ -158,11 +142,12 @@ class _WordLearningPageState extends State<WordLearningPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => WordPackEditorPage(
-          firestoreService: widget.firestoreService,
-          teacherUid: widget.teacherUid,
-          pack: pack,
-        ),
+        builder:
+            (_) => WordPackEditorPage(
+              firestoreService: widget.firestoreService,
+              teacherUid: widget.teacherUid,
+              pack: pack,
+            ),
       ),
     );
   }
@@ -171,10 +156,11 @@ class _WordLearningPageState extends State<WordLearningPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => WordProgressPage(
-          firestoreService: widget.firestoreService,
-          teacherUid: widget.teacherUid,
-        ),
+        builder:
+            (_) => WordProgressPage(
+              firestoreService: widget.firestoreService,
+              teacherUid: widget.teacherUid,
+            ),
       ),
     );
   }
@@ -195,16 +181,12 @@ class _WordLearningPageState extends State<WordLearningPage> {
             Text(
               context.l10n.noWordPacks,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
-            Text(
-              context.l10n.createFirstWordPack,
-              textAlign: TextAlign.center,
-            ),
+            Text(context.l10n.createFirstWordPack, textAlign: TextAlign.center),
             const SizedBox(height: 20),
             FilledButton.icon(
               onPressed: _createWordPack,
@@ -260,16 +242,12 @@ class _WordLearningPageState extends State<WordLearningPage> {
             width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFFF3FFF5),
-                  Color(0xFFF7F4FF),
-                ],
+                colors: [Color(0xFFF3FFF5), Color(0xFFF7F4FF)],
               ),
             ),
             child: GridView.builder(
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
-              gridDelegate:
-                  const SliverGridDelegateWithMaxCrossAxisExtent(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 430,
                 mainAxisExtent: 315,
                 crossAxisSpacing: 16,
@@ -322,10 +300,7 @@ class _WordPackCard extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(26),
-            side: BorderSide(
-              color: color.withValues(alpha: 0.28),
-              width: 2,
-            ),
+            side: BorderSide(color: color.withValues(alpha: 0.28), width: 2),
           ),
           child: Column(
             children: [
@@ -334,31 +309,18 @@ class _WordPackCard extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      color,
-                      color.withValues(alpha: 0.72),
-                    ],
+                    colors: [color, color.withValues(alpha: 0.72)],
                   ),
                 ),
                 child: Center(
-                  child: Icon(
-                    style.icon,
-                    color: Colors.white,
-                    size: 52,
-                  ),
+                  child: Icon(style.icon, color: Colors.white, size: 52),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    18,
-                    16,
-                    12,
-                    14,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(18, 16, 12, 14),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
@@ -367,12 +329,8 @@ class _WordPackCard extends StatelessWidget {
                               pack.name,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w900),
                             ),
                           ),
                           PopupMenuButton<String>(
@@ -381,21 +339,20 @@ class _WordPackCard extends StatelessWidget {
                                 onDelete();
                               }
                             },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: const Icon(
-                                    Icons.delete_outline_rounded,
-                                    color: Colors.red,
+                            itemBuilder:
+                                (context) => [
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      leading: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: Colors.red,
+                                      ),
+                                      title: Text(context.l10n.delete),
+                                    ),
                                   ),
-                                  title: Text(
-                                    context.l10n.delete,
-                                  ),
-                                ),
-                              ),
-                            ],
+                                ],
                           ),
                         ],
                       ),
@@ -406,9 +363,7 @@ class _WordPackCard extends StatelessWidget {
                             : pack.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                        ),
+                        style: TextStyle(color: Colors.grey.shade700),
                       ),
                       const Spacer(),
                       Wrap(
@@ -417,29 +372,27 @@ class _WordPackCard extends StatelessWidget {
                         children: [
                           _PackChip(
                             icon: Icons.abc_rounded,
-                            label:
-                                context.l10n.wordCount(wordCount),
+                            label: context.l10n.wordCount(wordCount),
                             color: color,
                           ),
                           _PackChip(
-                            icon: pack.availableToAll
-                                ? Icons.groups_rounded
-                                : Icons.people_alt_rounded,
-                            label: pack.availableToAll
-                                ? context
-                                    .l10n.availableToEveryone
-                                : context.l10n.assignedChildCount(
-                                    pack.assignedChildIds.length,
-                                  ),
+                            icon:
+                                pack.availableToAll
+                                    ? Icons.groups_rounded
+                                    : Icons.people_alt_rounded,
+                            label:
+                                pack.availableToAll
+                                    ? context.l10n.availableToEveryone
+                                    : context.l10n.assignedChildCount(
+                                      pack.assignedChildIds.length,
+                                    ),
                             color: color,
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        context.l10n.createdBy(
-                          pack.createdByStaffName,
-                        ),
+                        context.l10n.createdBy(pack.createdByStaffName),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall,
@@ -449,9 +402,7 @@ class _WordPackCard extends StatelessWidget {
                         width: double.infinity,
                         child: FilledButton.icon(
                           onPressed: onOpen,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: color,
-                          ),
+                          style: FilledButton.styleFrom(backgroundColor: color),
                           icon: const Icon(Icons.edit_rounded),
                           label: Text(context.l10n.edit),
                         ),
@@ -482,10 +433,7 @@ class _PackChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.11),
         borderRadius: BorderRadius.circular(20),
@@ -498,10 +446,7 @@ class _PackChip extends StatelessWidget {
           Flexible(
             child: Text(
               label,
-              style: TextStyle(
-                color: color,
-                fontWeight: FontWeight.w700,
-              ),
+              style: TextStyle(color: color, fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -514,21 +459,15 @@ class _WordPackDialog extends StatefulWidget {
   final List<ChildProfile> children;
   final String Function(String key) styleLabel;
 
-  const _WordPackDialog({
-    required this.children,
-    required this.styleLabel,
-  });
+  const _WordPackDialog({required this.children, required this.styleLabel});
 
   @override
-  State<_WordPackDialog> createState() =>
-      _WordPackDialogState();
+  State<_WordPackDialog> createState() => _WordPackDialogState();
 }
 
 class _WordPackDialogState extends State<_WordPackDialog> {
-  final TextEditingController _nameController =
-      TextEditingController();
-  final TextEditingController _descriptionController =
-      TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   final Set<String> _selectedChildIds = {};
 
@@ -555,8 +494,7 @@ class _WordPackDialogState extends State<_WordPackDialog> {
               TextField(
                 controller: _nameController,
                 autofocus: true,
-                textCapitalization:
-                    TextCapitalization.sentences,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   labelText: context.l10n.packName,
                   border: const OutlineInputBorder(),
@@ -565,8 +503,7 @@ class _WordPackDialogState extends State<_WordPackDialog> {
               const SizedBox(height: 14),
               TextField(
                 controller: _descriptionController,
-                textCapitalization:
-                    TextCapitalization.sentences,
+                textCapitalization: TextCapitalization.sentences,
                 minLines: 2,
                 maxLines: 4,
                 decoration: InputDecoration(
@@ -578,34 +515,29 @@ class _WordPackDialogState extends State<_WordPackDialog> {
               const SizedBox(height: 20),
               Text(
                 context.l10n.packStyle,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w900),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
-                children: wordPackVisualStyles.map((style) {
-                  final selected = style.key == _styleKey;
+                children:
+                    wordPackVisualStyles.map((style) {
+                      final selected = style.key == _styleKey;
 
-                  return ChoiceChip(
-                    selected: selected,
-                    avatar: Icon(
-                      style.icon,
-                      color: style.color,
-                    ),
-                    label: Text(
-                      widget.styleLabel(style.key),
-                    ),
-                    onSelected: (_) {
-                      setState(() {
-                        _styleKey = style.key;
-                      });
-                    },
-                  );
-                }).toList(),
+                      return ChoiceChip(
+                        selected: selected,
+                        avatar: Icon(style.icon, color: style.color),
+                        label: Text(widget.styleLabel(style.key)),
+                        onSelected: (_) {
+                          setState(() {
+                            _styleKey = style.key;
+                          });
+                        },
+                      );
+                    }).toList(),
               ),
               const SizedBox(height: 20),
               Wrap(
@@ -615,9 +547,7 @@ class _WordPackDialogState extends State<_WordPackDialog> {
                   ChoiceChip(
                     selected: _availableToAll,
                     avatar: const Icon(Icons.groups_rounded),
-                    label: Text(
-                      context.l10n.availableToEveryone,
-                    ),
+                    label: Text(context.l10n.availableToEveryone),
                     onSelected: (_) {
                       setState(() {
                         _availableToAll = true;
@@ -627,11 +557,8 @@ class _WordPackDialogState extends State<_WordPackDialog> {
                   ),
                   ChoiceChip(
                     selected: !_availableToAll,
-                    avatar:
-                        const Icon(Icons.people_alt_rounded),
-                    label: Text(
-                      context.l10n.selectedChildren,
-                    ),
+                    avatar: const Icon(Icons.people_alt_rounded),
+                    label: Text(context.l10n.selectedChildren),
                     onSelected: (_) {
                       setState(() {
                         _availableToAll = false;
@@ -648,29 +575,29 @@ class _WordPackDialogState extends State<_WordPackDialog> {
                   Wrap(
                     spacing: 9,
                     runSpacing: 9,
-                    children: widget.children.map((child) {
-                      final selected =
-                          _selectedChildIds.contains(child.id);
+                    children:
+                        widget.children.map((child) {
+                          final selected = _selectedChildIds.contains(child.id);
 
-                      return FilterChip(
-                        selected: selected,
-                        avatar: Icon(
-                          selected
-                              ? Icons.check_circle_rounded
-                              : Icons.face_rounded,
-                        ),
-                        label: Text(child.name),
-                        onSelected: (value) {
-                          setState(() {
-                            if (value) {
-                              _selectedChildIds.add(child.id);
-                            } else {
-                              _selectedChildIds.remove(child.id);
-                            }
-                          });
-                        },
-                      );
-                    }).toList(),
+                          return FilterChip(
+                            selected: selected,
+                            avatar: Icon(
+                              selected
+                                  ? Icons.check_circle_rounded
+                                  : Icons.face_rounded,
+                            ),
+                            label: Text(child.name),
+                            onSelected: (value) {
+                              setState(() {
+                                if (value) {
+                                  _selectedChildIds.add(child.id);
+                                } else {
+                                  _selectedChildIds.remove(child.id);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
                   ),
               ],
             ],
@@ -692,12 +619,10 @@ class _WordPackDialogState extends State<_WordPackDialog> {
               context,
               _WordPackDraft(
                 name: name,
-                description:
-                    _descriptionController.text.trim(),
+                description: _descriptionController.text.trim(),
                 styleKey: _styleKey,
                 availableToAll: _availableToAll,
-                selectedChildIds:
-                    _selectedChildIds.toList(),
+                selectedChildIds: _selectedChildIds.toList(),
               ),
             );
           },
@@ -729,10 +654,7 @@ class _WordMessageState extends StatelessWidget {
   final IconData icon;
   final String message;
 
-  const _WordMessageState({
-    required this.icon,
-    required this.message,
-  });
+  const _WordMessageState({required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -742,19 +664,14 @@ class _WordMessageState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 72,
-              color: const Color(0xFF66BB6A),
-            ),
+            Icon(icon, size: 72, color: const Color(0xFF66BB6A)),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
           ],
         ),

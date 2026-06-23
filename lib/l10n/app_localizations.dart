@@ -1434,7 +1434,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Welcome, {childName}!'**
-  String welcomeChild(String childName);
+  String welcomeChild(Object childName);
 
   /// Text used in the app for what would you like to do.
   ///
@@ -3289,6 +3289,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage PIN and account options'**
   String get managePinAccountOptions;
+
+  /// Text used in the app for manage app settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage app settings'**
+  String get manageAppSettings;
+
+  /// Text used in the app for manage your account.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your account'**
+  String get manageYourAccount;
+
+  /// Text used in the app for app settings description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the app language and general app options.'**
+  String get appSettingsDescription;
+
+  /// Text used in the app for account settings description.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your PIN and choose the app language.'**
+  String get accountSettingsDescription;
+
+  /// Text used in the app for overwrite existing pin question.
+  ///
+  /// In en, this message translates to:
+  /// **'Overwrite existing PIN?'**
+  String get overwriteExistingPinQuestion;
+
+  /// Text used in the app for overwrite existing pin message.
+  ///
+  /// In en, this message translates to:
+  /// **'This will replace your current PIN. Continue?'**
+  String get overwriteExistingPinMessage;
+
+  /// Text used in the app for pin is set.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN is set'**
+  String get pinIsSet;
+
+  /// Text used in the app for no pin set.
+  ///
+  /// In en, this message translates to:
+  /// **'No PIN set'**
+  String get noPinSet;
+
+  /// Text used in the app for account pin protects staff areas.
+  ///
+  /// In en, this message translates to:
+  /// **'The account PIN protects staff-only areas.'**
+  String get accountPinProtectsStaffAreas;
+
+  /// Text used in the app for change pin.
+  ///
+  /// In en, this message translates to:
+  /// **'Change PIN'**
+  String get changePin;
+
+  /// Text used in the app for new pin instructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a new 4-digit PIN.'**
+  String get newPinInstructions;
+
+  /// Text used in the app for choose app language.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the app language.'**
+  String get chooseAppLanguage;
 
   /// Text used in the app for staff load error.
   ///
@@ -5857,6 +5929,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recent / Important Incidents'**
   String get recentImportantIncidents;
+
+  /// Text used in the app for choose my background.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose My Background'**
+  String get chooseMyBackground;
+
+  /// Text used in the app for make it yours.
+  ///
+  /// In en, this message translates to:
+  /// **'Make It Yours'**
+  String get makeItYours;
+
+  /// Text used in the app for choose comfortable dashboard colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a comfortable colour for your dashboard.'**
+  String get chooseComfortableDashboardColour;
+
+  /// Text used in the app for my zones.
+  ///
+  /// In en, this message translates to:
+  /// **'My Zones'**
+  String get myZones;
+
+  /// Text used in the app for colour choices.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour Choices'**
+  String get colourChoices;
+
+  /// Text used in the app for use this background.
+  ///
+  /// In en, this message translates to:
+  /// **'Use This Background'**
+  String get useThisBackground;
+
+  /// Text used in the app for background colour updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Background colour updated.'**
+  String get backgroundColourUpdated;
+
+  /// Text used in the app for background colour update failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The background colour could not be updated.'**
+  String get backgroundColourUpdateFailed;
+
+  /// Text used in the app for background classic white.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic White'**
+  String get backgroundClassicWhite;
+
+  /// Text used in the app for background classic white description.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean and simple'**
+  String get backgroundClassicWhiteDescription;
+
+  /// Text used in the app for background soft rose.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft Rose'**
+  String get backgroundSoftRose;
+
+  /// Text used in the app for background soft rose description.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm and gentle'**
+  String get backgroundSoftRoseDescription;
+
+  /// Text used in the app for background clear sky.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Sky'**
+  String get backgroundClearSky;
+
+  /// Text used in the app for background clear sky description.
+  ///
+  /// In en, this message translates to:
+  /// **'Cool and peaceful'**
+  String get backgroundClearSkyDescription;
+
+  /// Text used in the app for background fresh mint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh Mint'**
+  String get backgroundFreshMint;
+
+  /// Text used in the app for background fresh mint description.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm and natural'**
+  String get backgroundFreshMintDescription;
+
+  /// Text used in the app for background warm sunshine.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm Sunshine'**
+  String get backgroundWarmSunshine;
+
+  /// Text used in the app for background warm sunshine description.
+  ///
+  /// In en, this message translates to:
+  /// **'Bright and cheerful'**
+  String get backgroundWarmSunshineDescription;
+
+  /// Text used in the app for background soft lavender.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft Lavender'**
+  String get backgroundSoftLavender;
+
+  /// Text used in the app for background soft lavender description.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet and relaxing'**
+  String get backgroundSoftLavenderDescription;
+
+  /// Text used in the app for background gentle grey.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle Grey'**
+  String get backgroundGentleGrey;
+
+  /// Text used in the app for background gentle grey description.
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral and focused'**
+  String get backgroundGentleGreyDescription;
+
+  /// Text used in the app for background warm peach.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm Peach'**
+  String get backgroundWarmPeach;
+
+  /// Text used in the app for background warm peach description.
+  ///
+  /// In en, this message translates to:
+  /// **'Cosy and welcoming'**
+  String get backgroundWarmPeachDescription;
+
+  /// Text used in the app for unlock sequence reset for.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock sequence reset for {childName}'**
+  String unlockSequenceResetFor(Object childName);
+
+  /// Text used in the app for unlock sequence reset failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to reset sequence: {error}'**
+  String unlockSequenceResetFailed(Object error);
+
+  /// Text used in the app for schedule time range.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} - {end}'**
+  String scheduleTimeRange(Object start, Object end);
+
+  /// Text used in the app for missing admin dashboard details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing admin dashboard details.'**
+  String get missingAdminDashboardDetails;
+
+  /// Text used in the app for missing child profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing child profile.'**
+  String get missingChildProfile;
+
+  /// Text used in the app for missing staff profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing staff profile.'**
+  String get missingStaffProfile;
+
+  /// Text used in the app for missing quiz creator.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing quiz creator.'**
+  String get missingQuizCreator;
+
+  /// Text used in the app for missing teacher id.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing teacher ID.'**
+  String get missingTeacherId;
+
+  /// Text used in the app for missing quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing quiz.'**
+  String get missingQuiz;
+
+  /// Text used in the app for missing student quiz details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing student quiz details.'**
+  String get missingStudentQuizDetails;
+
+  /// Text used in the app for missing when then child details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing When–Then child details.'**
+  String get missingWhenThenChildDetails;
+
+  /// Text used in the app for missing circle time details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Circle Time details.'**
+  String get missingCircleTimeDetails;
+
+  /// Text used in the app for missing body check details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Body Check details.'**
+  String get missingBodyCheckDetails;
+
+  /// Text used in the app for missing body check overview details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Body Check overview details.'**
+  String get missingBodyCheckOverviewDetails;
+
+  /// Text used in the app for invalid route or missing arguments.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid route or missing arguments.'**
+  String get invalidRouteOrMissingArguments;
+
+  /// Text used in the app for missing school id.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing school ID'**
+  String get missingSchoolId;
+
+  /// Text used in the app for missing classroom details.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing classroom details'**
+  String get missingClassroomDetails;
+
+  /// Text used in the app for staff profile not found.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff Profile Not Found'**
+  String get staffProfileNotFound;
+
+  /// Text used in the app for child profile not found.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Profile Not Found'**
+  String get childProfileNotFound;
+
+  /// Text used in the app for return to profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to Profiles'**
+  String get returnToProfiles;
 
   /// Text used in the app for i might feel.
   ///

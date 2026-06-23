@@ -783,7 +783,7 @@ class AppLocalizationsGa extends AppLocalizations {
   }
 
   @override
-  String welcomeChild(String childName) {
+  String welcomeChild(Object childName) {
     return 'Fáilte, $childName!';
   }
 
@@ -1902,6 +1902,46 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get managePinAccountOptions => 'Bainistigh PIN agus roghanna cuntais';
+
+  @override
+  String get manageAppSettings => 'Bainistigh socruithe na haipe';
+
+  @override
+  String get manageYourAccount => 'Bainistigh do chuntas';
+
+  @override
+  String get appSettingsDescription =>
+      'Roghnaigh teanga na haipe agus roghanna ginearálta.';
+
+  @override
+  String get accountSettingsDescription =>
+      'Socraigh do PIN agus roghnaigh teanga na haipe.';
+
+  @override
+  String get overwriteExistingPinQuestion => 'Forscríobh an PIN reatha?';
+
+  @override
+  String get overwriteExistingPinMessage =>
+      'Cuirfidh sé seo PIN nua in áit do PIN reatha. Lean ar aghaidh?';
+
+  @override
+  String get pinIsSet => 'Tá PIN socraithe';
+
+  @override
+  String get noPinSet => 'Níl PIN socraithe';
+
+  @override
+  String get accountPinProtectsStaffAreas =>
+      'Cosnaíonn PIN an chuntais limistéir don fhoireann amháin.';
+
+  @override
+  String get changePin => 'Athraigh PIN';
+
+  @override
+  String get newPinInstructions => 'Cuir PIN nua 4 dhigit isteach.';
+
+  @override
+  String get chooseAppLanguage => 'Roghnaigh teanga na haipe.';
 
   @override
   String staffLoadError(Object error) {
@@ -3416,6 +3456,153 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get recentImportantIncidents => 'Teagmhais Tábhachtacha / le Déanaí';
+
+  @override
+  String get chooseMyBackground => 'Roghnaigh Mo Chúlra';
+
+  @override
+  String get makeItYours => 'Déan Duit Féin É';
+
+  @override
+  String get chooseComfortableDashboardColour =>
+      'Roghnaigh dath compordach do do dheais.';
+
+  @override
+  String get myZones => 'Mo Chriosanna';
+
+  @override
+  String get colourChoices => 'Roghanna Datha';
+
+  @override
+  String get useThisBackground => 'Úsáid an Cúlra Seo';
+
+  @override
+  String get backgroundColourUpdated => 'Nuashonraíodh dath an chúlra.';
+
+  @override
+  String get backgroundColourUpdateFailed =>
+      'Níorbh fhéidir dath an chúlra a nuashonrú.';
+
+  @override
+  String get backgroundClassicWhite => 'Bán Clasaiceach';
+
+  @override
+  String get backgroundClassicWhiteDescription => 'Glan agus simplí';
+
+  @override
+  String get backgroundSoftRose => 'Rós Bog';
+
+  @override
+  String get backgroundSoftRoseDescription => 'Te agus séimh';
+
+  @override
+  String get backgroundClearSky => 'Spéir Ghlan';
+
+  @override
+  String get backgroundClearSkyDescription => 'Fionnuar agus síochánta';
+
+  @override
+  String get backgroundFreshMint => 'Miontas Úr';
+
+  @override
+  String get backgroundFreshMintDescription => 'Socair agus nádúrtha';
+
+  @override
+  String get backgroundWarmSunshine => 'Solas Gréine Te';
+
+  @override
+  String get backgroundWarmSunshineDescription => 'Geal agus sona';
+
+  @override
+  String get backgroundSoftLavender => 'Labhandar Bog';
+
+  @override
+  String get backgroundSoftLavenderDescription => 'Ciúin agus suaimhneach';
+
+  @override
+  String get backgroundGentleGrey => 'Liath Séimh';
+
+  @override
+  String get backgroundGentleGreyDescription => 'Neodrach agus dírithe';
+
+  @override
+  String get backgroundWarmPeach => 'Péitseog The';
+
+  @override
+  String get backgroundWarmPeachDescription => 'Cluthar agus fáiltiúil';
+
+  @override
+  String unlockSequenceResetFor(Object childName) {
+    return 'Athshocraíodh seicheamh díghlasála do $childName';
+  }
+
+  @override
+  String unlockSequenceResetFailed(Object error) {
+    return 'Níorbh fhéidir an seicheamh a athshocrú: $error';
+  }
+
+  @override
+  String scheduleTimeRange(Object start, Object end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get missingAdminDashboardDetails =>
+      'Tá sonraí an deais riaracháin ar iarraidh.';
+
+  @override
+  String get missingChildProfile => 'Tá próifíl an pháiste ar iarraidh.';
+
+  @override
+  String get missingStaffProfile => 'Tá próifíl foirne ar iarraidh.';
+
+  @override
+  String get missingQuizCreator =>
+      'Tá cruthaitheoir an tráth na gceist ar iarraidh.';
+
+  @override
+  String get missingTeacherId => 'Tá aitheantas an mhúinteora ar iarraidh.';
+
+  @override
+  String get missingQuiz => 'Tá an tráth na gceist ar iarraidh.';
+
+  @override
+  String get missingStudentQuizDetails =>
+      'Tá sonraí thráth na gceist an dalta ar iarraidh.';
+
+  @override
+  String get missingWhenThenChildDetails =>
+      'Tá sonraí páiste When–Then ar iarraidh.';
+
+  @override
+  String get missingCircleTimeDetails => 'Tá sonraí Circle Time ar iarraidh.';
+
+  @override
+  String get missingBodyCheckDetails => 'Tá sonraí Seiceáil Coirp ar iarraidh.';
+
+  @override
+  String get missingBodyCheckOverviewDetails =>
+      'Tá sonraí fhorbhreathnú Seiceáil Coirp ar iarraidh.';
+
+  @override
+  String get invalidRouteOrMissingArguments =>
+      'Bealach neamhbhailí nó argóintí ar iarraidh.';
+
+  @override
+  String get missingSchoolId => 'Tá aitheantas na scoile ar iarraidh';
+
+  @override
+  String get missingClassroomDetails =>
+      'Tá sonraí an tseomra ranga ar iarraidh';
+
+  @override
+  String get staffProfileNotFound => 'Níor aimsíodh an Phróifíl Foirne';
+
+  @override
+  String get childProfileNotFound => 'Níor aimsíodh Próifíl an Pháiste';
+
+  @override
+  String get returnToProfiles => 'Fill ar Phróifílí';
 
   @override
   String get iMightFeel => 'B\'fhéidir go mothóinn:';

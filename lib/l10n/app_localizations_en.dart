@@ -767,7 +767,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String welcomeChild(String childName) {
+  String welcomeChild(Object childName) {
     return 'Welcome, $childName!';
   }
 
@@ -1860,6 +1860,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get managePinAccountOptions => 'Manage PIN and account options';
+
+  @override
+  String get manageAppSettings => 'Manage app settings';
+
+  @override
+  String get manageYourAccount => 'Manage your account';
+
+  @override
+  String get appSettingsDescription =>
+      'Choose the app language and general app options.';
+
+  @override
+  String get accountSettingsDescription =>
+      'Set your PIN and choose the app language.';
+
+  @override
+  String get overwriteExistingPinQuestion => 'Overwrite existing PIN?';
+
+  @override
+  String get overwriteExistingPinMessage =>
+      'This will replace your current PIN. Continue?';
+
+  @override
+  String get pinIsSet => 'PIN is set';
+
+  @override
+  String get noPinSet => 'No PIN set';
+
+  @override
+  String get accountPinProtectsStaffAreas =>
+      'The account PIN protects staff-only areas.';
+
+  @override
+  String get changePin => 'Change PIN';
+
+  @override
+  String get newPinInstructions => 'Enter a new 4-digit PIN.';
+
+  @override
+  String get chooseAppLanguage => 'Choose the app language.';
 
   @override
   String staffLoadError(Object error) {
@@ -3352,6 +3392,148 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recentImportantIncidents => 'Recent / Important Incidents';
+
+  @override
+  String get chooseMyBackground => 'Choose My Background';
+
+  @override
+  String get makeItYours => 'Make It Yours';
+
+  @override
+  String get chooseComfortableDashboardColour =>
+      'Choose a comfortable colour for your dashboard.';
+
+  @override
+  String get myZones => 'My Zones';
+
+  @override
+  String get colourChoices => 'Colour Choices';
+
+  @override
+  String get useThisBackground => 'Use This Background';
+
+  @override
+  String get backgroundColourUpdated => 'Background colour updated.';
+
+  @override
+  String get backgroundColourUpdateFailed =>
+      'The background colour could not be updated.';
+
+  @override
+  String get backgroundClassicWhite => 'Classic White';
+
+  @override
+  String get backgroundClassicWhiteDescription => 'Clean and simple';
+
+  @override
+  String get backgroundSoftRose => 'Soft Rose';
+
+  @override
+  String get backgroundSoftRoseDescription => 'Warm and gentle';
+
+  @override
+  String get backgroundClearSky => 'Clear Sky';
+
+  @override
+  String get backgroundClearSkyDescription => 'Cool and peaceful';
+
+  @override
+  String get backgroundFreshMint => 'Fresh Mint';
+
+  @override
+  String get backgroundFreshMintDescription => 'Calm and natural';
+
+  @override
+  String get backgroundWarmSunshine => 'Warm Sunshine';
+
+  @override
+  String get backgroundWarmSunshineDescription => 'Bright and cheerful';
+
+  @override
+  String get backgroundSoftLavender => 'Soft Lavender';
+
+  @override
+  String get backgroundSoftLavenderDescription => 'Quiet and relaxing';
+
+  @override
+  String get backgroundGentleGrey => 'Gentle Grey';
+
+  @override
+  String get backgroundGentleGreyDescription => 'Neutral and focused';
+
+  @override
+  String get backgroundWarmPeach => 'Warm Peach';
+
+  @override
+  String get backgroundWarmPeachDescription => 'Cosy and welcoming';
+
+  @override
+  String unlockSequenceResetFor(Object childName) {
+    return 'Unlock sequence reset for $childName';
+  }
+
+  @override
+  String unlockSequenceResetFailed(Object error) {
+    return 'Failed to reset sequence: $error';
+  }
+
+  @override
+  String scheduleTimeRange(Object start, Object end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get missingAdminDashboardDetails => 'Missing admin dashboard details.';
+
+  @override
+  String get missingChildProfile => 'Missing child profile.';
+
+  @override
+  String get missingStaffProfile => 'Missing staff profile.';
+
+  @override
+  String get missingQuizCreator => 'Missing quiz creator.';
+
+  @override
+  String get missingTeacherId => 'Missing teacher ID.';
+
+  @override
+  String get missingQuiz => 'Missing quiz.';
+
+  @override
+  String get missingStudentQuizDetails => 'Missing student quiz details.';
+
+  @override
+  String get missingWhenThenChildDetails => 'Missing When–Then child details.';
+
+  @override
+  String get missingCircleTimeDetails => 'Missing Circle Time details.';
+
+  @override
+  String get missingBodyCheckDetails => 'Missing Body Check details.';
+
+  @override
+  String get missingBodyCheckOverviewDetails =>
+      'Missing Body Check overview details.';
+
+  @override
+  String get invalidRouteOrMissingArguments =>
+      'Invalid route or missing arguments.';
+
+  @override
+  String get missingSchoolId => 'Missing school ID';
+
+  @override
+  String get missingClassroomDetails => 'Missing classroom details';
+
+  @override
+  String get staffProfileNotFound => 'Staff Profile Not Found';
+
+  @override
+  String get childProfileNotFound => 'Child Profile Not Found';
+
+  @override
+  String get returnToProfiles => 'Return to Profiles';
 
   @override
   String get iMightFeel => 'I might feel:';

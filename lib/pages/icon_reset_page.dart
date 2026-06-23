@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
+import '../l10n/profile_unlock_localizations.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
 import '../data/profile_unlock_icons.dart';
@@ -7,10 +9,7 @@ import '../widgets/child_icon_sequence_setup_dialog.dart';
 class IconResetPage extends StatefulWidget {
   final String teacherUid;
 
-  const IconResetPage({
-    super.key,
-    required this.teacherUid,
-  });
+  const IconResetPage({super.key, required this.teacherUid});
 
   @override
   State<IconResetPage> createState() => _IconResetPageState();
@@ -22,9 +21,7 @@ class _IconResetPageState extends State<IconResetPage> {
   Future<void> _resetSequence(ChildProfile child) async {
     final newSequence = await showDialog<List<String>>(
       context: context,
-      builder: (_) => ChildIconSequenceSetupDialog(
-        childName: child.name,
-      ),
+      builder: (_) => ChildIconSequenceSetupDialog(childName: child.name),
     );
 
     if (newSequence == null || newSequence.length != 3) return;
@@ -39,7 +36,7 @@ class _IconResetPageState extends State<IconResetPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Unlock sequence reset for ${child.name}'),
+          content: Text(context.l10n.unlockSequenceResetFor(child.name)),
         ),
       );
     } catch (e) {
@@ -47,7 +44,7 @@ class _IconResetPageState extends State<IconResetPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to reset sequence: $e'),
+          content: Text(context.l10n.unlockSequenceResetFailed(e.toString())),
         ),
       );
     }
@@ -56,53 +53,54 @@ class _IconResetPageState extends State<IconResetPage> {
   Widget _buildSequenceIcons(List<String> sequence) {
     return Wrap(
       spacing: 8,
-      children: sequence.map((keyName) {
-        final match =
-            profileUnlockIcons.where((icon) => icon.keyName == keyName);
-        final option = match.isNotEmpty ? match.first : null;
+      children:
+          sequence.map((keyName) {
+            final match = profileUnlockIcons.where(
+              (icon) => icon.keyName == keyName,
+            );
+            final option = match.isNotEmpty ? match.first : null;
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(option?.icon ?? Icons.help_outline, size: 28),
-            const SizedBox(height: 4),
-            Text(
-              option?.label ?? keyName,
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
-        );
-      }).toList(),
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(option?.icon ?? Icons.help_outline, size: 28),
+                const SizedBox(height: 4),
+                Text(
+                  localizedProfileUnlockIcon(
+                    context.l10n,
+                    option?.keyName ?? keyName,
+                  ),
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Icon Reset'),
-      ),
+      appBar: AppBar(title: Text(context.l10n.iconReset)),
       body: StreamBuilder<List<ChildProfile>>(
         stream: firestoreService.getCurrentChildProfiles(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error loading child profiles: ${snapshot.error}'),
+              child: Text(
+                context.l10n.childrenLoadError(snapshot.error.toString()),
+              ),
             );
           }
 
           final children = snapshot.data ?? [];
 
           if (children.isEmpty) {
-            return const Center(
-              child: Text('No child profiles found'),
-            );
+            return Center(child: Text(context.l10n.noChildProfilesFoundShort));
           }
 
           return ListView.separated(
@@ -139,7 +137,7 @@ class _IconResetPageState extends State<IconResetPage> {
                       ElevatedButton.icon(
                         onPressed: () => _resetSequence(child),
                         icon: const Icon(Icons.lock_reset),
-                        label: const Text('Reset'),
+                        label: Text(context.l10n.reset),
                       ),
                     ],
                   ),

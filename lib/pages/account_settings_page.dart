@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../l10n/l10n.dart';
 import '../models/teacher.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
@@ -67,46 +68,35 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     final pin = _pinCtrl.text.trim();
     final pin2 = _confirmCtrl.text.trim();
-    final isGa = _selectedLocale.languageCode == 'ga';
+    final l10n = context.l10n;
 
     if (pin.length != 4 || !RegExp(r'^\d{4}$').hasMatch(pin) || pin != pin2) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isGa
-                ? 'Ní mór do na PIN a bheith ina 4 dhigit agus comhoiriúnach.'
-                : 'PINs must be 4 digits and match.',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pinHint)));
       return;
     }
 
     if ((teacher.pin ?? '').isNotEmpty) {
       final confirm = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(
-            isGa ? 'An PIN atá ann a athscríobh?' : 'Overwrite existing PIN?',
-          ),
-          content: Text(
-            isGa
-                ? 'Athróidh sé seo do PIN reatha. Lean ort?'
-                : 'This will replace your current PIN. Continue?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(isGa ? 'Cealaigh' : 'Cancel'),
+        builder:
+            (ctx) => AlertDialog(
+              title: Text(l10n.overwriteExistingPinQuestion),
+              content: Text(l10n.overwriteExistingPinMessage),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: Text(l10n.cancel),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: Text(l10n.ok),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
       );
 
       if (confirm != true) return;
@@ -117,21 +107,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(isGa ? 'PIN nuashonraithe' : 'PIN updated'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.pinUpdated)));
 
     setState(() {
       _teacher = updated;
       _pinCtrl.clear();
       _confirmCtrl.clear();
     });
-  }
-
-  String _text(String en, String ga) {
-    return _selectedLocale.languageCode == 'ga' ? ga : en;
   }
 
   @override
@@ -144,22 +128,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final colourScheme = Theme.of(context).colorScheme;
     final teacher = _teacher;
     final pinIsSet = (teacher?.pin ?? '').isNotEmpty;
+    final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _isClassroomMode
-              ? _text('App Settings', 'Socruithe Aipe')
-              : _text('Account Settings', 'Socruithe Cuntais'),
-        ),
+        title: Text(_isClassroomMode ? l10n.appSettings : l10n.accountSettings),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -197,31 +176,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                           const SizedBox(height: 14),
                           Text(
                             _isClassroomMode
-                                ? _text(
-                                    'Manage app settings',
-                                    'Bainistigh socruithe na haipe',
-                                  )
-                                : _text(
-                                    'Manage your account',
-                                    'Bainistigh do chuntas',
-                                  ),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
+                                ? l10n.manageAppSettings
+                                : l10n.manageYourAccount,
+                            style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 6),
                           Text(
                             _isClassroomMode
-                                ? _text(
-                                    'Choose the app language and general app options.',
-                                    'Roghnaigh teanga na haipe agus roghanna ginearálta.',
-                                  )
-                                : _text(
-                                    'Set your PIN and choose the app language.',
-                                    'Socraigh do PIN agus roghnaigh teanga an aip.',
-                                  ),
+                                ? l10n.appSettingsDescription
+                                : l10n.accountSettingsDescription,
                             style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.center,
                           ),
@@ -247,9 +212,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                               width: 58,
                               height: 58,
                               decoration: BoxDecoration(
-                                color: pinIsSet
-                                    ? Colors.green.withOpacity(0.14)
-                                    : Colors.orange.withOpacity(0.14),
+                                color:
+                                    pinIsSet
+                                        ? Colors.green.withValues(alpha: 0.14)
+                                        : Colors.orange.withValues(alpha: 0.14),
                                 borderRadius: BorderRadius.circular(18),
                               ),
                               child: Icon(
@@ -266,28 +232,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    pinIsSet
-                                        ? _text(
-                                            'PIN is set',
-                                            'Tá PIN socraithe',
-                                          )
-                                        : _text(
-                                            'No PIN set',
-                                            'Níl PIN socraithe',
-                                          ),
+                                    pinIsSet ? l10n.pinIsSet : l10n.noPinSet,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    _text(
-                                      'The account PIN protects staff-only areas.',
-                                      'Cosnaíonn PIN an chuntais limistéir don fhoireann amháin.',
-                                    ),
+                                    l10n.accountPinProtectsStaffAreas,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -313,24 +266,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              _text('Change PIN', 'Athraigh PIN'),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
+                              l10n.changePin,
+                              style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 6),
-                            Text(
-                              _text(
-                                'Enter a new 4-digit PIN.',
-                                'Cuir PIN nua 4 dhigit isteach.',
-                              ),
-                            ),
+                            Text(l10n.newPinInstructions),
                             const SizedBox(height: 16),
                             TextField(
                               controller: _pinCtrl,
                               decoration: InputDecoration(
-                                labelText: _text('New PIN', 'PIN Nua'),
+                                labelText: l10n.newPin,
                                 prefixIcon: const Icon(Icons.pin_outlined),
                                 border: const OutlineInputBorder(),
                               ),
@@ -342,10 +288,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             TextField(
                               controller: _confirmCtrl,
                               decoration: InputDecoration(
-                                labelText:
-                                    _text('Confirm PIN', 'Deimhnigh PIN'),
-                                prefixIcon:
-                                    const Icon(Icons.verified_user_outlined),
+                                labelText: l10n.confirmPin,
+                                prefixIcon: const Icon(
+                                  Icons.verified_user_outlined,
+                                ),
                                 border: const OutlineInputBorder(),
                               ),
                               obscureText: true,
@@ -356,7 +302,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             ElevatedButton.icon(
                               onPressed: _savePin,
                               icon: const Icon(Icons.save_rounded),
-                              label: Text(_text('Save PIN', 'Sábháil PIN')),
+                              label: Text(l10n.savePin),
                             ),
                           ],
                         ),
@@ -378,19 +324,12 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            _text('Language', 'Teanga'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            l10n.language,
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            _text(
-                              'Choose the app language.',
-                              'Roghnaigh teanga an aip.',
-                            ),
-                          ),
+                          Text(l10n.chooseAppLanguage),
                           const SizedBox(height: 16),
                           _LanguageOption(
                             label: 'English',
@@ -447,9 +386,10 @@ class _LanguageOption extends StatelessWidget {
     final colourScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: selected
-          ? colourScheme.primary.withOpacity(0.14)
-          : Colors.transparent,
+      color:
+          selected
+              ? colourScheme.primary.withValues(alpha: 0.14)
+              : Colors.transparent,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         onTap: onTap,
@@ -460,32 +400,27 @@ class _LanguageOption extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color:
-                  selected ? colourScheme.primary : Theme.of(context).dividerColor,
+                  selected
+                      ? colourScheme.primary
+                      : Theme.of(context).dividerColor,
               width: selected ? 2 : 1,
             ),
           ),
           child: Row(
             children: [
-              Icon(
-                icon,
-                color: selected ? colourScheme.primary : null,
-              ),
+              Icon(icon, color: selected ? colourScheme.primary : null),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight:
-                            selected ? FontWeight.bold : FontWeight.normal,
-                        color: selected ? colourScheme.primary : null,
-                      ),
+                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                    color: selected ? colourScheme.primary : null,
+                  ),
                 ),
               ),
               if (selected)
-                Icon(
-                  Icons.check_circle,
-                  color: colourScheme.primary,
-                ),
+                Icon(Icons.check_circle, color: colourScheme.primary),
             ],
           ),
         ),
