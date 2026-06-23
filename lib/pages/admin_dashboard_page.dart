@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../models/classroom.dart';
 import '../models/school.dart';
+import '../services/firestore/admin_firestore_service.dart';
 import '../services/firestore_service.dart';
-import '../l10n/l10n.dart';
 
-class AdminDashboardPage extends StatelessWidget {
+enum _ClassroomFilter { all, active, inactive }
+
+class AdminDashboardPage extends StatefulWidget {
   final String schoolId;
   final String schoolName;
 
@@ -16,13 +19,68 @@ class AdminDashboardPage extends StatelessWidget {
   });
 
   @override
+  State<AdminDashboardPage> createState() => _AdminDashboardPageState();
+}
+
+class _AdminDashboardPageState extends State<AdminDashboardPage> {
+  final FirestoreService _firestoreService = FirestoreService();
+
+  _ClassroomFilter _filter = _ClassroomFilter.all;
+
+  List<Classroom> _filteredClassrooms(List<Classroom> classrooms) {
+    return switch (_filter) {
+      _ClassroomFilter.all => classrooms,
+      _ClassroomFilter.active =>
+        classrooms.where((classroom) => classroom.active).toList(),
+      _ClassroomFilter.inactive =>
+        classrooms.where((classroom) => !classroom.active).toList(),
+    };
+  }
+
+  String _filterLabel(BuildContext context, _ClassroomFilter filter) {
+    return switch (filter) {
+      _ClassroomFilter.all => context.l10n.all,
+      _ClassroomFilter.active => context.l10n.active,
+      _ClassroomFilter.inactive => context.l10n.inactive,
+    };
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(context.l10n.logout),
+            content: Text(context.l10n.logoutConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(context.l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(context.l10n.logout),
+              ),
+            ],
+          ),
+    );
+
+    if (shouldLogout == true) {
+      await FirebaseAuth.instance.signOut();
+
+      if (!context.mounted) return;
+
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final firestoreService = FirestoreService();
-    final schoolFuture = firestoreService.getSchool(schoolId);
+    final schoolFuture = _firestoreService.getSchool(widget.schoolId);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.schoolAdminTitle(schoolName)),
+        title: Text(context.l10n.schoolAdminTitle(widget.schoolName)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -31,43 +89,14 @@ class AdminDashboardPage extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 '/school-settings',
-                arguments: {'schoolId': schoolId},
+                arguments: {'schoolId': widget.schoolId},
               );
             },
           ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: context.l10n.logout,
-            onPressed: () async {
-              final shouldLogout = await showDialog<bool>(
-                context: context,
-                builder:
-                    (context) => AlertDialog(
-                      title: Text(context.l10n.logout),
-                      content: Text(context.l10n.logoutConfirmation),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: Text(context.l10n.cancel),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: Text(context.l10n.logout),
-                        ),
-                      ],
-                    ),
-              );
-
-              if (shouldLogout == true) {
-                await FirebaseAuth.instance.signOut();
-
-                if (!context.mounted) return;
-
-                Navigator.of(
-                  context,
-                ).pushNamedAndRemoveUntil('/', (route) => false);
-              }
-            },
+            onPressed: () => _logout(context),
           ),
         ],
       ),
@@ -81,7 +110,7 @@ class AdminDashboardPage extends StatelessWidget {
                 final school = schoolSnapshot.data;
 
                 return StreamBuilder<List<Classroom>>(
-                  stream: firestoreService.getClassrooms(schoolId),
+                  stream: _firestoreService.getClassrooms(widget.schoolId),
                   builder: (context, classroomSnapshot) {
                     final classrooms = classroomSnapshot.data ?? [];
                     final classroomLimit = school?.classroomLimit ?? 3;
@@ -94,7 +123,7 @@ class AdminDashboardPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              school?.name ?? schoolName,
+                              school?.name ?? widget.schoolName,
                               style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -121,6 +150,53 @@ class AdminDashboardPage extends StatelessWidget {
                                     : context.l10n.inactive,
                               ),
                             ),
+                            const SizedBox(height: 16),
+                            FutureBuilder<SchoolAdminOverview>(
+                              future: _firestoreService.getSchoolAdminOverview(
+                                widget.schoolId,
+                              ),
+                              builder: (context, overviewSnapshot) {
+                                if (!overviewSnapshot.hasData) {
+                                  return const SizedBox.shrink();
+                                }
+
+                                final overview = overviewSnapshot.data!;
+
+                                return Wrap(
+                                  spacing: 10,
+                                  runSpacing: 10,
+                                  children: [
+                                    _AdminStatChip(
+                                      icon: Icons.meeting_room_outlined,
+                                      label: context.l10n.activeClassrooms,
+                                      value:
+                                          overview.activeClassrooms.toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.archive_outlined,
+                                      label: context.l10n.inactiveClassrooms,
+                                      value:
+                                          overview.inactiveClassrooms
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.badge_outlined,
+                                      label: context.l10n.staffProfiles,
+                                      value:
+                                          overview.totalStaffProfiles
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.child_care_outlined,
+                                      label: context.l10n.childProfiles,
+                                      value:
+                                          overview.totalChildProfiles
+                                              .toString(),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -132,9 +208,21 @@ class AdminDashboardPage extends StatelessWidget {
 
             const SizedBox(height: 16),
 
+            _ClassroomFilterBar(
+              selected: _filter,
+              labelFor: (filter) => _filterLabel(context, filter),
+              onChanged: (filter) {
+                setState(() {
+                  _filter = filter;
+                });
+              },
+            ),
+
+            const SizedBox(height: 12),
+
             Expanded(
               child: StreamBuilder<List<Classroom>>(
-                stream: firestoreService.getClassrooms(schoolId),
+                stream: _firestoreService.getClassrooms(widget.schoolId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -151,6 +239,7 @@ class AdminDashboardPage extends StatelessWidget {
                   }
 
                   final classrooms = snapshot.data ?? [];
+                  final filteredClassrooms = _filteredClassrooms(classrooms);
 
                   if (classrooms.isEmpty) {
                     return Center(
@@ -161,35 +250,32 @@ class AdminDashboardPage extends StatelessWidget {
                     );
                   }
 
-                  return ListView.builder(
-                    itemCount: classrooms.length,
-                    itemBuilder: (context, index) {
-                      final classroom = classrooms[index];
+                  if (filteredClassrooms.isEmpty) {
+                    return Center(
+                      child: Text(
+                        '${_filterLabel(context, _filter)}: 0',
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }
 
-                      return Card(
-                        child: ListTile(
-                          leading: const Icon(Icons.meeting_room),
-                          title: Text(classroom.name),
-                          subtitle: Text(
-                            context.l10n.classroomListSummary(
-                              classroom.classroomCode,
-                              classroom.active
-                                  ? context.l10n.yes
-                                  : context.l10n.no,
-                            ),
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/classroom-details',
-                              arguments: {
-                                'schoolId': schoolId,
-                                'classroomId': classroom.id,
-                              },
-                            );
-                          },
-                        ),
+                  return ListView.builder(
+                    itemCount: filteredClassrooms.length,
+                    itemBuilder: (context, index) {
+                      final classroom = filteredClassrooms[index];
+
+                      return _ClassroomListCard(
+                        classroom: classroom,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/classroom-details',
+                            arguments: {
+                              'schoolId': widget.schoolId,
+                              'classroomId': classroom.id,
+                            },
+                          );
+                        },
                       );
                     },
                   );
@@ -208,13 +294,134 @@ class AdminDashboardPage extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     '/create-classroom',
-                    arguments: {'schoolId': schoolId},
+                    arguments: {'schoolId': widget.schoolId},
                   );
                 },
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ClassroomFilterBar extends StatelessWidget {
+  final _ClassroomFilter selected;
+  final String Function(_ClassroomFilter filter) labelFor;
+  final ValueChanged<_ClassroomFilter> onChanged;
+
+  const _ClassroomFilterBar({
+    required this.selected,
+    required this.labelFor,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<_ClassroomFilter>(
+      segments:
+          _ClassroomFilter.values.map((filter) {
+            return ButtonSegment<_ClassroomFilter>(
+              value: filter,
+              label: Text(labelFor(filter)),
+            );
+          }).toList(),
+      selected: {selected},
+      onSelectionChanged: (selection) {
+        onChanged(selection.first);
+      },
+    );
+  }
+}
+
+class _ClassroomListCard extends StatelessWidget {
+  final Classroom classroom;
+  final VoidCallback onTap;
+
+  const _ClassroomListCard({required this.classroom, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final inactive = !classroom.active;
+    final colourScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      color:
+          inactive
+              ? colourScheme.surfaceContainerHighest.withValues(alpha: 0.55)
+              : null,
+      child: ListTile(
+        leading: Icon(
+          inactive ? Icons.archive_outlined : Icons.meeting_room,
+          color: inactive ? colourScheme.outline : null,
+        ),
+        title: Text(
+          classroom.name,
+          style: TextStyle(
+            color: inactive ? colourScheme.outline : null,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          context.l10n.classroomListSummary(
+            classroom.classroomCode,
+            classroom.active ? context.l10n.yes : context.l10n.no,
+          ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Chip(
+              visualDensity: VisualDensity.compact,
+              label: Text(
+                classroom.active ? context.l10n.active : context.l10n.inactive,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+}
+
+class _AdminStatChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _AdminStatChip({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: colourScheme.primaryContainer.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: colourScheme.onPrimaryContainer),
+          const SizedBox(width: 8),
+          Text(
+            '$label: $value',
+            style: TextStyle(
+              color: colourScheme.onPrimaryContainer,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

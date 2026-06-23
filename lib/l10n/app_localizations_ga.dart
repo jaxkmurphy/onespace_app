@@ -783,7 +783,7 @@ class AppLocalizationsGa extends AppLocalizations {
   }
 
   @override
-  String welcomeChild(Object childName) {
+  String welcomeChild(String childName) {
     return 'Fáilte, $childName!';
   }
 
@@ -2152,6 +2152,9 @@ class AppLocalizationsGa extends AppLocalizations {
   String schoolAdminTitle(Object schoolName) {
     return 'Riarthóir $schoolName';
   }
+
+  @override
+  String get schoolAdminStaffName => 'Riarthóir Scoile';
 
   @override
   String get schoolSettings => 'Socruithe Scoile';
@@ -3606,4 +3609,68 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get iMightFeel => 'B\'fhéidir go mothóinn:';
+
+  @override
+  String get activeClassrooms => 'Seomraí ranga gníomhacha';
+
+  @override
+  String get inactiveClassrooms => 'Seomraí ranga neamhghníomhacha';
+
+  @override
+  String get deactivate => 'Díghníomhachtaigh';
+
+  @override
+  String get deactivateClassroom => 'Díghníomhachtaigh Seomra Ranga';
+
+  @override
+  String get deactivateClassroomConfirmation =>
+      'Díghníomhachtaigh an seomra ranga seo? Ní bheidh foireann in ann logáil isteach a thuilleadh, ach coinneofar na sonraí.';
+
+  @override
+  String get classroomDeactivated => 'Díghníomhachtaíodh an seomra ranga.';
+
+  @override
+  String classroomDeactivateError(Object error) {
+    return 'Níorbh fhéidir an seomra ranga a dhíghníomhachtú: $error';
+  }
+
+  @override
+  String get reactivate => 'Athghníomhachtaigh';
+
+  @override
+  String get reactivateClassroom => 'Athghníomhachtaigh Seomra Ranga';
+
+  @override
+  String get reactivateClassroomConfirmation =>
+      'Athghníomhachtaigh an seomra ranga seo? Beidh foireann in ann logáil isteach arís.';
+
+  @override
+  String get classroomReactivated => 'Athghníomhachtaíodh an seomra ranga.';
+
+  @override
+  String classroomReactivateError(Object error) {
+    return 'Níorbh fhéidir an seomra ranga a athghníomhachtú: $error';
+  }
+
+  @override
+  String get accessDetails => 'Sonraí Rochtana';
+
+  @override
+  String get copy => 'Cóipeáil';
+
+  @override
+  String get schoolCodeCopied => 'Cóipeáladh cód na scoile.';
+
+  @override
+  String get classroomCodeCopied => 'Cóipeáladh cód an tseomra ranga.';
+
+  @override
+  String get classroomPinCopied => 'Cóipeáladh PIN an tseomra ranga.';
+
+  @override
+  String get copyAllLoginDetails => 'Cóipeáil Gach Sonra Logála Isteach';
+
+  @override
+  String get classroomAccessDetailsCopied =>
+      'Cóipeáladh sonraí logála isteach an tseomra ranga.';
 }

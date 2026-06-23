@@ -2796,6 +2796,10 @@
       "schoolName": {}
     }
   },
+  "schoolAdminStaffName": "Riarthóir Scoile",
+  "@schoolAdminStaffName": {
+    "description": "Staff name used when a school admin opens classroom incident tools."
+  },
   "schoolSettings": "Socruithe Scoile",
   "@schoolSettings": {
     "description": "Text used in the app for school settings."
@@ -4459,17 +4463,6 @@
   "@chooseComfortableDashboardColour": {
     "description": "Text used in the app for choose comfortable dashboard colour."
   },
-  "preview": "Réamhamharc",
-  "@preview": {
-    "description": "Text used in the app for preview."
-  },
-  "welcomeChild": "Fáilte, {childName}!",
-  "@welcomeChild": {
-    "description": "Text used in the app for welcome child.",
-    "placeholders": {
-      "childName": {}
-    }
-  },
   "myZones": "Mo Chriosanna",
   "@myZones": {
     "description": "Text used in the app for my zones."
@@ -4647,5 +4640,90 @@
   "iMightFeel": "B'fhéidir go mothóinn:",
   "@iMightFeel": {
     "description": "Text used in the app for i might feel."
+  },
+
+  "activeClassrooms": "Seomraí ranga gníomhacha",
+  "@activeClassrooms": {
+  "description": "Label for active classrooms count."
+},
+"inactiveClassrooms": "Seomraí ranga neamhghníomhacha",
+"@inactiveClassrooms": {
+  "description": "Label for inactive classrooms count."
+},
+"deactivate": "Díghníomhachtaigh",
+"@deactivate": {
+  "description": "Button text for deactivating something."
+},
+"deactivateClassroom": "Díghníomhachtaigh Seomra Ranga",
+"@deactivateClassroom": {
+  "description": "Text used for deactivating a classroom."
+},
+"deactivateClassroomConfirmation": "Díghníomhachtaigh an seomra ranga seo? Ní bheidh foireann in ann logáil isteach a thuilleadh, ach coinneofar na sonraí.",
+"@deactivateClassroomConfirmation": {
+  "description": "Confirmation message before deactivating a classroom."
+},
+"classroomDeactivated": "Díghníomhachtaíodh an seomra ranga.",
+"@classroomDeactivated": {
+  "description": "Message shown after a classroom is deactivated."
+},
+"classroomDeactivateError": "Níorbh fhéidir an seomra ranga a dhíghníomhachtú: {error}",
+"@classroomDeactivateError": {
+  "description": "Error shown when classroom deactivation fails.",
+  "placeholders": {
+    "error": {}
   }
+},
+
+  "reactivate": "Athghníomhachtaigh",
+"@reactivate": {
+  "description": "Button text for reactivating something."
+},
+"reactivateClassroom": "Athghníomhachtaigh Seomra Ranga",
+"@reactivateClassroom": {
+  "description": "Text used for reactivating a classroom."
+},
+"reactivateClassroomConfirmation": "Athghníomhachtaigh an seomra ranga seo? Beidh foireann in ann logáil isteach arís.",
+"@reactivateClassroomConfirmation": {
+  "description": "Confirmation message before reactivating a classroom."
+},
+"classroomReactivated": "Athghníomhachtaíodh an seomra ranga.",
+"@classroomReactivated": {
+  "description": "Message shown after a classroom is reactivated."
+},
+"classroomReactivateError": "Níorbh fhéidir an seomra ranga a athghníomhachtú: {error}",
+"@classroomReactivateError": {
+  "description": "Error shown when classroom reactivation fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+  "accessDetails": "Sonraí Rochtana",
+  "@accessDetails": {
+    "description": "Heading for classroom login/access details."
+  },
+  "copy": "Cóipeáil",
+  "@copy": {
+    "description": "Tooltip or button text for copying text."
+  },
+  "schoolCodeCopied": "Cóipeáladh cód na scoile.",
+  "@schoolCodeCopied": {
+    "description": "Message shown after copying the school code."
+  },
+  "classroomCodeCopied": "Cóipeáladh cód an tseomra ranga.",
+  "@classroomCodeCopied": {
+    "description": "Message shown after copying the classroom code."
+  },
+  "classroomPinCopied": "Cóipeáladh PIN an tseomra ranga.",
+  "@classroomPinCopied": {
+    "description": "Message shown after copying the classroom PIN."
+  },
+
+  "copyAllLoginDetails": "Cóipeáil Gach Sonra Logála Isteach",
+"@copyAllLoginDetails": {
+  "description": "Button text for copying all classroom login details."
+},
+"classroomAccessDetailsCopied": "Cóipeáladh sonraí logála isteach an tseomra ranga.",
+"@classroomAccessDetailsCopied": {
+  "description": "Message shown after copying all classroom login details."
+}
 }

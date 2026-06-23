@@ -2796,6 +2796,10 @@
       "schoolName": {}
     }
   },
+  "schoolAdminStaffName": "School Admin",
+  "@schoolAdminStaffName": {
+    "description": "Staff name used when a school admin opens classroom incident tools."
+  },
   "schoolSettings": "School Settings",
   "@schoolSettings": {
     "description": "Text used in the app for school settings."
@@ -4459,17 +4463,6 @@
   "@chooseComfortableDashboardColour": {
     "description": "Text used in the app for choose comfortable dashboard colour."
   },
-  "preview": "Preview",
-  "@preview": {
-    "description": "Text used in the app for preview."
-  },
-  "welcomeChild": "Welcome, {childName}!",
-  "@welcomeChild": {
-    "description": "Text used in the app for welcome child.",
-    "placeholders": {
-      "childName": {}
-    }
-  },
   "myZones": "My Zones",
   "@myZones": {
     "description": "Text used in the app for my zones."
@@ -4647,5 +4640,91 @@
   "iMightFeel": "I might feel:",
   "@iMightFeel": {
     "description": "Text used in the app for i might feel."
+  },
+
+  "activeClassrooms": "Active classrooms",
+  "@activeClassrooms": {
+  "description": "Label for active classrooms count."
+},
+"inactiveClassrooms": "Inactive classrooms",
+"@inactiveClassrooms": {
+  "description": "Label for inactive classrooms count."
+},
+"deactivate": "Deactivate",
+"@deactivate": {
+  "description": "Button text for deactivating something."
+},
+"deactivateClassroom": "Deactivate Classroom",
+"@deactivateClassroom": {
+  "description": "Text used for deactivating a classroom."
+},
+"deactivateClassroomConfirmation": "Deactivate this classroom? Staff will no longer be able to log in, but its data will be kept.",
+"@deactivateClassroomConfirmation": {
+  "description": "Confirmation message before deactivating a classroom."
+},
+"classroomDeactivated": "Classroom deactivated.",
+"@classroomDeactivated": {
+  "description": "Message shown after a classroom is deactivated."
+},
+"classroomDeactivateError": "Could not deactivate classroom: {error}",
+"@classroomDeactivateError": {
+  "description": "Error shown when classroom deactivation fails.",
+  "placeholders": {
+    "error": {}
   }
+},
+
+  "reactivate": "Reactivate",
+  "@reactivate": {
+  "description": "Button text for reactivating something."
+},
+"reactivateClassroom": "Reactivate Classroom",
+"@reactivateClassroom": {
+  "description": "Text used for reactivating a classroom."
+},
+"reactivateClassroomConfirmation": "Reactivate this classroom? Staff will be able to log in again.",
+"@reactivateClassroomConfirmation": {
+  "description": "Confirmation message before reactivating a classroom."
+},
+"classroomReactivated": "Classroom reactivated.",
+"@classroomReactivated": {
+  "description": "Message shown after a classroom is reactivated."
+},
+"classroomReactivateError": "Could not reactivate classroom: {error}",
+"@classroomReactivateError": {
+  "description": "Error shown when classroom reactivation fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+
+  "accessDetails": "Access Details",
+  "@accessDetails": {
+    "description": "Heading for classroom login/access details."
+  },
+  "copy": "Copy",
+  "@copy": {
+    "description": "Tooltip or button text for copying text."
+  },
+  "schoolCodeCopied": "School code copied.",
+  "@schoolCodeCopied": {
+    "description": "Message shown after copying the school code."
+  },
+  "classroomCodeCopied": "Classroom code copied.",
+  "@classroomCodeCopied": {
+    "description": "Message shown after copying the classroom code."
+  },
+  "classroomPinCopied": "Classroom PIN copied.",
+  "@classroomPinCopied": {
+    "description": "Message shown after copying the classroom PIN."
+  },
+
+  "copyAllLoginDetails": "Copy All Login Details",
+"@copyAllLoginDetails": {
+  "description": "Button text for copying all classroom login details."
+},
+"classroomAccessDetailsCopied": "Classroom login details copied.",
+"@classroomAccessDetailsCopied": {
+  "description": "Message shown after copying all classroom login details."
+}
 }

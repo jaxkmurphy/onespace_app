@@ -767,7 +767,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String welcomeChild(Object childName) {
+  String welcomeChild(String childName) {
     return 'Welcome, $childName!';
   }
 
@@ -2106,6 +2106,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String schoolAdminTitle(Object schoolName) {
     return '$schoolName Admin';
   }
+
+  @override
+  String get schoolAdminStaffName => 'School Admin';
 
   @override
   String get schoolSettings => 'School Settings';
@@ -3537,4 +3540,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get iMightFeel => 'I might feel:';
+
+  @override
+  String get activeClassrooms => 'Active classrooms';
+
+  @override
+  String get inactiveClassrooms => 'Inactive classrooms';
+
+  @override
+  String get deactivate => 'Deactivate';
+
+  @override
+  String get deactivateClassroom => 'Deactivate Classroom';
+
+  @override
+  String get deactivateClassroomConfirmation =>
+      'Deactivate this classroom? Staff will no longer be able to log in, but its data will be kept.';
+
+  @override
+  String get classroomDeactivated => 'Classroom deactivated.';
+
+  @override
+  String classroomDeactivateError(Object error) {
+    return 'Could not deactivate classroom: $error';
+  }
+
+  @override
+  String get reactivate => 'Reactivate';
+
+  @override
+  String get reactivateClassroom => 'Reactivate Classroom';
+
+  @override
+  String get reactivateClassroomConfirmation =>
+      'Reactivate this classroom? Staff will be able to log in again.';
+
+  @override
+  String get classroomReactivated => 'Classroom reactivated.';
+
+  @override
+  String classroomReactivateError(Object error) {
+    return 'Could not reactivate classroom: $error';
+  }
+
+  @override
+  String get accessDetails => 'Access Details';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get schoolCodeCopied => 'School code copied.';
+
+  @override
+  String get classroomCodeCopied => 'Classroom code copied.';
+
+  @override
+  String get classroomPinCopied => 'Classroom PIN copied.';
+
+  @override
+  String get copyAllLoginDetails => 'Copy All Login Details';
+
+  @override
+  String get classroomAccessDetailsCopied => 'Classroom login details copied.';
 }

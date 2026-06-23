@@ -1434,7 +1434,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Welcome, {childName}!'**
-  String welcomeChild(Object childName);
+  String welcomeChild(String childName);
 
   /// Text used in the app for what would you like to do.
   ///
@@ -3721,6 +3721,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{schoolName} Admin'**
   String schoolAdminTitle(Object schoolName);
+
+  /// Staff name used when a school admin opens classroom incident tools.
+  ///
+  /// In en, this message translates to:
+  /// **'School Admin'**
+  String get schoolAdminStaffName;
 
   /// Text used in the app for school settings.
   ///
@@ -6199,6 +6205,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I might feel:'**
   String get iMightFeel;
+
+  /// Label for active classrooms count.
+  ///
+  /// In en, this message translates to:
+  /// **'Active classrooms'**
+  String get activeClassrooms;
+
+  /// Label for inactive classrooms count.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive classrooms'**
+  String get inactiveClassrooms;
+
+  /// Button text for deactivating something.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivate;
+
+  /// Text used for deactivating a classroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Classroom'**
+  String get deactivateClassroom;
+
+  /// Confirmation message before deactivating a classroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate this classroom? Staff will no longer be able to log in, but its data will be kept.'**
+  String get deactivateClassroomConfirmation;
+
+  /// Message shown after a classroom is deactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom deactivated.'**
+  String get classroomDeactivated;
+
+  /// Error shown when classroom deactivation fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not deactivate classroom: {error}'**
+  String classroomDeactivateError(Object error);
+
+  /// Button text for reactivating something.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get reactivate;
+
+  /// Text used for reactivating a classroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate Classroom'**
+  String get reactivateClassroom;
+
+  /// Confirmation message before reactivating a classroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate this classroom? Staff will be able to log in again.'**
+  String get reactivateClassroomConfirmation;
+
+  /// Message shown after a classroom is reactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom reactivated.'**
+  String get classroomReactivated;
+
+  /// Error shown when classroom reactivation fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reactivate classroom: {error}'**
+  String classroomReactivateError(Object error);
+
+  /// Heading for classroom login/access details.
+  ///
+  /// In en, this message translates to:
+  /// **'Access Details'**
+  String get accessDetails;
+
+  /// Tooltip or button text for copying text.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// Message shown after copying the school code.
+  ///
+  /// In en, this message translates to:
+  /// **'School code copied.'**
+  String get schoolCodeCopied;
+
+  /// Message shown after copying the classroom code.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom code copied.'**
+  String get classroomCodeCopied;
+
+  /// Message shown after copying the classroom PIN.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom PIN copied.'**
+  String get classroomPinCopied;
+
+  /// Button text for copying all classroom login details.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy All Login Details'**
+  String get copyAllLoginDetails;
+
+  /// Message shown after copying all classroom login details.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom login details copied.'**
+  String get classroomAccessDetailsCopied;
 }
 
 class _AppLocalizationsDelegate

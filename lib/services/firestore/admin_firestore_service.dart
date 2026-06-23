@@ -7,8 +7,23 @@ import '../../models/school_member.dart';
 import '../../models/teacher.dart';
 import 'firestore_base.dart';
 
+class SchoolAdminOverview {
+  final int totalClassrooms;
+  final int activeClassrooms;
+  final int inactiveClassrooms;
+  final int totalStaffProfiles;
+  final int totalChildProfiles;
+
+  const SchoolAdminOverview({
+    required this.totalClassrooms,
+    required this.activeClassrooms,
+    required this.inactiveClassrooms,
+    required this.totalStaffProfiles,
+    required this.totalChildProfiles,
+  });
+}
+
 mixin AdminFirestoreService on FirestoreBase {
-  
   // SCHOOL / ADMIN STRUCTURE
 
   Future<String> createSchool({
@@ -42,21 +57,15 @@ mixin AdminFirestoreService on FirestoreBase {
 
     batch.set(schoolRef, school.toMap());
 
-    batch.set(
-      schoolRef.collection('members').doc(adminUid),
-      member.toMap(),
-    );
+    batch.set(schoolRef.collection('members').doc(adminUid), member.toMap());
 
-    batch.set(
-      db.collection('account_lookup').doc(adminUid),
-      {
-        'schoolId': schoolRef.id,
-        'role': 'schoolAdmin',
-        'email': adminEmail,
-        'active': true,
-        'createdAt': DateTime.now(),
-      },
-    );
+    batch.set(db.collection('account_lookup').doc(adminUid), {
+      'schoolId': schoolRef.id,
+      'role': 'schoolAdmin',
+      'email': adminEmail,
+      'active': true,
+      'createdAt': DateTime.now(),
+    });
 
     await batch.commit();
 
@@ -74,11 +83,12 @@ mixin AdminFirestoreService on FirestoreBase {
   }
 
   Future<School?> getSchoolByCode(String schoolCode) async {
-    final query = await db
-        .collection('schools')
-        .where('schoolCode', isEqualTo: schoolCode.trim().toUpperCase())
-        .limit(1)
-        .get();
+    final query =
+        await db
+            .collection('schools')
+            .where('schoolCode', isEqualTo: schoolCode.trim().toUpperCase())
+            .limit(1)
+            .get();
 
     if (query.docs.isEmpty) {
       return null;
@@ -92,11 +102,12 @@ mixin AdminFirestoreService on FirestoreBase {
     required String schoolCode,
     String? currentSchoolId,
   }) async {
-    final query = await db
-        .collection('schools')
-        .where('schoolCode', isEqualTo: schoolCode.trim().toUpperCase())
-        .limit(1)
-        .get();
+    final query =
+        await db
+            .collection('schools')
+            .where('schoolCode', isEqualTo: schoolCode.trim().toUpperCase())
+            .limit(1)
+            .get();
 
     if (query.docs.isEmpty) {
       return true;
@@ -152,10 +163,7 @@ mixin AdminFirestoreService on FirestoreBase {
     required String schoolId,
     required String uid,
   }) async {
-    final doc = await schoolDoc(schoolId)
-        .collection('members')
-        .doc(uid)
-        .get();
+    final doc = await schoolDoc(schoolId).collection('members').doc(uid).get();
 
     if (!doc.exists || doc.data() == null) {
       return null;
@@ -179,10 +187,8 @@ mixin AdminFirestoreService on FirestoreBase {
         return null;
       }
 
-      final memberDoc = await schoolDoc(schoolId)
-          .collection('members')
-          .doc(uid)
-          .get();
+      final memberDoc =
+          await schoolDoc(schoolId).collection('members').doc(uid).get();
 
       if (!memberDoc.exists || memberDoc.data() == null) {
         return null;
@@ -242,10 +248,14 @@ mixin AdminFirestoreService on FirestoreBase {
   }
 
   Stream<List<Classroom>> getClassrooms(String schoolId) {
-    return classroomsRef(schoolId).orderBy('name').snapshots().map(
-          (snapshot) => snapshot.docs
-              .map((doc) => Classroom.fromMap(doc.id, doc.data()))
-              .toList(),
+    return classroomsRef(schoolId)
+        .orderBy('name')
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => Classroom.fromMap(doc.id, doc.data()))
+                  .toList(),
         );
   }
 
@@ -261,10 +271,8 @@ mixin AdminFirestoreService on FirestoreBase {
     required String schoolId,
     required String classroomId,
   }) async {
-    final doc = await classroomDoc(
-      schoolId: schoolId,
-      classroomId: classroomId,
-    ).get();
+    final doc =
+        await classroomDoc(schoolId: schoolId, classroomId: classroomId).get();
 
     if (!doc.exists || doc.data() == null) {
       return null;
@@ -277,13 +285,14 @@ mixin AdminFirestoreService on FirestoreBase {
     required String schoolId,
     required String classroomCode,
   }) async {
-    final query = await classroomsRef(schoolId)
-        .where(
-          'classroomCode',
-          isEqualTo: classroomCode.trim().toUpperCase(),
-        )
-        .limit(1)
-        .get();
+    final query =
+        await classroomsRef(schoolId)
+            .where(
+              'classroomCode',
+              isEqualTo: classroomCode.trim().toUpperCase(),
+            )
+            .limit(1)
+            .get();
 
     if (query.docs.isEmpty) {
       return null;
@@ -325,19 +334,21 @@ mixin AdminFirestoreService on FirestoreBase {
     required String classroomCode,
     String? currentClassroomId,
   }) async {
-    final query = await classroomsRef(schoolId)
-        .where(
-          'classroomCode',
-          isEqualTo: classroomCode.trim().toUpperCase(),
-        )
-        .limit(1)
-        .get();
+    final query =
+        await classroomsRef(schoolId)
+            .where(
+              'classroomCode',
+              isEqualTo: classroomCode.trim().toUpperCase(),
+            )
+            .limit(1)
+            .get();
 
     if (query.docs.isEmpty) {
       return true;
     }
 
-    if (currentClassroomId != null && query.docs.first.id == currentClassroomId) {
+    if (currentClassroomId != null &&
+        query.docs.first.id == currentClassroomId) {
       return true;
     }
 
@@ -364,10 +375,7 @@ mixin AdminFirestoreService on FirestoreBase {
       throw Exception('That classroom code is already in use.');
     }
 
-    await classroomDoc(
-      schoolId: schoolId,
-      classroomId: classroomId,
-    ).update({
+    await classroomDoc(schoolId: schoolId, classroomId: classroomId).update({
       'name': name.trim(),
       'classroomCode': formattedClassroomCode,
       'pin': pin.trim(),
@@ -376,23 +384,66 @@ mixin AdminFirestoreService on FirestoreBase {
     });
   }
 
-  Future<void> deleteClassroom({
+  Future<void> deactivateClassroom({
     required String schoolId,
     required String classroomId,
   }) async {
-    await classroomDoc(
-      schoolId: schoolId,
-      classroomId: classroomId,
-    ).delete();
+    await classroomDoc(schoolId: schoolId, classroomId: classroomId).update({
+      'active': false,
+      'updatedAt': DateTime.now(),
+      'archivedAt': DateTime.now(),
+    });
+  }
+
+  Future<void> reactivateClassroom({
+    required String schoolId,
+    required String classroomId,
+  }) async {
+    await classroomDoc(schoolId: schoolId, classroomId: classroomId).update({
+      'active': true,
+      'updatedAt': DateTime.now(),
+      'reactivatedAt': DateTime.now(),
+    });
+  }
+
+  Future<SchoolAdminOverview> getSchoolAdminOverview(String schoolId) async {
+    final classrooms = await getClassroomsOnce(schoolId);
+
+    var totalStaffProfiles = 0;
+    var totalChildProfiles = 0;
+
+    for (final classroom in classrooms) {
+      final staffSnapshot =
+          await classroomStaffProfilesRef(
+            schoolId: schoolId,
+            classroomId: classroom.id,
+          ).get();
+
+      final childSnapshot =
+          await classroomChildProfilesRef(
+            schoolId: schoolId,
+            classroomId: classroom.id,
+          ).get();
+
+      totalStaffProfiles += staffSnapshot.size;
+      totalChildProfiles += childSnapshot.size;
+    }
+
+    return SchoolAdminOverview(
+      totalClassrooms: classrooms.length,
+      activeClassrooms:
+          classrooms.where((classroom) => classroom.active).length,
+      inactiveClassrooms:
+          classrooms.where((classroom) => !classroom.active).length,
+      totalStaffProfiles: totalStaffProfiles,
+      totalChildProfiles: totalChildProfiles,
+    );
   }
 
   // LEGACY TEACHER ACCOUNT DATA
 
   Future<void> setTeacherInfo(Teacher teacher) async {
-    await teacherDoc(teacher.uid).set(
-      teacher.toMap(),
-      SetOptions(merge: true),
-    );
+    await teacherDoc(teacher.uid).set(teacher.toMap(), SetOptions(merge: true));
   }
 
   Future<Teacher> getTeacherInfo(String uid) async {
@@ -404,12 +455,7 @@ mixin AdminFirestoreService on FirestoreBase {
       }
 
       final email = FirebaseAuth.instance.currentUser?.email ?? '';
-      final newTeacher = Teacher(
-        uid: uid,
-        email: email,
-        name: '',
-        pin: '',
-      );
+      final newTeacher = Teacher(uid: uid, email: email, name: '', pin: '');
 
       await setTeacherInfo(newTeacher);
       return newTeacher;
@@ -419,12 +465,7 @@ mixin AdminFirestoreService on FirestoreBase {
 
         final email = FirebaseAuth.instance.currentUser?.email ?? '';
 
-        return Teacher(
-          uid: uid,
-          email: email,
-          name: '',
-          pin: '',
-        );
+        return Teacher(uid: uid, email: email, name: '', pin: '');
       }
 
       throw Exception('Failed to get teacher info: ${e.message}');
