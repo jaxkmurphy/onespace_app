@@ -4,12 +4,15 @@ import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../locale_notifier.dart';
 import '../models/child_profile.dart';
+import '../models/classroom.dart';
+import '../models/classroom_feature.dart';
 import '../services/firestore_service.dart';
 import '../utils/hex_colour.dart';
 import '../widgets/child_dashboard_feature_card.dart';
 import 'background_color_picker_page.dart';
 import 'calming_sounds_page.dart';
 import 'child_word_learning_page.dart';
+import '../services/classroom_session_service.dart';
 
 class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
@@ -34,10 +37,15 @@ class ChildProfileDashboard extends StatefulWidget {
 }
 
 class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
+
   late ChildProfile profile;
   late Color backgroundColor;
 
   StreamSubscription<ChildProfile>? _profileSubscription;
+
+  Classroom? _classroom;
+  bool _isLoadingClassroomFeatures = false;
 
   @override
   void initState() {
@@ -45,6 +53,8 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
 
     profile = widget.profile;
     backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
+
+    _loadClassroomFeatures();
 
     _profileSubscription = widget.firestoreService
         .getCurrentChildProfileStream(profile.id)
@@ -56,6 +66,55 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
           });
         });
+  }
+
+  Future<void> _loadClassroomFeatures() async {
+    var schoolId = widget.schoolId;
+    var classroomId = widget.classroomId;
+
+    if ((schoolId == null || classroomId == null) &&
+        _session.hasClassroomSession) {
+      schoolId = _session.requireSchoolId;
+      classroomId = _session.requireClassroomId;
+    }
+
+    if (schoolId == null || classroomId == null) return;
+
+    setState(() {
+      _isLoadingClassroomFeatures = true;
+    });
+
+    try {
+      final classroom = await widget.firestoreService.getClassroom(
+        schoolId: schoolId,
+        classroomId: classroomId,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _classroom = classroom;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingClassroomFeatures = false;
+        });
+      }
+    }
+  }
+
+  bool get _shouldWaitForClassroomFeatures {
+    return (widget.schoolId != null && widget.classroomId != null) ||
+        _session.hasClassroomSession;
+  }
+
+  bool _isFeatureEnabled(ClassroomFeature feature) {
+    if (_classroom != null) {
+      return _classroom!.isFeatureEnabled(feature);
+    }
+
+    return !_shouldWaitForClassroomFeatures;
   }
 
   @override
@@ -168,30 +227,31 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             ),
           ),
           const SizedBox(width: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.star_rounded,
-                  color: Color(0xFFFFEB3B),
-                  size: 30,
-                ),
-                Text(
-                  '${profile.points}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w900,
+          if (_isFeatureEnabled(ClassroomFeature.points))
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.star_rounded,
+                    color: Color(0xFFFFEB3B),
+                    size: 30,
                   ),
-                ),
-              ],
+                  Text(
+                    '${profile.points}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -199,163 +259,174 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
 
   List<_DashboardFeature> _myDayFeatures(AppLocalizations l10n) {
     return [
-      _DashboardFeature(
-        icon: Icons.groups_rounded,
-        title: l10n.circleTime,
-        subtitle: l10n.childCircleTimeSubtitle,
-        color: const Color(0xFF7E57C2),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/circle-time',
-            arguments: {'teacherUid': profile.teacherUid, 'child': profile},
-          );
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.calendar_today_rounded,
-        title: l10n.my_schedule,
-        subtitle: l10n.childScheduleSubtitle,
-        color: const Color(0xFF42A5F5),
-        onTap: () {
-          Navigator.pushNamed(context, '/childSchedule');
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.view_agenda_rounded,
-        title: l10n.whenThen,
-        subtitle: l10n.childWhenThenSubtitle,
-        color: const Color(0xFFFFA726),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/when-then-child',
-            arguments: {
-              'firestoreService': widget.firestoreService,
-              'child': profile,
-            },
-          );
-        },
-      ),
+      if (_isFeatureEnabled(ClassroomFeature.circleTime))
+        _DashboardFeature(
+          icon: Icons.groups_rounded,
+          title: l10n.circleTime,
+          subtitle: l10n.childCircleTimeSubtitle,
+          color: const Color(0xFF7E57C2),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/circle-time',
+              arguments: {'teacherUid': profile.teacherUid, 'child': profile},
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.schedules))
+        _DashboardFeature(
+          icon: Icons.calendar_today_rounded,
+          title: l10n.my_schedule,
+          subtitle: l10n.childScheduleSubtitle,
+          color: const Color(0xFF42A5F5),
+          onTap: () {
+            Navigator.pushNamed(context, '/childSchedule');
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.whenThen))
+        _DashboardFeature(
+          icon: Icons.view_agenda_rounded,
+          title: l10n.whenThen,
+          subtitle: l10n.childWhenThenSubtitle,
+          color: const Color(0xFFFFA726),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/when-then-child',
+              arguments: {
+                'firestoreService': widget.firestoreService,
+                'child': profile,
+              },
+            );
+          },
+        ),
     ];
   }
 
   List<_DashboardFeature> _feelingsFeatures(AppLocalizations l10n) {
     return [
-      _DashboardFeature(
-        icon: Icons.color_lens_rounded,
-        title: l10n.zones_regulation,
-        subtitle: l10n.childZonesSubtitle,
-        color: const Color(0xFF26A69A),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/zone-select',
-            arguments: {'child': profile},
-          );
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.accessibility_new_rounded,
-        title: l10n.bodyCheck,
-        subtitle: l10n.childBodyCheckSubtitle,
-        color: const Color(0xFFEF5350),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/body-check',
-            arguments: {
-              'firestoreService': widget.firestoreService,
-              'child': profile,
-            },
-          );
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.headphones_rounded,
-        title: l10n.calming_sounds,
-        subtitle: l10n.childCalmingSoundsSubtitle,
-        color: const Color(0xFF5C6BC0),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => CalmingSoundsPage()),
-          );
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.record_voice_over_rounded,
-        title: l10n.voiceLines,
-        subtitle: l10n.childVoiceLinesSubtitle,
-        color: const Color(0xFF29B6F6),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/voice-lines',
-            arguments: {
-              'firestoreService': widget.firestoreService,
-              'child': profile,
-            },
-          );
-        },
-      ),
+      if (_isFeatureEnabled(ClassroomFeature.zones))
+        _DashboardFeature(
+          icon: Icons.color_lens_rounded,
+          title: l10n.zones_regulation,
+          subtitle: l10n.childZonesSubtitle,
+          color: const Color(0xFF26A69A),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/zone-select',
+              arguments: {'child': profile},
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.bodyCheck))
+        _DashboardFeature(
+          icon: Icons.accessibility_new_rounded,
+          title: l10n.bodyCheck,
+          subtitle: l10n.childBodyCheckSubtitle,
+          color: const Color(0xFFEF5350),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/body-check',
+              arguments: {
+                'firestoreService': widget.firestoreService,
+                'child': profile,
+              },
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.calmingSounds))
+        _DashboardFeature(
+          icon: Icons.headphones_rounded,
+          title: l10n.calming_sounds,
+          subtitle: l10n.childCalmingSoundsSubtitle,
+          color: const Color(0xFF5C6BC0),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => CalmingSoundsPage()),
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.voiceLines))
+        _DashboardFeature(
+          icon: Icons.record_voice_over_rounded,
+          title: l10n.voiceLines,
+          subtitle: l10n.childVoiceLinesSubtitle,
+          color: const Color(0xFF29B6F6),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/voice-lines',
+              arguments: {
+                'firestoreService': widget.firestoreService,
+                'child': profile,
+              },
+            );
+          },
+        ),
     ];
   }
 
   List<_DashboardFeature> _learningFeatures(AppLocalizations l10n) {
     return [
-      _DashboardFeature(
-        icon: Icons.star_rounded,
-        title: l10n.my_points,
-        subtitle: l10n.childPointsSubtitle,
-        color: const Color(0xFFFFB300),
-        onTap: () {
-          Navigator.pushNamed(context, '/child-points', arguments: profile);
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.quiz_rounded,
-        title: l10n.take_quiz,
-        subtitle: l10n.childQuizSubtitle,
-        color: const Color(0xFFAB47BC),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/student-quiz-list',
-            arguments: {
-              'firestoreService': widget.firestoreService,
-              'child': profile,
-            },
-          );
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.menu_book_rounded,
-        title: l10n.wordPractice,
-        subtitle: l10n.childWordPracticeSubtitle,
-        color: const Color(0xFF66BB6A),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (_) => ChildWordLearningPage(
-                    firestoreService: widget.firestoreService,
-                    child: profile,
-                  ),
-            ),
-          );
-        },
-      ),
-      _DashboardFeature(
-        icon: Icons.timer_rounded,
-        title: l10n.visualTimer,
-        subtitle: l10n.childTimerSubtitle,
-        color: const Color(0xFFFF7043),
-        onTap: () {
-          Navigator.pushNamed(context, '/visual-timer');
-        },
-      ),
+      if (_isFeatureEnabled(ClassroomFeature.points))
+        _DashboardFeature(
+          icon: Icons.star_rounded,
+          title: l10n.my_points,
+          subtitle: l10n.childPointsSubtitle,
+          color: const Color(0xFFFFB300),
+          onTap: () {
+            Navigator.pushNamed(context, '/child-points', arguments: profile);
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.quizzes))
+        _DashboardFeature(
+          icon: Icons.quiz_rounded,
+          title: l10n.take_quiz,
+          subtitle: l10n.childQuizSubtitle,
+          color: const Color(0xFFAB47BC),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/student-quiz-list',
+              arguments: {
+                'firestoreService': widget.firestoreService,
+                'child': profile,
+              },
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.wordLearning))
+        _DashboardFeature(
+          icon: Icons.menu_book_rounded,
+          title: l10n.wordPractice,
+          subtitle: l10n.childWordPracticeSubtitle,
+          color: const Color(0xFF66BB6A),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => ChildWordLearningPage(
+                      firestoreService: widget.firestoreService,
+                      child: profile,
+                    ),
+              ),
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.visualTimer))
+        _DashboardFeature(
+          icon: Icons.timer_rounded,
+          title: l10n.visualTimer,
+          subtitle: l10n.childTimerSubtitle,
+          color: const Color(0xFFFF7043),
+          onTap: () {
+            Navigator.pushNamed(context, '/visual-timer');
+          },
+        ),
     ];
   }
 
@@ -365,6 +436,12 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
       valueListenable: widget.localeNotifier,
       builder: (context, locale, _) {
         final l10n = context.l10n;
+        final waitingForFeatures =
+            _shouldWaitForClassroomFeatures && _classroom == null;
+
+        final myDayFeatures = _myDayFeatures(l10n);
+        final feelingsFeatures = _feelingsFeatures(l10n);
+        final learningFeatures = _learningFeatures(l10n);
 
         return Scaffold(
           appBar: AppBar(
@@ -381,63 +458,73 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             ),
             title: Text(l10n.childSpaceTitle(profile.name)),
             actions: [
-              IconButton(
-                tooltip: l10n.change_background,
-                onPressed: _openBackgroundPicker,
-                icon: const Icon(Icons.palette_rounded),
-              ),
+              if (_isFeatureEnabled(ClassroomFeature.backgroundPicker))
+                IconButton(
+                  tooltip: l10n.change_background,
+                  onPressed: _openBackgroundPicker,
+                  icon: const Icon(Icons.palette_rounded),
+                ),
               const SizedBox(width: 6),
             ],
           ),
-          body: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: _backgroundGradient,
-              ),
-            ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 980),
-                    child: Column(
-                      children: [
-                        _buildWelcomeCard(l10n),
-                        const SizedBox(height: 26),
-                        _DashboardSection(
-                          icon: Icons.wb_sunny_rounded,
-                          title: l10n.myDay,
-                          subtitle: l10n.myDaySubtitle,
-                          color: const Color(0xFFFFA726),
-                          features: _myDayFeatures(l10n),
+          body:
+              waitingForFeatures
+                  ? const Center(child: CircularProgressIndicator())
+                  : Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: _backgroundGradient,
+                      ),
+                    ),
+                    child: SafeArea(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 980),
+                            child: Column(
+                              children: [
+                                if (_isLoadingClassroomFeatures) ...[
+                                  const LinearProgressIndicator(),
+                                  const SizedBox(height: 16),
+                                ],
+                                _buildWelcomeCard(l10n),
+                                const SizedBox(height: 26),
+                                _DashboardSection(
+                                  icon: Icons.wb_sunny_rounded,
+                                  title: l10n.myDay,
+                                  subtitle: l10n.myDaySubtitle,
+                                  color: const Color(0xFFFFA726),
+                                  features: myDayFeatures,
+                                ),
+                                if (myDayFeatures.isNotEmpty)
+                                  const SizedBox(height: 24),
+                                _DashboardSection(
+                                  icon: Icons.favorite_rounded,
+                                  title: l10n.howIFeel,
+                                  subtitle: l10n.howIFeelSubtitle,
+                                  color: const Color(0xFFEC407A),
+                                  features: feelingsFeatures,
+                                ),
+                                if (feelingsFeatures.isNotEmpty)
+                                  const SizedBox(height: 24),
+                                _DashboardSection(
+                                  icon: Icons.auto_awesome_rounded,
+                                  title: l10n.learnAndPlay,
+                                  subtitle: l10n.learnAndPlaySubtitle,
+                                  color: const Color(0xFF7E57C2),
+                                  features: learningFeatures,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 24),
-                        _DashboardSection(
-                          icon: Icons.favorite_rounded,
-                          title: l10n.howIFeel,
-                          subtitle: l10n.howIFeelSubtitle,
-                          color: const Color(0xFFEC407A),
-                          features: _feelingsFeatures(l10n),
-                        ),
-                        const SizedBox(height: 24),
-                        _DashboardSection(
-                          icon: Icons.auto_awesome_rounded,
-                          title: l10n.learnAndPlay,
-                          subtitle: l10n.learnAndPlaySubtitle,
-                          color: const Color(0xFF7E57C2),
-                          features: _learningFeatures(l10n),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ),
         );
       },
     );
@@ -477,6 +564,10 @@ class _DashboardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (features.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),

@@ -5,6 +5,7 @@ import '../../models/classroom.dart';
 import '../../models/school.dart';
 import '../../models/school_member.dart';
 import '../../models/teacher.dart';
+import '../../models/classroom_feature.dart';
 import 'firestore_base.dart';
 
 class SchoolAdminOverview {
@@ -380,6 +381,17 @@ mixin AdminFirestoreService on FirestoreBase {
       'classroomCode': formattedClassroomCode,
       'pin': pin.trim(),
       'active': active,
+      'updatedAt': DateTime.now(),
+    });
+  }
+
+  Future<void> updateClassroomEnabledFeatures({
+    required String schoolId,
+    required String classroomId,
+    required Set<ClassroomFeature> enabledFeatures,
+  }) async {
+    await classroomDoc(schoolId: schoolId, classroomId: classroomId).update({
+      'enabledFeatures': ClassroomFeature.toFirestoreValue(enabledFeatures),
       'updatedAt': DateTime.now(),
     });
   }

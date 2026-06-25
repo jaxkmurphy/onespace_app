@@ -1,3 +1,5 @@
+import 'classroom_feature.dart';
+
 class Classroom {
   final String id;
   final String schoolId;
@@ -6,6 +8,7 @@ class Classroom {
   final String pin;
   final bool active;
   final DateTime? createdAt;
+  final Set<ClassroomFeature> enabledFeatures;
 
   Classroom({
     required this.id,
@@ -15,7 +18,12 @@ class Classroom {
     required this.pin,
     required this.active,
     this.createdAt,
-  });
+    Set<ClassroomFeature>? enabledFeatures,
+  }) : enabledFeatures = enabledFeatures ?? ClassroomFeature.allEnabled();
+
+  bool isFeatureEnabled(ClassroomFeature feature) {
+    return enabledFeatures.contains(feature);
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -25,6 +33,7 @@ class Classroom {
       'pin': pin,
       'active': active,
       'createdAt': createdAt,
+      'enabledFeatures': ClassroomFeature.toFirestoreValue(enabledFeatures),
     };
   }
 
@@ -37,6 +46,9 @@ class Classroom {
       pin: map['pin'] ?? '',
       active: map['active'] ?? true,
       createdAt: map['createdAt']?.toDate(),
+      enabledFeatures: ClassroomFeature.fromFirestoreValue(
+        map['enabledFeatures'],
+      ),
     );
   }
 
@@ -48,6 +60,7 @@ class Classroom {
     String? pin,
     bool? active,
     DateTime? createdAt,
+    Set<ClassroomFeature>? enabledFeatures,
   }) {
     return Classroom(
       id: id ?? this.id,
@@ -57,6 +70,7 @@ class Classroom {
       pin: pin ?? this.pin,
       active: active ?? this.active,
       createdAt: createdAt ?? this.createdAt,
+      enabledFeatures: enabledFeatures ?? this.enabledFeatures,
     );
   }
 }

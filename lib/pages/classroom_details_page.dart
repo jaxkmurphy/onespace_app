@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/l10n.dart';
 import '../models/classroom.dart';
+import '../models/classroom_feature.dart';
 import '../models/child_profile.dart';
 import '../models/staff_profile.dart';
 import '../services/classroom_session_service.dart';
@@ -35,7 +36,9 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
   String _schoolCode = '';
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _isSavingFeatures = false;
   bool _active = true;
+  Set<ClassroomFeature> _enabledFeatures = ClassroomFeature.allEnabled();
 
   @override
   void initState() {
@@ -68,6 +71,7 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
         _codeController.text = classroom.classroomCode;
         _pinController.text = classroom.pin;
         _active = classroom.active;
+        _enabledFeatures = classroom.enabledFeatures;
         _isLoading = false;
       });
     } catch (e) {
@@ -348,6 +352,55 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
     );
   }
 
+  Future<void> _setFeatureEnabled({
+    required ClassroomFeature feature,
+    required bool enabled,
+  }) async {
+    final previousFeatures = Set<ClassroomFeature>.from(_enabledFeatures);
+    final updatedFeatures = Set<ClassroomFeature>.from(_enabledFeatures);
+
+    if (enabled) {
+      updatedFeatures.add(feature);
+    } else {
+      updatedFeatures.remove(feature);
+    }
+
+    setState(() {
+      _enabledFeatures = updatedFeatures;
+      _isSavingFeatures = true;
+    });
+
+    try {
+      await _firestoreService.updateClassroomEnabledFeatures(
+        schoolId: widget.schoolId,
+        classroomId: widget.classroomId,
+        enabledFeatures: updatedFeatures,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _classroom = _classroom?.copyWith(enabledFeatures: updatedFeatures);
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _enabledFeatures = previousFeatures;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not update classroom features: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSavingFeatures = false;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -404,6 +457,17 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
                                 classroom.pin,
                                 context.l10n.classroomPinCopied,
                               ),
+                        ),
+                        const SizedBox(height: 16),
+                        _FeatureSettingsCard(
+                          enabledFeatures: _enabledFeatures,
+                          isSaving: _isSavingFeatures,
+                          onFeatureChanged: (feature, enabled) {
+                            _setFeatureEnabled(
+                              feature: feature,
+                              enabled: enabled,
+                            );
+                          },
                         ),
                         const SizedBox(height: 16),
                         _buildEditCard(classroom),
@@ -813,6 +877,125 @@ class _ClassroomOverviewCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _FeatureSettingsCard extends StatelessWidget {
+  final Set<ClassroomFeature> enabledFeatures;
+  final bool isSaving;
+  final void Function(ClassroomFeature feature, bool enabled) onFeatureChanged;
+
+  const _FeatureSettingsCard({
+    required this.enabledFeatures,
+    required this.isSaving,
+    required this.onFeatureChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: colourScheme.tertiaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    Icons.tune_rounded,
+                    color: colourScheme.onTertiaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Classroom features',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Choose which tools are available in this classroom.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                if (isSaving)
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...ClassroomFeature.values.map((feature) {
+              return SwitchListTile(
+                value: enabledFeatures.contains(feature),
+                onChanged:
+                    isSaving
+                        ? null
+                        : (enabled) => onFeatureChanged(feature, enabled),
+                title: Text(feature.adminLabel),
+                subtitle: Text(feature.adminDescription),
+                secondary: Icon(_iconForFeature(feature)),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _iconForFeature(ClassroomFeature feature) {
+    switch (feature) {
+      case ClassroomFeature.todayOverview:
+        return Icons.dashboard_rounded;
+      case ClassroomFeature.schedules:
+        return Icons.schedule_rounded;
+      case ClassroomFeature.zones:
+        return Icons.mood_rounded;
+      case ClassroomFeature.points:
+        return Icons.star_rounded;
+      case ClassroomFeature.whenThen:
+        return Icons.view_kanban_rounded;
+      case ClassroomFeature.visualTimer:
+        return Icons.timer_rounded;
+      case ClassroomFeature.bodyCheck:
+        return Icons.health_and_safety_outlined;
+      case ClassroomFeature.circleTime:
+        return Icons.groups_rounded;
+      case ClassroomFeature.quizzes:
+        return Icons.quiz_rounded;
+      case ClassroomFeature.wordLearning:
+        return Icons.menu_book_rounded;
+      case ClassroomFeature.incidentLog:
+        return Icons.warning_amber_rounded;
+      case ClassroomFeature.handover:
+        return Icons.description_rounded;
+      case ClassroomFeature.iconReset:
+        return Icons.lock_reset_rounded;
+      case ClassroomFeature.calmingSounds:
+        return Icons.headphones_rounded;
+      case ClassroomFeature.voiceLines:
+        return Icons.record_voice_over_rounded;
+      case ClassroomFeature.backgroundPicker:
+        return Icons.palette_rounded;
+    }
   }
 }
 
