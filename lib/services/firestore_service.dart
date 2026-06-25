@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'classroom_session_service.dart';
 import 'firestore/admin_firestore_service.dart';
+import 'firestore/child_access_firestore_service.dart';
 import 'firestore/classroom_firestore_service.dart';
 import 'firestore/firestore_base.dart';
 import 'firestore/handover_firestore_service.dart';
@@ -18,7 +19,8 @@ class FirestoreService
         ClassroomFirestoreService,
         LearningFirestoreService,
         HandoverFirestoreService,
-        AdminFirestoreService {
+        AdminFirestoreService,
+        ChildAccessFirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   final ClassroomSessionService _session = ClassroomSessionService.instance;

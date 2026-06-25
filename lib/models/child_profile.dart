@@ -10,6 +10,9 @@ class ChildProfile {
   final String accessMode;
   final List<String> iconSequence;
 
+  final bool profileAccessEnabled;
+  final int profileAccessRevokedAtMillis;
+
   // Circle Time
   final double circleTimeX;
   final double circleTimeY;
@@ -25,6 +28,8 @@ class ChildProfile {
     this.backgroundColorHex,
     this.accessMode = 'iconSequence',
     this.iconSequence = const [],
+    this.profileAccessEnabled = true,
+    this.profileAccessRevokedAtMillis = 0,
     this.circleTimeX = 0.25,
     this.circleTimeY = 0.5,
     this.circleTimeSide = 'home',
@@ -40,6 +45,8 @@ class ChildProfile {
       'backgroundColorHex': backgroundColorHex,
       'accessMode': accessMode,
       'iconSequence': iconSequence,
+      'profileAccessEnabled': profileAccessEnabled,
+      'profileAccessRevokedAtMillis': profileAccessRevokedAtMillis,
       'circleTimeX': circleTimeX,
       'circleTimeY': circleTimeY,
       'circleTimeSide': circleTimeSide,
@@ -57,6 +64,8 @@ class ChildProfile {
       backgroundColorHex: map['backgroundColorHex'],
       accessMode: map['accessMode'] ?? 'iconSequence',
       iconSequence: List<String>.from(map['iconSequence'] ?? []),
+      profileAccessEnabled: map['profileAccessEnabled'] ?? true,
+      profileAccessRevokedAtMillis: map['profileAccessRevokedAtMillis'] ?? 0,
       circleTimeX: (map['circleTimeX'] ?? 0.25).toDouble(),
       circleTimeY: (map['circleTimeY'] ?? 0.5).toDouble(),
       circleTimeSide: map['circleTimeSide'] ?? 'home',
@@ -73,6 +82,8 @@ class ChildProfile {
     String? backgroundColorHex,
     String? accessMode,
     List<String>? iconSequence,
+    bool? profileAccessEnabled,
+    int? profileAccessRevokedAtMillis,
     double? circleTimeX,
     double? circleTimeY,
     String? circleTimeSide,
@@ -87,6 +98,9 @@ class ChildProfile {
       backgroundColorHex: backgroundColorHex ?? this.backgroundColorHex,
       accessMode: accessMode ?? this.accessMode,
       iconSequence: iconSequence ?? this.iconSequence,
+      profileAccessEnabled: profileAccessEnabled ?? this.profileAccessEnabled,
+      profileAccessRevokedAtMillis:
+          profileAccessRevokedAtMillis ?? this.profileAccessRevokedAtMillis,
       circleTimeX: circleTimeX ?? this.circleTimeX,
       circleTimeY: circleTimeY ?? this.circleTimeY,
       circleTimeSide: circleTimeSide ?? this.circleTimeSide,

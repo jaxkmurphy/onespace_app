@@ -6,13 +6,13 @@ import '../locale_notifier.dart';
 import '../models/child_profile.dart';
 import '../models/classroom.dart';
 import '../models/classroom_feature.dart';
+import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import '../utils/hex_colour.dart';
 import '../widgets/child_dashboard_feature_card.dart';
 import 'background_color_picker_page.dart';
 import 'calming_sounds_page.dart';
 import 'child_word_learning_page.dart';
-import '../services/classroom_session_service.dart';
 
 class ChildProfileDashboard extends StatefulWidget {
   final ChildProfile profile;
@@ -46,6 +46,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
 
   Classroom? _classroom;
   bool _isLoadingClassroomFeatures = false;
+  bool _hasHandledAccessPause = false;
 
   @override
   void initState() {
@@ -65,7 +66,27 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             profile = updatedProfile;
             backgroundColor = HexColor(profile.backgroundColorHex ?? '#FFFFFF');
           });
+
+          if (!updatedProfile.profileAccessEnabled && !_hasHandledAccessPause) {
+            _handleAccessPaused();
+          }
         });
+  }
+
+  Future<void> _handleAccessPaused() async {
+    _hasHandledAccessPause = true;
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'This profile is paused for now. Please talk to a teacher.',
+        ),
+      ),
+    );
+
+    Navigator.pushNamedAndRemoveUntil(context, '/profiles', (route) => false);
   }
 
   Future<void> _loadClassroomFeatures() async {
