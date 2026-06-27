@@ -5987,55 +5987,55 @@ abstract class AppLocalizations {
   /// Text used in the app for background classic white.
   ///
   /// In en, this message translates to:
-  /// **'Classic White'**
+  /// **'Cloud White'**
   String get backgroundClassicWhite;
 
   /// Text used in the app for background classic white description.
   ///
   /// In en, this message translates to:
-  /// **'Clean and simple'**
+  /// **'Bright and simple'**
   String get backgroundClassicWhiteDescription;
 
   /// Text used in the app for background soft rose.
   ///
   /// In en, this message translates to:
-  /// **'Soft Rose'**
+  /// **'Bubblegum Pink'**
   String get backgroundSoftRose;
 
   /// Text used in the app for background soft rose description.
   ///
   /// In en, this message translates to:
-  /// **'Warm and gentle'**
+  /// **'Happy and warm'**
   String get backgroundSoftRoseDescription;
 
   /// Text used in the app for background clear sky.
   ///
   /// In en, this message translates to:
-  /// **'Clear Sky'**
+  /// **'Sky Blue'**
   String get backgroundClearSky;
 
   /// Text used in the app for background clear sky description.
   ///
   /// In en, this message translates to:
-  /// **'Cool and peaceful'**
+  /// **'Calm and clear'**
   String get backgroundClearSkyDescription;
 
   /// Text used in the app for background fresh mint.
   ///
   /// In en, this message translates to:
-  /// **'Fresh Mint'**
+  /// **'Mint Green'**
   String get backgroundFreshMint;
 
   /// Text used in the app for background fresh mint description.
   ///
   /// In en, this message translates to:
-  /// **'Calm and natural'**
+  /// **'Fresh and gentle'**
   String get backgroundFreshMintDescription;
 
   /// Text used in the app for background warm sunshine.
   ///
   /// In en, this message translates to:
-  /// **'Warm Sunshine'**
+  /// **'Sunny Yellow'**
   String get backgroundWarmSunshine;
 
   /// Text used in the app for background warm sunshine description.
@@ -6047,37 +6047,37 @@ abstract class AppLocalizations {
   /// Text used in the app for background soft lavender.
   ///
   /// In en, this message translates to:
-  /// **'Soft Lavender'**
+  /// **'Lavender Purple'**
   String get backgroundSoftLavender;
 
   /// Text used in the app for background soft lavender description.
   ///
   /// In en, this message translates to:
-  /// **'Quiet and relaxing'**
+  /// **'Soft and cosy'**
   String get backgroundSoftLavenderDescription;
 
   /// Text used in the app for background gentle grey.
   ///
   /// In en, this message translates to:
-  /// **'Gentle Grey'**
+  /// **'Ocean Teal'**
   String get backgroundGentleGrey;
 
   /// Text used in the app for background gentle grey description.
   ///
   /// In en, this message translates to:
-  /// **'Neutral and focused'**
+  /// **'Cool and focused'**
   String get backgroundGentleGreyDescription;
 
   /// Text used in the app for background warm peach.
   ///
   /// In en, this message translates to:
-  /// **'Warm Peach'**
+  /// **'Peach Orange'**
   String get backgroundWarmPeach;
 
   /// Text used in the app for background warm peach description.
   ///
   /// In en, this message translates to:
-  /// **'Cosy and welcoming'**
+  /// **'Warm and friendly'**
   String get backgroundWarmPeachDescription;
 
   /// Text used in the app for unlock sequence reset for.

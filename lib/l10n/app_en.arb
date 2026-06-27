@@ -4483,39 +4483,39 @@
   "@backgroundColourUpdateFailed": {
     "description": "Text used in the app for background colour update failed."
   },
-  "backgroundClassicWhite": "Classic White",
+  "backgroundClassicWhite": "Cloud White",
   "@backgroundClassicWhite": {
     "description": "Text used in the app for background classic white."
   },
-  "backgroundClassicWhiteDescription": "Clean and simple",
+  "backgroundClassicWhiteDescription": "Bright and simple",
   "@backgroundClassicWhiteDescription": {
     "description": "Text used in the app for background classic white description."
   },
-  "backgroundSoftRose": "Soft Rose",
+  "backgroundSoftRose": "Bubblegum Pink",
   "@backgroundSoftRose": {
     "description": "Text used in the app for background soft rose."
   },
-  "backgroundSoftRoseDescription": "Warm and gentle",
+  "backgroundSoftRoseDescription": "Happy and warm",
   "@backgroundSoftRoseDescription": {
     "description": "Text used in the app for background soft rose description."
   },
-  "backgroundClearSky": "Clear Sky",
+  "backgroundClearSky": "Sky Blue",
   "@backgroundClearSky": {
     "description": "Text used in the app for background clear sky."
   },
-  "backgroundClearSkyDescription": "Cool and peaceful",
+  "backgroundClearSkyDescription": "Calm and clear",
   "@backgroundClearSkyDescription": {
     "description": "Text used in the app for background clear sky description."
   },
-  "backgroundFreshMint": "Fresh Mint",
+  "backgroundFreshMint": "Mint Green",
   "@backgroundFreshMint": {
     "description": "Text used in the app for background fresh mint."
   },
-  "backgroundFreshMintDescription": "Calm and natural",
+  "backgroundFreshMintDescription": "Fresh and gentle",
   "@backgroundFreshMintDescription": {
     "description": "Text used in the app for background fresh mint description."
   },
-  "backgroundWarmSunshine": "Warm Sunshine",
+  "backgroundWarmSunshine": "Sunny Yellow",
   "@backgroundWarmSunshine": {
     "description": "Text used in the app for background warm sunshine."
   },
@@ -4523,27 +4523,27 @@
   "@backgroundWarmSunshineDescription": {
     "description": "Text used in the app for background warm sunshine description."
   },
-  "backgroundSoftLavender": "Soft Lavender",
+  "backgroundSoftLavender": "Lavender Purple",
   "@backgroundSoftLavender": {
     "description": "Text used in the app for background soft lavender."
   },
-  "backgroundSoftLavenderDescription": "Quiet and relaxing",
+  "backgroundSoftLavenderDescription": "Soft and cosy",
   "@backgroundSoftLavenderDescription": {
     "description": "Text used in the app for background soft lavender description."
   },
-  "backgroundGentleGrey": "Gentle Grey",
+  "backgroundGentleGrey": "Ocean Teal",
   "@backgroundGentleGrey": {
     "description": "Text used in the app for background gentle grey."
   },
-  "backgroundGentleGreyDescription": "Neutral and focused",
+  "backgroundGentleGreyDescription": "Cool and focused",
   "@backgroundGentleGreyDescription": {
     "description": "Text used in the app for background gentle grey description."
   },
-  "backgroundWarmPeach": "Warm Peach",
+  "backgroundWarmPeach": "Peach Orange",
   "@backgroundWarmPeach": {
     "description": "Text used in the app for background warm peach."
   },
-  "backgroundWarmPeachDescription": "Cosy and welcoming",
+  "backgroundWarmPeachDescription": "Warm and friendly",
   "@backgroundWarmPeachDescription": {
     "description": "Text used in the app for background warm peach description."
   },

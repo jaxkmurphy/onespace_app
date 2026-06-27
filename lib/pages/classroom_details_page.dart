@@ -981,6 +981,10 @@ class _FeatureSettingsCard extends StatelessWidget {
         return Icons.groups_rounded;
       case ClassroomFeature.quizzes:
         return Icons.quiz_rounded;
+      case ClassroomFeature.associationPairs:
+        return Icons.extension_rounded;
+      case ClassroomFeature.numberSequence:
+        return Icons.pin_rounded;
       case ClassroomFeature.wordLearning:
         return Icons.menu_book_rounded;
       case ClassroomFeature.incidentLog:

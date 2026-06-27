@@ -54,6 +54,9 @@ class ChildProfile {
   }
 
   factory ChildProfile.fromMap(String id, Map<String, dynamic> map) {
+    final backgroundColorHex =
+        map['backgroundColorHex'] ?? map['backgroundColor'];
+
     return ChildProfile(
       id: id,
       name: map['name'] ?? '',
@@ -61,7 +64,7 @@ class ChildProfile {
       zone: map['zone'],
       teacherUid: map['teacherUid'] ?? '',
       points: map['points'] ?? 0,
-      backgroundColorHex: map['backgroundColorHex'],
+      backgroundColorHex: backgroundColorHex,
       accessMode: map['accessMode'] ?? 'iconSequence',
       iconSequence: List<String>.from(map['iconSequence'] ?? []),
       profileAccessEnabled: map['profileAccessEnabled'] ?? true,

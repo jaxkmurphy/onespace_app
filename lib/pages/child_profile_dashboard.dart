@@ -140,7 +140,13 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
 
   @override
   void dispose() {
-    _profileSubscription?.cancel();
+    final subscription = _profileSubscription;
+    _profileSubscription = null;
+
+    subscription?.cancel().catchError((Object error, StackTrace stackTrace) {
+      debugPrint('Could not cancel child profile listener cleanly: $error');
+    });
+
     super.dispose();
   }
 
@@ -158,11 +164,13 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   }
 
   List<Color> get _backgroundGradient {
-    final softened = Color.lerp(backgroundColor, Colors.white, 0.64)!;
+    if (backgroundColor == Colors.white) {
+      return const [Color(0xFFFFFBF2), Color(0xFFF6F0FF), Color(0xFFEAF7FF)];
+    }
 
-    final warmer = Color.lerp(backgroundColor, const Color(0xFFFFF5E6), 0.76)!;
-
-    final cooler = Color.lerp(backgroundColor, const Color(0xFFF3F0FF), 0.78)!;
+    final softened = Color.lerp(backgroundColor, Colors.white, 0.18)!;
+    final warmer = Color.lerp(backgroundColor, const Color(0xFFFFF1D6), 0.32)!;
+    final cooler = Color.lerp(backgroundColor, const Color(0xFFEDE7FF), 0.36)!;
 
     return [softened, warmer, cooler];
   }
@@ -391,6 +399,8 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   }
 
   List<_DashboardFeature> _learningFeatures(AppLocalizations l10n) {
+    final isIrish = Localizations.localeOf(context).languageCode == 'ga';
+
     return [
       if (_isFeatureEnabled(ClassroomFeature.points))
         _DashboardFeature(
@@ -416,6 +426,40 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                 'firestoreService': widget.firestoreService,
                 'child': profile,
               },
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.associationPairs))
+        _DashboardFeature(
+          icon: Icons.extension_rounded,
+          title: isIrish ? 'Péirí Ceangailte' : 'Association Pairs',
+          subtitle:
+              isIrish
+                  ? 'Meaitseáil rudaí a théann le chéile.'
+                  : 'Match things that go together.',
+          color: const Color(0xFF7E57C2),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/association-pairs',
+              arguments: {'child': profile},
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.numberSequence))
+        _DashboardFeature(
+          icon: Icons.pin_rounded,
+          title: isIrish ? 'Ord Uimhreacha' : 'Number Sequence',
+          subtitle:
+              isIrish
+                  ? 'Tapáil na huimhreacha san ord ceart.'
+                  : 'Tap the numbers in order.',
+          color: const Color(0xFF29B6F6),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/number-sequence',
+              arguments: {'child': profile},
             );
           },
         ),

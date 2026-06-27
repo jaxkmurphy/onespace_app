@@ -36,7 +36,9 @@ mixin ProfileFirestoreService on FirestoreBase {
         .map(
           (doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(
             teacherUid:
-                hasClassroomSession ? session.requireClassroomId : currentTeacherUid,
+                hasClassroomSession
+                    ? session.requireClassroomId
+                    : currentTeacherUid,
           ),
         )
         .toList();
@@ -120,12 +122,20 @@ mixin ProfileFirestoreService on FirestoreBase {
     });
   }
 
+  Future<void> updateCurrentChildBackgroundColor({
+    required String childId,
+    required String colorHex,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentChildProfilesRef().doc(childId).update({
+      'backgroundColorHex': colorHex,
+    });
+  }
+
   // TEACHER STAFF PROFILE METHODS
 
-  Future<void> addStaffProfile(
-    String teacherUid,
-    StaffProfile profile,
-  ) async {
+  Future<void> addStaffProfile(String teacherUid, StaffProfile profile) async {
     final docRef = teacherStaffProfilesRef(teacherUid).doc();
 
     final profileWithId = profile.copyWith(
@@ -138,38 +148,34 @@ mixin ProfileFirestoreService on FirestoreBase {
 
   Stream<List<StaffProfile>> getStaffProfiles(String teacherUid) {
     return teacherStaffProfilesRef(teacherUid).snapshots().map(
-          (snapshot) => snapshot.docs
+      (snapshot) =>
+          snapshot.docs
               .map(
-                (doc) => StaffProfile.fromMap(doc.id, doc.data()).copyWith(
-                  teacherUid: teacherUid,
-                ),
+                (doc) => StaffProfile.fromMap(
+                  doc.id,
+                  doc.data(),
+                ).copyWith(teacherUid: teacherUid),
               )
               .toList(),
-        );
+    );
   }
 
   Future<void> updateStaffProfile(
     String teacherUid,
     StaffProfile profile,
   ) async {
-    await teacherStaffProfilesRef(teacherUid)
-        .doc(profile.id)
-        .update(profile.toMap());
+    await teacherStaffProfilesRef(
+      teacherUid,
+    ).doc(profile.id).update(profile.toMap());
   }
 
-  Future<void> deleteStaffProfile(
-    String teacherUid,
-    String profileId,
-  ) async {
+  Future<void> deleteStaffProfile(String teacherUid, String profileId) async {
     await teacherStaffProfilesRef(teacherUid).doc(profileId).delete();
   }
 
   // TEACHER CHILD PROFILE METHODS
 
-  Future<void> addChildProfile(
-    String teacherUid,
-    ChildProfile profile,
-  ) async {
+  Future<void> addChildProfile(String teacherUid, ChildProfile profile) async {
     final docRef = teacherChildProfilesRef(teacherUid).doc();
 
     final profileWithId = profile.copyWith(
@@ -182,14 +188,16 @@ mixin ProfileFirestoreService on FirestoreBase {
 
   Stream<List<ChildProfile>> getChildProfiles(String teacherUid) {
     return teacherChildProfilesRef(teacherUid).snapshots().map(
-          (snapshot) => snapshot.docs
+      (snapshot) =>
+          snapshot.docs
               .map(
-                (doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(
-                  teacherUid: teacherUid,
-                ),
+                (doc) => ChildProfile.fromMap(
+                  doc.id,
+                  doc.data(),
+                ).copyWith(teacherUid: teacherUid),
               )
               .toList(),
-        );
+    );
   }
 
   Future<List<ChildProfile>> getChildProfilesOnce(String teacherUid) async {
@@ -200,9 +208,7 @@ mixin ProfileFirestoreService on FirestoreBase {
           (doc) => ChildProfile.fromMap(
             doc.id,
             doc.data(),
-          ).copyWith(
-            teacherUid: teacherUid,
-          ),
+          ).copyWith(teacherUid: teacherUid),
         )
         .toList();
   }
@@ -211,10 +217,14 @@ mixin ProfileFirestoreService on FirestoreBase {
     String teacherUid,
     String childId,
   ) {
-    return teacherChildProfilesRef(teacherUid).doc(childId).snapshots().map(
-          (doc) => ChildProfile.fromMap(doc.id, doc.data()!).copyWith(
-            teacherUid: teacherUid,
-          ),
+    return teacherChildProfilesRef(teacherUid)
+        .doc(childId)
+        .snapshots()
+        .map(
+          (doc) => ChildProfile.fromMap(
+            doc.id,
+            doc.data()!,
+          ).copyWith(teacherUid: teacherUid),
         );
   }
 
@@ -222,15 +232,12 @@ mixin ProfileFirestoreService on FirestoreBase {
     String teacherUid,
     ChildProfile profile,
   ) async {
-    await teacherChildProfilesRef(teacherUid)
-        .doc(profile.id)
-        .update(profile.toMap());
+    await teacherChildProfilesRef(
+      teacherUid,
+    ).doc(profile.id).update(profile.toMap());
   }
 
-  Future<void> deleteChildProfile(
-    String teacherUid,
-    String profileId,
-  ) async {
+  Future<void> deleteChildProfile(String teacherUid, String profileId) async {
     await teacherChildProfilesRef(teacherUid).doc(profileId).delete();
   }
 
@@ -239,9 +246,9 @@ mixin ProfileFirestoreService on FirestoreBase {
     String childId,
     String colorHex,
   ) async {
-    await teacherChildProfilesRef(teacherUid).doc(childId).update({
-      'backgroundColor': colorHex,
-    });
+    await teacherChildProfilesRef(
+      teacherUid,
+    ).doc(childId).update({'backgroundColorHex': colorHex});
   }
 
   Future<void> updateChildIconSequence(
@@ -262,10 +269,11 @@ mixin ProfileFirestoreService on FirestoreBase {
     required String classroomId,
     required StaffProfile profile,
   }) async {
-    final docRef = classroomStaffProfilesRef(
-      schoolId: schoolId,
-      classroomId: classroomId,
-    ).doc();
+    final docRef =
+        classroomStaffProfilesRef(
+          schoolId: schoolId,
+          classroomId: classroomId,
+        ).doc();
 
     final profileWithId = profile.copyWith(
       id: docRef.id,
@@ -283,14 +291,16 @@ mixin ProfileFirestoreService on FirestoreBase {
       schoolId: schoolId,
       classroomId: classroomId,
     ).snapshots().map(
-          (snapshot) => snapshot.docs
+      (snapshot) =>
+          snapshot.docs
               .map(
-                (doc) => StaffProfile.fromMap(doc.id, doc.data()).copyWith(
-                  teacherUid: classroomId,
-                ),
+                (doc) => StaffProfile.fromMap(
+                  doc.id,
+                  doc.data(),
+                ).copyWith(teacherUid: classroomId),
               )
               .toList(),
-        );
+    );
   }
 
   Future<void> deleteClassroomStaffProfile({
@@ -311,10 +321,11 @@ mixin ProfileFirestoreService on FirestoreBase {
     required String classroomId,
     required ChildProfile profile,
   }) async {
-    final docRef = classroomChildProfilesRef(
-      schoolId: schoolId,
-      classroomId: classroomId,
-    ).doc();
+    final docRef =
+        classroomChildProfilesRef(
+          schoolId: schoolId,
+          classroomId: classroomId,
+        ).doc();
 
     final profileWithId = profile.copyWith(
       id: docRef.id,
@@ -341,12 +352,16 @@ mixin ProfileFirestoreService on FirestoreBase {
     required String childId,
   }) {
     return classroomChildProfilesRef(
-      schoolId: schoolId,
-      classroomId: classroomId,
-    ).doc(childId).snapshots().map(
-          (doc) => ChildProfile.fromMap(doc.id, doc.data()!).copyWith(
-            teacherUid: classroomId,
-          ),
+          schoolId: schoolId,
+          classroomId: classroomId,
+        )
+        .doc(childId)
+        .snapshots()
+        .map(
+          (doc) => ChildProfile.fromMap(
+            doc.id,
+            doc.data()!,
+          ).copyWith(teacherUid: classroomId),
         );
   }
 
@@ -358,14 +373,16 @@ mixin ProfileFirestoreService on FirestoreBase {
       schoolId: schoolId,
       classroomId: classroomId,
     ).snapshots().map(
-          (snapshot) => snapshot.docs
+      (snapshot) =>
+          snapshot.docs
               .map(
-                (doc) => ChildProfile.fromMap(doc.id, doc.data()).copyWith(
-                  teacherUid: classroomId,
-                ),
+                (doc) => ChildProfile.fromMap(
+                  doc.id,
+                  doc.data(),
+                ).copyWith(teacherUid: classroomId),
               )
               .toList(),
-        );
+    );
   }
 
   Future<void> deleteClassroomChildProfile({

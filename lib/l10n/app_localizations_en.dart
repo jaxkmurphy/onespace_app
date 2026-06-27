@@ -3423,52 +3423,52 @@ class AppLocalizationsEn extends AppLocalizations {
       'The background colour could not be updated.';
 
   @override
-  String get backgroundClassicWhite => 'Classic White';
+  String get backgroundClassicWhite => 'Cloud White';
 
   @override
-  String get backgroundClassicWhiteDescription => 'Clean and simple';
+  String get backgroundClassicWhiteDescription => 'Bright and simple';
 
   @override
-  String get backgroundSoftRose => 'Soft Rose';
+  String get backgroundSoftRose => 'Bubblegum Pink';
 
   @override
-  String get backgroundSoftRoseDescription => 'Warm and gentle';
+  String get backgroundSoftRoseDescription => 'Happy and warm';
 
   @override
-  String get backgroundClearSky => 'Clear Sky';
+  String get backgroundClearSky => 'Sky Blue';
 
   @override
-  String get backgroundClearSkyDescription => 'Cool and peaceful';
+  String get backgroundClearSkyDescription => 'Calm and clear';
 
   @override
-  String get backgroundFreshMint => 'Fresh Mint';
+  String get backgroundFreshMint => 'Mint Green';
 
   @override
-  String get backgroundFreshMintDescription => 'Calm and natural';
+  String get backgroundFreshMintDescription => 'Fresh and gentle';
 
   @override
-  String get backgroundWarmSunshine => 'Warm Sunshine';
+  String get backgroundWarmSunshine => 'Sunny Yellow';
 
   @override
   String get backgroundWarmSunshineDescription => 'Bright and cheerful';
 
   @override
-  String get backgroundSoftLavender => 'Soft Lavender';
+  String get backgroundSoftLavender => 'Lavender Purple';
 
   @override
-  String get backgroundSoftLavenderDescription => 'Quiet and relaxing';
+  String get backgroundSoftLavenderDescription => 'Soft and cosy';
 
   @override
-  String get backgroundGentleGrey => 'Gentle Grey';
+  String get backgroundGentleGrey => 'Ocean Teal';
 
   @override
-  String get backgroundGentleGreyDescription => 'Neutral and focused';
+  String get backgroundGentleGreyDescription => 'Cool and focused';
 
   @override
-  String get backgroundWarmPeach => 'Warm Peach';
+  String get backgroundWarmPeach => 'Peach Orange';
 
   @override
-  String get backgroundWarmPeachDescription => 'Cosy and welcoming';
+  String get backgroundWarmPeachDescription => 'Warm and friendly';
 
   @override
   String unlockSequenceResetFor(Object childName) {

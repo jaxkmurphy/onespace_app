@@ -4483,39 +4483,39 @@
   "@backgroundColourUpdateFailed": {
     "description": "Text used in the app for background colour update failed."
   },
-  "backgroundClassicWhite": "Bán Clasaiceach",
+  "backgroundClassicWhite": "Bán Scamaill",
   "@backgroundClassicWhite": {
     "description": "Text used in the app for background classic white."
   },
-  "backgroundClassicWhiteDescription": "Glan agus simplí",
+  "backgroundClassicWhiteDescription": "Geal agus simplí",
   "@backgroundClassicWhiteDescription": {
     "description": "Text used in the app for background classic white description."
   },
-  "backgroundSoftRose": "Rós Bog",
+  "backgroundSoftRose": "Bándearg Guma Bolgáin",
   "@backgroundSoftRose": {
     "description": "Text used in the app for background soft rose."
   },
-  "backgroundSoftRoseDescription": "Te agus séimh",
+  "backgroundSoftRoseDescription": "Sona agus te",
   "@backgroundSoftRoseDescription": {
     "description": "Text used in the app for background soft rose description."
   },
-  "backgroundClearSky": "Spéir Ghlan",
+  "backgroundClearSky": "Gorm Spéire",
   "@backgroundClearSky": {
     "description": "Text used in the app for background clear sky."
   },
-  "backgroundClearSkyDescription": "Fionnuar agus síochánta",
+  "backgroundClearSkyDescription": "Socair agus soiléir",
   "@backgroundClearSkyDescription": {
     "description": "Text used in the app for background clear sky description."
   },
-  "backgroundFreshMint": "Miontas Úr",
+  "backgroundFreshMint": "Glas Miontais",
   "@backgroundFreshMint": {
     "description": "Text used in the app for background fresh mint."
   },
-  "backgroundFreshMintDescription": "Socair agus nádúrtha",
+  "backgroundFreshMintDescription": "Úr agus séimh",
   "@backgroundFreshMintDescription": {
     "description": "Text used in the app for background fresh mint description."
   },
-  "backgroundWarmSunshine": "Solas Gréine Te",
+  "backgroundWarmSunshine": "Buí Grianmhar",
   "@backgroundWarmSunshine": {
     "description": "Text used in the app for background warm sunshine."
   },
@@ -4523,27 +4523,27 @@
   "@backgroundWarmSunshineDescription": {
     "description": "Text used in the app for background warm sunshine description."
   },
-  "backgroundSoftLavender": "Labhandar Bog",
+  "backgroundSoftLavender": "Corcra Labhandair",
   "@backgroundSoftLavender": {
     "description": "Text used in the app for background soft lavender."
   },
-  "backgroundSoftLavenderDescription": "Ciúin agus suaimhneach",
+  "backgroundSoftLavenderDescription": "Bog agus cluthar",
   "@backgroundSoftLavenderDescription": {
     "description": "Text used in the app for background soft lavender description."
   },
-  "backgroundGentleGrey": "Liath Séimh",
+  "backgroundGentleGrey": "Téal Aigéin",
   "@backgroundGentleGrey": {
     "description": "Text used in the app for background gentle grey."
   },
-  "backgroundGentleGreyDescription": "Neodrach agus dírithe",
+  "backgroundGentleGreyDescription": "Fionnuar agus dírithe",
   "@backgroundGentleGreyDescription": {
     "description": "Text used in the app for background gentle grey description."
   },
-  "backgroundWarmPeach": "Péitseog The",
+  "backgroundWarmPeach": "Oráiste Péitseoige",
   "@backgroundWarmPeach": {
     "description": "Text used in the app for background warm peach."
   },
-  "backgroundWarmPeachDescription": "Cluthar agus fáiltiúil",
+  "backgroundWarmPeachDescription": "Te agus cairdiúil",
   "@backgroundWarmPeachDescription": {
     "description": "Text used in the app for background warm peach description."
   },

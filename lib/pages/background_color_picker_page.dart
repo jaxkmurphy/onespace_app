@@ -21,51 +21,51 @@ class BackgroundColorPickerPage extends StatefulWidget {
 class _BackgroundColorPickerPageState extends State<BackgroundColorPickerPage> {
   static const List<_BackgroundOption> colourOptions = [
     _BackgroundOption(
-      name: 'Classic White',
-      description: 'Clean and simple',
+      name: 'Cloud White',
+      description: 'Bright and simple',
       hex: '#FFFFFF',
-      icon: Icons.light_mode_rounded,
-    ),
-    _BackgroundOption(
-      name: 'Soft Rose',
-      description: 'Warm and gentle',
-      hex: '#FFEBEE',
-      icon: Icons.favorite_rounded,
-    ),
-    _BackgroundOption(
-      name: 'Clear Sky',
-      description: 'Cool and peaceful',
-      hex: '#E3F2FD',
       icon: Icons.cloud_rounded,
     ),
     _BackgroundOption(
-      name: 'Fresh Mint',
-      description: 'Calm and natural',
-      hex: '#E8F5E9',
+      name: 'Bubblegum Pink',
+      description: 'Happy and warm',
+      hex: '#FFB7D5',
+      icon: Icons.favorite_rounded,
+    ),
+    _BackgroundOption(
+      name: 'Sky Blue',
+      description: 'Calm and clear',
+      hex: '#8FD8FF',
+      icon: Icons.cloud_rounded,
+    ),
+    _BackgroundOption(
+      name: 'Mint Green',
+      description: 'Fresh and gentle',
+      hex: '#9EF0C5',
       icon: Icons.eco_rounded,
     ),
     _BackgroundOption(
-      name: 'Warm Sunshine',
+      name: 'Sunny Yellow',
       description: 'Bright and cheerful',
-      hex: '#FFFDE7',
+      hex: '#FFE680',
       icon: Icons.wb_sunny_rounded,
     ),
     _BackgroundOption(
-      name: 'Soft Lavender',
-      description: 'Quiet and relaxing',
-      hex: '#F3E5F5',
+      name: 'Lavender Purple',
+      description: 'Soft and cosy',
+      hex: '#CDB4FF',
       icon: Icons.auto_awesome_rounded,
     ),
     _BackgroundOption(
-      name: 'Gentle Grey',
-      description: 'Neutral and focused',
-      hex: '#ECEFF1',
-      icon: Icons.blur_on_rounded,
+      name: 'Ocean Teal',
+      description: 'Cool and focused',
+      hex: '#7DE2D1',
+      icon: Icons.water_drop_rounded,
     ),
     _BackgroundOption(
-      name: 'Warm Peach',
-      description: 'Cosy and welcoming',
-      hex: '#FFE0B2',
+      name: 'Peach Orange',
+      description: 'Warm and friendly',
+      hex: '#FFBC80',
       icon: Icons.local_fire_department_rounded,
     ),
   ];
@@ -97,11 +97,10 @@ class _BackgroundColorPickerPageState extends State<BackgroundColorPickerPage> {
     });
 
     try {
-      final updatedChild = widget.child.copyWith(
-        backgroundColorHex: _selectedHex,
+      await widget.firestoreService.updateCurrentChildBackgroundColor(
+        childId: widget.child.id,
+        colorHex: _selectedHex,
       );
-
-      await widget.firestoreService.updateCurrentChildProfile(updatedChild);
 
       if (!mounted) return;
 
@@ -475,26 +474,26 @@ class _BackgroundColorPickerPageState extends State<BackgroundColorPickerPage> {
 
   String _localizedOptionName(_BackgroundOption option) => switch (option.hex) {
     '#FFFFFF' => context.l10n.backgroundClassicWhite,
-    '#FFEBEE' => context.l10n.backgroundSoftRose,
-    '#E3F2FD' => context.l10n.backgroundClearSky,
-    '#E8F5E9' => context.l10n.backgroundFreshMint,
-    '#FFFDE7' => context.l10n.backgroundWarmSunshine,
-    '#F3E5F5' => context.l10n.backgroundSoftLavender,
-    '#ECEFF1' => context.l10n.backgroundGentleGrey,
-    '#FFE0B2' => context.l10n.backgroundWarmPeach,
+    '#FFB7D5' => context.l10n.backgroundSoftRose,
+    '#8FD8FF' => context.l10n.backgroundClearSky,
+    '#9EF0C5' => context.l10n.backgroundFreshMint,
+    '#FFE680' => context.l10n.backgroundWarmSunshine,
+    '#CDB4FF' => context.l10n.backgroundSoftLavender,
+    '#7DE2D1' => context.l10n.backgroundGentleGrey,
+    '#FFBC80' => context.l10n.backgroundWarmPeach,
     _ => option.name,
   };
 
   String _localizedOptionDescription(_BackgroundOption option) => switch (option
       .hex) {
     '#FFFFFF' => context.l10n.backgroundClassicWhiteDescription,
-    '#FFEBEE' => context.l10n.backgroundSoftRoseDescription,
-    '#E3F2FD' => context.l10n.backgroundClearSkyDescription,
-    '#E8F5E9' => context.l10n.backgroundFreshMintDescription,
-    '#FFFDE7' => context.l10n.backgroundWarmSunshineDescription,
-    '#F3E5F5' => context.l10n.backgroundSoftLavenderDescription,
-    '#ECEFF1' => context.l10n.backgroundGentleGreyDescription,
-    '#FFE0B2' => context.l10n.backgroundWarmPeachDescription,
+    '#FFB7D5' => context.l10n.backgroundSoftRoseDescription,
+    '#8FD8FF' => context.l10n.backgroundClearSkyDescription,
+    '#9EF0C5' => context.l10n.backgroundFreshMintDescription,
+    '#FFE680' => context.l10n.backgroundWarmSunshineDescription,
+    '#CDB4FF' => context.l10n.backgroundSoftLavenderDescription,
+    '#7DE2D1' => context.l10n.backgroundGentleGreyDescription,
+    '#FFBC80' => context.l10n.backgroundWarmPeachDescription,
     _ => option.description,
   };
 }

@@ -8,6 +8,8 @@ enum ClassroomFeature {
   bodyCheck('bodyCheck'),
   circleTime('circleTime'),
   quizzes('quizzes'),
+  associationPairs('associationPairs'),
+  numberSequence('numberSequence'),
   wordLearning('wordLearning'),
   incidentLog('incidentLog'),
   handover('handover'),
@@ -79,6 +81,10 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Circle Time';
       case ClassroomFeature.quizzes:
         return 'Quizzes';
+      case ClassroomFeature.associationPairs:
+        return 'Association Pairs';
+      case ClassroomFeature.numberSequence:
+        return 'Number Sequence';
       case ClassroomFeature.wordLearning:
         return 'Word Learning';
       case ClassroomFeature.incidentLog:
@@ -116,6 +122,10 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Circle Time classroom view.';
       case ClassroomFeature.quizzes:
         return 'Quiz creation and child quiz access.';
+      case ClassroomFeature.associationPairs:
+        return 'Child association matching game.';
+      case ClassroomFeature.numberSequence:
+        return 'Child number ordering and hand-eye coordination game.';
       case ClassroomFeature.wordLearning:
         return 'Word learning and practice.';
       case ClassroomFeature.incidentLog:

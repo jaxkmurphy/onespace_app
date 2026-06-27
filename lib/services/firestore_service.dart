@@ -9,6 +9,7 @@ import 'firestore/firestore_base.dart';
 import 'firestore/handover_firestore_service.dart';
 import 'firestore/learning_firestore_service.dart';
 import 'firestore/profile_firestore_service.dart';
+import 'firestore/voice_line_firestore_service.dart';
 import 'firestore/wellbeing_firestore_service.dart';
 
 class FirestoreService
@@ -20,7 +21,8 @@ class FirestoreService
         LearningFirestoreService,
         HandoverFirestoreService,
         AdminFirestoreService,
-        ChildAccessFirestoreService {
+        ChildAccessFirestoreService,
+        VoiceLineFirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   final ClassroomSessionService _session = ClassroomSessionService.instance;

@@ -3487,52 +3487,52 @@ class AppLocalizationsGa extends AppLocalizations {
       'Níorbh fhéidir dath an chúlra a nuashonrú.';
 
   @override
-  String get backgroundClassicWhite => 'Bán Clasaiceach';
+  String get backgroundClassicWhite => 'Bán Scamaill';
 
   @override
-  String get backgroundClassicWhiteDescription => 'Glan agus simplí';
+  String get backgroundClassicWhiteDescription => 'Geal agus simplí';
 
   @override
-  String get backgroundSoftRose => 'Rós Bog';
+  String get backgroundSoftRose => 'Bándearg Guma Bolgáin';
 
   @override
-  String get backgroundSoftRoseDescription => 'Te agus séimh';
+  String get backgroundSoftRoseDescription => 'Sona agus te';
 
   @override
-  String get backgroundClearSky => 'Spéir Ghlan';
+  String get backgroundClearSky => 'Gorm Spéire';
 
   @override
-  String get backgroundClearSkyDescription => 'Fionnuar agus síochánta';
+  String get backgroundClearSkyDescription => 'Socair agus soiléir';
 
   @override
-  String get backgroundFreshMint => 'Miontas Úr';
+  String get backgroundFreshMint => 'Glas Miontais';
 
   @override
-  String get backgroundFreshMintDescription => 'Socair agus nádúrtha';
+  String get backgroundFreshMintDescription => 'Úr agus séimh';
 
   @override
-  String get backgroundWarmSunshine => 'Solas Gréine Te';
+  String get backgroundWarmSunshine => 'Buí Grianmhar';
 
   @override
   String get backgroundWarmSunshineDescription => 'Geal agus sona';
 
   @override
-  String get backgroundSoftLavender => 'Labhandar Bog';
+  String get backgroundSoftLavender => 'Corcra Labhandair';
 
   @override
-  String get backgroundSoftLavenderDescription => 'Ciúin agus suaimhneach';
+  String get backgroundSoftLavenderDescription => 'Bog agus cluthar';
 
   @override
-  String get backgroundGentleGrey => 'Liath Séimh';
+  String get backgroundGentleGrey => 'Téal Aigéin';
 
   @override
-  String get backgroundGentleGreyDescription => 'Neodrach agus dírithe';
+  String get backgroundGentleGreyDescription => 'Fionnuar agus dírithe';
 
   @override
-  String get backgroundWarmPeach => 'Péitseog The';
+  String get backgroundWarmPeach => 'Oráiste Péitseoige';
 
   @override
-  String get backgroundWarmPeachDescription => 'Cluthar agus fáiltiúil';
+  String get backgroundWarmPeachDescription => 'Te agus cairdiúil';
 
   @override
   String unlockSequenceResetFor(Object childName) {

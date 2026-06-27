@@ -129,21 +129,20 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
         final waitingForFeatures =
             _shouldWaitForClassroomFeatures && _classroom == null;
 
+        final todayOverviewCard =
+            _isFeatureEnabled(ClassroomFeature.todayOverview)
+                ? _TodayOverviewSpotlight(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/today-overview',
+                      arguments: widget.profile,
+                    );
+                  },
+                )
+                : null;
+
         final dailyTools = <Widget>[
-          if (_isFeatureEnabled(ClassroomFeature.todayOverview))
-            StaffDashboardFeatureCard(
-              icon: Icons.dashboard_rounded,
-              title: l10n.todayOverview,
-              subtitle: l10n.todayOverviewSubtitle,
-              color: const Color(0xFF5E7CE2),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/today-overview',
-                  arguments: widget.profile,
-                );
-              },
-            ),
           if (_isFeatureEnabled(ClassroomFeature.zones))
             StaffDashboardFeatureCard(
               icon: Icons.palette_rounded,
@@ -281,6 +280,20 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             color: const Color(0xFF455A64),
             onTap: _openChildAccess,
           ),
+          if (_isFeatureEnabled(ClassroomFeature.voiceLines))
+            StaffDashboardFeatureCard(
+              icon: Icons.record_voice_over_rounded,
+              title: l10n.voiceLines,
+              subtitle: 'Manage the phrases children can use.',
+              color: const Color(0xFF7E57C2),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/voice-lines-management',
+                  arguments: widget.profile,
+                );
+              },
+            ),
           if (_isFeatureEnabled(ClassroomFeature.incidentLog))
             StaffDashboardFeatureCard(
               icon: Icons.event_note_rounded,
@@ -351,6 +364,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                       isLoadingClassroomFeatures: _isLoadingClassroomFeatures,
                       profile: widget.profile,
                       classroomName: _classroomName,
+                      todayOverviewCard: todayOverviewCard,
                       dailyTools: dailyTools,
                       communicationTools: communicationTools,
                       learningTools: learningTools,
@@ -367,6 +381,7 @@ class _StaffDashboardBody extends StatelessWidget {
   final bool isLoadingClassroomFeatures;
   final StaffProfile profile;
   final String classroomName;
+  final Widget? todayOverviewCard;
   final List<Widget> dailyTools;
   final List<Widget> communicationTools;
   final List<Widget> learningTools;
@@ -376,6 +391,7 @@ class _StaffDashboardBody extends StatelessWidget {
     required this.isLoadingClassroomFeatures,
     required this.profile,
     required this.classroomName,
+    required this.todayOverviewCard,
     required this.dailyTools,
     required this.communicationTools,
     required this.learningTools,
@@ -421,6 +437,10 @@ class _StaffDashboardBody extends StatelessWidget {
                         profile: profile,
                         classroomName: classroomName,
                       ),
+                      if (todayOverviewCard != null) ...[
+                        const SizedBox(height: 18),
+                        todayOverviewCard!,
+                      ],
                       const SizedBox(height: 22),
                       _HubSection(
                         icon: Icons.today_rounded,
@@ -593,6 +613,108 @@ class _StaffHeroCard extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _TodayOverviewSpotlight extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _TodayOverviewSpotlight({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 720),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(28),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(28),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF5E7CE2),
+                    Color(0xFF7C6BFF),
+                    Color(0xFFFFB199),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF5E7CE2).withValues(alpha: 0.18),
+                    blurRadius: 22,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 58,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.20),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.22),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.dashboard_rounded,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.l10n.todayOverview,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 21,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          context.l10n.todayOverviewSubtitle,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.88),
+                            fontSize: 14,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

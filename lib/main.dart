@@ -39,6 +39,9 @@ import 'pages/zone_selection_page.dart';
 import 'pages/zones_overview_page.dart';
 import 'services/firestore_service.dart';
 import 'theme/app_theme.dart';
+import 'pages/voice_lines_management_page.dart';
+import 'pages/association_pairs_page.dart';
+import 'pages/number_sequence_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -282,8 +285,39 @@ class _MyAppState extends State<MyApp> {
         }
         return _errorPage((l10n) => l10n.missingStudentQuizDetails);
 
+      case '/association-pairs':
+        if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
+          return _page(
+            AssociationPairsPage(child: args['child'] as ChildProfile),
+          );
+        }
+        return _page(const AssociationPairsPage());
+
+      case '/number-sequence':
+        if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
+          return _page(
+            NumberSequencePage(child: args['child'] as ChildProfile),
+          );
+        }
+        return _page(const NumberSequencePage());
+
       case '/voice-lines':
-        return _page(const VoiceLinesPage());
+        if (args is Map<String, dynamic> &&
+            args['firestoreService'] is FirestoreService) {
+          return _page(
+            VoiceLinesPage(
+              firestoreService: args['firestoreService'] as FirestoreService,
+            ),
+          );
+        }
+
+        return _page(VoiceLinesPage(firestoreService: FirestoreService()));
+
+      case '/voice-lines-management':
+        if (args is StaffProfile) {
+          return _page(VoiceLinesManagementPage(staffProfile: args));
+        }
+        return _errorPage((l10n) => l10n.missingStaffProfile);
 
       case '/icon-reset':
         if (args is String) {

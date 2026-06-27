@@ -155,6 +155,11 @@ service cloud.firestore {
             || isThisClassroom(schoolId, classroomId);
         }
 
+        match /voice_lines/{voiceLineId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+        }
+
         match /circle_time_days/{dateKey} {
           allow read, write: if isSchoolAdmin(schoolId)
             || isThisClassroom(schoolId, classroomId);

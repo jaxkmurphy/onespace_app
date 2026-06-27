@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../data/voice_lines.dart';
+import '../models/managed_voice_line.dart';
+import '../services/firestore_service.dart';
 
 class VoiceLinesPage extends StatefulWidget {
-  const VoiceLinesPage({super.key});
+  final FirestoreService firestoreService;
+
+  const VoiceLinesPage({super.key, required this.firestoreService});
 
   @override
   State<VoiceLinesPage> createState() => _VoiceLinesPageState();
@@ -11,6 +15,8 @@ class VoiceLinesPage extends StatefulWidget {
 
 class _VoiceLinesPageState extends State<VoiceLinesPage> {
   final FlutterTts _tts = FlutterTts();
+
+  FirestoreService get _firestoreService => widget.firestoreService;
 
   String? _speakingKey;
   bool _isSpeaking = false;
@@ -24,9 +30,10 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
   }
 
   Future<void> _setupTts() async {
-    await _tts.setSpeechRate(0.45);
+    await _tts.setSpeechRate(0.42);
     await _tts.setVolume(1.0);
-    await _tts.setPitch(1.0);
+    await _tts.setPitch(0.95);
+    await _tts.awaitSpeakCompletion(true);
 
     try {
       final languages = await _tts.getLanguages;
@@ -66,7 +73,13 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
 
   @override
   void dispose() {
-    _tts.stop();
+    _speakingKey = null;
+    _isSpeaking = false;
+
+    _tts.stop().catchError((Object error) {
+      debugPrint('Could not stop TTS cleanly: $error');
+    });
+
     super.dispose();
   }
 
@@ -156,7 +169,11 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
   }
 
   Future<void> _stopSpeaking() async {
-    await _tts.stop();
+    try {
+      await _tts.stop();
+    } catch (error) {
+      debugPrint('Could not stop TTS cleanly: $error');
+    }
 
     if (!mounted) return;
 
@@ -172,10 +189,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF7E57C2),
-            Color(0xFF26A69A),
-          ],
+          colors: [Color(0xFF7E57C2), Color(0xFF26A69A)],
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
@@ -207,11 +221,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _text(
-                    context: context,
-                    en: 'Voice Lines',
-                    ga: 'Línte Gutha',
-                  ),
+                  _text(context: context, en: 'Voice Lines', ga: 'Línte Gutha'),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -256,10 +266,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.info_rounded,
-            color: Color(0xFFFF8F00),
-          ),
+          const Icon(Icons.info_rounded, color: Color(0xFFFF8F00)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -275,18 +282,18 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
     );
   }
 
-  Widget _buildNowSpeakingCard(BuildContext context) {
-    final currentLine = _speakingKey == null
-        ? null
-        : voiceLines.where((line) => line.key == _speakingKey).firstOrNull;
+  Widget _buildNowSpeakingCard(BuildContext context, List<VoiceLine> lines) {
+    final currentLine =
+        _speakingKey == null
+            ? null
+            : lines.where((line) => line.key == _speakingKey).firstOrNull;
 
     if (currentLine == null) {
       return const SizedBox.shrink();
     }
 
-    final label = _isIrish(context)
-        ? currentLine.spokenGA
-        : currentLine.spokenEN;
+    final label =
+        _isIrish(context) ? currentLine.spokenGA : currentLine.spokenEN;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
@@ -317,11 +324,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
               color: currentLine.color,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(
-              currentLine.icon,
-              color: Colors.white,
-              size: 34,
-            ),
+            child: Icon(currentLine.icon, color: Colors.white, size: 34),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -329,11 +332,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _text(
-                    context: context,
-                    en: 'Speaking now',
-                    ga: 'Á rá anois',
-                  ),
+                  _text(context: context, en: 'Speaking now', ga: 'Á rá anois'),
                   style: TextStyle(
                     color: currentLine.color,
                     fontWeight: FontWeight.w800,
@@ -371,21 +370,21 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
         duration: const Duration(milliseconds: 220),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isSpeakingThis
-              ? line.color.withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.96),
+          color:
+              isSpeakingThis
+                  ? line.color.withValues(alpha: 0.15)
+                  : Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
-            color: isSpeakingThis
-                ? line.color
-                : line.color.withValues(alpha: 0.18),
+            color:
+                isSpeakingThis
+                    ? line.color
+                    : line.color.withValues(alpha: 0.18),
             width: isSpeakingThis ? 3 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: line.color.withValues(
-                alpha: isSpeakingThis ? 0.20 : 0.08,
-              ),
+              color: line.color.withValues(alpha: isSpeakingThis ? 0.20 : 0.08),
               blurRadius: 18,
               offset: const Offset(0, 9),
             ),
@@ -400,11 +399,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
                 color: line.color.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Icon(
-                line.icon,
-                color: line.color,
-                size: 42,
-              ),
+              child: Icon(line.icon, color: line.color, size: 42),
             ),
             const SizedBox(height: 14),
             Text(
@@ -452,16 +447,8 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
                   const SizedBox(width: 6),
                   Text(
                     isSpeakingThis
-                        ? _text(
-                            context: context,
-                            en: 'Speaking',
-                            ga: 'Á rá',
-                          )
-                        : _text(
-                            context: context,
-                            en: 'Say it',
-                            ga: 'Abair é',
-                          ),
+                        ? _text(context: context, en: 'Speaking', ga: 'Á rá')
+                        : _text(context: context, en: 'Say it', ga: 'Abair é'),
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
@@ -476,7 +463,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
     );
   }
 
-  Widget _buildVoiceGrid(BuildContext context) {
+  Widget _buildVoiceGrid(BuildContext context, List<VoiceLine> lines) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -487,10 +474,73 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
-      itemCount: voiceLines.length,
+      itemCount: lines.length,
       itemBuilder: (context, index) {
-        return _buildVoiceLineCard(context, voiceLines[index]);
+        return _buildVoiceLineCard(context, lines[index]);
       },
+    );
+  }
+
+  List<VoiceLine> _linesForSnapshot(
+    AsyncSnapshot<List<ManagedVoiceLine>> snapshot,
+  ) {
+    final managedLines = snapshot.data ?? [];
+    return managedLines
+        .where((line) => line.active)
+        .map<VoiceLine>(voiceLineFromManaged)
+        .toList();
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
+      constraints: const BoxConstraints(maxWidth: 760),
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.94),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: const Color(0xFFE8E3FF)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: const Color(0xFF7E57C2).withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Icon(
+              Icons.record_voice_over_rounded,
+              color: Color(0xFF7E57C2),
+              size: 38,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            _text(
+              context: context,
+              en: 'No voice lines are available right now',
+              ga: 'Níl aon líne ghutha ar fáil faoi láthair',
+            ),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _text(
+              context: context,
+              en: 'Please talk to a teacher.',
+              ga: 'Labhair le múinteoir, le do thoil.',
+            ),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -499,11 +549,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _text(
-            context: context,
-            en: 'Voice Lines',
-            ga: 'Línte Gutha',
-          ),
+          _text(context: context, en: 'Voice Lines', ga: 'Línte Gutha'),
         ),
         centerTitle: true,
       ),
@@ -513,23 +559,29 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF7F2FF),
-              Color(0xFFF3FFF5),
-              Color(0xFFFFF8E8),
-            ],
+            colors: [Color(0xFFF7F2FF), Color(0xFFF3FFF5), Color(0xFFFFF8E8)],
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildHeader(context),
-                _buildVoiceFallbackNotice(context),
-                _buildNowSpeakingCard(context),
-                _buildVoiceGrid(context),
-              ],
-            ),
+          child: StreamBuilder<List<ManagedVoiceLine>>(
+            stream: _firestoreService.getCurrentVoiceLines(activeOnly: true),
+            builder: (context, snapshot) {
+              final lines = _linesForSnapshot(snapshot);
+
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildHeader(context),
+                    _buildVoiceFallbackNotice(context),
+                    _buildNowSpeakingCard(context, lines),
+                    if (lines.isEmpty)
+                      _buildEmptyState(context)
+                    else
+                      _buildVoiceGrid(context, lines),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
