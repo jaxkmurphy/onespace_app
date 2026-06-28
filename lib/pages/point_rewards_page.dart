@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../data/app_icon_catalog.dart';
 import '../models/point_reward.dart';
 import '../services/firestore_service.dart';
+import '../widgets/app_icon_picker_dialog.dart';
 
 class PointRewardsPage extends StatefulWidget {
   const PointRewardsPage({super.key});
@@ -15,17 +17,6 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
   String _t(String en, String ga) =>
       Localizations.localeOf(context).languageCode == 'ga' ? ga : en;
 
-  static const Map<String, IconData> rewardIcons = {
-    'gift': Icons.card_giftcard_rounded,
-    'game': Icons.sports_esports_rounded,
-    'music': Icons.music_note_rounded,
-    'art': Icons.palette_rounded,
-    'outdoors': Icons.park_rounded,
-    'choice': Icons.touch_app_rounded,
-    'break': Icons.free_breakfast_rounded,
-    'star': Icons.star_rounded,
-  };
-
   Future<void> _showRewardDialog({PointReward? reward}) async {
     final nameController = TextEditingController(text: reward?.name ?? '');
 
@@ -37,7 +28,7 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
       text: reward?.cost.toString() ?? '',
     );
 
-    String selectedIcon = reward?.iconName ?? 'gift';
+    String selectedIcon = appIconKeyFor(reward?.iconName ?? 'gift');
     bool isSaving = false;
 
     await showDialog<void>(
@@ -45,6 +36,31 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            Future<void> chooseIcon() async {
+              final selected = await showAppIconPickerDialog(
+                context: dialogContext,
+                selectedKey: selectedIcon,
+                title: _t('Choose an icon', 'Roghnaigh deilbhín'),
+                categories: const [
+                  AppIconCategory.objects,
+                  AppIconCategory.play,
+                  AppIconCategory.food,
+                  AppIconCategory.nature,
+                  AppIconCategory.learning,
+                  AppIconCategory.dailyLife,
+                  AppIconCategory.feelings,
+                ],
+              );
+
+              if (selected == null) return;
+
+              setDialogState(() {
+                selectedIcon = selected.key;
+              });
+            }
+
+            final selectedOption = appIconOptionForKey(selectedIcon);
+
             return AlertDialog(
               title: Text(
                 reward == null
@@ -97,33 +113,72 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                         ),
                       ),
                       const SizedBox(height: 18),
-                      Text(
-                        _t('Choose an icon', 'Roghnaigh deilbhín'),
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 9,
-                        runSpacing: 9,
-                        children:
-                            rewardIcons.entries.map((entry) {
-                              final selected = selectedIcon == entry.key;
-
-                              return ChoiceChip(
-                                selected: selected,
-                                avatar: Icon(entry.value, size: 21),
-                                label: Text(_iconLabel(entry.key)),
-                                onSelected:
-                                    isSaving
-                                        ? null
-                                        : (_) {
-                                          setDialogState(() {
-                                            selectedIcon = entry.key;
-                                          });
-                                        },
-                              );
-                            }).toList(),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(18),
+                        onTap: isSaving ? null : chooseIcon,
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: Colors.deepPurple.withValues(alpha: 0.28),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple.withValues(
+                                    alpha: 0.14,
+                                  ),
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: Icon(
+                                  selectedOption.icon,
+                                  color: Colors.deepPurple,
+                                  size: 30,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      selectedOption.label,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      _t(
+                                        'Choose an icon',
+                                        'Roghnaigh deilbhín',
+                                      ),
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Icon(
+                                Icons.edit_rounded,
+                                color: Colors.deepPurple,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -183,7 +238,7 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                                   name: name,
                                   description: description,
                                   cost: cost,
-                                  iconName: selectedIcon,
+                                  iconName: appIconKeyFor(selectedIcon),
                                 );
                               } else {
                                 await _firestoreService
@@ -192,7 +247,7 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                                         name: name,
                                         description: description,
                                         cost: cost,
-                                        iconName: selectedIcon,
+                                        iconName: appIconKeyFor(selectedIcon),
                                       ),
                                     );
                               }
@@ -309,28 +364,6 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
           ),
         ),
       );
-    }
-  }
-
-  String _iconLabel(String iconName) {
-    switch (iconName) {
-      case 'game':
-        return _t('Game', 'Cluiche');
-      case 'music':
-        return _t('Music', 'Ceol');
-      case 'art':
-        return _t('Art', 'Ealaín');
-      case 'outdoors':
-        return _t('Outdoors', 'Lasmuigh');
-      case 'choice':
-        return _t('Choice', 'Rogha');
-      case 'break':
-        return _t('Break', 'Sos');
-      case 'star':
-        return _t('Star', 'Réalta');
-      case 'gift':
-      default:
-        return _t('Gift', 'Bronntanas');
     }
   }
 
@@ -474,7 +507,7 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
   }
 
   Widget _buildRewardCard(BuildContext context, PointReward reward) {
-    final icon = rewardIcons[reward.iconName] ?? Icons.card_giftcard_rounded;
+    final icon = appIconForKey(reward.iconName, fallbackKey: 'gift');
 
     return Opacity(
       opacity: reward.active ? 1 : 0.58,

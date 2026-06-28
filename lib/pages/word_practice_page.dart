@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../data/app_icon_catalog.dart';
 import '../data/word_learning_visuals.dart';
 import '../l10n/l10n.dart';
 import '../models/word_attempt.dart';
@@ -24,8 +25,7 @@ class WordPracticePage extends StatefulWidget {
   });
 
   @override
-  State<WordPracticePage> createState() =>
-      _WordPracticePageState();
+  State<WordPracticePage> createState() => _WordPracticePageState();
 }
 
 class _WordPracticePageState extends State<WordPracticePage> {
@@ -49,8 +49,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
   late String _sessionId;
 
   WordItem? get _currentWord {
-    if (_sessionWords.isEmpty ||
-        _currentIndex >= _sessionWords.length) {
+    if (_sessionWords.isEmpty || _currentIndex >= _sessionWords.length) {
       return null;
     }
 
@@ -65,22 +64,23 @@ class _WordPracticePageState extends State<WordPracticePage> {
   }
 
   void _startNewSessionId() {
-    _sessionId =
-        '${widget.childId}_${DateTime.now().microsecondsSinceEpoch}';
+    _sessionId = '${widget.childId}_${DateTime.now().microsecondsSinceEpoch}';
   }
 
   Future<void> _loadWords() async {
     try {
-      final words = await widget.firestoreService
-          .getCurrentWordItems(widget.pack.id)
-          .first;
+      final words =
+          await widget.firestoreService
+              .getCurrentWordItems(widget.pack.id)
+              .first;
 
       if (!mounted) return;
 
-      final distinctWordTexts = words
-          .map((word) => word.text.trim().toLowerCase())
-          .where((word) => word.isNotEmpty)
-          .toSet();
+      final distinctWordTexts =
+          words
+              .map((word) => word.text.trim().toLowerCase())
+              .where((word) => word.isNotEmpty)
+              .toSet();
 
       if (words.length < 2 || distinctWordTexts.length < 2) {
         setState(() {
@@ -90,8 +90,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
         return;
       }
 
-      final shuffled = List<WordItem>.from(words)
-        ..shuffle(_random);
+      final shuffled = List<WordItem>.from(words)..shuffle(_random);
 
       setState(() {
         _allWords = List<WordItem>.from(words);
@@ -123,18 +122,16 @@ class _WordPracticePageState extends State<WordPracticePage> {
       return;
     }
 
-    final wrongAnswers = _allWords
-        .where((item) => item.id != word.id)
-        .map((item) => item.text)
-        .where((text) => text != word.text)
-        .toSet()
-        .toList()
-      ..shuffle(_random);
+    final wrongAnswers =
+        _allWords
+            .where((item) => item.id != word.id)
+            .map((item) => item.text)
+            .where((text) => text != word.text)
+            .toSet()
+            .toList()
+          ..shuffle(_random);
 
-    final choices = [
-      word.text,
-      ...wrongAnswers.take(2),
-    ]..shuffle(_random);
+    final choices = [word.text, ...wrongAnswers.take(2)]..shuffle(_random);
 
     setState(() {
       _choices = choices;
@@ -147,9 +144,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
   Future<void> _selectAnswer(String answer) async {
     final word = _currentWord;
 
-    if (word == null ||
-        _answerConfirmed ||
-        _isSavingAttempt) {
+    if (word == null || _answerConfirmed || _isSavingAttempt) {
       return;
     }
 
@@ -214,8 +209,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
   }
 
   void _practiseAgain() {
-    final shuffled = List<WordItem>.from(_allWords)
-      ..shuffle(_random);
+    final shuffled = List<WordItem>.from(_allWords)..shuffle(_random);
 
     _startNewSessionId();
 
@@ -241,9 +235,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
           const SizedBox(height: 16),
           Text(
             context.l10n.loadingWords,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -268,10 +260,9 @@ class _WordPracticePageState extends State<WordPracticePage> {
                   ? context.l10n.couldNotLoadWords
                   : context.l10n.packNeedsTwoWords,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
             if (_hasLoadError) ...[
               const SizedBox(height: 18),
@@ -295,9 +286,10 @@ class _WordPracticePageState extends State<WordPracticePage> {
   }
 
   Widget _buildProgress(Color color) {
-    final progress = _sessionWords.isEmpty
-        ? 0.0
-        : (_currentIndex + 1) / _sessionWords.length;
+    final progress =
+        _sessionWords.isEmpty
+            ? 0.0
+            : (_currentIndex + 1) / _sessionWords.length;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -309,10 +301,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.auto_stories_rounded,
-                color: color,
-              ),
+              Icon(Icons.auto_stories_rounded, color: color),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -320,20 +309,12 @@ class _WordPracticePageState extends State<WordPracticePage> {
                     _currentIndex + 1,
                     _sessionWords.length,
                   ),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
               ),
               Text(
-                context.l10n.practiceScore(
-                  _score,
-                  _sessionWords.length,
-                ),
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.w900,
-                ),
+                context.l10n.practiceScore(_score, _sessionWords.length),
+                style: TextStyle(color: color, fontWeight: FontWeight.w900),
               ),
             ],
           ),
@@ -344,8 +325,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
               value: progress,
               minHeight: 11,
               color: color,
-              backgroundColor:
-                  color.withValues(alpha: 0.13),
+              backgroundColor: color.withValues(alpha: 0.13),
             ),
           ),
         ],
@@ -361,10 +341,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
       padding: const EdgeInsets.all(26),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            color,
-            color.withValues(alpha: 0.72),
-          ],
+          colors: [color, color.withValues(alpha: 0.72)],
         ),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -395,18 +372,13 @@ class _WordPracticePageState extends State<WordPracticePage> {
               borderRadius: BorderRadius.circular(34),
             ),
             alignment: Alignment.center,
-            child: Text(
-              word.imageValue.isEmpty ? '📚' : word.imageValue,
-              style: const TextStyle(fontSize: 78),
-            ),
+            child: _WordPracticeVisual(word: word, color: color),
           ),
           if (word.hint.isNotEmpty && !_answerConfirmed) ...[
             const SizedBox(height: 14),
             if (!_showHint)
               TextButton.icon(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                ),
+                style: TextButton.styleFrom(foregroundColor: Colors.white),
                 onPressed: () {
                   setState(() {
                     _showHint = true;
@@ -447,22 +419,23 @@ class _WordPracticePageState extends State<WordPracticePage> {
       alignment: WrapAlignment.center,
       spacing: 14,
       runSpacing: 14,
-      children: _choices.map((answer) {
-        final selected = answer == _selectedAnswer;
-        final correct = answer == correctAnswer;
+      children:
+          _choices.map((answer) {
+            final selected = answer == _selectedAnswer;
+            final correct = answer == correctAnswer;
 
-        return SizedBox(
-          width: 260,
-          child: _WordAnswerCard(
-            answer: answer,
-            color: color,
-            selected: selected,
-            correct: correct,
-            reveal: _answerConfirmed,
-            onTap: () => _selectAnswer(answer),
-          ),
-        );
-      }).toList(),
+            return SizedBox(
+              width: 260,
+              child: _WordAnswerCard(
+                answer: answer,
+                color: color,
+                selected: selected,
+                correct: correct,
+                reveal: _answerConfirmed,
+                onTap: () => _selectAnswer(answer),
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -474,9 +447,8 @@ class _WordPracticePageState extends State<WordPracticePage> {
     final word = _currentWord!;
     final correct = _selectedAnswer == word.text;
 
-    final feedbackColor = correct
-        ? Colors.green.shade700
-        : Colors.orange.shade700;
+    final feedbackColor =
+        correct ? Colors.green.shade700 : Colors.orange.shade700;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -493,17 +465,13 @@ class _WordPracticePageState extends State<WordPracticePage> {
       child: Column(
         children: [
           Icon(
-            correct
-                ? Icons.celebration_rounded
-                : Icons.lightbulb_rounded,
+            correct ? Icons.celebration_rounded : Icons.lightbulb_rounded,
             color: feedbackColor,
             size: 44,
           ),
           const SizedBox(height: 8),
           Text(
-            correct
-                ? context.l10n.greatJob
-                : context.l10n.goodTry,
+            correct ? context.l10n.greatJob : context.l10n.goodTry,
             style: TextStyle(
               color: feedbackColor,
               fontSize: 23,
@@ -515,18 +483,12 @@ class _WordPracticePageState extends State<WordPracticePage> {
             Text(
               context.l10n.correctAnswerWas(word.text),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ],
           if (word.hint.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text(
-              word.hint,
-              textAlign: TextAlign.center,
-            ),
+            Text(word.hint, textAlign: TextAlign.center),
           ],
         ],
       ),
@@ -538,34 +500,28 @@ class _WordPracticePageState extends State<WordPracticePage> {
       width: double.infinity,
       height: 56,
       child: FilledButton.icon(
-        onPressed:
-            _answerConfirmed && !_isSavingAttempt
-                ? _continue
-                : null,
-        style: FilledButton.styleFrom(
-          backgroundColor: color,
-        ),
-        icon: _isSavingAttempt
-            ? const SizedBox(
-                width: 21,
-                height: 21,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
+        onPressed: _answerConfirmed && !_isSavingAttempt ? _continue : null,
+        style: FilledButton.styleFrom(backgroundColor: color),
+        icon:
+            _isSavingAttempt
+                ? const SizedBox(
+                  width: 21,
+                  height: 21,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+                : Icon(
+                  _currentIndex == _sessionWords.length - 1
+                      ? Icons.emoji_events_rounded
+                      : Icons.arrow_forward_rounded,
                 ),
-              )
-            : Icon(
-                _currentIndex == _sessionWords.length - 1
-                    ? Icons.emoji_events_rounded
-                    : Icons.arrow_forward_rounded,
-              ),
         label: Text(
           _currentIndex == _sessionWords.length - 1
               ? context.l10n.finishPractice
               : context.l10n.nextWord,
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
     );
@@ -634,9 +590,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
               ),
               const SizedBox(height: 9),
               Text(
-                context.l10n.practisedWords(
-                  _sessionWords.length,
-                ),
+                context.l10n.practisedWords(_sessionWords.length),
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18),
               ),
@@ -649,10 +603,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Text(
-                  context.l10n.practiceScore(
-                    _score,
-                    _sessionWords.length,
-                  ),
+                  context.l10n.practiceScore(_score, _sessionWords.length),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: color,
@@ -666,9 +617,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
                 width: double.infinity,
                 child: FilledButton.icon(
                   onPressed: _practiseAgain,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: color,
-                  ),
+                  style: FilledButton.styleFrom(backgroundColor: color),
                   icon: const Icon(Icons.replay_rounded),
                   label: Text(context.l10n.practiseAgain),
                 ),
@@ -694,28 +643,46 @@ class _WordPracticePageState extends State<WordPracticePage> {
     final color = wordPackColorFromHex(widget.pack.colorHex);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.pack.name),
-      ),
+      appBar: AppBar(title: Text(widget.pack.name)),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFFF3FFF5),
-              Color(0xFFFFF8E8),
-              Color(0xFFF7F2FF),
-            ],
+            colors: [Color(0xFFF3FFF5), Color(0xFFFFF8E8), Color(0xFFF7F2FF)],
           ),
         ),
-        child: _isLoading
-            ? _buildLoadingState()
-            : _hasLoadError || _allWords.length < 2
+        child:
+            _isLoading
+                ? _buildLoadingState()
+                : _hasLoadError || _allWords.length < 2
                 ? _buildUnavailableState()
                 : _isComplete
-                    ? _buildComplete(color)
-                    : _buildPractice(color),
+                ? _buildComplete(color)
+                : _buildPractice(color),
       ),
+    );
+  }
+}
+
+class _WordPracticeVisual extends StatelessWidget {
+  final WordItem word;
+  final Color color;
+
+  const _WordPracticeVisual({required this.word, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    if (word.imageType == 'icon') {
+      return Icon(
+        appIconForKey(word.imageValue, fallbackKey: 'book'),
+        size: 78,
+        color: color,
+      );
+    }
+
+    return Text(
+      word.imageValue.isEmpty ? '📚' : word.imageValue,
+      style: const TextStyle(fontSize: 78),
     );
   }
 }
@@ -788,11 +755,7 @@ class _WordAnswerCard extends StatelessWidget {
                 ),
               ),
               if (statusIcon != null)
-                Icon(
-                  statusIcon,
-                  color: borderColor,
-                  size: 29,
-                ),
+                Icon(statusIcon, color: borderColor, size: 29),
             ],
           ),
         ),

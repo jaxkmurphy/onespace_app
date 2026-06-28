@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/app_icon_catalog.dart';
 import '../l10n/l10n.dart';
 import '../models/point_reward.dart';
 import '../services/firestore_service.dart';
@@ -7,17 +8,6 @@ class ChildRewardsSection extends StatelessWidget {
   final int currentPoints;
 
   const ChildRewardsSection({super.key, required this.currentPoints});
-
-  static const Map<String, IconData> rewardIcons = {
-    'gift': Icons.card_giftcard_rounded,
-    'game': Icons.sports_esports_rounded,
-    'music': Icons.music_note_rounded,
-    'art': Icons.palette_rounded,
-    'outdoors': Icons.park_rounded,
-    'choice': Icons.touch_app_rounded,
-    'break': Icons.free_breakfast_rounded,
-    'star': Icons.star_rounded,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +102,7 @@ class ChildRewardsSection extends StatelessWidget {
 
     final pointsNeeded = reward.cost - currentPoints;
 
-    final icon = rewardIcons[reward.iconName] ?? Icons.card_giftcard_rounded;
+    final icon = appIconForKey(reward.iconName, fallbackKey: 'gift');
 
     final colour = affordable ? Colors.green : Colors.deepPurple;
 

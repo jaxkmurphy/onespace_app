@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_icon_catalog.dart';
+
 class ScheduleActivityType {
   final String key;
   final String label;
@@ -71,14 +73,21 @@ const List<ScheduleActivityType> scheduleActivityTypes = [
   ),
 ];
 
-ScheduleActivityType scheduleActivityTypeFor(
-  String key,
-) {
+ScheduleActivityType scheduleActivityTypeFor(String key) {
   for (final type in scheduleActivityTypes) {
     if (type.key == key) {
       return type;
     }
   }
 
-  return scheduleActivityTypes.last;
+  return ScheduleActivityType(
+    key: appIconKeyFor(key),
+    label: 'Other',
+    icon: appIconForKey(key),
+    colour: Colors.blueGrey,
+  );
+}
+
+bool isStandardScheduleActivityType(String key) {
+  return scheduleActivityTypes.any((type) => type.key == key);
 }

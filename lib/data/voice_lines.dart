@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_icon_catalog.dart';
 import '../models/managed_voice_line.dart';
 
 class VoiceLine {
@@ -45,6 +46,12 @@ class VoiceLine {
 }
 
 IconData voiceLineIconForName(String iconName) {
+  final catalogueKey = appIconKeyFor(iconName, fallbackKey: 'music');
+
+  if (catalogueKey != 'music' || iconName == 'music') {
+    return appIconForKey(iconName, fallbackKey: 'music');
+  }
+
   return switch (iconName) {
     'toilet' => Icons.wc_rounded,
     'help' => Icons.volunteer_activism_rounded,
@@ -68,7 +75,7 @@ IconData voiceLineIconForName(String iconName) {
     'home' => Icons.home_rounded,
     'outside' => Icons.park_rounded,
     'teacher' => Icons.school_rounded,
-    _ => Icons.record_voice_over_rounded,
+    _ => appIconForKey(iconName, fallbackKey: 'music'),
   };
 }
 

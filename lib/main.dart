@@ -42,6 +42,8 @@ import 'theme/app_theme.dart';
 import 'pages/voice_lines_management_page.dart';
 import 'pages/association_pairs_page.dart';
 import 'pages/number_sequence_page.dart';
+import 'pages/odd_one_out_management_page.dart';
+import 'pages/odd_one_out_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -300,6 +302,42 @@ class _MyAppState extends State<MyApp> {
           );
         }
         return _page(const NumberSequencePage());
+
+        case '/odd-one-out':
+        if (args is Map<String, dynamic>) {
+          final child = args['child'] as ChildProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (child != null && firestoreService != null) {
+            return _page(
+              OddOneOutPage(
+                profile: child,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+
+        return _errorPage((l10n) => l10n.error);
+
+      case '/odd-one-out-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              OddOneOutManagementPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+
+        return _errorPage((l10n) => l10n.missingStaffProfile);
 
       case '/voice-lines':
         if (args is Map<String, dynamic> &&

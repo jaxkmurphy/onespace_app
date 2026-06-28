@@ -5,6 +5,7 @@ import '../../models/word_attempt.dart';
 import '../../models/word_item.dart';
 import '../../models/word_pack.dart';
 import 'firestore_base.dart';
+import '../../models/odd_one_out_models.dart';
 
 mixin LearningFirestoreService on FirestoreBase {
 
@@ -1753,4 +1754,278 @@ Stream<List<WordAttempt>> getCurrentWordAttemptsForChild({
   );
 }
 
+    // ODD ONE OUT
+
+  CollectionReference<Map<String, dynamic>> _oddOneOutPacksRef(
+    String teacherUid,
+  ) {
+    return db.collection('teachers').doc(teacherUid).collection(
+          'odd_one_out_packs',
+        );
+  }
+
+  CollectionReference<Map<String, dynamic>> _classroomOddOneOutPacksRef({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('odd_one_out_packs');
+  }
+
+  CollectionReference<Map<String, dynamic>> _oddOneOutRoundsRef({
+    required String teacherUid,
+    required String packId,
+  }) {
+    return _oddOneOutPacksRef(teacherUid).doc(packId).collection('rounds');
+  }
+
+  CollectionReference<Map<String, dynamic>> _classroomOddOneOutRoundsRef({
+    required String schoolId,
+    required String classroomId,
+    required String packId,
+  }) {
+    return _classroomOddOneOutPacksRef(
+      schoolId: schoolId,
+      classroomId: classroomId,
+    ).doc(packId).collection('rounds');
+  }
+
+  Stream<List<OddOneOutPack>> getOddOneOutPacks(String teacherUid) {
+    return _oddOneOutPacksRef(teacherUid)
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => OddOneOutPack.fromMap(doc.id, doc.data()))
+          .toList();
+    });
+  }
+
+  Stream<List<OddOneOutPack>> getClassroomOddOneOutPacks({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return _classroomOddOneOutPacksRef(
+      schoolId: schoolId,
+      classroomId: classroomId,
+    ).orderBy('updatedAt', descending: true).snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => OddOneOutPack.fromMap(doc.id, doc.data()))
+          .toList();
+    });
+  }
+
+  Stream<List<OddOneOutPack>> getCurrentOddOneOutPacks() {
+    if (hasClassroomSession) {
+      return getClassroomOddOneOutPacks(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+      );
+    }
+
+    return getOddOneOutPacks(currentTeacherUid);
+  }
+
+  Stream<List<OddOneOutPack>> getCurrentAssignedOddOneOutPacks({
+    required String childId,
+  }) {
+    return getCurrentOddOneOutPacks().map((packs) {
+      return packs.where((pack) => pack.isAvailableForChild(childId)).toList();
+    });
+  }
+
+  Future<String> addCurrentOddOneOutPack(OddOneOutPack pack) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    if (hasClassroomSession) {
+      final docRef = _classroomOddOneOutPacksRef(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+      ).doc();
+
+      await docRef.set({
+        ...pack.copyWith(id: docRef.id).toMap(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      return docRef.id;
+    }
+
+    final docRef = _oddOneOutPacksRef(currentTeacherUid).doc();
+
+    await docRef.set({
+      ...pack.copyWith(id: docRef.id).toMap(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    return docRef.id;
+  }
+
+  Future<void> updateCurrentOddOneOutPack(OddOneOutPack pack) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final data = {
+      ...pack.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    if (hasClassroomSession) {
+      await _classroomOddOneOutPacksRef(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+      ).doc(pack.id).update(data);
+      return;
+    }
+
+    await _oddOneOutPacksRef(currentTeacherUid).doc(pack.id).update(data);
+  }
+
+  Future<void> deleteCurrentOddOneOutPack(String packId) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final roundsRef = hasClassroomSession
+        ? _classroomOddOneOutRoundsRef(
+            schoolId: session.requireSchoolId,
+            classroomId: session.requireClassroomId,
+            packId: packId,
+          )
+        : _oddOneOutRoundsRef(
+            teacherUid: currentTeacherUid,
+            packId: packId,
+          );
+
+    final roundsSnapshot = await roundsRef.get();
+    final batch = db.batch();
+
+    for (final doc in roundsSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+
+    if (hasClassroomSession) {
+      batch.delete(
+        _classroomOddOneOutPacksRef(
+          schoolId: session.requireSchoolId,
+          classroomId: session.requireClassroomId,
+        ).doc(packId),
+      );
+    } else {
+      batch.delete(_oddOneOutPacksRef(currentTeacherUid).doc(packId));
+    }
+
+    await batch.commit();
+  }
+
+  Stream<List<OddOneOutRound>> getCurrentOddOneOutRounds(String packId) {
+    final stream = hasClassroomSession
+        ? _classroomOddOneOutRoundsRef(
+            schoolId: session.requireSchoolId,
+            classroomId: session.requireClassroomId,
+            packId: packId,
+          ).snapshots()
+        : _oddOneOutRoundsRef(
+            teacherUid: currentTeacherUid,
+            packId: packId,
+          ).snapshots();
+
+    return stream.map((snapshot) {
+      final rounds = snapshot.docs
+          .map((doc) => OddOneOutRound.fromMap(doc.id, doc.data()))
+          .toList();
+
+      rounds.sort((first, second) => first.sortOrder.compareTo(
+            second.sortOrder,
+          ));
+
+      return rounds;
+    });
+  }
+
+  Future<String> addCurrentOddOneOutRound({
+    required String packId,
+    required OddOneOutRound round,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final roundsRef = hasClassroomSession
+        ? _classroomOddOneOutRoundsRef(
+            schoolId: session.requireSchoolId,
+            classroomId: session.requireClassroomId,
+            packId: packId,
+          )
+        : _oddOneOutRoundsRef(
+            teacherUid: currentTeacherUid,
+            packId: packId,
+          );
+
+    final docRef = roundsRef.doc();
+
+    await docRef.set(round.copyWith(id: docRef.id).toMap());
+    await _touchCurrentOddOneOutPack(packId);
+
+    return docRef.id;
+  }
+
+  Future<void> updateCurrentOddOneOutRound({
+    required String packId,
+    required OddOneOutRound round,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final roundsRef = hasClassroomSession
+        ? _classroomOddOneOutRoundsRef(
+            schoolId: session.requireSchoolId,
+            classroomId: session.requireClassroomId,
+            packId: packId,
+          )
+        : _oddOneOutRoundsRef(
+            teacherUid: currentTeacherUid,
+            packId: packId,
+          );
+
+    await roundsRef.doc(round.id).update(round.toMap());
+    await _touchCurrentOddOneOutPack(packId);
+  }
+
+  Future<void> deleteCurrentOddOneOutRound({
+    required String packId,
+    required String roundId,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final roundsRef = hasClassroomSession
+        ? _classroomOddOneOutRoundsRef(
+            schoolId: session.requireSchoolId,
+            classroomId: session.requireClassroomId,
+            packId: packId,
+          )
+        : _oddOneOutRoundsRef(
+            teacherUid: currentTeacherUid,
+            packId: packId,
+          );
+
+    await roundsRef.doc(roundId).delete();
+    await _touchCurrentOddOneOutPack(packId);
+  }
+
+  Future<void> _touchCurrentOddOneOutPack(String packId) async {
+    if (hasClassroomSession) {
+      await _classroomOddOneOutPacksRef(
+        schoolId: session.requireSchoolId,
+        classroomId: session.requireClassroomId,
+      ).doc(packId).update({
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      return;
+    }
+
+    await _oddOneOutPacksRef(currentTeacherUid).doc(packId).update({
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
 }

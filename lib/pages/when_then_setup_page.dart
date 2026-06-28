@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../data/app_icon_catalog.dart';
 import '../data/when_then_icons.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../models/when_then_option.dart';
 import '../services/firestore_service.dart';
+import '../widgets/app_icon_picker_dialog.dart';
 
 enum WhenThenTargetMode { single, multiple, all }
 
@@ -154,13 +156,47 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
       text: existingOption?.label ?? '',
     );
 
-    String selectedIcon = existingOption?.iconName ?? 'task';
+    String selectedIcon = appIconKeyFor(
+      existingOption?.iconName ?? 'task',
+      fallbackKey: 'pencil',
+    );
 
     final result = await showDialog<WhenThenOption>(
       context: context,
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            Future<void> chooseIcon() async {
+              final selected = await showAppIconPickerDialog(
+                context: dialogContext,
+                selectedKey: selectedIcon,
+                title: l10n.chooseIcon,
+                categories: const [
+                  AppIconCategory.learning,
+                  AppIconCategory.feelings,
+                  AppIconCategory.dailyLife,
+                  AppIconCategory.food,
+                  AppIconCategory.animals,
+                  AppIconCategory.play,
+                  AppIconCategory.health,
+                  AppIconCategory.nature,
+                  AppIconCategory.objects,
+                ],
+              );
+
+              if (selected == null) return;
+
+              setDialogState(() {
+                selectedIcon = selected.key;
+              });
+            }
+
+            final selectedStyle = whenThenStyleFor(selectedIcon);
+            final selectedOption = appIconOptionForKey(
+              selectedIcon,
+              fallbackKey: 'pencil',
+            );
+
             return AlertDialog(
               title: Text(
                 isEditing
@@ -188,56 +224,71 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Text(
-                        l10n.chooseIcon,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children:
-                            whenThenIconStyles.map((style) {
-                              final selected = style.key == selectedIcon;
-
-                              return InkWell(
-                                borderRadius: BorderRadius.circular(16),
-                                onTap: () {
-                                  setDialogState(() {
-                                    selectedIcon = style.key;
-                                  });
-                                },
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 180),
-                                  width: 64,
-                                  height: 64,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        selected
-                                            ? style.color
-                                            : style.color.withValues(
-                                              alpha: 0.12,
-                                            ),
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(
-                                      color:
-                                          selected
-                                              ? style.color
-                                              : style.color.withValues(
-                                                alpha: 0.35,
-                                              ),
-                                      width: selected ? 3 : 1,
-                                    ),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(18),
+                        onTap: chooseIcon,
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: selectedStyle.color.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: selectedStyle.color.withValues(
+                                alpha: 0.35,
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: selectedStyle.color.withValues(
+                                    alpha: 0.16,
                                   ),
-                                  child: Icon(
-                                    style.icon,
-                                    color:
-                                        selected ? Colors.white : style.color,
-                                    size: 30,
-                                  ),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
-                              );
-                            }).toList(),
+                                child: Icon(
+                                  selectedStyle.icon,
+                                  color: selectedStyle.color,
+                                  size: 30,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      selectedOption.label,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      l10n.chooseIcon,
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                Icons.edit_rounded,
+                                color: selectedStyle.color,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -259,7 +310,10 @@ class _WhenThenSetupPageState extends State<WhenThenSetupPage> {
                       WhenThenOption(
                         id: existingOption?.id ?? '',
                         label: label,
-                        iconName: selectedIcon,
+                        iconName: appIconKeyFor(
+                          selectedIcon,
+                          fallbackKey: 'pencil',
+                        ),
                       ),
                     );
                   },

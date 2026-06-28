@@ -5,6 +5,8 @@ import '../models/child_profile.dart';
 import '../models/word_item.dart';
 import '../models/word_pack.dart';
 import '../services/firestore_service.dart';
+import '../data/app_icon_catalog.dart';
+import '../widgets/app_icon_picker_dialog.dart';
 
 class WordPackEditorPage extends StatefulWidget {
   final FirestoreService firestoreService;
@@ -19,12 +21,10 @@ class WordPackEditorPage extends StatefulWidget {
   });
 
   @override
-  State<WordPackEditorPage> createState() =>
-      _WordPackEditorPageState();
+  State<WordPackEditorPage> createState() => _WordPackEditorPageState();
 }
 
-class _WordPackEditorPageState
-    extends State<WordPackEditorPage> {
+class _WordPackEditorPageState extends State<WordPackEditorPage> {
   late WordPack _pack;
 
   @override
@@ -37,30 +37,8 @@ class _WordPackEditorPageState
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
-  }
-
-  String _styleLabel(String key) {
-    switch (key) {
-      case 'school':
-        return context.l10n.school;
-      case 'home':
-        return context.l10n.home;
-      case 'animals':
-        return context.l10n.animals;
-      case 'feelings':
-        return context.l10n.feelings;
-      case 'world':
-        return context.l10n.ourWorld;
-      case 'fun':
-        return context.l10n.fun;
-      default:
-        return context.l10n.words;
-    }
   }
 
   String _difficultyLabel(String difficulty) {
@@ -88,28 +66,21 @@ class _WordPackEditorPageState
   Future<void> _editPackDetails() async {
     final draft = await showDialog<_PackDetailsDraft>(
       context: context,
-      builder: (_) => _PackDetailsDialog(
-        pack: _pack,
-        styleLabel: _styleLabel,
-      ),
+      builder: (_) => _PackDetailsDialog(pack: _pack),
     );
 
     if (draft == null) return;
 
-    final style = wordPackStyleFor(draft.styleKey);
-
     final updatedPack = _pack.copyWith(
       name: draft.name,
       description: draft.description,
-      iconName: style.key,
-      colorHex: style.colorHex,
+      iconName: appIconKeyFor(draft.styleKey, fallbackKey: 'abc'),
+      colorHex: _pack.colorHex,
       updatedAt: DateTime.now(),
     );
 
     try {
-      await widget.firestoreService.updateCurrentWordPack(
-        updatedPack,
-      );
+      await widget.firestoreService.updateCurrentWordPack(updatedPack);
 
       if (!mounted) return;
 
@@ -128,8 +99,7 @@ class _WordPackEditorPageState
     List<ChildProfile> children;
 
     try {
-      children = await widget.firestoreService
-          .getCurrentChildProfilesOnce();
+      children = await widget.firestoreService.getCurrentChildProfilesOnce();
     } catch (_) {
       if (!mounted) return;
       _showMessage(context.l10n.noChildrenAvailable);
@@ -140,26 +110,20 @@ class _WordPackEditorPageState
 
     final draft = await showDialog<_AssignmentDraft>(
       context: context,
-      builder: (_) => _AssignmentDialog(
-        children: children,
-        pack: _pack,
-      ),
+      builder: (_) => _AssignmentDialog(children: children, pack: _pack),
     );
 
     if (draft == null) return;
 
     final updatedPack = _pack.copyWith(
       availableToAll: draft.availableToAll,
-      assignedChildIds: draft.availableToAll
-          ? const []
-          : draft.selectedChildIds,
+      assignedChildIds:
+          draft.availableToAll ? const [] : draft.selectedChildIds,
       updatedAt: DateTime.now(),
     );
 
     try {
-      await widget.firestoreService.updateCurrentWordPack(
-        updatedPack,
-      );
+      await widget.firestoreService.updateCurrentWordPack(updatedPack);
 
       if (!mounted) return;
 
@@ -174,14 +138,10 @@ class _WordPackEditorPageState
     }
   }
 
-  Future<void> _openWordDialog({
-    WordItem? existingWord,
-  }) async {
+  Future<void> _openWordDialog({WordItem? existingWord}) async {
     final draft = await showDialog<_WordDraft>(
       context: context,
-      builder: (_) => _WordDialog(
-        existingWord: existingWord,
-      ),
+      builder: (_) => _WordDialog(existingWord: existingWord),
     );
 
     if (draft == null) return;
@@ -189,8 +149,8 @@ class _WordPackEditorPageState
     final word = WordItem(
       id: existingWord?.id ?? '',
       text: draft.word,
-      imageType: 'emoji',
-      imageValue: draft.emoji,
+      imageType: draft.imageType,
+      imageValue: draft.imageValue,
       difficulty: draft.difficulty,
       hint: draft.hint,
     );
@@ -222,25 +182,17 @@ class _WordPackEditorPageState
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(context.l10n.deleteWord),
-          content: Text(
-            context.l10n.deleteWordMessage(word.text),
-          ),
+          content: Text(context.l10n.deleteWordMessage(word.text)),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                false,
-              ),
+              onPressed: () => Navigator.pop(dialogContext, false),
               child: Text(context.l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red.shade700,
               ),
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                true,
-              ),
+              onPressed: () => Navigator.pop(dialogContext, true),
               child: Text(context.l10n.delete),
             ),
           ],
@@ -265,18 +217,15 @@ class _WordPackEditorPageState
   }
 
   Widget _buildHeader(int wordCount) {
-    final style = wordPackStyleFor(_pack.iconName);
     final color = wordPackColorFromHex(_pack.colorHex);
+    final icon = appIconForKey(_pack.iconName, fallbackKey: 'abc');
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            color,
-            color.withValues(alpha: 0.72),
-          ],
+          colors: [color, color.withValues(alpha: 0.72)],
         ),
         borderRadius: BorderRadius.circular(28),
       ),
@@ -289,11 +238,7 @@ class _WordPackEditorPageState
               color: Colors.white.withValues(alpha: 0.20),
               borderRadius: BorderRadius.circular(22),
             ),
-            child: Icon(
-              style.icon,
-              color: Colors.white,
-              size: 44,
-            ),
+            child: Icon(icon, color: Colors.white, size: 44),
           ),
           const SizedBox(width: 18),
           Expanded(
@@ -312,9 +257,7 @@ class _WordPackEditorPageState
                   const SizedBox(height: 5),
                   Text(
                     _pack.description,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ],
                 const SizedBox(height: 10),
@@ -327,14 +270,16 @@ class _WordPackEditorPageState
                       label: context.l10n.wordCount(wordCount),
                     ),
                     _HeaderChip(
-                      icon: _pack.availableToAll
-                          ? Icons.groups_rounded
-                          : Icons.people_alt_rounded,
-                      label: _pack.availableToAll
-                          ? context.l10n.availableToEveryone
-                          : context.l10n.assignedChildCount(
-                              _pack.assignedChildIds.length,
-                            ),
+                      icon:
+                          _pack.availableToAll
+                              ? Icons.groups_rounded
+                              : Icons.people_alt_rounded,
+                      label:
+                          _pack.availableToAll
+                              ? context.l10n.availableToEveryone
+                              : context.l10n.assignedChildCount(
+                                _pack.assignedChildIds.length,
+                              ),
                     ),
                   ],
                 ),
@@ -351,25 +296,17 @@ class _WordPackEditorPageState
       padding: const EdgeInsets.all(28),
       child: Column(
         children: [
-          const Icon(
-            Icons.abc_rounded,
-            size: 78,
-            color: Color(0xFF66BB6A),
-          ),
+          const Icon(Icons.abc_rounded, size: 78, color: Color(0xFF66BB6A)),
           const SizedBox(height: 16),
           Text(
             context.l10n.noWords,
             textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontWeight: FontWeight.w900),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 8),
-          Text(
-            context.l10n.addFirstWord,
-            textAlign: TextAlign.center,
-          ),
+          Text(context.l10n.addFirstWord, textAlign: TextAlign.center),
           const SizedBox(height: 20),
           FilledButton.icon(
             onPressed: () => _openWordDialog(),
@@ -410,8 +347,7 @@ class _WordPackEditorPageState
         label: Text(context.l10n.addWord),
       ),
       body: StreamBuilder<List<WordItem>>(
-        stream:
-            widget.firestoreService.getCurrentWordItems(_pack.id),
+        stream: widget.firestoreService.getCurrentWordItems(_pack.id),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return _EditorMessageState(
@@ -430,19 +366,11 @@ class _WordPackEditorPageState
             width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFFF3FFF5),
-                  Color(0xFFF7F4FF),
-                ],
+                colors: [Color(0xFFF3FFF5), Color(0xFFF7F4FF)],
               ),
             ),
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                18,
-                18,
-                18,
-                100,
-              ),
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               children: [
                 _buildHeader(words.length),
                 const SizedBox(height: 20),
@@ -451,15 +379,14 @@ class _WordPackEditorPageState
                 else
                   GridView.builder(
                     shrinkWrap: true,
-                    physics:
-                        const NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 360,
-                      mainAxisExtent: 230,
-                      crossAxisSpacing: 14,
-                      mainAxisSpacing: 14,
-                    ),
+                          maxCrossAxisExtent: 360,
+                          mainAxisExtent: 260,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 14,
+                        ),
                     itemCount: words.length,
                     itemBuilder: (context, index) {
                       final word = words[index];
@@ -467,13 +394,9 @@ class _WordPackEditorPageState
                       return _WordCard(
                         word: word,
                         color: color,
-                        difficultyLabel:
-                            _difficultyLabel(word.difficulty),
-                        difficultyColor:
-                            _difficultyColor(word.difficulty),
-                        onEdit: () => _openWordDialog(
-                          existingWord: word,
-                        ),
+                        difficultyLabel: _difficultyLabel(word.difficulty),
+                        difficultyColor: _difficultyColor(word.difficulty),
+                        onEdit: () => _openWordDialog(existingWord: word),
                         onDelete: () => _deleteWord(word),
                       );
                     },
@@ -510,10 +433,7 @@ class _WordCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-          color: color.withValues(alpha: 0.25),
-          width: 2,
-        ),
+        side: BorderSide(color: color.withValues(alpha: 0.25), width: 2),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 8, 14),
@@ -530,49 +450,43 @@ class _WordCard extends StatelessWidget {
                       onDelete();
                     }
                   },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'edit',
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.edit_rounded),
-                        title: Text(context.l10n.edit),
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(
-                          Icons.delete_outline_rounded,
-                          color: Colors.red,
+                  itemBuilder:
+                      (context) => [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.edit_rounded),
+                            title: Text(context.l10n.edit),
+                          ),
                         ),
-                        title: Text(context.l10n.delete),
-                      ),
-                    ),
-                  ],
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(
+                              Icons.delete_outline_rounded,
+                              color: Colors.red,
+                            ),
+                            title: Text(context.l10n.delete),
+                          ),
+                        ),
+                      ],
                 ),
               ],
             ),
-            Text(
-              word.imageValue.isEmpty ? '📚' : word.imageValue,
-              style: const TextStyle(fontSize: 54),
-            ),
+            _WordVisual(word: word, color: color, size: 54),
             const SizedBox(height: 8),
             Text(
               word.text,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: difficultyColor.withValues(alpha: 0.11),
                 borderRadius: BorderRadius.circular(20),
@@ -603,20 +517,14 @@ class _WordCard extends StatelessWidget {
 
 class _PackDetailsDialog extends StatefulWidget {
   final WordPack pack;
-  final String Function(String key) styleLabel;
 
-  const _PackDetailsDialog({
-    required this.pack,
-    required this.styleLabel,
-  });
+  const _PackDetailsDialog({required this.pack});
 
   @override
-  State<_PackDetailsDialog> createState() =>
-      _PackDetailsDialogState();
+  State<_PackDetailsDialog> createState() => _PackDetailsDialogState();
 }
 
-class _PackDetailsDialogState
-    extends State<_PackDetailsDialog> {
+class _PackDetailsDialogState extends State<_PackDetailsDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
   late String _styleKey;
@@ -625,11 +533,11 @@ class _PackDetailsDialogState
   void initState() {
     super.initState();
 
-    _nameController =
-        TextEditingController(text: widget.pack.name);
-    _descriptionController =
-        TextEditingController(text: widget.pack.description);
-    _styleKey = widget.pack.iconName;
+    _nameController = TextEditingController(text: widget.pack.name);
+    _descriptionController = TextEditingController(
+      text: widget.pack.description,
+    );
+    _styleKey = appIconKeyFor(widget.pack.iconName, fallbackKey: 'abc');
   }
 
   @override
@@ -639,8 +547,35 @@ class _PackDetailsDialogState
     super.dispose();
   }
 
+  Future<void> _chooseIcon() async {
+    final selected = await showAppIconPickerDialog(
+      context: context,
+      selectedKey: _styleKey,
+      title: context.l10n.packStyle,
+      categories: const [
+        AppIconCategory.learning,
+        AppIconCategory.feelings,
+        AppIconCategory.dailyLife,
+        AppIconCategory.animals,
+        AppIconCategory.food,
+        AppIconCategory.play,
+        AppIconCategory.nature,
+        AppIconCategory.objects,
+      ],
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _styleKey = selected.key;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final selectedIcon = appIconOptionForKey(_styleKey, fallbackKey: 'abc');
+    final packColor = wordPackColorFromHex(widget.pack.colorHex);
+
     return AlertDialog(
       title: Text(context.l10n.editPackDetails),
       content: SizedBox(
@@ -670,31 +605,67 @@ class _PackDetailsDialogState
               const SizedBox(height: 18),
               Text(
                 context.l10n.packStyle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 10),
-              Wrap(
-                spacing: 9,
-                runSpacing: 9,
-                children: wordPackVisualStyles.map((style) {
-                  return ChoiceChip(
-                    selected: style.key == _styleKey,
-                    avatar: Icon(
-                      style.icon,
-                      color: style.color,
+              InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: _chooseIcon,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: packColor.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: packColor.withValues(alpha: 0.35),
                     ),
-                    label: Text(
-                      widget.styleLabel(style.key),
-                    ),
-                    onSelected: (_) {
-                      setState(() {
-                        _styleKey = style.key;
-                      });
-                    },
-                  );
-                }).toList(),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          color: packColor.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Icon(
+                          selectedIcon.icon,
+                          color: packColor,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              selectedIcon.label,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              context.l10n.chooseIcon,
+                              style: TextStyle(
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.edit_rounded, color: packColor),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -715,8 +686,7 @@ class _PackDetailsDialogState
               context,
               _PackDetailsDraft(
                 name: name,
-                description:
-                    _descriptionController.text.trim(),
+                description: _descriptionController.text.trim(),
                 styleKey: _styleKey,
               ),
             );
@@ -733,18 +703,13 @@ class _AssignmentDialog extends StatefulWidget {
   final List<ChildProfile> children;
   final WordPack pack;
 
-  const _AssignmentDialog({
-    required this.children,
-    required this.pack,
-  });
+  const _AssignmentDialog({required this.children, required this.pack});
 
   @override
-  State<_AssignmentDialog> createState() =>
-      _AssignmentDialogState();
+  State<_AssignmentDialog> createState() => _AssignmentDialogState();
 }
 
-class _AssignmentDialogState
-    extends State<_AssignmentDialog> {
+class _AssignmentDialogState extends State<_AssignmentDialog> {
   late bool _availableToAll;
   late Set<String> _selectedChildIds;
 
@@ -753,8 +718,7 @@ class _AssignmentDialogState
     super.initState();
 
     _availableToAll = widget.pack.availableToAll;
-    _selectedChildIds =
-        widget.pack.assignedChildIds.toSet();
+    _selectedChildIds = widget.pack.assignedChildIds.toSet();
   }
 
   @override
@@ -773,9 +737,7 @@ class _AssignmentDialogState
                   ChoiceChip(
                     selected: _availableToAll,
                     avatar: const Icon(Icons.groups_rounded),
-                    label: Text(
-                      context.l10n.availableToEveryone,
-                    ),
+                    label: Text(context.l10n.availableToEveryone),
                     onSelected: (_) {
                       setState(() {
                         _availableToAll = true;
@@ -785,11 +747,8 @@ class _AssignmentDialogState
                   ),
                   ChoiceChip(
                     selected: !_availableToAll,
-                    avatar:
-                        const Icon(Icons.people_alt_rounded),
-                    label: Text(
-                      context.l10n.selectedChildren,
-                    ),
+                    avatar: const Icon(Icons.people_alt_rounded),
+                    label: Text(context.l10n.selectedChildren),
                     onSelected: (_) {
                       setState(() {
                         _availableToAll = false;
@@ -806,29 +765,29 @@ class _AssignmentDialogState
                   Wrap(
                     spacing: 9,
                     runSpacing: 9,
-                    children: widget.children.map((child) {
-                      final selected =
-                          _selectedChildIds.contains(child.id);
+                    children:
+                        widget.children.map((child) {
+                          final selected = _selectedChildIds.contains(child.id);
 
-                      return FilterChip(
-                        selected: selected,
-                        avatar: Icon(
-                          selected
-                              ? Icons.check_circle_rounded
-                              : Icons.face_rounded,
-                        ),
-                        label: Text(child.name),
-                        onSelected: (value) {
-                          setState(() {
-                            if (value) {
-                              _selectedChildIds.add(child.id);
-                            } else {
-                              _selectedChildIds.remove(child.id);
-                            }
-                          });
-                        },
-                      );
-                    }).toList(),
+                          return FilterChip(
+                            selected: selected,
+                            avatar: Icon(
+                              selected
+                                  ? Icons.check_circle_rounded
+                                  : Icons.face_rounded,
+                            ),
+                            label: Text(child.name),
+                            onSelected: (value) {
+                              setState(() {
+                                if (value) {
+                                  _selectedChildIds.add(child.id);
+                                } else {
+                                  _selectedChildIds.remove(child.id);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
                   ),
               ],
             ],
@@ -846,8 +805,7 @@ class _AssignmentDialogState
               context,
               _AssignmentDraft(
                 availableToAll: _availableToAll,
-                selectedChildIds:
-                    _selectedChildIds.toList(),
+                selectedChildIds: _selectedChildIds.toList(),
               ),
             );
           },
@@ -862,9 +820,7 @@ class _AssignmentDialogState
 class _WordDialog extends StatefulWidget {
   final WordItem? existingWord;
 
-  const _WordDialog({
-    this.existingWord,
-  });
+  const _WordDialog({this.existingWord});
 
   @override
   State<_WordDialog> createState() => _WordDialogState();
@@ -872,8 +828,9 @@ class _WordDialog extends StatefulWidget {
 
 class _WordDialogState extends State<_WordDialog> {
   late final TextEditingController _wordController;
-  late final TextEditingController _emojiController;
   late final TextEditingController _hintController;
+  late String _imageType;
+  late String _imageValue;
   late String _difficulty;
 
   @override
@@ -883,22 +840,48 @@ class _WordDialogState extends State<_WordDialog> {
     _wordController = TextEditingController(
       text: widget.existingWord?.text ?? '',
     );
-    _emojiController = TextEditingController(
-      text: widget.existingWord?.imageValue ?? '',
-    );
+    _imageType = widget.existingWord?.imageType ?? 'icon';
+    _imageValue =
+        widget.existingWord?.imageValue.trim().isNotEmpty == true
+            ? widget.existingWord!.imageValue
+            : 'book';
     _hintController = TextEditingController(
       text: widget.existingWord?.hint ?? '',
     );
-    _difficulty =
-        widget.existingWord?.difficulty ?? 'easy';
+    _difficulty = widget.existingWord?.difficulty ?? 'easy';
   }
 
   @override
   void dispose() {
     _wordController.dispose();
-    _emojiController.dispose();
     _hintController.dispose();
     super.dispose();
+  }
+
+  Future<void> _chooseIcon() async {
+    final selected = await showAppIconPickerDialog(
+      context: context,
+      selectedKey: _imageType == 'icon' ? _imageValue : null,
+      title: context.l10n.chooseIcon,
+      categories: const [
+        AppIconCategory.learning,
+        AppIconCategory.feelings,
+        AppIconCategory.dailyLife,
+        AppIconCategory.animals,
+        AppIconCategory.food,
+        AppIconCategory.play,
+        AppIconCategory.health,
+        AppIconCategory.nature,
+        AppIconCategory.objects,
+      ],
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _imageType = 'icon';
+      _imageValue = selected.key;
+    });
   }
 
   @override
@@ -906,11 +889,7 @@ class _WordDialogState extends State<_WordDialog> {
     final editing = widget.existingWord != null;
 
     return AlertDialog(
-      title: Text(
-        editing
-            ? context.l10n.editWord
-            : context.l10n.addWord,
-      ),
+      title: Text(editing ? context.l10n.editWord : context.l10n.addWord),
       content: SizedBox(
         width: 520,
         child: SingleChildScrollView(
@@ -919,19 +898,90 @@ class _WordDialogState extends State<_WordDialog> {
               TextField(
                 controller: _wordController,
                 autofocus: true,
-                textCapitalization:
-                    TextCapitalization.sentences,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   labelText: context.l10n.word,
                   border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 14),
-              TextField(
-                controller: _emojiController,
-                decoration: InputDecoration(
-                  labelText: context.l10n.emoji,
-                  border: const OutlineInputBorder(),
+              InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: _chooseIcon,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF66BB6A).withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: const Color(0xFF66BB6A).withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          color: const Color(
+                            0xFF66BB6A,
+                          ).withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child:
+                            _imageType == 'icon'
+                                ? Icon(
+                                  appIconForKey(
+                                    _imageValue,
+                                    fallbackKey: 'book',
+                                  ),
+                                  color: const Color(0xFF2E7D32),
+                                  size: 30,
+                                )
+                                : Center(
+                                  child: Text(
+                                    _imageValue.isEmpty ? '📚' : _imageValue,
+                                    style: const TextStyle(fontSize: 28),
+                                  ),
+                                ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _imageType == 'icon'
+                                  ? appIconOptionForKey(
+                                    _imageValue,
+                                    fallbackKey: 'book',
+                                  ).label
+                                  : (_imageValue.isEmpty
+                                      ? 'Book'
+                                      : _imageValue),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              context.l10n.chooseIcon,
+                              style: TextStyle(
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.edit_rounded, color: Color(0xFF2E7D32)),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 14),
@@ -966,8 +1016,7 @@ class _WordDialogState extends State<_WordDialog> {
               const SizedBox(height: 14),
               TextField(
                 controller: _hintController,
-                textCapitalization:
-                    TextCapitalization.sentences,
+                textCapitalization: TextCapitalization.sentences,
                 minLines: 1,
                 maxLines: 3,
                 decoration: InputDecoration(
@@ -994,9 +1043,11 @@ class _WordDialogState extends State<_WordDialog> {
               context,
               _WordDraft(
                 word: word,
-                emoji: _emojiController.text.trim().isEmpty
-                    ? '📚'
-                    : _emojiController.text.trim(),
+                imageType: _imageType,
+                imageValue:
+                    _imageValue.trim().isEmpty
+                        ? appIconKeyFor('book', fallbackKey: 'book')
+                        : appIconKeyFor(_imageValue, fallbackKey: 'book'),
                 difficulty: _difficulty,
                 hint: _hintController.text.trim(),
               ),
@@ -1014,18 +1065,12 @@ class _HeaderChip extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _HeaderChip({
-    required this.icon,
-    required this.label,
-  });
+  const _HeaderChip({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(20),
@@ -1052,10 +1097,7 @@ class _EditorMessageState extends StatelessWidget {
   final IconData icon;
   final String message;
 
-  const _EditorMessageState({
-    required this.icon,
-    required this.message,
-  });
+  const _EditorMessageState({required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -1065,23 +1107,46 @@ class _EditorMessageState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 72,
-              color: const Color(0xFF66BB6A),
-            ),
+            Icon(icon, size: 72, color: const Color(0xFF66BB6A)),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _WordVisual extends StatelessWidget {
+  final WordItem word;
+  final Color color;
+  final double size;
+
+  const _WordVisual({
+    required this.word,
+    required this.color,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (word.imageType == 'icon') {
+      return Icon(
+        appIconForKey(word.imageValue, fallbackKey: 'book'),
+        size: size,
+        color: color,
+      );
+    }
+
+    return Text(
+      word.imageValue.isEmpty ? '📚' : word.imageValue,
+      style: TextStyle(fontSize: size),
     );
   }
 }
@@ -1110,13 +1175,15 @@ class _AssignmentDraft {
 
 class _WordDraft {
   final String word;
-  final String emoji;
+  final String imageType;
+  final String imageValue;
   final String difficulty;
   final String hint;
 
   const _WordDraft({
     required this.word,
-    required this.emoji,
+    required this.imageType,
+    required this.imageValue,
     required this.difficulty,
     required this.hint,
   });

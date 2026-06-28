@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_icon_catalog.dart';
+
 class WhenThenIconStyle {
   final String key;
   final IconData icon;
@@ -77,9 +79,14 @@ String _normaliseWhenThenIconKey(String key) {
 WhenThenIconStyle whenThenStyleFor(String key) {
   final normalisedKey = _normaliseWhenThenIconKey(key);
 
-  return whenThenIconStyles.firstWhere(
-    (style) => style.key == normalisedKey,
-    orElse: () => whenThenIconStyles.first,
+  for (final style in whenThenIconStyles) {
+    if (style.key == normalisedKey) return style;
+  }
+
+  return WhenThenIconStyle(
+    key: appIconKeyFor(normalisedKey, fallbackKey: 'pencil'),
+    icon: appIconForKey(normalisedKey, fallbackKey: 'pencil'),
+    color: const Color(0xFF7E57C2),
   );
 }
 

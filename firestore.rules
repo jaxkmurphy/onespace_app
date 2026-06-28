@@ -140,6 +140,16 @@ service cloud.firestore {
             || isThisClassroom(schoolId, classroomId);
         }
 
+        match /odd_one_out_packs/{packId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+
+          match /rounds/{roundId} {
+            allow read, write: if isSchoolAdmin(schoolId)
+              || isThisClassroom(schoolId, classroomId);
+          }
+        }
+
         match /when_then_options/{optionGroupId} {
           allow read, write: if isSchoolAdmin(schoolId)
             || isThisClassroom(schoolId, classroomId);

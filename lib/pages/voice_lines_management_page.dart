@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../data/app_icon_catalog.dart';
 import '../data/voice_lines.dart';
 import '../models/managed_voice_line.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
+import '../widgets/app_icon_picker_dialog.dart';
 
 class VoiceLinesManagementPage extends StatefulWidget {
   final StaffProfile staffProfile;
@@ -60,7 +62,7 @@ class _VoiceLinesManagementPageState extends State<VoiceLinesManagementPage> {
             labelGA: result.labelGA,
             spokenEN: result.spokenEN,
             spokenGA: result.spokenGA,
-            iconName: 'voice',
+            iconName: result.iconName,
             colorHex: '#7E57C2',
             active: true,
             sortOrder: nextSortOrder,
@@ -78,6 +80,7 @@ class _VoiceLinesManagementPageState extends State<VoiceLinesManagementPage> {
             labelGA: result.labelGA,
             spokenEN: result.spokenEN,
             spokenGA: result.spokenGA,
+            iconName: result.iconName,
           ),
         );
 
@@ -676,6 +679,7 @@ class _VoiceLineEditorDialogState extends State<_VoiceLineEditorDialog> {
 
   late final TextEditingController _labelController;
   late final TextEditingController _spokenController;
+  late String _selectedIcon;
 
   @override
   void initState() {
@@ -689,6 +693,7 @@ class _VoiceLineEditorDialogState extends State<_VoiceLineEditorDialog> {
 
     _labelController = TextEditingController(text: existingLabel);
     _spokenController = TextEditingController(text: existingSpoken);
+    _selectedIcon = appIconKeyFor(existing?.iconName ?? 'voice');
   }
 
   @override
@@ -732,8 +737,32 @@ class _VoiceLineEditorDialogState extends State<_VoiceLineEditorDialog> {
                 : (existing?.spokenGA.trim().isNotEmpty == true
                     ? existing!.spokenGA
                     : spoken),
+        iconName: appIconKeyFor(_selectedIcon),
       ),
     );
+  }
+
+  Future<void> _chooseIcon() async {
+    final selected = await showAppIconPickerDialog(
+      context: context,
+      selectedKey: _selectedIcon,
+      title: 'Choose an icon',
+      categories: const [
+        AppIconCategory.feelings,
+        AppIconCategory.health,
+        AppIconCategory.dailyLife,
+        AppIconCategory.food,
+        AppIconCategory.nature,
+        AppIconCategory.people,
+        AppIconCategory.objects,
+      ],
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _selectedIcon = selected.key;
+    });
   }
 
   String? _required(String? value) {
@@ -748,6 +777,10 @@ class _VoiceLineEditorDialogState extends State<_VoiceLineEditorDialog> {
   Widget build(BuildContext context) {
     final isEditing = widget.existing != null;
     final languageName = widget.isIrish ? 'Irish' : 'English';
+    final selectedOption = appIconOptionForKey(_selectedIcon);
+    final selectedColor = voiceLineColorFromHex(
+      widget.existing?.colorHex ?? '#7E57C2',
+    );
 
     return AlertDialog(
       title: Text(isEditing ? 'Edit voice line' : 'Create custom voice line'),
@@ -790,6 +823,66 @@ class _VoiceLineEditorDialogState extends State<_VoiceLineEditorDialog> {
                   validator: _required,
                   minLines: 2,
                   maxLines: 4,
+                ),
+                const SizedBox(height: 14),
+                InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: _chooseIcon,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: selectedColor.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: selectedColor.withValues(alpha: 0.32),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 54,
+                          height: 54,
+                          decoration: BoxDecoration(
+                            color: selectedColor.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Icon(
+                            selectedOption.icon,
+                            color: selectedColor,
+                            size: 30,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedOption.label,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Choose an icon',
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.edit_rounded, color: selectedColor),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -872,11 +965,13 @@ class _VoiceLineFormResult {
   final String labelGA;
   final String spokenEN;
   final String spokenGA;
+  final String iconName;
 
   const _VoiceLineFormResult({
     required this.labelEN,
     required this.labelGA,
     required this.spokenEN,
     required this.spokenGA,
+    required this.iconName,
   });
 }

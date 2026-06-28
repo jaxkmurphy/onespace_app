@@ -482,6 +482,26 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             );
           },
         ),
+      if (_isFeatureEnabled(ClassroomFeature.oddOneOut))
+        _DashboardFeature(
+          icon: Icons.psychology_alt_rounded,
+          title: isIrish ? 'An Ceann Corr' : 'Odd One Out',
+          subtitle:
+              isIrish
+                  ? 'Aimsigh an ceann nach mbaineann leis.'
+                  : 'Find the item that does not belong.',
+          color: const Color(0xFF7E57C2),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/odd-one-out',
+              arguments: {
+                'child': profile,
+                'firestoreService': widget.firestoreService,
+              },
+            );
+          },
+        ),
       if (_isFeatureEnabled(ClassroomFeature.visualTimer))
         _DashboardFeature(
           icon: Icons.timer_rounded,

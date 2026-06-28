@@ -270,6 +270,23 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
+            if (_isFeatureEnabled(ClassroomFeature.oddOneOut))
+            StaffDashboardFeatureCard(
+              icon: Icons.psychology_alt_rounded,
+              title: 'Odd One Out',
+              subtitle: 'Create visual odd-one-out reasoning packs.',
+              color: const Color(0xFF7E57C2),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/odd-one-out-management',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
         ];
 
         final adminTools = <Widget>[

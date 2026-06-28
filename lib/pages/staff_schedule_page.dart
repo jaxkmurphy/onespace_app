@@ -1,10 +1,12 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../data/app_icon_catalog.dart';
 import '../data/schedule_activity_types.dart';
 import '../l10n/l10n.dart';
 import '../models/schedule_entry.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
+import '../widgets/app_icon_picker_dialog.dart';
 
 class StaffSchedulePage extends StatefulWidget {
   const StaffSchedulePage({super.key});
@@ -295,6 +297,32 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            Future<void> chooseOtherIcon() async {
+              final selected = await showAppIconPickerDialog(
+                context: dialogContext,
+                selectedKey:
+                    isStandardScheduleActivityType(selectedIcon)
+                        ? null
+                        : selectedIcon,
+                title: context.l10n.chooseIcon,
+                categories: const [
+                  AppIconCategory.learning,
+                  AppIconCategory.dailyLife,
+                  AppIconCategory.food,
+                  AppIconCategory.play,
+                  AppIconCategory.health,
+                  AppIconCategory.nature,
+                  AppIconCategory.objects,
+                ],
+              );
+
+              if (selected == null) return;
+
+              setDialogState(() {
+                selectedIcon = selected.key;
+              });
+            }
+
             final maximumDuration = dayEndMinutes - startMinutes;
 
             final endMinutes = startMinutes + durationMinutes;
@@ -430,21 +458,40 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                         runSpacing: 8,
                         children:
                             scheduleActivityTypes.map((type) {
+                              final selected =
+                                  type.key == 'other'
+                                      ? selectedIcon == 'other' ||
+                                          !isStandardScheduleActivityType(
+                                            selectedIcon,
+                                          )
+                                      : selectedIcon == type.key;
+                              final displayType =
+                                  type.key == 'other' &&
+                                          selected &&
+                                          selectedIcon != 'other'
+                                      ? scheduleActivityTypeFor(selectedIcon)
+                                      : type;
+
                               return ChoiceChip(
-                                selected: selectedIcon == type.key,
+                                selected: selected,
                                 avatar: Icon(
-                                  type.icon,
-                                  color: type.colour,
+                                  displayType.icon,
+                                  color: displayType.colour,
                                   size: 20,
                                 ),
                                 label: Text(_activityTypeLabel(type.key)),
                                 onSelected:
                                     dialogSaving
                                         ? null
-                                        : (_) {
-                                          setDialogState(() {
-                                            selectedIcon = type.key;
-                                          });
+                                        : (_) async {
+                                          if (type.key == 'other') {
+                                            await chooseOtherIcon();
+                                            return;
+                                          }
+
+                                          setDialogState(
+                                            () => selectedIcon = type.key,
+                                          );
                                         },
                               );
                             }).toList(),

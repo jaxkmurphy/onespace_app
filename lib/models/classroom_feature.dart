@@ -10,6 +10,7 @@ enum ClassroomFeature {
   quizzes('quizzes'),
   associationPairs('associationPairs'),
   numberSequence('numberSequence'),
+  oddOneOut('oddOneOut'),
   wordLearning('wordLearning'),
   incidentLog('incidentLog'),
   handover('handover'),
@@ -85,6 +86,8 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Association Pairs';
       case ClassroomFeature.numberSequence:
         return 'Number Sequence';
+      case ClassroomFeature.oddOneOut:
+        return 'Odd One Out';
       case ClassroomFeature.wordLearning:
         return 'Word Learning';
       case ClassroomFeature.incidentLog:
@@ -126,6 +129,8 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Child association matching game.';
       case ClassroomFeature.numberSequence:
         return 'Child number ordering and hand-eye coordination game.';
+      case ClassroomFeature.oddOneOut:
+        return 'Child odd-one-out reasoning game.';
       case ClassroomFeature.wordLearning:
         return 'Word learning and practice.';
       case ClassroomFeature.incidentLog:
