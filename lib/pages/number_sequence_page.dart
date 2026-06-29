@@ -1,21 +1,30 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import '../data/app_icon_catalog.dart';
+import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
+import '../models/number_sequence_models.dart';
+import '../services/firestore_service.dart';
 
 class NumberSequencePage extends StatefulWidget {
   final ChildProfile? child;
+  final FirestoreService? firestoreService;
 
-  const NumberSequencePage({super.key, this.child});
+  const NumberSequencePage({super.key, this.child, this.firestoreService});
 
   @override
   State<NumberSequencePage> createState() => _NumberSequencePageState();
 }
 
 class _NumberSequencePageState extends State<NumberSequencePage> {
-  _NumberSequenceDifficulty _difficulty = _NumberSequenceDifficulty.easy;
+  final Random _random = Random();
 
-  late List<int> _numbers;
+  List<NumberSequenceChallenge> _challenges = [];
+  NumberSequenceChallenge? _selectedChallenge;
+  List<int> _numbers = [];
 
   Timer? _timer;
   Duration _elapsed = Duration.zero;
@@ -24,16 +33,19 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
   int _mistakes = 0;
   int? _wrongNumber;
 
+  bool _loadingChallenges = true;
+  bool _hasLoadError = false;
   bool _hasStarted = false;
   bool _isComplete = false;
   bool _isShowingMistake = false;
 
   bool get _isIrish => Localizations.localeOf(context).languageCode == 'ga';
+  LearningGameLocalizations get _text => LearningGameLocalizations.of(context);
 
   @override
   void initState() {
     super.initState();
-    _startGame(_difficulty);
+    _loadChallenges();
   }
 
   @override
@@ -42,31 +54,105 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
     super.dispose();
   }
 
-  String _difficultyLabel(_NumberSequenceDifficulty difficulty) {
-    return switch (difficulty) {
-      _NumberSequenceDifficulty.easy => _isIrish ? 'Éasca' : 'Easy',
-      _NumberSequenceDifficulty.medium => _isIrish ? 'Meánach' : 'Medium',
-      _NumberSequenceDifficulty.hard => _isIrish ? 'Deacair' : 'Hard',
-    };
+  Future<void> _loadChallenges() async {
+    setState(() {
+      _loadingChallenges = true;
+      _hasLoadError = false;
+    });
+
+    try {
+      final service = widget.firestoreService;
+      final child = widget.child;
+
+      if (service == null || child == null) {
+        setState(() {
+          _challenges = _starterChallenges();
+          _loadingChallenges = false;
+        });
+        return;
+      }
+
+      final challenges =
+          await service
+              .getCurrentAssignedNumberSequenceChallenges(childId: child.id)
+              .first;
+      final activeChallenges =
+          challenges.where((challenge) => challenge.active).toList();
+
+      if (!mounted) return;
+
+      setState(() {
+        _challenges =
+            activeChallenges.isEmpty ? _starterChallenges() : activeChallenges;
+        _loadingChallenges = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      setState(() {
+        _challenges = _starterChallenges();
+        _loadingChallenges = false;
+        _hasLoadError = true;
+      });
+    }
   }
 
-  int _maxNumberForDifficulty(_NumberSequenceDifficulty difficulty) {
-    return switch (difficulty) {
-      _NumberSequenceDifficulty.easy => 5,
-      _NumberSequenceDifficulty.medium => 9,
-      _NumberSequenceDifficulty.hard => 12,
-    };
+  List<NumberSequenceChallenge> _starterChallenges() {
+    return [
+      NumberSequenceChallenge(
+        id: 'easy',
+        title: _isIrish ? 'Éasca' : 'Easy',
+        description:
+            _isIrish ? 'Tapáil uimhreacha 1 go 5.' : 'Tap numbers 1 to 5.',
+        iconName: 'number_5_small',
+        maxNumber: 5,
+        timerEnabled: true,
+        active: true,
+        availableToAll: true,
+        assignedChildIds: [],
+        createdByStaffId: '',
+        createdByStaffName: '',
+      ),
+      NumberSequenceChallenge(
+        id: 'medium',
+        title: _isIrish ? 'Meánach' : 'Medium',
+        description:
+            _isIrish ? 'Tapáil uimhreacha 1 go 9.' : 'Tap numbers 1 to 9.',
+        iconName: 'number_9_small',
+        maxNumber: 9,
+        timerEnabled: true,
+        active: true,
+        availableToAll: true,
+        assignedChildIds: [],
+        createdByStaffId: '',
+        createdByStaffName: '',
+      ),
+      NumberSequenceChallenge(
+        id: 'hard',
+        title: _isIrish ? 'Deacair' : 'Hard',
+        description:
+            _isIrish ? 'Tapáil uimhreacha 1 go 12.' : 'Tap numbers 1 to 12.',
+        iconName: 'numbers',
+        maxNumber: 12,
+        timerEnabled: true,
+        active: true,
+        availableToAll: true,
+        assignedChildIds: [],
+        createdByStaffId: '',
+        createdByStaffName: '',
+      ),
+    ];
   }
 
-  void _startGame(_NumberSequenceDifficulty difficulty) {
+  void _selectChallenge(NumberSequenceChallenge challenge) {
     _timer?.cancel();
 
-    final maxNumber = _maxNumberForDifficulty(difficulty);
+    final maxNumber = challenge.maxNumber.clamp(3, 30);
     final numbers = List<int>.generate(maxNumber, (index) => index + 1)
-      ..shuffle(Random());
+      ..shuffle(_random);
 
     setState(() {
-      _difficulty = difficulty;
+      _selectedChallenge = challenge.copyWith(maxNumber: maxNumber);
       _numbers = numbers;
       _elapsed = Duration.zero;
       _nextNumber = 1;
@@ -78,7 +164,31 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
     });
   }
 
+  void _restart() {
+    final challenge = _selectedChallenge;
+    if (challenge == null) return;
+    _selectChallenge(challenge);
+  }
+
+  void _chooseAnotherChallenge() {
+    _timer?.cancel();
+
+    setState(() {
+      _selectedChallenge = null;
+      _numbers = [];
+      _elapsed = Duration.zero;
+      _nextNumber = 1;
+      _mistakes = 0;
+      _wrongNumber = null;
+      _hasStarted = false;
+      _isComplete = false;
+      _isShowingMistake = false;
+    });
+  }
+
   void _startTimerIfNeeded() {
+    final challenge = _selectedChallenge;
+    if (challenge == null || !challenge.timerEnabled) return;
     if (_hasStarted) return;
 
     _hasStarted = true;
@@ -92,6 +202,8 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
   }
 
   Future<void> _handleNumberTap(int number) async {
+    final challenge = _selectedChallenge;
+    if (challenge == null) return;
     if (_isComplete) return;
     if (_isShowingMistake) return;
 
@@ -116,9 +228,7 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
 
     _startTimerIfNeeded();
 
-    final maxNumber = _maxNumberForDifficulty(_difficulty);
-
-    if (number == maxNumber) {
+    if (number == challenge.maxNumber) {
       _timer?.cancel();
 
       setState(() {
@@ -143,27 +253,22 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
   }
 
   int _starCount() {
-    final maxNumber = _maxNumberForDifficulty(_difficulty);
+    final challenge = _selectedChallenge;
+    if (challenge == null) return 1;
+
     final seconds = _elapsed.inMilliseconds / 1000;
-
-    final strongTime = switch (_difficulty) {
-      _NumberSequenceDifficulty.easy => 6,
-      _NumberSequenceDifficulty.medium => 12,
-      _NumberSequenceDifficulty.hard => 18,
-    };
-
-    final okayTime = switch (_difficulty) {
-      _NumberSequenceDifficulty.easy => 10,
-      _NumberSequenceDifficulty.medium => 18,
-      _NumberSequenceDifficulty.hard => 28,
-    };
+    final strongTime = challenge.maxNumber * 1.6;
+    final okayTime = challenge.maxNumber * 2.7;
 
     if (_mistakes == 0 && seconds <= strongTime) return 3;
-    if (_mistakes <= 2 && seconds <= okayTime + maxNumber) return 2;
+    if (_mistakes <= 2 && seconds <= okayTime + challenge.maxNumber) return 2;
     return 1;
   }
 
   Future<void> _showCompletionDialog() async {
+    final challenge = _selectedChallenge;
+    if (challenge == null) return;
+
     final stars = _starCount();
 
     await showDialog<void>(
@@ -194,7 +299,7 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  _isIrish ? 'Maith thú!' : 'Great job!',
+                  _text.greatJob,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 28,
@@ -203,9 +308,7 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _isIrish
-                      ? 'Tapáil tú na huimhreacha san ord ceart.'
-                      : 'You tapped the numbers in the right order.',
+                  _text.tapNumbersInOrder,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey.shade700,
@@ -229,31 +332,11 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
                   }),
                 ),
                 const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF7F4FF),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _WinStat(
-                          label: _isIrish ? 'Am' : 'Time',
-                          value: '${_formatTime(_elapsed)}s',
-                          icon: Icons.timer_rounded,
-                        ),
-                      ),
-                      Container(width: 1, height: 42, color: Colors.black12),
-                      Expanded(
-                        child: _WinStat(
-                          label: _isIrish ? 'Botúin' : 'Mistakes',
-                          value: _mistakes.toString(),
-                          icon: Icons.touch_app_rounded,
-                        ),
-                      ),
-                    ],
-                  ),
+                Text(
+                  challenge.timerEnabled
+                      ? '${_text.timeLabel}: ${_formatTime(_elapsed)}s • ${_text.mistakesLabel}: $_mistakes'
+                      : '${_text.mistakesLabel}: $_mistakes',
+                  style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 22),
                 Row(
@@ -262,9 +345,9 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
                       child: OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          _startGame(_difficulty);
+                          _restart();
                         },
-                        child: Text(_isIrish ? 'Arís' : 'Play again'),
+                        child: Text(_text.playAgain),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -272,9 +355,9 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
                       child: FilledButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          Navigator.pop(context);
+                          _chooseAnotherChallenge();
                         },
-                        child: Text(_isIrish ? 'Críochnaigh' : 'Finish'),
+                        child: Text(_text.anotherChallenge),
                       ),
                     ),
                   ],
@@ -287,9 +370,11 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
     );
   }
 
-  Widget _buildHeader() {
-    final childName = widget.child?.name.trim();
-
+  Widget _buildHeroHeader({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+  }) {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
@@ -299,24 +384,17 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF29B6F6).withValues(alpha: 0.20),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
       ),
       child: Row(
         children: [
           Container(
-            width: 72,
-            height: 72,
+            width: 68,
+            height: 68,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.20),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(22),
             ),
-            child: const Icon(Icons.pin_rounded, color: Colors.white, size: 42),
+            child: Icon(icon, color: Colors.white, size: 38),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -324,7 +402,7 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _isIrish ? 'Ord Uimhreacha' : 'Number Sequence',
+                  title,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 27,
@@ -333,13 +411,7 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  childName == null || childName.isEmpty
-                      ? (_isIrish
-                          ? 'Tapáil na huimhreacha san ord ceart.'
-                          : 'Tap the numbers in the right order.')
-                      : (_isIrish
-                          ? 'Tapáil na huimhreacha san ord ceart, $childName.'
-                          : 'Tap the numbers in order, $childName.'),
+                  subtitle,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -354,63 +426,79 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
     );
   }
 
-  Widget _buildDifficultySelector() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.88),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8E3FF)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _isIrish ? 'Roghnaigh leibhéal' : 'Choose a level',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children:
-                _NumberSequenceDifficulty.values.map((difficulty) {
-                  final selected = difficulty == _difficulty;
-                  final maxNumber = _maxNumberForDifficulty(difficulty);
+  Widget _buildChallengePicker() {
+    const color = Color(0xFF29B6F6);
 
-                  return ChoiceChip(
-                    selected: selected,
-                    label: Text(
-                      '${_difficultyLabel(difficulty)} • 1-$maxNumber',
-                    ),
-                    onSelected: (_) => _startGame(difficulty),
-                  );
-                }).toList(),
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 32),
+      children: [
+        _buildHeroHeader(
+          title: _text.chooseChallenge,
+          subtitle: _text.tapNumbersInOrder,
+          icon: Icons.pin_rounded,
+        ),
+        if (_hasLoadError) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.orange.shade200),
+            ),
+            child: Text(
+              _text.usingStarterChallenges,
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
           ),
         ],
-      ),
+        const SizedBox(height: 18),
+        ..._challenges.map(
+          (challenge) => Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: _ChallengeCard(
+              challenge: challenge,
+              color: color,
+              onTap: () => _selectChallenge(challenge),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildStats() {
-    final maxNumber = _maxNumberForDifficulty(_difficulty);
+    final challenge = _selectedChallenge;
+    if (challenge == null) return const SizedBox.shrink();
 
     return Row(
       children: [
         Expanded(
           child: _StatPill(
             icon: Icons.flag_rounded,
-            label: _isIrish ? 'Ar aghaidh' : 'Next',
-            value: _nextNumber > maxNumber ? '✓' : _nextNumber.toString(),
+            label: _text.nextLabel,
+            value:
+                _nextNumber > challenge.maxNumber
+                    ? '✓'
+                    : _nextNumber.toString(),
             color: const Color(0xFF7E57C2),
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: _StatPill(
-            icon: Icons.timer_rounded,
-            label: _isIrish ? 'Am' : 'Time',
-            value: '${_formatTime(_elapsed)}s',
+            icon:
+                challenge.timerEnabled
+                    ? Icons.timer_rounded
+                    : Icons.touch_app_rounded,
+            label:
+                challenge.timerEnabled
+                    ? (_text.timeLabel)
+                    : (_text.mistakesLabel),
+            value:
+                challenge.timerEnabled
+                    ? '${_formatTime(_elapsed)}s'
+                    : _mistakes.toString(),
             color: const Color(0xFF29B6F6),
           ),
         ),
@@ -423,9 +511,9 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
       builder: (context, constraints) {
         final columns =
             constraints.maxWidth >= 760
-                ? 4
+                ? 5
                 : constraints.maxWidth >= 520
-                ? 3
+                ? 4
                 : 3;
 
         return GridView.builder(
@@ -456,6 +544,9 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
   }
 
   Widget _buildInstructionCard() {
+    final challenge = _selectedChallenge;
+    if (challenge == null) return const SizedBox.shrink();
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -471,9 +562,13 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              _isIrish
-                  ? 'Tosaíonn an t-amadóir nuair a thapálann tú 1.'
-                  : 'The timer starts when you tap 1.',
+              challenge.timerEnabled
+                  ? (_isIrish
+                      ? 'Tosaíonn an t-amadóir nuair a thapálann tú 1.'
+                      : 'The timer starts when you tap 1.')
+                  : (_isIrish
+                      ? 'Tapáil na huimhreacha san ord ceart.'
+                      : 'Tap the numbers in order.'),
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
@@ -482,53 +577,164 @@ class _NumberSequencePageState extends State<NumberSequencePage> {
     );
   }
 
+  Widget _buildGame() {
+    final challenge = _selectedChallenge;
+    if (challenge == null) return _buildChallengePicker();
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 10, 18, 28),
+      children: [
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 840),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeroHeader(
+                  title: challenge.title,
+                  subtitle:
+                      challenge.description.trim().isEmpty
+                          ? 'Tap numbers 1 to ${challenge.maxNumber}.'
+                          : challenge.description,
+                  icon: appIconForKey(challenge.iconName, fallbackKey: 'pin'),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Expanded(child: _buildStats()),
+                    const SizedBox(width: 10),
+                    IconButton.filledTonal(
+                      tooltip: _text.challenges,
+                      onPressed: _chooseAnotherChallenge,
+                      icon: const Icon(Icons.grid_view_rounded),
+                    ),
+                    IconButton.filledTonal(
+                      tooltip: _text.restart,
+                      onPressed: _restart,
+                      icon: const Icon(Icons.refresh_rounded),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                _buildInstructionCard(),
+                const SizedBox(height: 16),
+                _buildNumberGrid(),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FF),
       appBar: AppBar(
-        title: Text(_isIrish ? 'Ord Uimhreacha' : 'Number Sequence'),
+        title: Text(_text.numberSequence),
         backgroundColor: const Color(0xFFF7F4FF),
         elevation: 0,
-        actions: [
-          IconButton(
-            tooltip: _isIrish ? 'Atosaigh' : 'Restart',
-            onPressed: () => _startGame(_difficulty),
-            icon: const Icon(Icons.refresh_rounded),
-          ),
-        ],
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(18, 10, 18, 28),
-          children: [
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 840),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildHeader(),
-                    const SizedBox(height: 16),
-                    _buildDifficultySelector(),
-                    const SizedBox(height: 14),
-                    _buildInstructionCard(),
-                    const SizedBox(height: 14),
-                    _buildStats(),
-                    const SizedBox(height: 16),
-                    _buildNumberGrid(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        child:
+            _loadingChallenges
+                ? const Center(child: CircularProgressIndicator())
+                : _selectedChallenge == null
+                ? _buildChallengePicker()
+                : _buildGame(),
       ),
     );
   }
 }
 
-enum _NumberSequenceDifficulty { easy, medium, hard }
+class _ChallengeCard extends StatelessWidget {
+  final NumberSequenceChallenge challenge;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ChallengeCard({
+    required this.challenge,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final description = challenge.description.trim();
+
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(28),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(28),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: color.withValues(alpha: 0.18), width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.08),
+                blurRadius: 22,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 62,
+                height: 62,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Icon(
+                  appIconForKey(challenge.iconName, fallbackKey: 'pin'),
+                  color: color,
+                  size: 34,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      challenge.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      description.isEmpty
+                          ? '1-${challenge.maxNumber}${challenge.timerEnabled ? ' • Timer' : ''}'
+                          : description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Icon(Icons.play_circle_fill_rounded, color: color, size: 42),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _NumberTile extends StatelessWidget {
   final int number;
@@ -641,43 +847,6 @@ class _StatPill extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _WinStat extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-
-  const _WinStat({
-    required this.label,
-    required this.value,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: const Color(0xFF7E57C2)),
-        const SizedBox(height: 5),
-        Text(
-          value,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.grey.shade700,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
     );
   }
 }

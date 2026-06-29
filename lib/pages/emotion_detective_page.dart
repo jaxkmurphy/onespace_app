@@ -6,43 +6,47 @@ import '../data/app_icon_catalog.dart';
 import '../l10n/l10n.dart';
 import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
-import '../models/odd_one_out_models.dart';
+import '../models/emotion_detective_models.dart';
 import '../services/firestore_service.dart';
 
-class OddOneOutPage extends StatefulWidget {
+class EmotionDetectivePage extends StatefulWidget {
   final ChildProfile profile;
   final FirestoreService firestoreService;
 
-  const OddOneOutPage({
+  const EmotionDetectivePage({
     super.key,
     required this.profile,
     required this.firestoreService,
   });
 
   @override
-  State<OddOneOutPage> createState() => _OddOneOutPageState();
+  State<EmotionDetectivePage> createState() => _EmotionDetectivePageState();
 }
 
-class _OddOneOutPageState extends State<OddOneOutPage> {
+class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
   final Random _random = Random();
 
-  List<OddOneOutPack> _packs = [];
-  OddOneOutPack? _selectedPack;
-  List<_PlayableOddOneOutRound> _rounds = [];
-  int _roundIndex = 0;
+  List<EmotionDetectivePack> _packs = [];
+  EmotionDetectivePack? _selectedPack;
+  List<_PlayableEmotionScenario> _scenarios = [];
+  int _scenarioIndex = 0;
   int? _selectedIndex;
   bool _answered = false;
   bool _loadingPacks = true;
-  bool _loadingRounds = false;
+  bool _loadingScenarios = false;
   bool _hasLoadError = false;
   int _score = 0;
 
-  _PlayableOddOneOutRound? get _currentRound {
-    if (_rounds.isEmpty || _roundIndex >= _rounds.length) return null;
-    return _rounds[_roundIndex];
+  _PlayableEmotionScenario? get _currentScenario {
+    if (_scenarios.isEmpty || _scenarioIndex >= _scenarios.length) {
+      return null;
+    }
+
+    return _scenarios[_scenarioIndex];
   }
 
-  bool get _complete => _rounds.isNotEmpty && _roundIndex >= _rounds.length;
+  bool get _complete =>
+      _scenarios.isNotEmpty && _scenarioIndex >= _scenarios.length;
   LearningGameLocalizations get _text => LearningGameLocalizations.of(context);
 
   @override
@@ -60,7 +64,9 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
     try {
       final packs =
           await widget.firestoreService
-              .getCurrentAssignedOddOneOutPacks(childId: widget.profile.id)
+              .getCurrentAssignedEmotionDetectivePacks(
+                childId: widget.profile.id,
+              )
               .first;
 
       final activePacks = packs.where((pack) => pack.active).toList();
@@ -82,58 +88,59 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
     }
   }
 
-  Future<void> _selectPack(OddOneOutPack pack) async {
+  Future<void> _selectPack(EmotionDetectivePack pack) async {
     setState(() {
       _selectedPack = pack;
-      _rounds = [];
-      _roundIndex = 0;
+      _scenarios = [];
+      _scenarioIndex = 0;
       _selectedIndex = null;
       _answered = false;
       _score = 0;
-      _loadingRounds = true;
+      _loadingScenarios = true;
     });
 
     try {
-      final rounds =
+      final scenarios =
           pack.id == 'default'
-              ? _defaultRounds()
+              ? _defaultScenarios()
               : await widget.firestoreService
-                  .getCurrentOddOneOutRounds(pack.id)
+                  .getCurrentEmotionDetectiveScenarios(pack.id)
                   .first;
 
-      final playableRounds =
-          rounds
+      final playableScenarios =
+          scenarios
               .where(
-                (round) =>
-                    round.items.length == 4 &&
-                    round.oddIndex >= 0 &&
-                    round.oddIndex < round.items.length,
+                (scenario) =>
+                    scenario.prompt.trim().isNotEmpty &&
+                    scenario.choices.length == 4 &&
+                    scenario.correctIndex >= 0 &&
+                    scenario.correctIndex < scenario.choices.length,
               )
-              .map(_shuffleRoundChoices)
+              .map(_shuffleScenarioChoices)
               .toList()
             ..shuffle(_random);
 
       if (!mounted) return;
 
-      if (playableRounds.isEmpty) {
+      if (playableScenarios.isEmpty) {
         setState(() {
           _selectedPack = null;
-          _loadingRounds = false;
+          _loadingScenarios = false;
         });
-        _showMessage(_text.noPlayableRounds);
+        _showMessage(_text.noPlayableScenarios);
         return;
       }
 
       setState(() {
-        _rounds = playableRounds.take(12).toList();
-        _loadingRounds = false;
+        _scenarios = playableScenarios.take(12).toList();
+        _loadingScenarios = false;
       });
     } catch (_) {
       if (!mounted) return;
 
       setState(() {
         _selectedPack = null;
-        _loadingRounds = false;
+        _loadingScenarios = false;
       });
       _showMessage(_text.couldNotLoadPack);
     }
@@ -141,17 +148,18 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
 
   void _showMessage(String message) {
     if (!mounted) return;
+
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  OddOneOutPack _defaultPack() {
-    return OddOneOutPack(
+  EmotionDetectivePack _defaultPack() {
+    return EmotionDetectivePack(
       id: 'default',
-      title: _text.starterPack,
-      description: _text.findOddOne,
-      iconName: 'target',
+      title: _text.starterFeelings,
+      description: _text.thinkAboutFeelings,
+      iconName: 'mood_smile',
       active: true,
       availableToAll: true,
       assignedChildIds: [],
@@ -160,82 +168,99 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
     );
   }
 
-  List<OddOneOutRound> _defaultRounds() {
+  List<EmotionDetectiveScenario> _defaultScenarios() {
     return const [
-      OddOneOutRound(
-        id: 'animals',
-        prompt: 'Which one is not an animal?',
-        oddIndex: 3,
+      EmotionDetectiveScenario(
+        id: 'lost-toy',
+        prompt: 'A child cannot find their favourite toy.',
+        iconName: 'horse_toy',
+        correctIndex: 1,
+        explanation:
+            'They might feel sad because something important to them is missing.',
         sortOrder: 0,
-        items: [
-          OddOneOutItem(label: 'Cat', iconName: 'cat'),
-          OddOneOutItem(label: 'Dog', iconName: 'dog'),
-          OddOneOutItem(label: 'Fish', iconName: 'fish'),
-          OddOneOutItem(label: 'Pencil', iconName: 'pencil'),
+        choices: [
+          EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
+          EmotionChoice(label: 'Sad', iconName: 'mood_sad'),
+          EmotionChoice(label: 'Excited', iconName: 'sparkles'),
+          EmotionChoice(label: 'Sleepy', iconName: 'zzz'),
         ],
       ),
-      OddOneOutRound(
-        id: 'food',
-        prompt: 'Which one is not food?',
-        oddIndex: 2,
+      EmotionDetectiveScenario(
+        id: 'birthday-surprise',
+        prompt: 'Someone gets a surprise birthday cake.',
+        iconName: 'cake',
+        correctIndex: 2,
+        explanation:
+            'They might feel excited because something special happened.',
         sortOrder: 1,
-        items: [
-          OddOneOutItem(label: 'Apple', iconName: 'apple'),
-          OddOneOutItem(label: 'Pizza', iconName: 'pizza'),
-          OddOneOutItem(label: 'Bus', iconName: 'bus'),
-          OddOneOutItem(label: 'Carrot', iconName: 'carrot'),
+        choices: [
+          EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
+          EmotionChoice(label: 'Worried', iconName: 'mood_worried'),
+          EmotionChoice(label: 'Excited', iconName: 'sparkles'),
+          EmotionChoice(label: 'Tired', iconName: 'moon'),
         ],
       ),
-      OddOneOutRound(
-        id: 'weather',
-        prompt: 'Which one is not weather?',
-        oddIndex: 1,
+      EmotionDetectiveScenario(
+        id: 'loud-noise',
+        prompt: 'There is a sudden loud noise in the room.',
+        iconName: 'volume',
+        correctIndex: 0,
+        explanation:
+            'They might feel scared or worried because loud noises can surprise us.',
         sortOrder: 2,
-        items: [
-          OddOneOutItem(label: 'Sun', iconName: 'sun'),
-          OddOneOutItem(label: 'Book', iconName: 'book'),
-          OddOneOutItem(label: 'Cloud', iconName: 'cloud'),
-          OddOneOutItem(label: 'Rain', iconName: 'droplet'),
+        choices: [
+          EmotionChoice(label: 'Scared', iconName: 'mood_sad'),
+          EmotionChoice(label: 'Proud', iconName: 'award'),
+          EmotionChoice(label: 'Calm', iconName: 'leaf'),
+          EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
         ],
       ),
-      OddOneOutRound(
-        id: 'play',
-        prompt: 'Which one is not for play?',
-        oddIndex: 0,
+      EmotionDetectiveScenario(
+        id: 'finished-work',
+        prompt: 'A child finishes a tricky piece of work.',
+        iconName: 'clipboard_check',
+        correctIndex: 3,
+        explanation:
+            'They might feel proud because they kept going and finished it.',
         sortOrder: 3,
-        items: [
-          OddOneOutItem(label: 'Soup', iconName: 'soup'),
-          OddOneOutItem(label: 'Ball', iconName: 'ball_football'),
-          OddOneOutItem(label: 'Puzzle', iconName: 'puzzle'),
-          OddOneOutItem(label: 'Game', iconName: 'device_gamepad_2'),
+        choices: [
+          EmotionChoice(label: 'Sleepy', iconName: 'zzz'),
+          EmotionChoice(label: 'Scared', iconName: 'mood_sad'),
+          EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
+          EmotionChoice(label: 'Proud', iconName: 'award'),
         ],
       ),
     ];
   }
 
-  _PlayableOddOneOutRound _shuffleRoundChoices(OddOneOutRound round) {
-    final oddItem = round.items[round.oddIndex];
-    final shuffledItems = List<OddOneOutItem>.from(round.items)
+  _PlayableEmotionScenario _shuffleScenarioChoices(
+    EmotionDetectiveScenario scenario,
+  ) {
+    final correctChoice = scenario.choices[scenario.correctIndex];
+    final shuffledChoices = List<EmotionChoice>.from(scenario.choices)
       ..shuffle(_random);
-    final shuffledOddIndex = shuffledItems.indexWhere(
-      (item) =>
-          item.label == oddItem.label && item.iconName == oddItem.iconName,
+    final shuffledCorrectIndex = shuffledChoices.indexWhere(
+      (choice) =>
+          choice.label == correctChoice.label &&
+          choice.iconName == correctChoice.iconName,
     );
 
-    return _PlayableOddOneOutRound(
-      prompt: round.prompt,
-      items: shuffledItems,
-      oddIndex: shuffledOddIndex < 0 ? 0 : shuffledOddIndex,
+    return _PlayableEmotionScenario(
+      prompt: scenario.prompt,
+      iconName: scenario.iconName,
+      choices: shuffledChoices,
+      correctIndex: shuffledCorrectIndex < 0 ? 0 : shuffledCorrectIndex,
+      explanation: scenario.explanation,
     );
   }
 
   void _selectAnswer(int index) {
     if (_answered) return;
 
-    final round = _currentRound;
-    if (round == null) return;
+    final scenario = _currentScenario;
+    if (scenario == null) return;
 
-    final correct = index == round.oddIndex;
+    final correct = index == scenario.correctIndex;
 
     setState(() {
       _selectedIndex = index;
@@ -244,9 +269,9 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
     });
   }
 
-  void _nextRound() {
+  void _nextScenario() {
     setState(() {
-      _roundIndex++;
+      _scenarioIndex++;
       _selectedIndex = null;
       _answered = false;
     });
@@ -254,15 +279,15 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
 
   void _restart() {
     final shuffled =
-        _rounds
-            .map((round) => round.toSourceRound())
-            .map(_shuffleRoundChoices)
+        _scenarios
+            .map((scenario) => scenario.toSourceScenario())
+            .map(_shuffleScenarioChoices)
             .toList()
           ..shuffle(_random);
 
     setState(() {
-      _rounds = shuffled;
-      _roundIndex = 0;
+      _scenarios = shuffled;
+      _scenarioIndex = 0;
       _selectedIndex = null;
       _answered = false;
       _score = 0;
@@ -272,8 +297,8 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
   void _chooseAnotherPack() {
     setState(() {
       _selectedPack = null;
-      _rounds = [];
-      _roundIndex = 0;
+      _scenarios = [];
+      _scenarioIndex = 0;
       _selectedIndex = null;
       _answered = false;
       _score = 0;
@@ -282,22 +307,22 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
 
   @override
   Widget build(BuildContext context) {
-    const color = Color(0xFF7E57C2);
+    const color = Color(0xFFEC6F91);
 
     return Scaffold(
-      appBar: AppBar(title: Text(_text.oddOneOut)),
+      appBar: AppBar(title: Text(_text.emotionDetective)),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFF7F3FF), Color(0xFFEFFFFB)],
+            colors: [Color(0xFFFFF3F7), Color(0xFFEFFFFB)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
           child:
-              _loadingPacks || _loadingRounds
+              _loadingPacks || _loadingScenarios
                   ? const Center(child: CircularProgressIndicator())
                   : _selectedPack == null
                   ? _buildPackPicker(color)
@@ -317,7 +342,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
           padding: const EdgeInsets.all(22),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [color, const Color(0xFF26A69A)],
+              colors: [color, const Color(0xFF7E57C2)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -333,18 +358,18 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Icon(
-                  Icons.psychology_alt_rounded,
+                  Icons.manage_search_rounded,
                   color: Colors.white,
                   size: 36,
                 ),
               ),
               const SizedBox(width: 14),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Choose a pack',
+                      _text.choosePack,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 25,
@@ -353,7 +378,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Pick one set of odd-one-out rounds to play.',
+                      _text.thinkAboutFeelings,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -375,7 +400,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
               border: Border.all(color: Colors.orange.shade200),
             ),
             child: Text(
-              _text.usingStarterRounds,
+              _text.usingStarterScenarios,
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
@@ -396,15 +421,12 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
   }
 
   Widget _buildGame(Color color) {
-    final round = _currentRound;
+    final scenario = _currentScenario;
     final pack = _selectedPack;
 
-    if (round == null || pack == null) {
+    if (scenario == null || pack == null) {
       return _buildComplete(color);
     }
-
-    final prompt =
-        round.prompt.trim().isEmpty ? _text.findOddOne : round.prompt.trim();
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 32),
@@ -426,8 +448,22 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
           ),
           child: Column(
             children: [
+              Container(
+                width: 88,
+                height: 88,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Icon(
+                  appIconForKey(scenario.iconName, fallbackKey: 'mood_smile'),
+                  color: color,
+                  size: 48,
+                ),
+              ),
+              const SizedBox(height: 16),
               Text(
-                prompt,
+                scenario.prompt,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
@@ -436,7 +472,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
               ),
               const SizedBox(height: 6),
               Text(
-                _text.findOddOne,
+                _text.thinkAboutFeelings,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey.shade700,
@@ -455,13 +491,13 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
                   return Wrap(
                     spacing: 14,
                     runSpacing: 14,
-                    children: List.generate(round.items.length, (index) {
+                    children: List.generate(scenario.choices.length, (index) {
                       return SizedBox(
                         width: cardWidth,
-                        child: _OddChoiceCard(
-                          item: round.items[index],
+                        child: _EmotionChoiceCard(
+                          choice: scenario.choices[index],
                           selected: _selectedIndex == index,
-                          correct: index == round.oddIndex,
+                          correct: index == scenario.correctIndex,
                           reveal: _answered,
                           onTap: () => _selectAnswer(index),
                         ),
@@ -474,17 +510,17 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
           ),
         ),
         const SizedBox(height: 18),
-        if (_answered) _buildFeedback(color, round),
+        if (_answered) _buildFeedback(color, scenario),
       ],
     );
   }
 
-  Widget _buildHeader(Color color, OddOneOutPack pack) {
+  Widget _buildHeader(Color color, EmotionDetectivePack pack) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [color, const Color(0xFF26A69A)],
+          colors: [color, const Color(0xFF7E57C2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -500,7 +536,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
-              appIconForKey(pack.iconName, fallbackKey: 'target'),
+              appIconForKey(pack.iconName, fallbackKey: 'mood_smile'),
               color: Colors.white,
               size: 34,
             ),
@@ -520,7 +556,11 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _text.roundProgress(_roundIndex + 1, _rounds.length, _score),
+                  _text.scenarioProgress(
+                    _scenarioIndex + 1,
+                    _scenarios.length,
+                    _score,
+                  ),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -539,8 +579,10 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
     );
   }
 
-  Widget _buildFeedback(Color color, _PlayableOddOneOutRound round) {
-    final correct = _selectedIndex == round.oddIndex;
+  Widget _buildFeedback(Color color, _PlayableEmotionScenario scenario) {
+    final correct = _selectedIndex == scenario.correctIndex;
+    final answer = scenario.choices[scenario.correctIndex].label;
+    final explanation = scenario.explanation.trim();
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -554,13 +596,13 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
       child: Column(
         children: [
           Icon(
-            correct ? Icons.celebration_rounded : Icons.lightbulb_rounded,
+            correct ? Icons.favorite_rounded : Icons.lightbulb_rounded,
             color: correct ? Colors.green.shade700 : Colors.orange.shade800,
             size: 44,
           ),
           const SizedBox(height: 8),
           Text(
-            correct ? _text.greatChoice : _text.goodTry,
+            correct ? _text.thatMakesSense : _text.goodThinking,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: correct ? Colors.green.shade800 : Colors.orange.shade900,
@@ -568,25 +610,38 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
-            _text.correctOddWas(round.items[round.oddIndex].label),
+            correct
+                ? '$answer fits this situation.'
+                : 'Another feeling could be $answer.',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.w700),
+            style: const TextStyle(fontWeight: FontWeight.w800),
           ),
+          if (explanation.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              explanation,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey.shade800,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
           const SizedBox(height: 14),
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: _nextRound,
+              onPressed: _nextScenario,
               style: FilledButton.styleFrom(backgroundColor: color),
               icon: Icon(
-                _roundIndex == _rounds.length - 1
+                _scenarioIndex == _scenarios.length - 1
                     ? Icons.emoji_events_rounded
                     : Icons.arrow_forward_rounded,
               ),
               label: Text(
-                _roundIndex == _rounds.length - 1
+                _scenarioIndex == _scenarios.length - 1
                     ? _text.finish
                     : context.l10n.next,
               ),
@@ -622,7 +677,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
               Icon(Icons.emoji_events_rounded, color: color, size: 76),
               const SizedBox(height: 14),
               Text(
-                _text.gameComplete,
+                _text.detectiveComplete,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: color,
@@ -644,7 +699,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
               ],
               const SizedBox(height: 8),
               Text(
-                'You found $_score out of ${_rounds.length} odd ones.',
+                'You matched $_score out of ${_scenarios.length} feelings.',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 18,
@@ -688,7 +743,7 @@ class _OddOneOutPageState extends State<OddOneOutPage> {
 }
 
 class _PackChoiceCard extends StatelessWidget {
-  final OddOneOutPack pack;
+  final EmotionDetectivePack pack;
   final Color color;
   final VoidCallback onTap;
 
@@ -731,7 +786,7 @@ class _PackChoiceCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Icon(
-                  appIconForKey(pack.iconName, fallbackKey: 'target'),
+                  appIconForKey(pack.iconName, fallbackKey: 'mood_smile'),
                   color: color,
                   size: 34,
                 ),
@@ -775,15 +830,15 @@ class _PackChoiceCard extends StatelessWidget {
   }
 }
 
-class _OddChoiceCard extends StatelessWidget {
-  final OddOneOutItem item;
+class _EmotionChoiceCard extends StatelessWidget {
+  final EmotionChoice choice;
   final bool selected;
   final bool correct;
   final bool reveal;
   final VoidCallback onTap;
 
-  const _OddChoiceCard({
-    required this.item,
+  const _EmotionChoiceCard({
+    required this.choice,
     required this.selected,
     required this.correct,
     required this.reveal,
@@ -794,7 +849,7 @@ class _OddChoiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var borderColor = Colors.grey.shade300;
     var backgroundColor = Colors.white;
-    var iconColor = const Color(0xFF7E57C2);
+    var iconColor = const Color(0xFFEC6F91);
 
     if (reveal && correct) {
       borderColor = Colors.green.shade600;
@@ -805,14 +860,14 @@ class _OddChoiceCard extends StatelessWidget {
       backgroundColor = Colors.orange.shade50;
       iconColor = Colors.orange.shade800;
     } else if (selected) {
-      borderColor = const Color(0xFF7E57C2);
-      backgroundColor = const Color(0xFF7E57C2).withValues(alpha: 0.08);
+      borderColor = const Color(0xFFEC6F91);
+      backgroundColor = const Color(0xFFEC6F91).withValues(alpha: 0.08);
     }
 
     return Semantics(
       button: !reveal,
       selected: selected,
-      label: item.label,
+      label: choice.label,
       child: InkWell(
         borderRadius: BorderRadius.circular(26),
         onTap: reveal ? null : onTap,
@@ -831,10 +886,14 @@ class _OddChoiceCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(appIconForKey(item.iconName), color: iconColor, size: 58),
+              Icon(
+                appIconForKey(choice.iconName, fallbackKey: 'mood_smile'),
+                color: iconColor,
+                size: 58,
+              ),
               const SizedBox(height: 12),
               Text(
-                item.label,
+                choice.label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -859,23 +918,29 @@ class _OddChoiceCard extends StatelessWidget {
   }
 }
 
-class _PlayableOddOneOutRound {
+class _PlayableEmotionScenario {
   final String prompt;
-  final List<OddOneOutItem> items;
-  final int oddIndex;
+  final String iconName;
+  final List<EmotionChoice> choices;
+  final int correctIndex;
+  final String explanation;
 
-  const _PlayableOddOneOutRound({
+  const _PlayableEmotionScenario({
     required this.prompt,
-    required this.items,
-    required this.oddIndex,
+    required this.iconName,
+    required this.choices,
+    required this.correctIndex,
+    required this.explanation,
   });
 
-  OddOneOutRound toSourceRound() {
-    return OddOneOutRound(
+  EmotionDetectiveScenario toSourceScenario() {
+    return EmotionDetectiveScenario(
       id: '',
       prompt: prompt,
-      items: items,
-      oddIndex: oddIndex,
+      iconName: iconName,
+      choices: choices,
+      correctIndex: correctIndex,
+      explanation: explanation,
       sortOrder: 0,
     );
   }

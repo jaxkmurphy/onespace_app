@@ -987,6 +987,8 @@ class _FeatureSettingsCard extends StatelessWidget {
         return Icons.pin_rounded;
       case ClassroomFeature.oddOneOut:
         return Icons.psychology_alt_rounded;
+      case ClassroomFeature.emotionDetective:
+        return Icons.manage_search_rounded;
       case ClassroomFeature.wordLearning:
         return Icons.menu_book_rounded;
       case ClassroomFeature.incidentLog:

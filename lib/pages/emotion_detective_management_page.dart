@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
-
 import '../data/app_icon_catalog.dart';
 import '../l10n/l10n.dart';
 import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
-import '../models/odd_one_out_models.dart';
+import '../models/emotion_detective_models.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
 import '../widgets/app_icon_picker_dialog.dart';
 
-class OddOneOutManagementPage extends StatefulWidget {
+class EmotionDetectiveManagementPage extends StatefulWidget {
   final StaffProfile staffProfile;
   final FirestoreService firestoreService;
 
-  const OddOneOutManagementPage({
+  const EmotionDetectiveManagementPage({
     super.key,
     required this.staffProfile,
     required this.firestoreService,
   });
 
   @override
-  State<OddOneOutManagementPage> createState() =>
-      _OddOneOutManagementPageState();
+  State<EmotionDetectiveManagementPage> createState() =>
+      _EmotionDetectiveManagementPageState();
 }
 
-class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
+class _EmotionDetectiveManagementPageState
+    extends State<EmotionDetectiveManagementPage> {
   void _showMessage(String message) {
     if (!mounted) return;
 
@@ -42,8 +42,8 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     if (draft == null) return;
 
     try {
-      await widget.firestoreService.addCurrentOddOneOutPack(
-        OddOneOutPack(
+      await widget.firestoreService.addCurrentEmotionDetectivePack(
+        EmotionDetectivePack(
           id: '',
           title: draft.title,
           description: draft.description,
@@ -56,13 +56,13 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
         ),
       );
 
-      _showMessage('Odd One Out pack created.');
+      _showMessage('Emotion Detective pack created.');
     } catch (error) {
       _showMessage('Could not create pack: $error');
     }
   }
 
-  Future<void> _editPack(OddOneOutPack pack) async {
+  Future<void> _editPack(EmotionDetectivePack pack) async {
     final draft = await showDialog<_PackDraft>(
       context: context,
       builder: (_) => _PackDialog(pack: pack),
@@ -71,7 +71,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     if (draft == null) return;
 
     try {
-      await widget.firestoreService.updateCurrentOddOneOutPack(
+      await widget.firestoreService.updateCurrentEmotionDetectivePack(
         pack.copyWith(
           title: draft.title,
           description: draft.description,
@@ -86,7 +86,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     }
   }
 
-  Future<void> _editAudience(OddOneOutPack pack) async {
+  Future<void> _editAudience(EmotionDetectivePack pack) async {
     List<ChildProfile> children;
 
     try {
@@ -106,7 +106,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     if (draft == null) return;
 
     try {
-      await widget.firestoreService.updateCurrentOddOneOutPack(
+      await widget.firestoreService.updateCurrentEmotionDetectivePack(
         pack.copyWith(
           availableToAll: draft.availableToAll,
           assignedChildIds:
@@ -121,9 +121,9 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     }
   }
 
-  Future<void> _togglePackActive(OddOneOutPack pack) async {
+  Future<void> _togglePackActive(EmotionDetectivePack pack) async {
     try {
-      await widget.firestoreService.updateCurrentOddOneOutPack(
+      await widget.firestoreService.updateCurrentEmotionDetectivePack(
         pack.copyWith(active: !pack.active, updatedAt: DateTime.now()),
       );
     } catch (error) {
@@ -131,14 +131,14 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     }
   }
 
-  Future<void> _deletePack(OddOneOutPack pack) async {
+  Future<void> _deletePack(EmotionDetectivePack pack) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
           (_) => AlertDialog(
             title: const Text('Delete pack?'),
             content: Text(
-              'This will delete "${pack.title}" and all of its rounds.',
+              'This will delete "${pack.title}" and all of its scenarios.',
             ),
             actions: [
               TextButton(
@@ -159,78 +159,85 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     if (confirmed != true) return;
 
     try {
-      await widget.firestoreService.deleteCurrentOddOneOutPack(pack.id);
+      await widget.firestoreService.deleteCurrentEmotionDetectivePack(pack.id);
       _showMessage('Pack deleted.');
     } catch (error) {
       _showMessage('Could not delete pack: $error');
     }
   }
 
-  Future<void> _addRound(OddOneOutPack pack, int nextSortOrder) async {
-    final draft = await showDialog<_RoundDraft>(
+  Future<void> _addScenario(
+    EmotionDetectivePack pack,
+    int nextSortOrder,
+  ) async {
+    final draft = await showDialog<_ScenarioDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const _RoundDialog(),
+      builder: (_) => const _ScenarioDialog(),
     );
 
     if (draft == null) return;
 
     try {
-      await widget.firestoreService.addCurrentOddOneOutRound(
+      await widget.firestoreService.addCurrentEmotionDetectiveScenario(
         packId: pack.id,
-        round: OddOneOutRound(
+        scenario: EmotionDetectiveScenario(
           id: '',
           prompt: draft.prompt,
-          items: draft.items,
-          oddIndex: draft.oddIndex,
+          iconName: draft.iconName,
+          choices: draft.choices,
+          correctIndex: draft.correctIndex,
+          explanation: draft.explanation,
           sortOrder: nextSortOrder,
         ),
       );
 
-      _showMessage('Round added.');
+      _showMessage('Scenario added.');
     } catch (error) {
-      _showMessage('Could not add round: $error');
+      _showMessage('Could not add scenario: $error');
     }
   }
 
-  Future<void> _editRound({
-    required OddOneOutPack pack,
-    required OddOneOutRound round,
+  Future<void> _editScenario({
+    required EmotionDetectivePack pack,
+    required EmotionDetectiveScenario scenario,
   }) async {
-    final draft = await showDialog<_RoundDraft>(
+    final draft = await showDialog<_ScenarioDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _RoundDialog(round: round),
+      builder: (_) => _ScenarioDialog(scenario: scenario),
     );
 
     if (draft == null) return;
 
     try {
-      await widget.firestoreService.updateCurrentOddOneOutRound(
+      await widget.firestoreService.updateCurrentEmotionDetectiveScenario(
         packId: pack.id,
-        round: round.copyWith(
+        scenario: scenario.copyWith(
           prompt: draft.prompt,
-          items: draft.items,
-          oddIndex: draft.oddIndex,
+          iconName: draft.iconName,
+          choices: draft.choices,
+          correctIndex: draft.correctIndex,
+          explanation: draft.explanation,
         ),
       );
 
-      _showMessage('Round updated.');
+      _showMessage('Scenario updated.');
     } catch (error) {
-      _showMessage('Could not update round: $error');
+      _showMessage('Could not update scenario: $error');
     }
   }
 
-  Future<void> _deleteRound({
-    required OddOneOutPack pack,
-    required OddOneOutRound round,
+  Future<void> _deleteScenario({
+    required EmotionDetectivePack pack,
+    required EmotionDetectiveScenario scenario,
   }) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
           (_) => AlertDialog(
-            title: const Text('Delete round?'),
-            content: const Text('This round will be removed from the pack.'),
+            title: const Text('Delete scenario?'),
+            content: const Text('This scenario will be removed from the pack.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -250,18 +257,18 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     if (confirmed != true) return;
 
     try {
-      await widget.firestoreService.deleteCurrentOddOneOutRound(
+      await widget.firestoreService.deleteCurrentEmotionDetectiveScenario(
         packId: pack.id,
-        roundId: round.id,
+        scenarioId: scenario.id,
       );
 
-      _showMessage('Round deleted.');
+      _showMessage('Scenario deleted.');
     } catch (error) {
-      _showMessage('Could not delete round: $error');
+      _showMessage('Could not delete scenario: $error');
     }
   }
 
-  void _openPack(OddOneOutPack pack) {
+  void _openPack(EmotionDetectivePack pack) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -281,12 +288,14 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
                       Navigator.pop(context);
                       _deletePack(pack);
                     },
-                    onAddRound:
-                        (nextSortOrder) => _addRound(pack, nextSortOrder),
-                    onEditRound:
-                        (round) => _editRound(pack: pack, round: round),
-                    onDeleteRound:
-                        (round) => _deleteRound(pack: pack, round: round),
+                    onAddScenario:
+                        (nextSortOrder) => _addScenario(pack, nextSortOrder),
+                    onEditScenario:
+                        (scenario) =>
+                            _editScenario(pack: pack, scenario: scenario),
+                    onDeleteScenario:
+                        (scenario) =>
+                            _deleteScenario(pack: pack, scenario: scenario),
                   ),
                 ],
               ),
@@ -297,12 +306,12 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    const color = Color(0xFF7E57C2);
+    const color = Color(0xFFEC6F91);
     final text = LearningGameLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(text.oddOneOut),
+        title: Text(text.emotionDetective),
         actions: [
           IconButton(
             tooltip: text.createPack,
@@ -319,8 +328,8 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
         label: Text(text.createPack),
       ),
       body: SafeArea(
-        child: StreamBuilder<List<OddOneOutPack>>(
-          stream: widget.firestoreService.getCurrentOddOneOutPacks(),
+        child: StreamBuilder<List<EmotionDetectivePack>>(
+          stream: widget.firestoreService.getCurrentEmotionDetectivePacks(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(child: Text(text.couldNotLoadPacks));
@@ -375,7 +384,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [color, const Color(0xFF26A69A)],
+          colors: [color, const Color(0xFF7E57C2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -391,7 +400,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
               borderRadius: BorderRadius.circular(22),
             ),
             child: const Icon(
-              Icons.psychology_alt_rounded,
+              Icons.manage_search_rounded,
               color: Colors.white,
               size: 38,
             ),
@@ -402,7 +411,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Odd One Out',
+                  'Emotion Detective',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 27,
@@ -411,7 +420,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
                 ),
                 SizedBox(height: 5),
                 Text(
-                  'Create icon-based packs where children find the item that does not belong.',
+                  'Create gentle social-emotional scenarios where children think about how someone might feel.',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -432,16 +441,16 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
         padding: const EdgeInsets.all(28),
         child: Column(
           children: [
-            Icon(Icons.psychology_alt_rounded, color: color, size: 72),
+            Icon(Icons.manage_search_rounded, color: color, size: 72),
             const SizedBox(height: 14),
             const Text(
-              'No Odd One Out packs yet',
+              'No Emotion Detective packs yet',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Create a pack, then add rounds with four icon cards and one correct odd item.',
+              'Create a pack, then add scenarios with four possible feelings and one best-fit answer.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 18),
@@ -459,7 +468,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
 }
 
 class _PackSummaryCard extends StatelessWidget {
-  final OddOneOutPack pack;
+  final EmotionDetectivePack pack;
   final Color color;
   final VoidCallback onOpen;
   final VoidCallback onDelete;
@@ -492,7 +501,7 @@ class _PackSummaryCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Icon(
-                      appIconForKey(pack.iconName, fallbackKey: 'target'),
+                      appIconForKey(pack.iconName, fallbackKey: 'mood_smile'),
                       color: color,
                       size: 32,
                     ),
@@ -519,7 +528,7 @@ class _PackSummaryCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   pack.description.isEmpty
-                      ? 'Odd-one-out reasoning pack'
+                      ? 'Feelings and social reasoning pack'
                       : pack.description,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -547,15 +556,15 @@ class _PackSummaryCard extends StatelessWidget {
 }
 
 class _PackPanel extends StatelessWidget {
-  final OddOneOutPack pack;
+  final EmotionDetectivePack pack;
   final FirestoreService firestoreService;
   final VoidCallback onEditPack;
   final VoidCallback onEditAudience;
   final VoidCallback onToggleActive;
   final VoidCallback onDeletePack;
-  final void Function(int nextSortOrder) onAddRound;
-  final void Function(OddOneOutRound round) onEditRound;
-  final void Function(OddOneOutRound round) onDeleteRound;
+  final void Function(int nextSortOrder) onAddScenario;
+  final void Function(EmotionDetectiveScenario scenario) onEditScenario;
+  final void Function(EmotionDetectiveScenario scenario) onDeleteScenario;
 
   const _PackPanel({
     required this.pack,
@@ -564,15 +573,15 @@ class _PackPanel extends StatelessWidget {
     required this.onEditAudience,
     required this.onToggleActive,
     required this.onDeletePack,
-    required this.onAddRound,
-    required this.onEditRound,
-    required this.onDeleteRound,
+    required this.onAddScenario,
+    required this.onEditScenario,
+    required this.onDeleteScenario,
   });
 
   @override
   Widget build(BuildContext context) {
-    final icon = appIconForKey(pack.iconName, fallbackKey: 'target');
-    const color = Color(0xFF7E57C2);
+    final icon = appIconForKey(pack.iconName, fallbackKey: 'mood_smile');
+    const color = Color(0xFFEC6F91);
 
     return Card(
       elevation: 0,
@@ -746,11 +755,13 @@ class _PackPanel extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            StreamBuilder<List<OddOneOutRound>>(
-              stream: firestoreService.getCurrentOddOneOutRounds(pack.id),
+            StreamBuilder<List<EmotionDetectiveScenario>>(
+              stream: firestoreService.getCurrentEmotionDetectiveScenarios(
+                pack.id,
+              ),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const Text('Could not load rounds.');
+                  return const Text('Could not load scenarios.');
                 }
 
                 if (!snapshot.hasData) {
@@ -760,12 +771,12 @@ class _PackPanel extends StatelessWidget {
                   );
                 }
 
-                final rounds = snapshot.data!;
+                final scenarios = snapshot.data!;
                 final nextSortOrder =
-                    rounds.isEmpty
+                    scenarios.isEmpty
                         ? 0
-                        : rounds
-                                .map((round) => round.sortOrder)
+                        : scenarios
+                                .map((scenario) => scenario.sortOrder)
                                 .reduce((a, b) => a > b ? a : b) +
                             1;
 
@@ -774,43 +785,36 @@ class _PackPanel extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            'Rounds',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                            ),
+                            '${scenarios.length} scenario${scenarios.length == 1 ? '' : 's'}',
+                            style: const TextStyle(fontWeight: FontWeight.w900),
                           ),
                         ),
-                        FilledButton.tonalIcon(
-                          onPressed: () => onAddRound(nextSortOrder),
+                        TextButton.icon(
+                          onPressed: () => onAddScenario(nextSortOrder),
                           icon: const Icon(Icons.add_rounded),
-                          label: const Text('Add round'),
+                          label: const Text('Add scenario'),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    if (rounds.isEmpty)
+                    if (scenarios.isEmpty)
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
+                          color: color.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
-                          'No rounds yet. Add the first round for this pack.',
+                          'No scenarios yet. Add a situation, four feelings, and the best-fit answer.',
                         ),
                       )
                     else
-                      ...rounds.map(
-                        (round) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _RoundTile(
-                            round: round,
-                            onEdit: () => onEditRound(round),
-                            onDelete: () => onDeleteRound(round),
-                          ),
+                      ...scenarios.map(
+                        (scenario) => _ScenarioTile(
+                          scenario: scenario,
+                          onEdit: () => onEditScenario(scenario),
+                          onDelete: () => onDeleteScenario(scenario),
                         ),
                       ),
                   ],
@@ -824,72 +828,78 @@ class _PackPanel extends StatelessWidget {
   }
 }
 
-class _RoundTile extends StatelessWidget {
-  final OddOneOutRound round;
+class _ScenarioTile extends StatelessWidget {
+  final EmotionDetectiveScenario scenario;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const _RoundTile({
-    required this.round,
+  const _ScenarioTile({
+    required this.scenario,
     required this.onEdit,
     required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final oddItem =
-        round.items.length > round.oddIndex && round.oddIndex >= 0
-            ? round.items[round.oddIndex]
+    final correctChoice =
+        scenario.correctIndex >= 0 &&
+                scenario.correctIndex < scenario.choices.length
+            ? scenario.choices[scenario.correctIndex]
             : null;
 
     return Container(
+      margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF7E57C2).withValues(alpha: 0.07),
+        color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFF7E57C2).withValues(alpha: 0.14),
-        ),
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
         children: [
-          if (oddItem != null)
-            CircleAvatar(
-              backgroundColor: const Color(0xFF7E57C2).withValues(alpha: 0.14),
-              child: Icon(
-                appIconForKey(oddItem.iconName, fallbackKey: 'target'),
-                color: const Color(0xFF7E57C2),
-              ),
-            )
-          else
-            const CircleAvatar(child: Icon(Icons.help_outline_rounded)),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEC6F91).withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              appIconForKey(scenario.iconName, fallbackKey: 'mood_smile'),
+              color: const Color(0xFFEC6F91),
+            ),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  round.prompt.trim().isEmpty
-                      ? 'Find the odd one out'
-                      : round.prompt,
-                  style: const TextStyle(fontWeight: FontWeight.w900),
+                  scenario.prompt,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  oddItem == null
-                      ? 'Odd item not set'
-                      : 'Odd item: ${oddItem.label}',
-                ),
+                if (correctChoice != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Best fit: ${correctChoice.label}',
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
           IconButton(
-            tooltip: 'Edit',
+            tooltip: 'Edit scenario',
             onPressed: onEdit,
             icon: const Icon(Icons.edit_rounded),
           ),
           IconButton(
-            tooltip: 'Delete',
+            tooltip: 'Delete scenario',
             onPressed: onDelete,
             icon: const Icon(Icons.delete_outline_rounded),
           ),
@@ -900,7 +910,7 @@ class _RoundTile extends StatelessWidget {
 }
 
 class _PackDialog extends StatefulWidget {
-  final OddOneOutPack? pack;
+  final EmotionDetectivePack? pack;
 
   const _PackDialog({this.pack});
 
@@ -921,7 +931,7 @@ class _PackDialogState extends State<_PackDialog> {
     _descriptionController = TextEditingController(
       text: widget.pack?.description ?? '',
     );
-    _iconName = appIconKeyFor(widget.pack?.iconName ?? 'target');
+    _iconName = widget.pack?.iconName ?? 'mood_smile';
   }
 
   @override
@@ -936,16 +946,6 @@ class _PackDialogState extends State<_PackDialog> {
       context: context,
       selectedKey: _iconName,
       title: 'Choose pack icon',
-      categories: const [
-        AppIconCategory.learning,
-        AppIconCategory.play,
-        AppIconCategory.animals,
-        AppIconCategory.food,
-        AppIconCategory.feelings,
-        AppIconCategory.dailyLife,
-        AppIconCategory.nature,
-        AppIconCategory.objects,
-      ],
     );
 
     if (selected == null) return;
@@ -955,91 +955,297 @@ class _PackDialogState extends State<_PackDialog> {
     });
   }
 
+  void _save() {
+    final title = _titleController.text.trim();
+    final description = _descriptionController.text.trim();
+
+    if (title.isEmpty) return;
+
+    Navigator.pop(
+      context,
+      _PackDraft(title: title, description: description, iconName: _iconName),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final editing = widget.pack != null;
-    final option = appIconOptionForKey(_iconName);
 
     return AlertDialog(
-      title: Text(editing ? 'Edit pack' : 'Create Odd One Out pack'),
+      title: Text(editing ? 'Edit pack' : 'Create pack'),
       content: SizedBox(
-        width: 560,
+        width: 520,
         child: SingleChildScrollView(
           child: Column(
             children: [
               TextField(
                 controller: _titleController,
-                autofocus: true,
-                textCapitalization: TextCapitalization.sentences,
                 decoration: const InputDecoration(
-                  labelText: 'Pack title',
-                  hintText: 'Example: Food and animals',
-                  border: OutlineInputBorder(),
+                  labelText: 'Pack name',
+                  hintText: 'Example: Playground feelings',
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               TextField(
                 controller: _descriptionController,
-                textCapitalization: TextCapitalization.sentences,
-                minLines: 2,
-                maxLines: 4,
                 decoration: const InputDecoration(
                   labelText: 'Description',
-                  hintText: 'Short description for staff.',
-                  border: OutlineInputBorder(),
+                  hintText: 'Short note for staff and children',
                 ),
               ),
-              const SizedBox(height: 14),
-              InkWell(
-                borderRadius: BorderRadius.circular(18),
-                onTap: _chooseIcon,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF7E57C2).withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: const Color(0xFF7E57C2).withValues(alpha: 0.30),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: _chooseIcon,
+                icon: AppIconPreview(iconKey: _iconName),
+                label: const Text('Choose icon'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(context.l10n.cancel),
+        ),
+        FilledButton.icon(
+          onPressed: _save,
+          icon: const Icon(Icons.save_rounded),
+          label: Text(context.l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
+class _ScenarioDialog extends StatefulWidget {
+  final EmotionDetectiveScenario? scenario;
+
+  const _ScenarioDialog({this.scenario});
+
+  @override
+  State<_ScenarioDialog> createState() => _ScenarioDialogState();
+}
+
+class _ScenarioDialogState extends State<_ScenarioDialog> {
+  late final TextEditingController _promptController;
+  late final TextEditingController _explanationController;
+  late final List<TextEditingController> _choiceControllers;
+  late List<String> _choiceIconNames;
+  late String _scenarioIconName;
+  late int _correctIndex;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final scenario = widget.scenario;
+
+    _promptController = TextEditingController(text: scenario?.prompt ?? '');
+    _explanationController = TextEditingController(
+      text: scenario?.explanation ?? '',
+    );
+    _scenarioIconName = scenario?.iconName ?? 'mood_smile';
+    _correctIndex = scenario?.correctIndex ?? 0;
+
+    final defaultChoices = const [
+      EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
+      EmotionChoice(label: 'Sad', iconName: 'mood_sad'),
+      EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
+      EmotionChoice(label: 'Worried', iconName: 'mood_worried'),
+    ];
+
+    final sourceChoices =
+        scenario != null && scenario.choices.length == 4
+            ? scenario.choices
+            : defaultChoices;
+
+    _choiceControllers = List.generate(
+      4,
+      (index) => TextEditingController(text: sourceChoices[index].label),
+    );
+    _choiceIconNames = List.generate(
+      4,
+      (index) => sourceChoices[index].iconName,
+    );
+  }
+
+  @override
+  void dispose() {
+    _promptController.dispose();
+    _explanationController.dispose();
+
+    for (final controller in _choiceControllers) {
+      controller.dispose();
+    }
+
+    super.dispose();
+  }
+
+  Future<void> _chooseScenarioIcon() async {
+    final selected = await showAppIconPickerDialog(
+      context: context,
+      selectedKey: _scenarioIconName,
+      title: 'Choose scenario icon',
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _scenarioIconName = selected.key;
+    });
+  }
+
+  Future<void> _chooseChoiceIcon(int index) async {
+    final selected = await showAppIconPickerDialog(
+      context: context,
+      selectedKey: _choiceIconNames[index],
+      title: 'Choose feeling icon',
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _choiceIconNames[index] = selected.key;
+    });
+  }
+
+  void _save() {
+    final prompt = _promptController.text.trim();
+    final explanation = _explanationController.text.trim();
+
+    final choices = List.generate(4, (index) {
+      return EmotionChoice(
+        label: _choiceControllers[index].text.trim(),
+        iconName: _choiceIconNames[index],
+      );
+    });
+
+    if (prompt.isEmpty) return;
+    if (choices.any((choice) => choice.label.isEmpty)) return;
+
+    Navigator.pop(
+      context,
+      _ScenarioDraft(
+        prompt: prompt,
+        iconName: _scenarioIconName,
+        choices: choices,
+        correctIndex: _correctIndex,
+        explanation: explanation,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final editing = widget.scenario != null;
+
+    return AlertDialog(
+      title: Text(editing ? 'Edit scenario' : 'Add scenario'),
+      content: SizedBox(
+        width: 620,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: _promptController,
+                decoration: const InputDecoration(
+                  labelText: 'Situation',
+                  hintText: 'Example: A child loses their favourite toy.',
+                ),
+                minLines: 2,
+                maxLines: 4,
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _chooseScenarioIcon,
+                icon: AppIconPreview(iconKey: _scenarioIconName),
+                label: const Text('Choose situation icon'),
+              ),
+              const SizedBox(height: 18),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Feeling choices',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...List.generate(4, (index) {
+                final selected = _correctIndex == index;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color:
+                          selected
+                              ? const Color(0xFFEC6F91).withValues(alpha: 0.08)
+                              : Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color:
+                            selected
+                                ? const Color(0xFFEC6F91)
+                                : Colors.grey.shade300,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          tooltip: 'Set as best-fit answer',
+                          onPressed: () {
+                            setState(() => _correctIndex = index);
+                          },
+                          icon: Icon(
+                            selected
+                                ? Icons.radio_button_checked_rounded
+                                : Icons.radio_button_unchecked_rounded,
+                            color:
+                                selected
+                                    ? const Color(0xFFEC6F91)
+                                    : Colors.grey.shade600,
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Choose icon',
+                          onPressed: () => _chooseChoiceIcon(index),
+                          icon: AppIconPreview(
+                            iconKey: _choiceIconNames[index],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            controller: _choiceControllers[index],
+                            decoration: InputDecoration(
+                              labelText: 'Choice ${index + 1}',
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 54,
-                        height: 54,
-                        decoration: BoxDecoration(
-                          color: const Color(
-                            0xFF7E57C2,
-                          ).withValues(alpha: 0.14),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Icon(
-                          option.icon,
-                          color: const Color(0xFF7E57C2),
-                          size: 30,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              option.label,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w900,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            const Text('Choose an icon'),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.edit_rounded, color: Color(0xFF7E57C2)),
-                    ],
-                  ),
+                );
+              }),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _explanationController,
+                decoration: const InputDecoration(
+                  labelText: 'Gentle explanation',
+                  hintText:
+                      'Example: They might feel sad because the toy is missing.',
+                ),
+                minLines: 2,
+                maxLines: 4,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Tip: choose the best-fit answer, but keep the explanation gentle. Emotions can be flexible.',
+                style: TextStyle(
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -1052,22 +1258,9 @@ class _PackDialogState extends State<_PackDialog> {
           child: Text(context.l10n.cancel),
         ),
         FilledButton.icon(
-          onPressed: () {
-            final title = _titleController.text.trim();
-
-            if (title.isEmpty) return;
-
-            Navigator.pop(
-              context,
-              _PackDraft(
-                title: title,
-                description: _descriptionController.text.trim(),
-                iconName: _iconName,
-              ),
-            );
-          },
+          onPressed: _save,
           icon: const Icon(Icons.save_rounded),
-          label: Text(editing ? context.l10n.save : 'Create'),
+          label: Text(context.l10n.save),
         ),
       ],
     );
@@ -1075,7 +1268,7 @@ class _PackDialogState extends State<_PackDialog> {
 }
 
 class _AudienceDialog extends StatefulWidget {
-  final OddOneOutPack pack;
+  final EmotionDetectivePack pack;
   final List<ChildProfile> children;
 
   const _AudienceDialog({required this.pack, required this.children});
@@ -1146,11 +1339,7 @@ class _AudienceDialogState extends State<_AudienceDialog> {
 
                           return FilterChip(
                             selected: selected,
-                            avatar: Icon(
-                              selected
-                                  ? Icons.check_circle_rounded
-                                  : Icons.face_rounded,
-                            ),
+                            avatar: const Icon(Icons.child_care_rounded),
                             label: Text(child.name),
                             onSelected: (value) {
                               setState(() {
@@ -1192,267 +1381,6 @@ class _AudienceDialogState extends State<_AudienceDialog> {
   }
 }
 
-class _RoundDialog extends StatefulWidget {
-  final OddOneOutRound? round;
-
-  const _RoundDialog({this.round});
-
-  @override
-  State<_RoundDialog> createState() => _RoundDialogState();
-}
-
-class _RoundDialogState extends State<_RoundDialog> {
-  late final TextEditingController _promptController;
-  late final List<TextEditingController> _labelControllers;
-  late List<String> _iconNames;
-  late int _oddIndex;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final round = widget.round;
-
-    _promptController = TextEditingController(text: round?.prompt ?? '');
-
-    final initialItems =
-        round?.items.length == 4
-            ? round!.items
-            : const [
-              OddOneOutItem(label: '', iconName: 'apple'),
-              OddOneOutItem(label: '', iconName: 'carrot'),
-              OddOneOutItem(label: '', iconName: 'pizza'),
-              OddOneOutItem(label: '', iconName: 'bus'),
-            ];
-
-    _labelControllers =
-        initialItems
-            .map((item) => TextEditingController(text: item.label))
-            .toList();
-
-    _iconNames =
-        initialItems.map((item) => appIconKeyFor(item.iconName)).toList();
-
-    _oddIndex = round?.oddIndex.clamp(0, 3) ?? 3;
-  }
-
-  @override
-  void dispose() {
-    _promptController.dispose();
-    for (final controller in _labelControllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  Future<void> _chooseIcon(int index) async {
-    final selected = await showAppIconPickerDialog(
-      context: context,
-      selectedKey: _iconNames[index],
-      title: 'Choose item icon',
-    );
-
-    if (selected == null) return;
-
-    setState(() {
-      _iconNames[index] = selected.key;
-    });
-  }
-
-  void _save() {
-    final items = <OddOneOutItem>[];
-
-    for (var index = 0; index < 4; index++) {
-      final label = _labelControllers[index].text.trim();
-
-      if (label.isEmpty) return;
-
-      items.add(
-        OddOneOutItem(label: label, iconName: appIconKeyFor(_iconNames[index])),
-      );
-    }
-
-    Navigator.pop(
-      context,
-      _RoundDraft(
-        prompt: _promptController.text.trim(),
-        items: items,
-        oddIndex: _oddIndex,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final editing = widget.round != null;
-
-    return AlertDialog(
-      title: Text(editing ? 'Edit round' : 'Add round'),
-      content: SizedBox(
-        width: 700,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: _promptController,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Prompt',
-                  hintText: 'Example: Which one is not food?',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 14),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Items',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-              ),
-              const SizedBox(height: 8),
-              ...List.generate(4, (index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _RoundItemEditor(
-                    index: index,
-                    labelController: _labelControllers[index],
-                    iconName: _iconNames[index],
-                    isOdd: _oddIndex == index,
-                    onChooseIcon: () => _chooseIcon(index),
-                    onSetOdd: () {
-                      setState(() {
-                        _oddIndex = index;
-                      });
-                    },
-                  ),
-                );
-              }),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: Colors.orange.shade200),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.lightbulb_rounded,
-                      color: Colors.orange.shade800,
-                    ),
-                    const SizedBox(width: 10),
-                    const Expanded(
-                      child: Text(
-                        'Mark the one correct odd item. The other three should belong together.',
-                        style: TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(context.l10n.cancel),
-        ),
-        FilledButton.icon(
-          onPressed: _save,
-          icon: const Icon(Icons.save_rounded),
-          label: Text(editing ? context.l10n.save : 'Add round'),
-        ),
-      ],
-    );
-  }
-}
-
-class _RoundItemEditor extends StatelessWidget {
-  final int index;
-  final TextEditingController labelController;
-  final String iconName;
-  final bool isOdd;
-  final VoidCallback onChooseIcon;
-  final VoidCallback onSetOdd;
-
-  const _RoundItemEditor({
-    required this.index,
-    required this.labelController,
-    required this.iconName,
-    required this.isOdd,
-    required this.onChooseIcon,
-    required this.onSetOdd,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final option = appIconOptionForKey(iconName);
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color:
-            isOdd
-                ? Colors.orange.shade50
-                : const Color(0xFF7E57C2).withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color:
-              isOdd
-                  ? Colors.orange.shade300
-                  : const Color(0xFF7E57C2).withValues(alpha: 0.14),
-          width: isOdd ? 2 : 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: onChooseIcon,
-            child: Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(
-                color: const Color(0xFF7E57C2).withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                option.icon,
-                color: const Color(0xFF7E57C2),
-                size: 30,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextField(
-              controller: labelController,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                labelText: 'Item ${index + 1}',
-                hintText: option.label,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          ChoiceChip(
-            selected: isOdd,
-            avatar: Icon(
-              isOdd ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-            ),
-            label: const Text('Odd'),
-            onSelected: (_) => onSetOdd(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _PackDraft {
   final String title;
   final String description;
@@ -1465,6 +1393,22 @@ class _PackDraft {
   });
 }
 
+class _ScenarioDraft {
+  final String prompt;
+  final String iconName;
+  final List<EmotionChoice> choices;
+  final int correctIndex;
+  final String explanation;
+
+  const _ScenarioDraft({
+    required this.prompt,
+    required this.iconName,
+    required this.choices,
+    required this.correctIndex,
+    required this.explanation,
+  });
+}
+
 class _AudienceDraft {
   final bool availableToAll;
   final List<String> selectedChildIds;
@@ -1472,17 +1416,5 @@ class _AudienceDraft {
   const _AudienceDraft({
     required this.availableToAll,
     required this.selectedChildIds,
-  });
-}
-
-class _RoundDraft {
-  final String prompt;
-  final List<OddOneOutItem> items;
-  final int oddIndex;
-
-  const _RoundDraft({
-    required this.prompt,
-    required this.items,
-    required this.oddIndex,
   });
 }

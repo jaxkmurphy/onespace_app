@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
+import '../l10n/learning_game_localizations.dart';
 import '../locale_notifier.dart';
 import '../models/child_profile.dart';
 import '../models/classroom.dart';
@@ -399,7 +400,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   }
 
   List<_DashboardFeature> _learningFeatures(AppLocalizations l10n) {
-    final isIrish = Localizations.localeOf(context).languageCode == 'ga';
+    final gameText = LearningGameLocalizations.of(context);
 
     return [
       if (_isFeatureEnabled(ClassroomFeature.points))
@@ -432,34 +433,34 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
       if (_isFeatureEnabled(ClassroomFeature.associationPairs))
         _DashboardFeature(
           icon: Icons.extension_rounded,
-          title: isIrish ? 'Péirí Ceangailte' : 'Association Pairs',
-          subtitle:
-              isIrish
-                  ? 'Meaitseáil rudaí a théann le chéile.'
-                  : 'Match things that go together.',
+          title: gameText.associationPairs,
+          subtitle: gameText.matchThings,
           color: const Color(0xFF7E57C2),
           onTap: () {
             Navigator.pushNamed(
               context,
               '/association-pairs',
-              arguments: {'child': profile},
+              arguments: {
+                'child': profile,
+                'firestoreService': widget.firestoreService,
+              },
             );
           },
         ),
       if (_isFeatureEnabled(ClassroomFeature.numberSequence))
         _DashboardFeature(
           icon: Icons.pin_rounded,
-          title: isIrish ? 'Ord Uimhreacha' : 'Number Sequence',
-          subtitle:
-              isIrish
-                  ? 'Tapáil na huimhreacha san ord ceart.'
-                  : 'Tap the numbers in order.',
+          title: gameText.numberSequence,
+          subtitle: gameText.tapNumbersInOrder,
           color: const Color(0xFF29B6F6),
           onTap: () {
             Navigator.pushNamed(
               context,
               '/number-sequence',
-              arguments: {'child': profile},
+              arguments: {
+                'child': profile,
+                'firestoreService': widget.firestoreService,
+              },
             );
           },
         ),
@@ -485,16 +486,30 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
       if (_isFeatureEnabled(ClassroomFeature.oddOneOut))
         _DashboardFeature(
           icon: Icons.psychology_alt_rounded,
-          title: isIrish ? 'An Ceann Corr' : 'Odd One Out',
-          subtitle:
-              isIrish
-                  ? 'Aimsigh an ceann nach mbaineann leis.'
-                  : 'Find the item that does not belong.',
+          title: gameText.oddOneOut,
+          subtitle: gameText.findOddOne,
           color: const Color(0xFF7E57C2),
           onTap: () {
             Navigator.pushNamed(
               context,
               '/odd-one-out',
+              arguments: {
+                'child': profile,
+                'firestoreService': widget.firestoreService,
+              },
+            );
+          },
+        ),
+      if (_isFeatureEnabled(ClassroomFeature.emotionDetective))
+        _DashboardFeature(
+          icon: Icons.manage_search_rounded,
+          title: gameText.emotionDetective,
+          subtitle: gameText.thinkAboutFeelings,
+          color: const Color(0xFFEC6F91),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/emotion-detective',
               arguments: {
                 'child': profile,
                 'firestoreService': widget.firestoreService,

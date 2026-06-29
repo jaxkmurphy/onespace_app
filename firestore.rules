@@ -150,6 +150,31 @@ service cloud.firestore {
           }
         }
 
+        match /emotion_detective_packs/{packId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+
+          match /scenarios/{scenarioId} {
+            allow read, write: if isSchoolAdmin(schoolId)
+              || isThisClassroom(schoolId, classroomId);
+          }
+        }
+
+        match /association_pair_packs/{packId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+
+          match /pairs/{pairId} {
+            allow read, write: if isSchoolAdmin(schoolId)
+              || isThisClassroom(schoolId, classroomId);
+          }
+        }
+
+        match /number_sequence_challenges/{challengeId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+        }
+
         match /when_then_options/{optionGroupId} {
           allow read, write: if isSchoolAdmin(schoolId)
             || isThisClassroom(schoolId, classroomId);
@@ -159,6 +184,21 @@ service cloud.firestore {
               || isThisClassroom(schoolId, classroomId);
           }
         }
+
+        match /association_pair_packs/{packId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+        || isThisClassroom(schoolId, classroomId);
+
+        match /pairs/{pairId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+          || isThisClassroom(schoolId, classroomId);
+        }
+      }
+
+      match /number_sequence_challenges/{challengeId} {
+        allow read, write: if isSchoolAdmin(schoolId)
+        || isThisClassroom(schoolId, classroomId);
+      }
 
         match /point_rewards/{rewardId} {
           allow read, write: if isSchoolAdmin(schoolId)

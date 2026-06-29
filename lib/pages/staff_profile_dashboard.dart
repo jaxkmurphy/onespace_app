@@ -6,6 +6,7 @@ import '../models/staff_profile.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import '../l10n/l10n.dart';
+import '../l10n/learning_game_localizations.dart';
 import '../widgets/staff_dashboard_feature_card.dart';
 import 'child_access_page.dart';
 import 'incident_log_page.dart';
@@ -126,6 +127,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
       valueListenable: widget.localeNotifier,
       builder: (context, locale, _) {
         final l10n = context.l10n;
+        final gameText = LearningGameLocalizations.of(context);
         final waitingForFeatures =
             _shouldWaitForClassroomFeatures && _classroom == null;
 
@@ -270,16 +272,79 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
-            if (_isFeatureEnabled(ClassroomFeature.oddOneOut))
+          if (_isFeatureEnabled(ClassroomFeature.associationPairs))
+            StaffDashboardFeatureCard(
+              icon: Icons.extension_rounded,
+              title: gameText.associationPairs,
+              subtitle:
+                  gameText.isIrish
+                      ? 'Cruthaigh pacáistí péirí meaitseála.'
+                      : 'Create matching-pair learning packs.',
+              color: const Color(0xFF7E57C2),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/association-pairs-management',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
+          if (_isFeatureEnabled(ClassroomFeature.numberSequence))
+            StaffDashboardFeatureCard(
+              icon: Icons.pin_rounded,
+              title: gameText.numberSequence,
+              subtitle:
+                  gameText.isIrish
+                      ? 'Cruthaigh dúshláin ordaithe uimhreacha.'
+                      : 'Create number ordering challenge presets.',
+              color: const Color(0xFF29B6F6),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/number-sequence-management',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
+          if (_isFeatureEnabled(ClassroomFeature.oddOneOut))
             StaffDashboardFeatureCard(
               icon: Icons.psychology_alt_rounded,
-              title: 'Odd One Out',
-              subtitle: 'Create visual odd-one-out reasoning packs.',
+              title: gameText.oddOneOut,
+              subtitle:
+                  gameText.isIrish
+                      ? 'Cruthaigh pacáistí réasúnaíochta don cheann corr.'
+                      : 'Create visual odd-one-out reasoning packs.',
               color: const Color(0xFF7E57C2),
               onTap: () {
                 Navigator.pushNamed(
                   context,
                   '/odd-one-out-management',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
+          if (_isFeatureEnabled(ClassroomFeature.emotionDetective))
+            StaffDashboardFeatureCard(
+              icon: Icons.manage_search_rounded,
+              title: gameText.emotionDetective,
+              subtitle:
+                  gameText.isIrish
+                      ? 'Cruthaigh pacáistí mothúchán agus réasúnaíochta sóisialta.'
+                      : 'Create feelings and social reasoning packs.',
+              color: const Color(0xFFEC6F91),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/emotion-detective-management',
                   arguments: {
                     'staffProfile': widget.profile,
                     'firestoreService': _firestoreService,

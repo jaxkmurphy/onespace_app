@@ -41,9 +41,13 @@ import 'services/firestore_service.dart';
 import 'theme/app_theme.dart';
 import 'pages/voice_lines_management_page.dart';
 import 'pages/association_pairs_page.dart';
+import 'pages/association_pairs_management_page.dart';
 import 'pages/number_sequence_page.dart';
+import 'pages/number_sequence_management_page.dart';
 import 'pages/odd_one_out_management_page.dart';
 import 'pages/odd_one_out_page.dart';
+import 'pages/emotion_detective_page.dart';
+import 'pages/emotion_detective_management_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -290,7 +294,10 @@ class _MyAppState extends State<MyApp> {
       case '/association-pairs':
         if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
           return _page(
-            AssociationPairsPage(child: args['child'] as ChildProfile),
+            AssociationPairsPage(
+              child: args['child'] as ChildProfile,
+              firestoreService: args['firestoreService'] as FirestoreService?,
+            ),
           );
         }
         return _page(const AssociationPairsPage());
@@ -298,12 +305,51 @@ class _MyAppState extends State<MyApp> {
       case '/number-sequence':
         if (args is Map<String, dynamic> && args['child'] is ChildProfile) {
           return _page(
-            NumberSequencePage(child: args['child'] as ChildProfile),
+            NumberSequencePage(
+              child: args['child'] as ChildProfile,
+              firestoreService: args['firestoreService'] as FirestoreService?,
+            ),
           );
         }
         return _page(const NumberSequencePage());
 
-        case '/odd-one-out':
+      case '/association-pairs-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              AssociationPairsManagementPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+
+        return _errorPage((l10n) => l10n.error);
+
+      case '/number-sequence-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              NumberSequenceManagementPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+
+        return _errorPage((l10n) => l10n.error);
+
+      case '/odd-one-out':
         if (args is Map<String, dynamic>) {
           final child = args['child'] as ChildProfile?;
           final firestoreService =
@@ -311,8 +357,39 @@ class _MyAppState extends State<MyApp> {
 
           if (child != null && firestoreService != null) {
             return _page(
-              OddOneOutPage(
+              OddOneOutPage(profile: child, firestoreService: firestoreService),
+            );
+          }
+        }
+        return _errorPage((l10n) => l10n.error);
+
+      case '/emotion-detective':
+        if (args is Map<String, dynamic>) {
+          final child = args['child'] as ChildProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (child != null && firestoreService != null) {
+            return _page(
+              EmotionDetectivePage(
                 profile: child,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+        return _errorPage((l10n) => l10n.error);
+
+      case '/emotion-detective-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              EmotionDetectiveManagementPage(
+                staffProfile: staffProfile,
                 firestoreService: firestoreService,
               ),
             );
