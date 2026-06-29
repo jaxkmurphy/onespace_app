@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../data/app_icon_catalog.dart';
 import '../l10n/l10n.dart';
 import '../l10n/learning_game_localizations.dart';
@@ -25,9 +26,12 @@ class EmotionDetectiveManagementPage extends StatefulWidget {
 
 class _EmotionDetectiveManagementPageState
     extends State<EmotionDetectiveManagementPage> {
+  static const _color = Color(0xFFEC6F91);
+
+  LearningGameLocalizations get _text => LearningGameLocalizations.of(context);
+
   void _showMessage(String message) {
     if (!mounted) return;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
@@ -138,7 +142,7 @@ class _EmotionDetectiveManagementPageState
           (_) => AlertDialog(
             title: const Text('Delete pack?'),
             content: Text(
-              'This will delete "${pack.title}" and all of its scenarios.',
+              'This will delete "${pack.title}" and all of its cases.',
             ),
             actions: [
               TextButton(
@@ -166,14 +170,11 @@ class _EmotionDetectiveManagementPageState
     }
   }
 
-  Future<void> _addScenario(
-    EmotionDetectivePack pack,
-    int nextSortOrder,
-  ) async {
-    final draft = await showDialog<_ScenarioDraft>(
+  Future<void> _addCase(EmotionDetectivePack pack, int nextSortOrder) async {
+    final draft = await showDialog<_CaseDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const _ScenarioDialog(),
+      builder: (_) => const _CaseDialog(),
     );
 
     if (draft == null) return;
@@ -181,31 +182,23 @@ class _EmotionDetectiveManagementPageState
     try {
       await widget.firestoreService.addCurrentEmotionDetectiveScenario(
         packId: pack.id,
-        scenario: EmotionDetectiveScenario(
-          id: '',
-          prompt: draft.prompt,
-          iconName: draft.iconName,
-          choices: draft.choices,
-          correctIndex: draft.correctIndex,
-          explanation: draft.explanation,
-          sortOrder: nextSortOrder,
-        ),
+        scenario: draft.toScenario(id: '', sortOrder: nextSortOrder),
       );
 
-      _showMessage('Scenario added.');
+      _showMessage('Case added.');
     } catch (error) {
-      _showMessage('Could not add scenario: $error');
+      _showMessage('Could not add case: $error');
     }
   }
 
-  Future<void> _editScenario({
+  Future<void> _editCase({
     required EmotionDetectivePack pack,
     required EmotionDetectiveScenario scenario,
   }) async {
-    final draft = await showDialog<_ScenarioDraft>(
+    final draft = await showDialog<_CaseDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _ScenarioDialog(scenario: scenario),
+      builder: (_) => _CaseDialog(scenario: scenario),
     );
 
     if (draft == null) return;
@@ -213,22 +206,19 @@ class _EmotionDetectiveManagementPageState
     try {
       await widget.firestoreService.updateCurrentEmotionDetectiveScenario(
         packId: pack.id,
-        scenario: scenario.copyWith(
-          prompt: draft.prompt,
-          iconName: draft.iconName,
-          choices: draft.choices,
-          correctIndex: draft.correctIndex,
-          explanation: draft.explanation,
+        scenario: draft.toScenario(
+          id: scenario.id,
+          sortOrder: scenario.sortOrder,
         ),
       );
 
-      _showMessage('Scenario updated.');
+      _showMessage('Case updated.');
     } catch (error) {
-      _showMessage('Could not update scenario: $error');
+      _showMessage('Could not update case: $error');
     }
   }
 
-  Future<void> _deleteScenario({
+  Future<void> _deleteCase({
     required EmotionDetectivePack pack,
     required EmotionDetectiveScenario scenario,
   }) async {
@@ -236,8 +226,8 @@ class _EmotionDetectiveManagementPageState
       context: context,
       builder:
           (_) => AlertDialog(
-            title: const Text('Delete scenario?'),
-            content: const Text('This scenario will be removed from the pack.'),
+            title: const Text('Delete case?'),
+            content: const Text('This case will be removed from the pack.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -262,9 +252,9 @@ class _EmotionDetectiveManagementPageState
         scenarioId: scenario.id,
       );
 
-      _showMessage('Scenario deleted.');
+      _showMessage('Case deleted.');
     } catch (error) {
-      _showMessage('Could not delete scenario: $error');
+      _showMessage('Could not delete case: $error');
     }
   }
 
@@ -273,32 +263,21 @@ class _EmotionDetectiveManagementPageState
       context,
       MaterialPageRoute(
         builder:
-            (_) => Scaffold(
-              appBar: AppBar(title: Text(pack.title)),
-              body: ListView(
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
-                children: [
-                  _PackPanel(
-                    pack: pack,
-                    firestoreService: widget.firestoreService,
-                    onEditPack: () => _editPack(pack),
-                    onEditAudience: () => _editAudience(pack),
-                    onToggleActive: () => _togglePackActive(pack),
-                    onDeletePack: () {
-                      Navigator.pop(context);
-                      _deletePack(pack);
-                    },
-                    onAddScenario:
-                        (nextSortOrder) => _addScenario(pack, nextSortOrder),
-                    onEditScenario:
-                        (scenario) =>
-                            _editScenario(pack: pack, scenario: scenario),
-                    onDeleteScenario:
-                        (scenario) =>
-                            _deleteScenario(pack: pack, scenario: scenario),
-                  ),
-                ],
-              ),
+            (_) => _EmotionDetectivePackEditorPage(
+              pack: pack,
+              firestoreService: widget.firestoreService,
+              onEditPack: () => _editPack(pack),
+              onEditAudience: () => _editAudience(pack),
+              onToggleActive: () => _togglePackActive(pack),
+              onDeletePack: () {
+                Navigator.pop(context);
+                _deletePack(pack);
+              },
+              onAddCase: (nextSortOrder) => _addCase(pack, nextSortOrder),
+              onEditCase:
+                  (scenario) => _editCase(pack: pack, scenario: scenario),
+              onDeleteCase:
+                  (scenario) => _deleteCase(pack: pack, scenario: scenario),
             ),
       ),
     );
@@ -306,15 +285,12 @@ class _EmotionDetectiveManagementPageState
 
   @override
   Widget build(BuildContext context) {
-    const color = Color(0xFFEC6F91);
-    final text = LearningGameLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(text.emotionDetective),
+        title: Text(_text.emotionDetective),
         actions: [
           IconButton(
-            tooltip: text.createPack,
+            tooltip: _text.createPack,
             onPressed: _createPack,
             icon: const Icon(Icons.add_rounded),
           ),
@@ -322,17 +298,17 @@ class _EmotionDetectiveManagementPageState
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _createPack,
-        backgroundColor: color,
+        backgroundColor: _color,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: Text(text.createPack),
+        label: Text(_text.createPack),
       ),
       body: SafeArea(
         child: StreamBuilder<List<EmotionDetectivePack>>(
           stream: widget.firestoreService.getCurrentEmotionDetectivePacks(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(child: Text(text.couldNotLoadPacks));
+              return Center(child: Text(_text.couldNotLoadPacks));
             }
 
             if (!snapshot.hasData) {
@@ -344,10 +320,10 @@ class _EmotionDetectiveManagementPageState
             return ListView(
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               children: [
-                _buildHeader(color),
+                _buildHeader(),
                 const SizedBox(height: 18),
                 if (packs.isEmpty)
-                  _buildEmptyState(color)
+                  _buildEmptyState()
                 else
                   GridView.builder(
                     shrinkWrap: true,
@@ -365,7 +341,7 @@ class _EmotionDetectiveManagementPageState
 
                       return _PackSummaryCard(
                         pack: pack,
-                        color: color,
+                        color: _color,
                         onOpen: () => _openPack(pack),
                         onDelete: () => _deletePack(pack),
                       );
@@ -379,34 +355,22 @@ class _EmotionDetectiveManagementPageState
     );
   }
 
-  Widget _buildHeader(Color color) {
+  Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color, const Color(0xFF7E57C2)],
+        gradient: const LinearGradient(
+          colors: [_color, Color(0xFF7E57C2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(30),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          Container(
-            width: 68,
-            height: 68,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.20),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: const Icon(
-              Icons.manage_search_rounded,
-              color: Colors.white,
-              size: 38,
-            ),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
+          _HeaderIcon(),
+          SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -420,7 +384,7 @@ class _EmotionDetectiveManagementPageState
                 ),
                 SizedBox(height: 5),
                 Text(
-                  'Create gentle social-emotional scenarios where children think about how someone might feel.',
+                  'Create social-emotional cases where children identify a feeling, spot a body clue, and choose a helpful action.',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -435,13 +399,13 @@ class _EmotionDetectiveManagementPageState
     );
   }
 
-  Widget _buildEmptyState(Color color) {
+  Widget _buildEmptyState() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(28),
         child: Column(
           children: [
-            Icon(Icons.manage_search_rounded, color: color, size: 72),
+            const Icon(Icons.manage_search_rounded, color: _color, size: 72),
             const SizedBox(height: 14),
             const Text(
               'No Emotion Detective packs yet',
@@ -450,18 +414,39 @@ class _EmotionDetectiveManagementPageState
             ),
             const SizedBox(height: 8),
             const Text(
-              'Create a pack, then add scenarios with four possible feelings and one best-fit answer.',
+              'Create a pack, then add cases with feelings, body clues, and helpful actions.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 18),
             FilledButton.icon(
               onPressed: _createPack,
-              style: FilledButton.styleFrom(backgroundColor: color),
+              style: FilledButton.styleFrom(backgroundColor: _color),
               icon: const Icon(Icons.add_rounded),
               label: const Text('Create pack'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HeaderIcon extends StatelessWidget {
+  const _HeaderIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 68,
+      height: 68,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.20),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: const Icon(
+        Icons.manage_search_rounded,
+        color: Colors.white,
+        size: 38,
       ),
     );
   }
@@ -528,7 +513,7 @@ class _PackSummaryCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   pack.description.isEmpty
-                      ? 'Feelings and social reasoning pack'
+                      ? 'Social-emotional case pack'
                       : pack.description,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -555,6 +540,55 @@ class _PackSummaryCard extends StatelessWidget {
   }
 }
 
+class _EmotionDetectivePackEditorPage extends StatelessWidget {
+  final EmotionDetectivePack pack;
+  final FirestoreService firestoreService;
+  final VoidCallback onEditPack;
+  final VoidCallback onEditAudience;
+  final VoidCallback onToggleActive;
+  final VoidCallback onDeletePack;
+  final void Function(int nextSortOrder) onAddCase;
+  final void Function(EmotionDetectiveScenario scenario) onEditCase;
+  final void Function(EmotionDetectiveScenario scenario) onDeleteCase;
+
+  const _EmotionDetectivePackEditorPage({
+    required this.pack,
+    required this.firestoreService,
+    required this.onEditPack,
+    required this.onEditAudience,
+    required this.onToggleActive,
+    required this.onDeletePack,
+    required this.onAddCase,
+    required this.onEditCase,
+    required this.onDeleteCase,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(pack.title)),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
+          children: [
+            _PackPanel(
+              pack: pack,
+              firestoreService: firestoreService,
+              onEditPack: onEditPack,
+              onEditAudience: onEditAudience,
+              onToggleActive: onToggleActive,
+              onDeletePack: onDeletePack,
+              onAddCase: onAddCase,
+              onEditCase: onEditCase,
+              onDeleteCase: onDeleteCase,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PackPanel extends StatelessWidget {
   final EmotionDetectivePack pack;
   final FirestoreService firestoreService;
@@ -562,9 +596,9 @@ class _PackPanel extends StatelessWidget {
   final VoidCallback onEditAudience;
   final VoidCallback onToggleActive;
   final VoidCallback onDeletePack;
-  final void Function(int nextSortOrder) onAddScenario;
-  final void Function(EmotionDetectiveScenario scenario) onEditScenario;
-  final void Function(EmotionDetectiveScenario scenario) onDeleteScenario;
+  final void Function(int nextSortOrder) onAddCase;
+  final void Function(EmotionDetectiveScenario scenario) onEditCase;
+  final void Function(EmotionDetectiveScenario scenario) onDeleteCase;
 
   const _PackPanel({
     required this.pack,
@@ -573,9 +607,9 @@ class _PackPanel extends StatelessWidget {
     required this.onEditAudience,
     required this.onToggleActive,
     required this.onDeletePack,
-    required this.onAddScenario,
-    required this.onEditScenario,
-    required this.onDeleteScenario,
+    required this.onAddCase,
+    required this.onEditCase,
+    required this.onDeleteCase,
   });
 
   @override
@@ -637,21 +671,15 @@ class _PackPanel extends StatelessWidget {
                                 pack.active
                                     ? Icons.check_circle_rounded
                                     : Icons.pause_circle_rounded,
-                                size: 18,
                               ),
                               label: Text(pack.active ? 'Active' : 'Inactive'),
                             ),
                             Chip(
-                              avatar: Icon(
-                                pack.availableToAll
-                                    ? Icons.groups_rounded
-                                    : Icons.people_alt_rounded,
-                                size: 18,
-                              ),
+                              avatar: const Icon(Icons.groups_rounded),
                               label: Text(
                                 pack.availableToAll
                                     ? 'Everyone'
-                                    : '${pack.assignedChildIds.length} assigned',
+                                    : '${pack.assignedChildIds.length} selected',
                               ),
                             ),
                           ],
@@ -660,71 +688,9 @@ class _PackPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'edit':
-                        onEditPack();
-                        break;
-                      case 'audience':
-                        onEditAudience();
-                        break;
-                      case 'active':
-                        onToggleActive();
-                        break;
-                      case 'delete':
-                        onDeletePack();
-                        break;
-                    }
-                  },
-                  itemBuilder:
-                      (_) => [
-                        const PopupMenuItem(
-                          value: 'edit',
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Icon(Icons.edit_rounded),
-                            title: Text('Edit pack'),
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'audience',
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Icon(Icons.groups_rounded),
-                            title: Text('Audience'),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'active',
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Icon(
-                              pack.active
-                                  ? Icons.pause_circle_rounded
-                                  : Icons.play_circle_rounded,
-                            ),
-                            title: Text(
-                              pack.active ? 'Set inactive' : 'Set active',
-                            ),
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'delete',
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Icon(
-                              Icons.delete_outline_rounded,
-                              color: Colors.red,
-                            ),
-                            title: Text('Delete pack'),
-                          ),
-                        ),
-                      ],
-                ),
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
             Wrap(
               spacing: 10,
               runSpacing: 10,
@@ -736,46 +702,44 @@ class _PackPanel extends StatelessWidget {
                 ),
                 OutlinedButton.icon(
                   onPressed: onEditAudience,
-                  icon: const Icon(Icons.groups_rounded),
-                  label: Text(
-                    pack.availableToAll
-                        ? 'Available to everyone'
-                        : '${pack.assignedChildIds.length} selected',
-                  ),
+                  icon: const Icon(Icons.people_alt_rounded),
+                  label: const Text('Audience'),
                 ),
-                FilledButton.tonalIcon(
+                OutlinedButton.icon(
                   onPressed: onToggleActive,
                   icon: Icon(
                     pack.active
-                        ? Icons.pause_circle_rounded
-                        : Icons.play_circle_rounded,
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded,
                   ),
                   label: Text(pack.active ? 'Set inactive' : 'Set active'),
                 ),
+                OutlinedButton.icon(
+                  onPressed: onDeletePack,
+                  icon: const Icon(Icons.delete_outline_rounded),
+                  label: const Text('Delete'),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             StreamBuilder<List<EmotionDetectiveScenario>>(
               stream: firestoreService.getCurrentEmotionDetectiveScenarios(
                 pack.id,
               ),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const Text('Could not load scenarios.');
+                  return const Text('Could not load cases.');
                 }
 
                 if (!snapshot.hasData) {
-                  return const Padding(
-                    padding: EdgeInsets.all(18),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
-                final scenarios = snapshot.data!;
+                final cases = snapshot.data!;
                 final nextSortOrder =
-                    scenarios.isEmpty
+                    cases.isEmpty
                         ? 0
-                        : scenarios
+                        : cases
                                 .map((scenario) => scenario.sortOrder)
                                 .reduce((a, b) => a > b ? a : b) +
                             1;
@@ -787,18 +751,18 @@ class _PackPanel extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            '${scenarios.length} scenario${scenarios.length == 1 ? '' : 's'}',
+                            '${cases.length} case${cases.length == 1 ? '' : 's'}',
                             style: const TextStyle(fontWeight: FontWeight.w900),
                           ),
                         ),
                         TextButton.icon(
-                          onPressed: () => onAddScenario(nextSortOrder),
+                          onPressed: () => onAddCase(nextSortOrder),
                           icon: const Icon(Icons.add_rounded),
-                          label: const Text('Add scenario'),
+                          label: const Text('Add case'),
                         ),
                       ],
                     ),
-                    if (scenarios.isEmpty)
+                    if (cases.isEmpty)
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -806,15 +770,15 @@ class _PackPanel extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
-                          'No scenarios yet. Add a situation, four feelings, and the best-fit answer.',
+                          'No cases yet. Add a situation, feelings, body clues, and helpful actions.',
                         ),
                       )
                     else
-                      ...scenarios.map(
-                        (scenario) => _ScenarioTile(
+                      ...cases.map(
+                        (scenario) => _CaseTile(
                           scenario: scenario,
-                          onEdit: () => onEditScenario(scenario),
-                          onDelete: () => onDeleteScenario(scenario),
+                          onEdit: () => onEditCase(scenario),
+                          onDelete: () => onDeleteCase(scenario),
                         ),
                       ),
                   ],
@@ -828,12 +792,12 @@ class _PackPanel extends StatelessWidget {
   }
 }
 
-class _ScenarioTile extends StatelessWidget {
+class _CaseTile extends StatelessWidget {
   final EmotionDetectiveScenario scenario;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const _ScenarioTile({
+  const _CaseTile({
     required this.scenario,
     required this.onEdit,
     required this.onDelete,
@@ -841,11 +805,18 @@ class _ScenarioTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final correctChoice =
-        scenario.correctIndex >= 0 &&
-                scenario.correctIndex < scenario.choices.length
-            ? scenario.choices[scenario.correctIndex]
-            : null;
+    final feeling = _safeCorrectChoice(
+      scenario.feelingChoices,
+      scenario.correctFeelingIndex,
+    );
+    final clue = _safeCorrectChoice(
+      scenario.bodyClueChoices,
+      scenario.correctBodyClueIndex,
+    );
+    final action = _safeCorrectChoice(
+      scenario.helpfulActionChoices,
+      scenario.correctHelpfulActionIndex,
+    );
 
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -865,7 +836,9 @@ class _ScenarioTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
-              appIconForKey(scenario.iconName, fallbackKey: 'mood_smile'),
+              scenario.iconName.trim().isEmpty
+                  ? Icons.block_rounded
+                  : appIconForKey(scenario.iconName, fallbackKey: 'mood_smile'),
               color: const Color(0xFFEC6F91),
             ),
           ),
@@ -880,32 +853,41 @@ class _ScenarioTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
-                if (correctChoice != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    'Best fit: ${correctChoice.label}',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontWeight: FontWeight.w700,
-                    ),
+                const SizedBox(height: 4),
+                Text(
+                  [
+                    if (feeling != null) 'Feeling: ${feeling.label}',
+                    if (clue != null) 'Clue: ${clue.label}',
+                    if (action != null) 'Help: ${action.label}',
+                  ].join(' • '),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
+                ),
               ],
             ),
           ),
           IconButton(
-            tooltip: 'Edit scenario',
+            tooltip: 'Edit case',
             onPressed: onEdit,
             icon: const Icon(Icons.edit_rounded),
           ),
           IconButton(
-            tooltip: 'Delete scenario',
+            tooltip: 'Delete case',
             onPressed: onDelete,
             icon: const Icon(Icons.delete_outline_rounded),
           ),
         ],
       ),
     );
+  }
+
+  EmotionChoice? _safeCorrectChoice(List<EmotionChoice> choices, int index) {
+    if (index < 0 || index >= choices.length) return null;
+    return choices[index];
   }
 }
 
@@ -926,7 +908,6 @@ class _PackDialogState extends State<_PackDialog> {
   @override
   void initState() {
     super.initState();
-
     _titleController = TextEditingController(text: widget.pack?.title ?? '');
     _descriptionController = TextEditingController(
       text: widget.pack?.description ?? '',
@@ -1018,22 +999,22 @@ class _PackDialogState extends State<_PackDialog> {
   }
 }
 
-class _ScenarioDialog extends StatefulWidget {
+class _CaseDialog extends StatefulWidget {
   final EmotionDetectiveScenario? scenario;
 
-  const _ScenarioDialog({this.scenario});
+  const _CaseDialog({this.scenario});
 
   @override
-  State<_ScenarioDialog> createState() => _ScenarioDialogState();
+  State<_CaseDialog> createState() => _CaseDialogState();
 }
 
-class _ScenarioDialogState extends State<_ScenarioDialog> {
+class _CaseDialogState extends State<_CaseDialog> {
   late final TextEditingController _promptController;
   late final TextEditingController _explanationController;
-  late final List<TextEditingController> _choiceControllers;
-  late List<String> _choiceIconNames;
-  late String _scenarioIconName;
-  late int _correctIndex;
+  late final _ChoiceGroupControllers _feelings;
+  late final _ChoiceGroupControllers _bodyClues;
+  late final _ChoiceGroupControllers _helpfulActions;
+  late String _caseIconName;
 
   @override
   void initState() {
@@ -1045,68 +1026,74 @@ class _ScenarioDialogState extends State<_ScenarioDialog> {
     _explanationController = TextEditingController(
       text: scenario?.explanation ?? '',
     );
-    _scenarioIconName = scenario?.iconName ?? 'mood_smile';
-    _correctIndex = scenario?.correctIndex ?? 0;
+    _caseIconName = scenario?.iconName ?? 'mood_smile';
 
-    final defaultChoices = const [
-      EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
-      EmotionChoice(label: 'Sad', iconName: 'mood_sad'),
-      EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
-      EmotionChoice(label: 'Worried', iconName: 'mood_worried'),
-    ];
-
-    final sourceChoices =
-        scenario != null && scenario.choices.length == 4
-            ? scenario.choices
-            : defaultChoices;
-
-    _choiceControllers = List.generate(
-      4,
-      (index) => TextEditingController(text: sourceChoices[index].label),
+    _feelings = _ChoiceGroupControllers(
+      choices:
+          scenario != null && scenario.feelingChoices.length == 4
+              ? scenario.feelingChoices
+              : _defaultFeelings,
+      correctIndex: scenario?.correctFeelingIndex ?? 0,
     );
-    _choiceIconNames = List.generate(
-      4,
-      (index) => sourceChoices[index].iconName,
+    _bodyClues = _ChoiceGroupControllers(
+      choices:
+          scenario != null && scenario.bodyClueChoices.length == 4
+              ? scenario.bodyClueChoices
+              : _defaultBodyClues,
+      correctIndex: scenario?.correctBodyClueIndex ?? 0,
+    );
+    _helpfulActions = _ChoiceGroupControllers(
+      choices:
+          scenario != null && scenario.helpfulActionChoices.length == 4
+              ? scenario.helpfulActionChoices
+              : _defaultHelpfulActions,
+      correctIndex: scenario?.correctHelpfulActionIndex ?? 0,
     );
   }
+
+  static const _defaultFeelings = [
+    EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
+    EmotionChoice(label: 'Sad', iconName: 'mood_sad'),
+    EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
+    EmotionChoice(label: 'Worried', iconName: 'mood_confuzed'),
+  ];
+
+  static const _defaultBodyClues = [
+    EmotionChoice(label: 'Smiling', iconName: 'mood_smile'),
+    EmotionChoice(label: 'Crying', iconName: 'droplet'),
+    EmotionChoice(label: 'Covering ears', iconName: 'ear'),
+    EmotionChoice(label: 'Looking away', iconName: 'eye'),
+  ];
+
+  static const _defaultHelpfulActions = [
+    EmotionChoice(label: 'Ask a teacher', iconName: 'user'),
+    EmotionChoice(label: 'Take deep breaths', iconName: 'leaf'),
+    EmotionChoice(label: 'Use headphones', iconName: 'headphones'),
+    EmotionChoice(label: 'Offer help', iconName: 'heart'),
+  ];
 
   @override
   void dispose() {
     _promptController.dispose();
     _explanationController.dispose();
-
-    for (final controller in _choiceControllers) {
-      controller.dispose();
-    }
-
+    _feelings.dispose();
+    _bodyClues.dispose();
+    _helpfulActions.dispose();
     super.dispose();
   }
 
-  Future<void> _chooseScenarioIcon() async {
+  Future<void> _chooseCaseIcon() async {
     final selected = await showAppIconPickerDialog(
       context: context,
-      selectedKey: _scenarioIconName,
-      title: 'Choose scenario icon',
+      selectedKey: _caseIconName,
+      title: 'Choose situation icon',
+      allowNoIcon: true,
     );
 
     if (selected == null) return;
 
     setState(() {
-      _scenarioIconName = selected.key;
-    });
-  }
-
-  Future<void> _chooseChoiceIcon(int index) async {
-    final selected = await showAppIconPickerDialog(
-      context: context,
-      selectedKey: _choiceIconNames[index],
-      title: 'Choose feeling icon',
-    );
-
-    if (selected == null) return;
-
-    setState(() {
-      _choiceIconNames[index] = selected.key;
+      _caseIconName = selected.key;
     });
   }
 
@@ -1114,23 +1101,22 @@ class _ScenarioDialogState extends State<_ScenarioDialog> {
     final prompt = _promptController.text.trim();
     final explanation = _explanationController.text.trim();
 
-    final choices = List.generate(4, (index) {
-      return EmotionChoice(
-        label: _choiceControllers[index].text.trim(),
-        iconName: _choiceIconNames[index],
-      );
-    });
-
     if (prompt.isEmpty) return;
-    if (choices.any((choice) => choice.label.isEmpty)) return;
+    if (!_feelings.isValid || !_bodyClues.isValid || !_helpfulActions.isValid) {
+      return;
+    }
 
     Navigator.pop(
       context,
-      _ScenarioDraft(
+      _CaseDraft(
         prompt: prompt,
-        iconName: _scenarioIconName,
-        choices: choices,
-        correctIndex: _correctIndex,
+        iconName: _caseIconName,
+        feelingChoices: _feelings.toChoices(),
+        correctFeelingIndex: _feelings.correctIndex,
+        bodyClueChoices: _bodyClues.toChoices(),
+        correctBodyClueIndex: _bodyClues.correctIndex,
+        helpfulActionChoices: _helpfulActions.toChoices(),
+        correctHelpfulActionIndex: _helpfulActions.correctIndex,
         explanation: explanation,
       ),
     );
@@ -1141,9 +1127,9 @@ class _ScenarioDialogState extends State<_ScenarioDialog> {
     final editing = widget.scenario != null;
 
     return AlertDialog(
-      title: Text(editing ? 'Edit scenario' : 'Add scenario'),
+      title: Text(editing ? 'Edit case' : 'Add case'),
       content: SizedBox(
-        width: 620,
+        width: 720,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -1158,91 +1144,48 @@ class _ScenarioDialogState extends State<_ScenarioDialog> {
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
-                onPressed: _chooseScenarioIcon,
-                icon: AppIconPreview(iconKey: _scenarioIconName),
+                onPressed: _chooseCaseIcon,
+                icon: AppIconPreview(iconKey: _caseIconName),
                 label: const Text('Choose situation icon'),
               ),
               const SizedBox(height: 18),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Feeling choices',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
+              _ChoiceGroupEditor(
+                title: '1. Feeling choices',
+                helperText: 'Which feeling best fits this situation?',
+                controllers: _feelings,
+                iconPickerTitle: 'Choose feeling icon',
+                onChanged: () => setState(() {}),
               ),
-              const SizedBox(height: 8),
-              ...List.generate(4, (index) {
-                final selected = _correctIndex == index;
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color:
-                          selected
-                              ? const Color(0xFFEC6F91).withValues(alpha: 0.08)
-                              : Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color:
-                            selected
-                                ? const Color(0xFFEC6F91)
-                                : Colors.grey.shade300,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          tooltip: 'Set as best-fit answer',
-                          onPressed: () {
-                            setState(() => _correctIndex = index);
-                          },
-                          icon: Icon(
-                            selected
-                                ? Icons.radio_button_checked_rounded
-                                : Icons.radio_button_unchecked_rounded,
-                            color:
-                                selected
-                                    ? const Color(0xFFEC6F91)
-                                    : Colors.grey.shade600,
-                          ),
-                        ),
-                        IconButton(
-                          tooltip: 'Choose icon',
-                          onPressed: () => _chooseChoiceIcon(index),
-                          icon: AppIconPreview(
-                            iconKey: _choiceIconNames[index],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            controller: _choiceControllers[index],
-                            decoration: InputDecoration(
-                              labelText: 'Choice ${index + 1}',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              _ChoiceGroupEditor(
+                title: '2. Body clue choices',
+                helperText: 'What might the child notice in the body or face?',
+                controllers: _bodyClues,
+                iconPickerTitle: 'Choose clue icon',
+                onChanged: () => setState(() {}),
+              ),
+              const SizedBox(height: 16),
+              _ChoiceGroupEditor(
+                title: '3. Helpful action choices',
+                helperText: 'What could help in a kind, safe way?',
+                controllers: _helpfulActions,
+                iconPickerTitle: 'Choose action icon',
+                onChanged: () => setState(() {}),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _explanationController,
                 decoration: const InputDecoration(
                   labelText: 'Gentle explanation',
                   hintText:
-                      'Example: They might feel sad because the toy is missing.',
+                      'Example: They might feel sad, look down, and need help finding it.',
                 ),
                 minLines: 2,
                 maxLines: 4,
               ),
               const SizedBox(height: 8),
               Text(
-                'Tip: choose the best-fit answer, but keep the explanation gentle. Emotions can be flexible.',
+                'Tip: these are best-fit answers, not the only possible answers. Keep the explanation gentle.',
                 style: TextStyle(
                   color: Colors.grey.shade700,
                   fontWeight: FontWeight.w700,
@@ -1267,6 +1210,122 @@ class _ScenarioDialogState extends State<_ScenarioDialog> {
   }
 }
 
+class _ChoiceGroupEditor extends StatelessWidget {
+  final String title;
+  final String helperText;
+  final _ChoiceGroupControllers controllers;
+  final String iconPickerTitle;
+  final VoidCallback onChanged;
+
+  const _ChoiceGroupEditor({
+    required this.title,
+    required this.helperText,
+    required this.controllers,
+    required this.iconPickerTitle,
+    required this.onChanged,
+  });
+
+  Future<void> _chooseIcon(BuildContext context, int index) async {
+    final selected = await showAppIconPickerDialog(
+      context: context,
+      selectedKey: controllers.iconNames[index],
+      title: iconPickerTitle,
+      allowNoIcon: true,
+    );
+
+    if (selected == null) return;
+
+    controllers.iconNames[index] = selected.key;
+    onChanged();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
+          const SizedBox(height: 4),
+          Text(
+            helperText,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 10),
+          ...List.generate(4, (index) {
+            final selected = controllers.correctIndex == index;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color:
+                      selected
+                          ? const Color(0xFFEC6F91).withValues(alpha: 0.08)
+                          : Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color:
+                        selected
+                            ? const Color(0xFFEC6F91)
+                            : Colors.grey.shade300,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      tooltip: 'Set as best-fit answer',
+                      onPressed: () {
+                        controllers.correctIndex = index;
+                        onChanged();
+                      },
+                      icon: Icon(
+                        selected
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_unchecked_rounded,
+                        color:
+                            selected
+                                ? const Color(0xFFEC6F91)
+                                : Colors.grey.shade600,
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Choose icon',
+                      onPressed: () => _chooseIcon(context, index),
+                      icon: AppIconPreview(
+                        iconKey: controllers.iconNames[index],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: controllers.textControllers[index],
+                        decoration: InputDecoration(
+                          labelText: 'Choice ${index + 1}',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
 class _AudienceDialog extends StatefulWidget {
   final EmotionDetectivePack pack;
   final List<ChildProfile> children;
@@ -1284,7 +1343,6 @@ class _AudienceDialogState extends State<_AudienceDialog> {
   @override
   void initState() {
     super.initState();
-
     _availableToAll = widget.pack.availableToAll;
     _selectedChildIds = widget.pack.assignedChildIds.toSet();
   }
@@ -1381,6 +1439,45 @@ class _AudienceDialogState extends State<_AudienceDialog> {
   }
 }
 
+class _ChoiceGroupControllers {
+  final List<TextEditingController> textControllers;
+  final List<String> iconNames;
+  int correctIndex;
+
+  _ChoiceGroupControllers({
+    required List<EmotionChoice> choices,
+    required this.correctIndex,
+  }) : textControllers = List.generate(
+         4,
+         (index) => TextEditingController(text: choices[index].label),
+       ),
+       iconNames = List.generate(4, (index) => choices[index].iconName);
+
+  bool get isValid {
+    return correctIndex >= 0 &&
+        correctIndex < textControllers.length &&
+        textControllers.every(
+          (controller) => controller.text.trim().isNotEmpty,
+        );
+  }
+
+  List<EmotionChoice> toChoices() {
+    return List.generate(
+      4,
+      (index) => EmotionChoice(
+        label: textControllers[index].text.trim(),
+        iconName: iconNames[index],
+      ),
+    );
+  }
+
+  void dispose() {
+    for (final controller in textControllers) {
+      controller.dispose();
+    }
+  }
+}
+
 class _PackDraft {
   final String title;
   final String description;
@@ -1393,20 +1490,47 @@ class _PackDraft {
   });
 }
 
-class _ScenarioDraft {
+class _CaseDraft {
   final String prompt;
   final String iconName;
-  final List<EmotionChoice> choices;
-  final int correctIndex;
+  final List<EmotionChoice> feelingChoices;
+  final int correctFeelingIndex;
+  final List<EmotionChoice> bodyClueChoices;
+  final int correctBodyClueIndex;
+  final List<EmotionChoice> helpfulActionChoices;
+  final int correctHelpfulActionIndex;
   final String explanation;
 
-  const _ScenarioDraft({
+  const _CaseDraft({
     required this.prompt,
     required this.iconName,
-    required this.choices,
-    required this.correctIndex,
+    required this.feelingChoices,
+    required this.correctFeelingIndex,
+    required this.bodyClueChoices,
+    required this.correctBodyClueIndex,
+    required this.helpfulActionChoices,
+    required this.correctHelpfulActionIndex,
     required this.explanation,
   });
+
+  EmotionDetectiveScenario toScenario({
+    required String id,
+    required int sortOrder,
+  }) {
+    return EmotionDetectiveScenario(
+      id: id,
+      prompt: prompt,
+      iconName: iconName,
+      feelingChoices: feelingChoices,
+      correctFeelingIndex: correctFeelingIndex,
+      bodyClueChoices: bodyClueChoices,
+      correctBodyClueIndex: correctBodyClueIndex,
+      helpfulActionChoices: helpfulActionChoices,
+      correctHelpfulActionIndex: correctHelpfulActionIndex,
+      explanation: explanation,
+      sortOrder: sortOrder,
+    );
+  }
 }
 
 class _AudienceDraft {

@@ -74,6 +74,18 @@ class LearningGameLocalizations {
       isIrish
           ? 'Smaoinigh ar conas a mhothaíonn daoine.'
           : 'Think about how people might feel.';
+  String get solveSocialCases =>
+      isIrish
+          ? 'Réitigh cásanna faoi mhothúcháin agus cabhair.'
+          : 'Solve social-emotional cases.';
+  String get whatMightTheyFeel =>
+      isIrish ? 'Cad a d’fhéadfadh siad a mhothú?' : 'What might they feel?';
+  String get whatClueMightShow =>
+      isIrish
+          ? 'Cén leid a d’fhéadfadh é sin a thaispeáint?'
+          : 'What clue might show that?';
+  String get whatCouldHelp =>
+      isIrish ? 'Cad a d’fhéadfadh cabhrú?' : 'What could help?';
 
   String get usingStarterPairs =>
       isIrish
@@ -127,6 +139,8 @@ class LearningGameLocalizations {
       isIrish
           ? 'Tá obair an bhleachtaire críochnaithe!'
           : 'Detective work complete!';
+  String get caseSolved =>
+      isIrish ? 'Tá na cásanna réitithe!' : 'Cases solved!';
 
   String pairsFound(int moves) =>
       isIrish ? 'Fuair tú na péirí ar fad.' : 'You found all the pairs.';
@@ -145,6 +159,10 @@ class LearningGameLocalizations {
       isIrish
           ? 'Cás $current as $total • Scór $score'
           : 'Scenario $current of $total • Score $score';
+  String caseProgress(int current, int total, int step, int score) =>
+      isIrish
+          ? 'Cás $current as $total • Céim $step as 3 • Scór $score'
+          : 'Case $current of $total • Step $step of 3 • Score $score';
   String foundOddOnes(int score, int total) =>
       isIrish
           ? 'D’aimsigh tú $score as $total cinn chorr.'
@@ -153,6 +171,10 @@ class LearningGameLocalizations {
       isIrish
           ? 'Mheaitseáil tú $score as $total mothúchán.'
           : 'You matched $score out of $total feelings.';
+  String solvedClues(int score, int total) =>
+      isIrish
+          ? 'Réitigh tú $score as $total leid.'
+          : 'You solved $score out of $total clues.';
   String correctOddWas(String label) =>
       isIrish ? 'Ba é $label an ceann corr.' : 'The odd one out was $label.';
   String answerFits(String answer) =>
@@ -163,6 +185,10 @@ class LearningGameLocalizations {
       isIrish
           ? 'D’fhéadfadh $answer a bheith ina mhothúchán eile.'
           : 'Another feeling could be $answer.';
+  String anotherAnswerCouldBe(String answer) =>
+      isIrish
+          ? 'D’fhéadfadh $answer a bheith ina fhreagra eile.'
+          : 'Another answer could be $answer.';
 
   String get addPair => isIrish ? 'Cuir péire leis' : 'Add pair';
   String get editPair => isIrish ? 'Cuir péire in eagar' : 'Edit pair';

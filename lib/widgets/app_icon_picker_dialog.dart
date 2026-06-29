@@ -6,16 +6,24 @@ class AppIconPreview extends StatelessWidget {
   final String iconKey;
   final double size;
   final Color? color;
+  final bool showBlankPlaceholder;
 
   const AppIconPreview({
     super.key,
     required this.iconKey,
     this.size = 24,
     this.color,
+    this.showBlankPlaceholder = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (iconKey.trim().isEmpty) {
+      if (!showBlankPlaceholder) return SizedBox.square(dimension: size);
+
+      return Icon(Icons.block_rounded, size: size, color: color);
+    }
+
     return Icon(appIconForKey(iconKey), size: size, color: color);
   }
 }
@@ -25,6 +33,8 @@ Future<AppIconOption?> showAppIconPickerDialog({
   String? selectedKey,
   List<AppIconCategory>? categories,
   String title = 'Choose an icon',
+  bool allowNoIcon = false,
+  String noIconLabel = 'No icon',
 }) {
   return showDialog<AppIconOption>(
     context: context,
@@ -33,6 +43,8 @@ Future<AppIconOption?> showAppIconPickerDialog({
         selectedKey: selectedKey,
         categories: categories,
         title: title,
+        allowNoIcon: allowNoIcon,
+        noIconLabel: noIconLabel,
       );
     },
   );
@@ -42,11 +54,15 @@ class _AppIconPickerDialog extends StatefulWidget {
   final String? selectedKey;
   final List<AppIconCategory>? categories;
   final String title;
+  final bool allowNoIcon;
+  final String noIconLabel;
 
   const _AppIconPickerDialog({
     required this.selectedKey,
     required this.categories,
     required this.title,
+    required this.allowNoIcon,
+    required this.noIconLabel,
   });
 
   @override
@@ -85,6 +101,13 @@ class _AppIconPickerDialogState extends State<_AppIconPickerDialog> {
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
     final icons = _filteredIcons;
+    final showNoIconCard =
+        widget.allowNoIcon &&
+        _selectedCategory == null &&
+        (widget.noIconLabel.toLowerCase().contains(
+              _searchController.text.trim().toLowerCase(),
+            ) ||
+            _searchController.text.trim().isEmpty);
 
     return Dialog(
       insetPadding: const EdgeInsets.all(18),
@@ -167,7 +190,7 @@ class _AppIconPickerDialogState extends State<_AppIconPickerDialog> {
               const SizedBox(height: 14),
               Expanded(
                 child:
-                    icons.isEmpty
+                    icons.isEmpty && !showNoIconCard
                         ? Center(
                           child: Text(
                             'No icons found',
@@ -179,7 +202,7 @@ class _AppIconPickerDialogState extends State<_AppIconPickerDialog> {
                           ),
                         )
                         : GridView.builder(
-                          itemCount: icons.length,
+                          itemCount: icons.length + (showNoIconCard ? 1 : 0),
                           gridDelegate:
                               const SliverGridDelegateWithMaxCrossAxisExtent(
                                 maxCrossAxisExtent: 130,
@@ -188,7 +211,27 @@ class _AppIconPickerDialogState extends State<_AppIconPickerDialog> {
                                 childAspectRatio: 0.95,
                               ),
                           itemBuilder: (context, index) {
-                            final option = icons[index];
+                            if (showNoIconCard && index == 0) {
+                              return _NoIconChoiceCard(
+                                label: widget.noIconLabel,
+                                selected:
+                                    widget.selectedKey == null ||
+                                    widget.selectedKey!.trim().isEmpty,
+                                onTap:
+                                    () => Navigator.of(context).pop(
+                                      const AppIconOption(
+                                        key: '',
+                                        label: 'No icon',
+                                        icon: Icons.block_rounded,
+                                        category: AppIconCategory.objects,
+                                      ),
+                                    ),
+                              );
+                            }
+
+                            final iconIndex =
+                                showNoIconCard ? index - 1 : index;
+                            final option = icons[iconIndex];
                             final selected = option.key == widget.selectedKey;
 
                             return _IconChoiceCard(
@@ -198,6 +241,76 @@ class _AppIconPickerDialogState extends State<_AppIconPickerDialog> {
                             );
                           },
                         ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NoIconChoiceCard extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _NoIconChoiceCard({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color:
+          selected
+              ? colourScheme.primaryContainer
+              : colourScheme.surfaceContainerHighest.withValues(alpha: 0.55),
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color:
+                      selected
+                          ? colourScheme.primary.withValues(alpha: 0.14)
+                          : colourScheme.surface.withValues(alpha: 0.78),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.block_rounded,
+                  color:
+                      selected
+                          ? colourScheme.onPrimaryContainer
+                          : colourScheme.primary,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color:
+                      selected
+                          ? colourScheme.onPrimaryContainer
+                          : colourScheme.onSurface,
+                ),
               ),
             ],
           ),

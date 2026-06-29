@@ -9,6 +9,8 @@ import '../models/child_profile.dart';
 import '../models/emotion_detective_models.dart';
 import '../services/firestore_service.dart';
 
+enum _CaseStep { feeling, bodyClue, helpfulAction }
+
 class EmotionDetectivePage extends StatefulWidget {
   final ChildProfile profile;
   final FirestoreService firestoreService;
@@ -28,25 +30,22 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
 
   List<EmotionDetectivePack> _packs = [];
   EmotionDetectivePack? _selectedPack;
-  List<_PlayableEmotionScenario> _scenarios = [];
-  int _scenarioIndex = 0;
+  List<_PlayableEmotionCase> _cases = [];
+  int _caseIndex = 0;
+  _CaseStep _step = _CaseStep.feeling;
   int? _selectedIndex;
   bool _answered = false;
   bool _loadingPacks = true;
-  bool _loadingScenarios = false;
+  bool _loadingCases = false;
   bool _hasLoadError = false;
   int _score = 0;
 
-  _PlayableEmotionScenario? get _currentScenario {
-    if (_scenarios.isEmpty || _scenarioIndex >= _scenarios.length) {
-      return null;
-    }
-
-    return _scenarios[_scenarioIndex];
+  _PlayableEmotionCase? get _currentCase {
+    if (_cases.isEmpty || _caseIndex >= _cases.length) return null;
+    return _cases[_caseIndex];
   }
 
-  bool get _complete =>
-      _scenarios.isNotEmpty && _scenarioIndex >= _scenarios.length;
+  bool get _complete => _cases.isNotEmpty && _caseIndex >= _cases.length;
   LearningGameLocalizations get _text => LearningGameLocalizations.of(context);
 
   @override
@@ -91,12 +90,13 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
   Future<void> _selectPack(EmotionDetectivePack pack) async {
     setState(() {
       _selectedPack = pack;
-      _scenarios = [];
-      _scenarioIndex = 0;
+      _cases = [];
+      _caseIndex = 0;
+      _step = _CaseStep.feeling;
       _selectedIndex = null;
       _answered = false;
       _score = 0;
-      _loadingScenarios = true;
+      _loadingCases = true;
     });
 
     try {
@@ -107,40 +107,34 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
                   .getCurrentEmotionDetectiveScenarios(pack.id)
                   .first;
 
-      final playableScenarios =
+      final playableCases =
           scenarios
-              .where(
-                (scenario) =>
-                    scenario.prompt.trim().isNotEmpty &&
-                    scenario.choices.length == 4 &&
-                    scenario.correctIndex >= 0 &&
-                    scenario.correctIndex < scenario.choices.length,
-              )
-              .map(_shuffleScenarioChoices)
+              .where((scenario) => scenario.isPlayable)
+              .map(_toPlayableCase)
               .toList()
             ..shuffle(_random);
 
       if (!mounted) return;
 
-      if (playableScenarios.isEmpty) {
+      if (playableCases.isEmpty) {
         setState(() {
           _selectedPack = null;
-          _loadingScenarios = false;
+          _loadingCases = false;
         });
         _showMessage(_text.noPlayableScenarios);
         return;
       }
 
       setState(() {
-        _scenarios = playableScenarios.take(12).toList();
-        _loadingScenarios = false;
+        _cases = playableCases.take(8).toList();
+        _loadingCases = false;
       });
     } catch (_) {
       if (!mounted) return;
 
       setState(() {
         _selectedPack = null;
-        _loadingScenarios = false;
+        _loadingCases = false;
       });
       _showMessage(_text.couldNotLoadPack);
     }
@@ -148,7 +142,6 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
 
   void _showMessage(String message) {
     if (!mounted) return;
-
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
@@ -158,11 +151,11 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
     return EmotionDetectivePack(
       id: 'default',
       title: _text.starterFeelings,
-      description: _text.thinkAboutFeelings,
+      description: _text.solveSocialCases,
       iconName: 'mood_smile',
       active: true,
       availableToAll: true,
-      assignedChildIds: [],
+      assignedChildIds: const [],
       createdByStaffId: '',
       createdByStaffName: '',
     );
@@ -174,93 +167,135 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
         id: 'lost-toy',
         prompt: 'A child cannot find their favourite toy.',
         iconName: 'horse_toy',
-        correctIndex: 1,
-        explanation:
-            'They might feel sad because something important to them is missing.',
-        sortOrder: 0,
-        choices: [
+        feelingChoices: [
           EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
           EmotionChoice(label: 'Sad', iconName: 'mood_sad'),
           EmotionChoice(label: 'Excited', iconName: 'sparkles'),
-          EmotionChoice(label: 'Sleepy', iconName: 'zzz'),
+          EmotionChoice(label: 'Sleepy', iconName: 'moon'),
         ],
-      ),
-      EmotionDetectiveScenario(
-        id: 'birthday-surprise',
-        prompt: 'Someone gets a surprise birthday cake.',
-        iconName: 'cake',
-        correctIndex: 2,
+        correctFeelingIndex: 1,
+        bodyClueChoices: [
+          EmotionChoice(label: 'Looking down', iconName: 'eye'),
+          EmotionChoice(label: 'Big smile', iconName: 'mood_smile'),
+          EmotionChoice(label: 'Jumping', iconName: 'run'),
+          EmotionChoice(label: 'Yawning', iconName: 'bed'),
+        ],
+        correctBodyClueIndex: 0,
+        helpfulActionChoices: [
+          EmotionChoice(label: 'Help them look', iconName: 'eye'),
+          EmotionChoice(label: 'Laugh loudly', iconName: 'mood_smile'),
+          EmotionChoice(label: 'Hide another toy', iconName: 'building_blocks'),
+          EmotionChoice(label: 'Walk away', iconName: 'walk'),
+        ],
+        correctHelpfulActionIndex: 0,
         explanation:
-            'They might feel excited because something special happened.',
-        sortOrder: 1,
-        choices: [
-          EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
-          EmotionChoice(label: 'Worried', iconName: 'mood_worried'),
-          EmotionChoice(label: 'Excited', iconName: 'sparkles'),
-          EmotionChoice(label: 'Tired', iconName: 'moon'),
-        ],
+            'They might feel sad because something important is missing. Helping them look could make things feel easier.',
+        sortOrder: 0,
       ),
       EmotionDetectiveScenario(
         id: 'loud-noise',
         prompt: 'There is a sudden loud noise in the room.',
-        iconName: 'volume',
-        correctIndex: 0,
-        explanation:
-            'They might feel scared or worried because loud noises can surprise us.',
-        sortOrder: 2,
-        choices: [
+        iconName: 'speakerphone',
+        feelingChoices: [
           EmotionChoice(label: 'Scared', iconName: 'mood_sad'),
           EmotionChoice(label: 'Proud', iconName: 'award'),
           EmotionChoice(label: 'Calm', iconName: 'leaf'),
-          EmotionChoice(label: 'Happy', iconName: 'mood_smile'),
+          EmotionChoice(label: 'Silly', iconName: 'mood_wink'),
         ],
+        correctFeelingIndex: 0,
+        bodyClueChoices: [
+          EmotionChoice(label: 'Covering ears', iconName: 'ear'),
+          EmotionChoice(label: 'Thumbs up', iconName: 'hand_love_you'),
+          EmotionChoice(label: 'Sleeping', iconName: 'bed'),
+          EmotionChoice(label: 'Dancing', iconName: 'music'),
+        ],
+        correctBodyClueIndex: 0,
+        helpfulActionChoices: [
+          EmotionChoice(label: 'Use headphones', iconName: 'headphones'),
+          EmotionChoice(label: 'Make more noise', iconName: 'speakerphone'),
+          EmotionChoice(label: 'Point and laugh', iconName: 'hand_finger'),
+          EmotionChoice(label: 'Take their chair', iconName: 'building_blocks'),
+        ],
+        correctHelpfulActionIndex: 0,
+        explanation:
+            'A loud sound can surprise someone. A quieter space or headphones can help.',
+        sortOrder: 1,
       ),
       EmotionDetectiveScenario(
         id: 'finished-work',
         prompt: 'A child finishes a tricky piece of work.',
         iconName: 'clipboard_check',
-        correctIndex: 3,
-        explanation:
-            'They might feel proud because they kept going and finished it.',
-        sortOrder: 3,
-        choices: [
-          EmotionChoice(label: 'Sleepy', iconName: 'zzz'),
+        feelingChoices: [
+          EmotionChoice(label: 'Sleepy', iconName: 'moon'),
           EmotionChoice(label: 'Scared', iconName: 'mood_sad'),
           EmotionChoice(label: 'Angry', iconName: 'mood_angry'),
           EmotionChoice(label: 'Proud', iconName: 'award'),
         ],
+        correctFeelingIndex: 3,
+        bodyClueChoices: [
+          EmotionChoice(label: 'Smiling tall', iconName: 'mood_smile'),
+          EmotionChoice(label: 'Hiding face', iconName: 'eye'),
+          EmotionChoice(label: 'Throwing paper', iconName: 'basket'),
+          EmotionChoice(label: 'Falling asleep', iconName: 'bed'),
+        ],
+        correctBodyClueIndex: 0,
+        helpfulActionChoices: [
+          EmotionChoice(label: 'Celebrate kindly', iconName: 'sparkles'),
+          EmotionChoice(label: 'Rip the work', iconName: 'basket'),
+          EmotionChoice(label: 'Say it was easy', iconName: 'speakerphone'),
+          EmotionChoice(label: 'Ignore them', iconName: 'eye'),
+        ],
+        correctHelpfulActionIndex: 0,
+        explanation:
+            'Finishing something hard can feel proud. A kind celebration can help them feel seen.',
+        sortOrder: 2,
       ),
     ];
   }
 
-  _PlayableEmotionScenario _shuffleScenarioChoices(
-    EmotionDetectiveScenario scenario,
-  ) {
-    final correctChoice = scenario.choices[scenario.correctIndex];
-    final shuffledChoices = List<EmotionChoice>.from(scenario.choices)
-      ..shuffle(_random);
+  _PlayableEmotionCase _toPlayableCase(EmotionDetectiveScenario scenario) {
+    return _PlayableEmotionCase(
+      source: scenario,
+      feeling: _shuffleChoiceSet(
+        choices: scenario.feelingChoices,
+        correctIndex: scenario.correctFeelingIndex,
+      ),
+      bodyClue: _shuffleChoiceSet(
+        choices: scenario.bodyClueChoices,
+        correctIndex: scenario.correctBodyClueIndex,
+      ),
+      helpfulAction: _shuffleChoiceSet(
+        choices: scenario.helpfulActionChoices,
+        correctIndex: scenario.correctHelpfulActionIndex,
+      ),
+    );
+  }
+
+  _PlayableChoiceSet _shuffleChoiceSet({
+    required List<EmotionChoice> choices,
+    required int correctIndex,
+  }) {
+    final correctChoice = choices[correctIndex];
+    final shuffledChoices = List<EmotionChoice>.from(choices)..shuffle(_random);
     final shuffledCorrectIndex = shuffledChoices.indexWhere(
       (choice) =>
           choice.label == correctChoice.label &&
           choice.iconName == correctChoice.iconName,
     );
 
-    return _PlayableEmotionScenario(
-      prompt: scenario.prompt,
-      iconName: scenario.iconName,
+    return _PlayableChoiceSet(
       choices: shuffledChoices,
       correctIndex: shuffledCorrectIndex < 0 ? 0 : shuffledCorrectIndex,
-      explanation: scenario.explanation,
     );
   }
 
   void _selectAnswer(int index) {
     if (_answered) return;
 
-    final scenario = _currentScenario;
-    if (scenario == null) return;
+    final currentSet = _currentChoiceSet;
+    if (currentSet == null) return;
 
-    final correct = index == scenario.correctIndex;
+    final correct = index == currentSet.correctIndex;
 
     setState(() {
       _selectedIndex = index;
@@ -269,25 +304,32 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
     });
   }
 
-  void _nextScenario() {
+  void _nextStep() {
     setState(() {
-      _scenarioIndex++;
       _selectedIndex = null;
       _answered = false;
+
+      switch (_step) {
+        case _CaseStep.feeling:
+          _step = _CaseStep.bodyClue;
+        case _CaseStep.bodyClue:
+          _step = _CaseStep.helpfulAction;
+        case _CaseStep.helpfulAction:
+          _caseIndex++;
+          _step = _CaseStep.feeling;
+      }
     });
   }
 
   void _restart() {
     final shuffled =
-        _scenarios
-            .map((scenario) => scenario.toSourceScenario())
-            .map(_shuffleScenarioChoices)
-            .toList()
+        _cases.map((item) => _toPlayableCase(item.source)).toList()
           ..shuffle(_random);
 
     setState(() {
-      _scenarios = shuffled;
-      _scenarioIndex = 0;
+      _cases = shuffled;
+      _caseIndex = 0;
+      _step = _CaseStep.feeling;
       _selectedIndex = null;
       _answered = false;
       _score = 0;
@@ -297,13 +339,51 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
   void _chooseAnotherPack() {
     setState(() {
       _selectedPack = null;
-      _scenarios = [];
-      _scenarioIndex = 0;
+      _cases = [];
+      _caseIndex = 0;
+      _step = _CaseStep.feeling;
       _selectedIndex = null;
       _answered = false;
       _score = 0;
     });
   }
+
+  _PlayableChoiceSet? get _currentChoiceSet {
+    final currentCase = _currentCase;
+    if (currentCase == null) return null;
+
+    return switch (_step) {
+      _CaseStep.feeling => currentCase.feeling,
+      _CaseStep.bodyClue => currentCase.bodyClue,
+      _CaseStep.helpfulAction => currentCase.helpfulAction,
+    };
+  }
+
+  String get _stepQuestion {
+    return switch (_step) {
+      _CaseStep.feeling => _text.whatMightTheyFeel,
+      _CaseStep.bodyClue => _text.whatClueMightShow,
+      _CaseStep.helpfulAction => _text.whatCouldHelp,
+    };
+  }
+
+  IconData get _stepIcon {
+    return switch (_step) {
+      _CaseStep.feeling => Icons.favorite_rounded,
+      _CaseStep.bodyClue => Icons.visibility_rounded,
+      _CaseStep.helpfulAction => Icons.volunteer_activism_rounded,
+    };
+  }
+
+  int get _stepNumber {
+    return switch (_step) {
+      _CaseStep.feeling => 1,
+      _CaseStep.bodyClue => 2,
+      _CaseStep.helpfulAction => 3,
+    };
+  }
+
+  int get _totalSteps => _cases.length * 3;
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +402,7 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
         ),
         child: SafeArea(
           child:
-              _loadingPacks || _loadingScenarios
+              _loadingPacks || _loadingCases
                   ? const Center(child: CircularProgressIndicator())
                   : _selectedPack == null
                   ? _buildPackPicker(color)
@@ -370,16 +450,16 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
                   children: [
                     Text(
                       _text.choosePack,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 25,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      _text.thinkAboutFeelings,
-                      style: TextStyle(
+                      _text.solveSocialCases,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                       ),
@@ -401,7 +481,7 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
             ),
             child: Text(
               _text.usingStarterScenarios,
-              style: TextStyle(fontWeight: FontWeight.w700),
+              style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -421,10 +501,11 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
   }
 
   Widget _buildGame(Color color) {
-    final scenario = _currentScenario;
+    final currentCase = _currentCase;
+    final currentSet = _currentChoiceSet;
     final pack = _selectedPack;
 
-    if (scenario == null || pack == null) {
+    if (currentCase == null || currentSet == null || pack == null) {
       return _buildComplete(color);
     }
 
@@ -448,35 +529,60 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
           ),
           child: Column(
             children: [
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(30),
+              if (currentCase.source.iconName.trim().isNotEmpty) ...[
+                Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Icon(
+                    appIconForKey(
+                      currentCase.source.iconName,
+                      fallbackKey: 'mood_smile',
+                    ),
+                    color: color,
+                    size: 48,
+                  ),
                 ),
-                child: Icon(
-                  appIconForKey(scenario.iconName, fallbackKey: 'mood_smile'),
-                  color: color,
-                  size: 48,
-                ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
               Text(
-                scenario.prompt,
+                currentCase.source.prompt,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 6),
-              Text(
-                _text.thinkAboutFeelings,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey.shade700,
-                  fontWeight: FontWeight.w700,
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(_stepIcon, color: color),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        _stepQuestion,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 22),
@@ -491,13 +597,13 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
                   return Wrap(
                     spacing: 14,
                     runSpacing: 14,
-                    children: List.generate(scenario.choices.length, (index) {
+                    children: List.generate(currentSet.choices.length, (index) {
                       return SizedBox(
                         width: cardWidth,
                         child: _EmotionChoiceCard(
-                          choice: scenario.choices[index],
+                          choice: currentSet.choices[index],
                           selected: _selectedIndex == index,
-                          correct: index == scenario.correctIndex,
+                          correct: index == currentSet.correctIndex,
                           reveal: _answered,
                           onTap: () => _selectAnswer(index),
                         ),
@@ -510,7 +616,7 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
           ),
         ),
         const SizedBox(height: 18),
-        if (_answered) _buildFeedback(color, scenario),
+        if (_answered) _buildFeedback(color, currentCase, currentSet),
       ],
     );
   }
@@ -556,9 +662,10 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _text.scenarioProgress(
-                    _scenarioIndex + 1,
-                    _scenarios.length,
+                  _text.caseProgress(
+                    _caseIndex + 1,
+                    _cases.length,
+                    _stepNumber,
                     _score,
                   ),
                   style: const TextStyle(
@@ -579,10 +686,16 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
     );
   }
 
-  Widget _buildFeedback(Color color, _PlayableEmotionScenario scenario) {
-    final correct = _selectedIndex == scenario.correctIndex;
-    final answer = scenario.choices[scenario.correctIndex].label;
-    final explanation = scenario.explanation.trim();
+  Widget _buildFeedback(
+    Color color,
+    _PlayableEmotionCase currentCase,
+    _PlayableChoiceSet currentSet,
+  ) {
+    final correct = _selectedIndex == currentSet.correctIndex;
+    final answer = currentSet.choices[currentSet.correctIndex].label;
+    final explanation = currentCase.source.explanation.trim();
+    final isFinalStep =
+        _caseIndex == _cases.length - 1 && _step == _CaseStep.helpfulAction;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -613,12 +726,12 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
           const SizedBox(height: 6),
           Text(
             correct
-                ? '$answer fits this situation.'
-                : 'Another feeling could be $answer.',
+                ? _text.answerFits(answer)
+                : _text.anotherAnswerCouldBe(answer),
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.w800),
           ),
-          if (explanation.isNotEmpty) ...[
+          if (_step == _CaseStep.helpfulAction && explanation.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               explanation,
@@ -633,18 +746,14 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: _nextScenario,
+              onPressed: _nextStep,
               style: FilledButton.styleFrom(backgroundColor: color),
               icon: Icon(
-                _scenarioIndex == _scenarios.length - 1
+                isFinalStep
                     ? Icons.emoji_events_rounded
                     : Icons.arrow_forward_rounded,
               ),
-              label: Text(
-                _scenarioIndex == _scenarios.length - 1
-                    ? _text.finish
-                    : context.l10n.next,
-              ),
+              label: Text(isFinalStep ? _text.finish : context.l10n.next),
             ),
           ),
         ],
@@ -677,7 +786,7 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
               Icon(Icons.emoji_events_rounded, color: color, size: 76),
               const SizedBox(height: 14),
               Text(
-                _text.detectiveComplete,
+                _text.caseSolved,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: color,
@@ -699,7 +808,7 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
               ],
               const SizedBox(height: 8),
               Text(
-                'You matched $_score out of ${_scenarios.length} feelings.',
+                _text.solvedClues(_score, _totalSteps),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 18,
@@ -886,12 +995,14 @@ class _EmotionChoiceCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                appIconForKey(choice.iconName, fallbackKey: 'mood_smile'),
-                color: iconColor,
-                size: 58,
-              ),
-              const SizedBox(height: 12),
+              if (choice.iconName.trim().isNotEmpty) ...[
+                Icon(
+                  appIconForKey(choice.iconName, fallbackKey: 'mood_smile'),
+                  color: iconColor,
+                  size: 58,
+                ),
+                const SizedBox(height: 12),
+              ],
               Text(
                 choice.label,
                 textAlign: TextAlign.center,
@@ -918,30 +1029,23 @@ class _EmotionChoiceCard extends StatelessWidget {
   }
 }
 
-class _PlayableEmotionScenario {
-  final String prompt;
-  final String iconName;
+class _PlayableEmotionCase {
+  final EmotionDetectiveScenario source;
+  final _PlayableChoiceSet feeling;
+  final _PlayableChoiceSet bodyClue;
+  final _PlayableChoiceSet helpfulAction;
+
+  const _PlayableEmotionCase({
+    required this.source,
+    required this.feeling,
+    required this.bodyClue,
+    required this.helpfulAction,
+  });
+}
+
+class _PlayableChoiceSet {
   final List<EmotionChoice> choices;
   final int correctIndex;
-  final String explanation;
 
-  const _PlayableEmotionScenario({
-    required this.prompt,
-    required this.iconName,
-    required this.choices,
-    required this.correctIndex,
-    required this.explanation,
-  });
-
-  EmotionDetectiveScenario toSourceScenario() {
-    return EmotionDetectiveScenario(
-      id: '',
-      prompt: prompt,
-      iconName: iconName,
-      choices: choices,
-      correctIndex: correctIndex,
-      explanation: explanation,
-      sortOrder: 0,
-    );
-  }
+  const _PlayableChoiceSet({required this.choices, required this.correctIndex});
 }
