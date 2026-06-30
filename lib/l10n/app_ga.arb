@@ -4725,5 +4725,275 @@
 "classroomAccessDetailsCopied": "Cóipeáladh sonraí logála isteach an tseomra ranga.",
 "@classroomAccessDetailsCopied": {
   "description": "Message shown after copying all classroom login details."
+},
+"calmPlan": "Plean Suaimhnis",
+"@calmPlan": {
+  "description": "Title for the staff Calm Plan feature."
+},
+"calmRequests": "Iarratais",
+"@calmRequests": {
+  "description": "Tab title for Calm Plan support requests."
+},
+"calmTools": "Uirlisí",
+"@calmTools": {
+  "description": "Tab title for Calm Plan tools."
+},
+"calmRequestResolved": "Réitíodh iarratas suaimhnis {name}.",
+"@calmRequestResolved": {
+  "description": "Message shown after resolving a calm support request.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"calmRequestResolveError": "Níorbh fhéidir an t-iarratas a réiteach: {error}",
+"@calmRequestResolveError": {
+  "description": "Error shown when a calm support request cannot be resolved.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmDefaultsAdded": "Cuireadh na huirlisí suaimhnis réamhshocraithe leis.",
+"@calmDefaultsAdded": {
+  "description": "Message shown after saving default calm tools."
+},
+"calmDefaultsAddError": "Níorbh fhéidir na réamhshocruithe a chur leis: {error}",
+"@calmDefaultsAddError": {
+  "description": "Error shown when default calm tools cannot be added.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmToolAdded": "Cuireadh uirlis suaimhnis leis.",
+"@calmToolAdded": {
+  "description": "Message shown after adding a calm tool."
+},
+"calmToolAddError": "Níorbh fhéidir an uirlis a chur leis: {error}",
+"@calmToolAddError": {
+  "description": "Error shown when a calm tool cannot be added.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmToolUpdated": "Nuashonraíodh an uirlis suaimhnis.",
+"@calmToolUpdated": {
+  "description": "Message shown after updating a calm tool."
+},
+"calmToolUpdateError": "Níorbh fhéidir an uirlis a nuashonrú: {error}",
+"@calmToolUpdateError": {
+  "description": "Error shown when a calm tool cannot be updated.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"deleteCalmToolQuestion": "Scrios uirlis suaimhnis?",
+"@deleteCalmToolQuestion": {
+  "description": "Confirmation title for deleting a calm tool."
+},
+"deleteCalmToolMessage": "Bainfidh sé seo “{name}” den liosta uirlisí suaimhnis do pháistí.",
+"@deleteCalmToolMessage": {
+  "description": "Confirmation message for deleting a calm tool.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"calmToolDeleted": "Scriosadh an uirlis suaimhnis.",
+"@calmToolDeleted": {
+  "description": "Message shown after deleting a calm tool."
+},
+"calmToolDeleteError": "Níorbh fhéidir an uirlis a scriosadh: {error}",
+"@calmToolDeleteError": {
+  "description": "Error shown when a calm tool cannot be deleted.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmRequestsLoadFailed": "Níorbh fhéidir iarratais suaimhnis a lódáil.",
+"@calmRequestsLoadFailed": {
+  "description": "Error shown when calm support requests cannot load."
+},
+"calmSupportRequestsTitle": "Iarratais tacaíochta suaimhnis",
+"@calmSupportRequestsTitle": {
+  "description": "Heading for calm support requests."
+},
+"calmSupportRequestsSubtitle": "Féach cé a d’iarr cabhair, cad a roghnaigh siad, agus cé a réitigh é.",
+"@calmSupportRequestsSubtitle": {
+  "description": "Subtitle for calm support requests."
+},
+"activeRequests": "Iarratais ghníomhacha",
+"@activeRequests": {
+  "description": "Heading for active calm support requests."
+},
+"noActiveCalmRequests": "Níl aon iarratas tacaíochta suaimhnis gníomhach.",
+"@noActiveCalmRequests": {
+  "description": "Message shown when there are no active calm support requests."
+},
+"calmRequestsWaiting": "{count} {count, plural, =1{iarratas} other{iarratas}} ag fanacht",
+"@calmRequestsWaiting": {
+  "description": "Count of active calm support requests.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"allCalmRequestsResolved": "Tá gach iarratas tacaíochta suaimhnis réitithe.",
+"@allCalmRequestsResolved": {
+  "description": "Message shown when all calm support requests are resolved."
+},
+"recentSupportHistory": "Stair tacaíochta le déanaí",
+"@recentSupportHistory": {
+  "description": "Heading for recent calm support history."
+},
+"resolvedRequestsAppearHere": "Beidh iarratais réitithe le feiceáil anseo.",
+"@resolvedRequestsAppearHere": {
+  "description": "Message shown when resolved calm requests will appear later."
+},
+"resolvedCalmRequestCount": "{count} {count, plural, =1{iarratas réitithe} other{iarratas réitithe}}",
+"@resolvedCalmRequestCount": {
+  "description": "Count of resolved calm support requests.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"noResolvedCalmRequests": "Níl aon iarratas tacaíochta suaimhnis réitithe fós.",
+"@noResolvedCalmRequests": {
+  "description": "Message shown when there are no resolved calm support requests."
+},
+"calmToolsLoadFailed": "Níorbh fhéidir uirlisí suaimhnis a lódáil.",
+"@calmToolsLoadFailed": {
+  "description": "Error shown when calm tools cannot load."
+},
+"calmToolsTitle": "Uirlisí suaimhnis",
+"@calmToolsTitle": {
+  "description": "Heading for calm tools management."
+},
+"calmToolsSubtitle": "Roghnaigh na roghanna suaimhnis is féidir le páistí a úsáid nuair a theastaíonn tacaíocht uathu.",
+"@calmToolsSubtitle": {
+  "description": "Subtitle for calm tools management."
+},
+"addCalmTool": "Cuir uirlis leis",
+"@addCalmTool": {
+  "description": "Button text for adding a calm tool."
+},
+"saveDefaultsToClassroom": "Sábháil réamhshocruithe don seomra",
+"@saveDefaultsToClassroom": {
+  "description": "Button text for saving default calm tools to Firestore."
+},
+"addDefaultsIfEmpty": "Cuir réamhshocruithe leis má tá sé folamh",
+"@addDefaultsIfEmpty": {
+  "description": "Button text for seeding default calm tools only if empty."
+},
+"previewDefaultsTitle": "Réamhamharc ar uirlisí réamhshocraithe",
+"@previewDefaultsTitle": {
+  "description": "Title for preview-only default calm tools banner."
+},
+"previewDefaultsMessage": "Tá na huirlisí réamhshocraithe seo á dtaispeáint mar réamhamharc. Sábháil iad don seomra ranga seo sula gcuirtear in eagar, sula ndíchumasaítear, nó sula scriostar iad.",
+"@previewDefaultsMessage": {
+  "description": "Message explaining preview-only calm tools."
+},
+"noCalmTools": "Níl aon uirlis suaimhnis fós. Cuir ceann leis nó síolraigh na réamhshocruithe.",
+"@noCalmTools": {
+  "description": "Message shown when there are no calm tools."
+},
+"aChild": "Páiste",
+"@aChild": {
+  "description": "Fallback child name."
+},
+"calmSupport": "tacaíocht suaimhnis",
+"@calmSupport": {
+  "description": "Fallback calm support label."
+},
+"notResolvedYet": "Níl sé réitithe fós",
+"@notResolvedYet": {
+  "description": "Fallback label for unresolved requests."
+},
+"childAskedForHelp": "D’iarr {name} cabhair",
+"@childAskedForHelp": {
+  "description": "Text showing a child asked for calm support.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"active": "Gníomhach",
+"@active": {
+  "description": "Status label for active items."
+},
+"resolved": "Réitithe",
+"@resolved": {
+  "description": "Status label for resolved items."
+},
+"resolvedBy": "Réitithe ag {name}",
+"@resolvedBy": {
+  "description": "Label showing who resolved a calm support request.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"markResolved": "Marcáil mar réitithe",
+"@markResolved": {
+  "description": "Button text for resolving a calm support request."
+},
+"justNow": "Díreach anois",
+"@justNow": {
+  "description": "Relative time label."
+},
+"oneMinuteAgo": "1 nóim ó shin",
+"@oneMinuteAgo": {
+  "description": "Relative time label for one minute ago."
+},
+"minutesAgo": "{count} nóim ó shin",
+"@minutesAgo": {
+  "description": "Relative time label for minutes ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"oneHourAgo": "1 uair ó shin",
+"@oneHourAgo": {
+  "description": "Relative time label for one hour ago."
+},
+"hoursAgo": "{count} uair ó shin",
+"@hoursAgo": {
+  "description": "Relative time label for hours ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"oneDayAgo": "1 lá ó shin",
+"@oneDayAgo": {
+  "description": "Relative time label for one day ago."
+},
+"daysAgo": "{count} lá ó shin",
+"@daysAgo": {
+  "description": "Relative time label for days ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"editCalmTool": "Cuir uirlis suaimhnis in eagar",
+"@editCalmTool": {
+  "description": "Title for editing a calm tool."
+},
+"calmToolName": "Ainm na huirlise",
+"@calmToolName": {
+  "description": "Field label for calm tool name."
+},
+"calmToolNameHint": "Sampla: Áit chiúin",
+"@calmToolNameHint": {
+  "description": "Hint for calm tool name."
+},
+"calmToolDescriptionHint": "Sampla: Téigh go háit chiúin agus shuaimhneach.",
+"@calmToolDescriptionHint": {
+  "description": "Hint for calm tool description."
+},
+"chooseCalmToolIcon": "Roghnaigh deilbhín don uirlis suaimhnis",
+"@chooseCalmToolIcon": {
+  "description": "Title for choosing a calm tool icon."
+},
+"enable": "Cumasaigh",
+"@enable": {
+  "description": "Button or tooltip for enabling an item."
+},
+"disable": "Díchumasaigh",
+"@disable": {
+  "description": "Button or tooltip for disabling an item."
 }
 }

@@ -999,6 +999,8 @@ class _FeatureSettingsCard extends StatelessWidget {
         return Icons.lock_reset_rounded;
       case ClassroomFeature.calmingSounds:
         return Icons.headphones_rounded;
+      case ClassroomFeature.calmPlan:
+        return Icons.spa_rounded;
       case ClassroomFeature.voiceLines:
         return Icons.record_voice_over_rounded;
       case ClassroomFeature.backgroundPicker:

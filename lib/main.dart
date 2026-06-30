@@ -48,6 +48,8 @@ import 'pages/odd_one_out_management_page.dart';
 import 'pages/odd_one_out_page.dart';
 import 'pages/emotion_detective_page.dart';
 import 'pages/emotion_detective_management_page.dart';
+import 'pages/calm_plan_page.dart';
+import 'pages/calm_plan_management_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -433,6 +435,37 @@ class _MyAppState extends State<MyApp> {
           return _page(VoiceLinesManagementPage(staffProfile: args));
         }
         return _errorPage((l10n) => l10n.missingStaffProfile);
+
+      case '/calm-plan-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              CalmPlanManagementPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+        return _errorPage((l10n) => l10n.missingStaffProfile);
+
+      case '/calm-plan':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+
+          if (firestoreService != null && child != null) {
+            return _page(
+              CalmPlanPage(firestoreService: firestoreService, child: child),
+            );
+          }
+        }
+        return _errorPage((l10n) => l10n.missingChildProfile);
 
       case '/icon-reset':
         if (args is String) {

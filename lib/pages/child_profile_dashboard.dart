@@ -379,6 +379,29 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             );
           },
         ),
+      if (_isFeatureEnabled(ClassroomFeature.calmPlan))
+        _DashboardFeature(
+          icon: Icons.spa_rounded,
+          title:
+              Localizations.localeOf(context).languageCode == 'ga'
+                  ? 'Mo Uirlisí Suaimhnis'
+                  : 'My Calm Tools',
+          subtitle:
+              Localizations.localeOf(context).languageCode == 'ga'
+                  ? 'Roghnaigh rud a chabhróidh leat.'
+                  : 'Choose what might help.',
+          color: const Color(0xFF26A69A),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/calm-plan',
+              arguments: {
+                'firestoreService': widget.firestoreService,
+                'child': profile,
+              },
+            );
+          },
+        ),
       if (_isFeatureEnabled(ClassroomFeature.voiceLines))
         _DashboardFeature(
           icon: Icons.record_voice_over_rounded,

@@ -3603,4 +3603,214 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get classroomAccessDetailsCopied => 'Classroom login details copied.';
+
+  @override
+  String get calmPlan => 'Calm Plan';
+
+  @override
+  String get calmRequests => 'Requests';
+
+  @override
+  String get calmTools => 'Tools';
+
+  @override
+  String calmRequestResolved(Object name) {
+    return '$name calm request resolved.';
+  }
+
+  @override
+  String calmRequestResolveError(Object error) {
+    return 'Could not resolve request: $error';
+  }
+
+  @override
+  String get calmDefaultsAdded => 'Default calm tools added.';
+
+  @override
+  String calmDefaultsAddError(Object error) {
+    return 'Could not add defaults: $error';
+  }
+
+  @override
+  String get calmToolAdded => 'Calm tool added.';
+
+  @override
+  String calmToolAddError(Object error) {
+    return 'Could not add tool: $error';
+  }
+
+  @override
+  String get calmToolUpdated => 'Calm tool updated.';
+
+  @override
+  String calmToolUpdateError(Object error) {
+    return 'Could not update tool: $error';
+  }
+
+  @override
+  String get deleteCalmToolQuestion => 'Delete calm tool?';
+
+  @override
+  String deleteCalmToolMessage(Object name) {
+    return 'This will remove “$name” from the child calm tools list.';
+  }
+
+  @override
+  String get calmToolDeleted => 'Calm tool deleted.';
+
+  @override
+  String calmToolDeleteError(Object error) {
+    return 'Could not delete tool: $error';
+  }
+
+  @override
+  String get calmRequestsLoadFailed => 'Could not load calm requests.';
+
+  @override
+  String get calmSupportRequestsTitle => 'Calm support requests';
+
+  @override
+  String get calmSupportRequestsSubtitle =>
+      'See who has asked for help, what they chose, and who resolved it.';
+
+  @override
+  String get activeRequests => 'Active requests';
+
+  @override
+  String get noActiveCalmRequests => 'No active calm support requests.';
+
+  @override
+  String calmRequestsWaiting(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'requests',
+      one: 'request',
+    );
+    return '$count $_temp0 waiting';
+  }
+
+  @override
+  String get allCalmRequestsResolved =>
+      'All calm support requests are resolved.';
+
+  @override
+  String get recentSupportHistory => 'Recent support history';
+
+  @override
+  String get resolvedRequestsAppearHere =>
+      'Resolved requests will appear here.';
+
+  @override
+  String resolvedCalmRequestCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'requests',
+      one: 'request',
+    );
+    return '$count resolved $_temp0';
+  }
+
+  @override
+  String get noResolvedCalmRequests => 'No resolved calm support requests yet.';
+
+  @override
+  String get calmToolsLoadFailed => 'Could not load calm tools.';
+
+  @override
+  String get calmToolsTitle => 'Calm tools';
+
+  @override
+  String get calmToolsSubtitle =>
+      'Choose which calming options children can use when they need support.';
+
+  @override
+  String get addCalmTool => 'Add tool';
+
+  @override
+  String get saveDefaultsToClassroom => 'Save defaults to classroom';
+
+  @override
+  String get addDefaultsIfEmpty => 'Add defaults if empty';
+
+  @override
+  String get previewDefaultsTitle => 'Default tools preview';
+
+  @override
+  String get previewDefaultsMessage =>
+      'These default tools are being previewed. Save them to this classroom before editing, disabling, or deleting them.';
+
+  @override
+  String get noCalmTools => 'No calm tools yet. Add one or seed the defaults.';
+
+  @override
+  String get aChild => 'A child';
+
+  @override
+  String get calmSupport => 'calm support';
+
+  @override
+  String get notResolvedYet => 'Not resolved yet';
+
+  @override
+  String childAskedForHelp(Object name) {
+    return '$name asked for help';
+  }
+
+  @override
+  String get resolved => 'Resolved';
+
+  @override
+  String resolvedBy(Object name) {
+    return 'Resolved by $name';
+  }
+
+  @override
+  String get markResolved => 'Mark resolved';
+
+  @override
+  String get oneMinuteAgo => '1 min ago';
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count min ago';
+  }
+
+  @override
+  String get oneHourAgo => '1 hour ago';
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count hours ago';
+  }
+
+  @override
+  String get oneDayAgo => '1 day ago';
+
+  @override
+  String daysAgo(Object count) {
+    return '$count days ago';
+  }
+
+  @override
+  String get editCalmTool => 'Edit calm tool';
+
+  @override
+  String get calmToolName => 'Tool name';
+
+  @override
+  String get calmToolNameHint => 'Example: Quiet space';
+
+  @override
+  String get calmToolDescriptionHint => 'Example: Go somewhere calm and quiet.';
+
+  @override
+  String get chooseCalmToolIcon => 'Choose calm tool icon';
+
+  @override
+  String get enable => 'Enable';
+
+  @override
+  String get disable => 'Disable';
 }

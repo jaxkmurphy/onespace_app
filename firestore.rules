@@ -210,6 +210,17 @@ service cloud.firestore {
             || isThisClassroom(schoolId, classroomId);
         }
 
+                match /calm_tools/{toolId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+        }
+
+        match /calm_requests/{requestId} {
+          allow read, create, update: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+          allow delete: if isSchoolAdmin(schoolId);
+        }
+
         match /circle_time_days/{dateKey} {
           allow read, write: if isSchoolAdmin(schoolId)
             || isThisClassroom(schoolId, classroomId);

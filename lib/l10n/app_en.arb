@@ -4726,5 +4726,275 @@
 "classroomAccessDetailsCopied": "Classroom login details copied.",
 "@classroomAccessDetailsCopied": {
   "description": "Message shown after copying all classroom login details."
+},
+"calmPlan": "Calm Plan",
+"@calmPlan": {
+  "description": "Title for the staff Calm Plan feature."
+},
+"calmRequests": "Requests",
+"@calmRequests": {
+  "description": "Tab title for Calm Plan support requests."
+},
+"calmTools": "Tools",
+"@calmTools": {
+  "description": "Tab title for Calm Plan tools."
+},
+"calmRequestResolved": "{name} calm request resolved.",
+"@calmRequestResolved": {
+  "description": "Message shown after resolving a calm support request.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"calmRequestResolveError": "Could not resolve request: {error}",
+"@calmRequestResolveError": {
+  "description": "Error shown when a calm support request cannot be resolved.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmDefaultsAdded": "Default calm tools added.",
+"@calmDefaultsAdded": {
+  "description": "Message shown after saving default calm tools."
+},
+"calmDefaultsAddError": "Could not add defaults: {error}",
+"@calmDefaultsAddError": {
+  "description": "Error shown when default calm tools cannot be added.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmToolAdded": "Calm tool added.",
+"@calmToolAdded": {
+  "description": "Message shown after adding a calm tool."
+},
+"calmToolAddError": "Could not add tool: {error}",
+"@calmToolAddError": {
+  "description": "Error shown when a calm tool cannot be added.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmToolUpdated": "Calm tool updated.",
+"@calmToolUpdated": {
+  "description": "Message shown after updating a calm tool."
+},
+"calmToolUpdateError": "Could not update tool: {error}",
+"@calmToolUpdateError": {
+  "description": "Error shown when a calm tool cannot be updated.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"deleteCalmToolQuestion": "Delete calm tool?",
+"@deleteCalmToolQuestion": {
+  "description": "Confirmation title for deleting a calm tool."
+},
+"deleteCalmToolMessage": "This will remove “{name}” from the child calm tools list.",
+"@deleteCalmToolMessage": {
+  "description": "Confirmation message for deleting a calm tool.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"calmToolDeleted": "Calm tool deleted.",
+"@calmToolDeleted": {
+  "description": "Message shown after deleting a calm tool."
+},
+"calmToolDeleteError": "Could not delete tool: {error}",
+"@calmToolDeleteError": {
+  "description": "Error shown when a calm tool cannot be deleted.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"calmRequestsLoadFailed": "Could not load calm requests.",
+"@calmRequestsLoadFailed": {
+  "description": "Error shown when calm support requests cannot load."
+},
+"calmSupportRequestsTitle": "Calm support requests",
+"@calmSupportRequestsTitle": {
+  "description": "Heading for calm support requests."
+},
+"calmSupportRequestsSubtitle": "See who has asked for help, what they chose, and who resolved it.",
+"@calmSupportRequestsSubtitle": {
+  "description": "Subtitle for calm support requests."
+},
+"activeRequests": "Active requests",
+"@activeRequests": {
+  "description": "Heading for active calm support requests."
+},
+"noActiveCalmRequests": "No active calm support requests.",
+"@noActiveCalmRequests": {
+  "description": "Message shown when there are no active calm support requests."
+},
+"calmRequestsWaiting": "{count} {count, plural, =1{request} other{requests}} waiting",
+"@calmRequestsWaiting": {
+  "description": "Count of active calm support requests.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"allCalmRequestsResolved": "All calm support requests are resolved.",
+"@allCalmRequestsResolved": {
+  "description": "Message shown when all calm support requests are resolved."
+},
+"recentSupportHistory": "Recent support history",
+"@recentSupportHistory": {
+  "description": "Heading for recent calm support history."
+},
+"resolvedRequestsAppearHere": "Resolved requests will appear here.",
+"@resolvedRequestsAppearHere": {
+  "description": "Message shown when resolved calm requests will appear later."
+},
+"resolvedCalmRequestCount": "{count} resolved {count, plural, =1{request} other{requests}}",
+"@resolvedCalmRequestCount": {
+  "description": "Count of resolved calm support requests.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"noResolvedCalmRequests": "No resolved calm support requests yet.",
+"@noResolvedCalmRequests": {
+  "description": "Message shown when there are no resolved calm support requests."
+},
+"calmToolsLoadFailed": "Could not load calm tools.",
+"@calmToolsLoadFailed": {
+  "description": "Error shown when calm tools cannot load."
+},
+"calmToolsTitle": "Calm tools",
+"@calmToolsTitle": {
+  "description": "Heading for calm tools management."
+},
+"calmToolsSubtitle": "Choose which calming options children can use when they need support.",
+"@calmToolsSubtitle": {
+  "description": "Subtitle for calm tools management."
+},
+"addCalmTool": "Add tool",
+"@addCalmTool": {
+  "description": "Button text for adding a calm tool."
+},
+"saveDefaultsToClassroom": "Save defaults to classroom",
+"@saveDefaultsToClassroom": {
+  "description": "Button text for saving default calm tools to Firestore."
+},
+"addDefaultsIfEmpty": "Add defaults if empty",
+"@addDefaultsIfEmpty": {
+  "description": "Button text for seeding default calm tools only if empty."
+},
+"previewDefaultsTitle": "Default tools preview",
+"@previewDefaultsTitle": {
+  "description": "Title for preview-only default calm tools banner."
+},
+"previewDefaultsMessage": "These default tools are being previewed. Save them to this classroom before editing, disabling, or deleting them.",
+"@previewDefaultsMessage": {
+  "description": "Message explaining preview-only calm tools."
+},
+"noCalmTools": "No calm tools yet. Add one or seed the defaults.",
+"@noCalmTools": {
+  "description": "Message shown when there are no calm tools."
+},
+"aChild": "A child",
+"@aChild": {
+  "description": "Fallback child name."
+},
+"calmSupport": "calm support",
+"@calmSupport": {
+  "description": "Fallback calm support label."
+},
+"notResolvedYet": "Not resolved yet",
+"@notResolvedYet": {
+  "description": "Fallback label for unresolved requests."
+},
+"childAskedForHelp": "{name} asked for help",
+"@childAskedForHelp": {
+  "description": "Text showing a child asked for calm support.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"active": "Active",
+"@active": {
+  "description": "Status label for active items."
+},
+"resolved": "Resolved",
+"@resolved": {
+  "description": "Status label for resolved items."
+},
+"resolvedBy": "Resolved by {name}",
+"@resolvedBy": {
+  "description": "Label showing who resolved a calm support request.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"markResolved": "Mark resolved",
+"@markResolved": {
+  "description": "Button text for resolving a calm support request."
+},
+"justNow": "Just now",
+"@justNow": {
+  "description": "Relative time label."
+},
+"oneMinuteAgo": "1 min ago",
+"@oneMinuteAgo": {
+  "description": "Relative time label for one minute ago."
+},
+"minutesAgo": "{count} min ago",
+"@minutesAgo": {
+  "description": "Relative time label for minutes ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"oneHourAgo": "1 hour ago",
+"@oneHourAgo": {
+  "description": "Relative time label for one hour ago."
+},
+"hoursAgo": "{count} hours ago",
+"@hoursAgo": {
+  "description": "Relative time label for hours ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"oneDayAgo": "1 day ago",
+"@oneDayAgo": {
+  "description": "Relative time label for one day ago."
+},
+"daysAgo": "{count} days ago",
+"@daysAgo": {
+  "description": "Relative time label for days ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"editCalmTool": "Edit calm tool",
+"@editCalmTool": {
+  "description": "Title for editing a calm tool."
+},
+"calmToolName": "Tool name",
+"@calmToolName": {
+  "description": "Field label for calm tool name."
+},
+"calmToolNameHint": "Example: Quiet space",
+"@calmToolNameHint": {
+  "description": "Hint for calm tool name."
+},
+"calmToolDescriptionHint": "Example: Go somewhere calm and quiet.",
+"@calmToolDescriptionHint": {
+  "description": "Hint for calm tool description."
+},
+"chooseCalmToolIcon": "Choose calm tool icon",
+"@chooseCalmToolIcon": {
+  "description": "Title for choosing a calm tool icon."
+},
+"enable": "Enable",
+"@enable": {
+  "description": "Button or tooltip for enabling an item."
+},
+"disable": "Disable",
+"@disable": {
+  "description": "Button or tooltip for disabling an item."
 }
 }

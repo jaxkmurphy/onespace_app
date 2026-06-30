@@ -2366,7 +2366,7 @@ abstract class AppLocalizations {
   /// **'Your achievements will appear here.'**
   String get achievementsWillAppear;
 
-  /// Timestamp for a new entry.
+  /// Relative time label.
   ///
   /// In en, this message translates to:
   /// **'Just now'**
@@ -3752,7 +3752,7 @@ abstract class AppLocalizations {
   /// **'Status: {status}'**
   String statusValue(Object status);
 
-  /// Text used in the app for active.
+  /// Status label for active items.
   ///
   /// In en, this message translates to:
   /// **'Active'**
@@ -6319,6 +6319,336 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Classroom login details copied.'**
   String get classroomAccessDetailsCopied;
+
+  /// Title for the staff Calm Plan feature.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm Plan'**
+  String get calmPlan;
+
+  /// Tab title for Calm Plan support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get calmRequests;
+
+  /// Tab title for Calm Plan tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get calmTools;
+
+  /// Message shown after resolving a calm support request.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} calm request resolved.'**
+  String calmRequestResolved(Object name);
+
+  /// Error shown when a calm support request cannot be resolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not resolve request: {error}'**
+  String calmRequestResolveError(Object error);
+
+  /// Message shown after saving default calm tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Default calm tools added.'**
+  String get calmDefaultsAdded;
+
+  /// Error shown when default calm tools cannot be added.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add defaults: {error}'**
+  String calmDefaultsAddError(Object error);
+
+  /// Message shown after adding a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm tool added.'**
+  String get calmToolAdded;
+
+  /// Error shown when a calm tool cannot be added.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add tool: {error}'**
+  String calmToolAddError(Object error);
+
+  /// Message shown after updating a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm tool updated.'**
+  String get calmToolUpdated;
+
+  /// Error shown when a calm tool cannot be updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update tool: {error}'**
+  String calmToolUpdateError(Object error);
+
+  /// Confirmation title for deleting a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete calm tool?'**
+  String get deleteCalmToolQuestion;
+
+  /// Confirmation message for deleting a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove “{name}” from the child calm tools list.'**
+  String deleteCalmToolMessage(Object name);
+
+  /// Message shown after deleting a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm tool deleted.'**
+  String get calmToolDeleted;
+
+  /// Error shown when a calm tool cannot be deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete tool: {error}'**
+  String calmToolDeleteError(Object error);
+
+  /// Error shown when calm support requests cannot load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load calm requests.'**
+  String get calmRequestsLoadFailed;
+
+  /// Heading for calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm support requests'**
+  String get calmSupportRequestsTitle;
+
+  /// Subtitle for calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'See who has asked for help, what they chose, and who resolved it.'**
+  String get calmSupportRequestsSubtitle;
+
+  /// Heading for active calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Active requests'**
+  String get activeRequests;
+
+  /// Message shown when there are no active calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'No active calm support requests.'**
+  String get noActiveCalmRequests;
+
+  /// Count of active calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} {count, plural, =1{request} other{requests}} waiting'**
+  String calmRequestsWaiting(num count);
+
+  /// Message shown when all calm support requests are resolved.
+  ///
+  /// In en, this message translates to:
+  /// **'All calm support requests are resolved.'**
+  String get allCalmRequestsResolved;
+
+  /// Heading for recent calm support history.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent support history'**
+  String get recentSupportHistory;
+
+  /// Message shown when resolved calm requests will appear later.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved requests will appear here.'**
+  String get resolvedRequestsAppearHere;
+
+  /// Count of resolved calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} resolved {count, plural, =1{request} other{requests}}'**
+  String resolvedCalmRequestCount(num count);
+
+  /// Message shown when there are no resolved calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'No resolved calm support requests yet.'**
+  String get noResolvedCalmRequests;
+
+  /// Error shown when calm tools cannot load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load calm tools.'**
+  String get calmToolsLoadFailed;
+
+  /// Heading for calm tools management.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm tools'**
+  String get calmToolsTitle;
+
+  /// Subtitle for calm tools management.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which calming options children can use when they need support.'**
+  String get calmToolsSubtitle;
+
+  /// Button text for adding a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tool'**
+  String get addCalmTool;
+
+  /// Button text for saving default calm tools to Firestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Save defaults to classroom'**
+  String get saveDefaultsToClassroom;
+
+  /// Button text for seeding default calm tools only if empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add defaults if empty'**
+  String get addDefaultsIfEmpty;
+
+  /// Title for preview-only default calm tools banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Default tools preview'**
+  String get previewDefaultsTitle;
+
+  /// Message explaining preview-only calm tools.
+  ///
+  /// In en, this message translates to:
+  /// **'These default tools are being previewed. Save them to this classroom before editing, disabling, or deleting them.'**
+  String get previewDefaultsMessage;
+
+  /// Message shown when there are no calm tools.
+  ///
+  /// In en, this message translates to:
+  /// **'No calm tools yet. Add one or seed the defaults.'**
+  String get noCalmTools;
+
+  /// Fallback child name.
+  ///
+  /// In en, this message translates to:
+  /// **'A child'**
+  String get aChild;
+
+  /// Fallback calm support label.
+  ///
+  /// In en, this message translates to:
+  /// **'calm support'**
+  String get calmSupport;
+
+  /// Fallback label for unresolved requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Not resolved yet'**
+  String get notResolvedYet;
+
+  /// Text showing a child asked for calm support.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asked for help'**
+  String childAskedForHelp(Object name);
+
+  /// Status label for resolved items.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get resolved;
+
+  /// Label showing who resolved a calm support request.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved by {name}'**
+  String resolvedBy(Object name);
+
+  /// Button text for resolving a calm support request.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark resolved'**
+  String get markResolved;
+
+  /// Relative time label for one minute ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 min ago'**
+  String get oneMinuteAgo;
+
+  /// Relative time label for minutes ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String minutesAgo(Object count);
+
+  /// Relative time label for one hour ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour ago'**
+  String get oneHourAgo;
+
+  /// Relative time label for hours ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hours ago'**
+  String hoursAgo(Object count);
+
+  /// Relative time label for one day ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day ago'**
+  String get oneDayAgo;
+
+  /// Relative time label for days ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String daysAgo(Object count);
+
+  /// Title for editing a calm tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit calm tool'**
+  String get editCalmTool;
+
+  /// Field label for calm tool name.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool name'**
+  String get calmToolName;
+
+  /// Hint for calm tool name.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Quiet space'**
+  String get calmToolNameHint;
+
+  /// Hint for calm tool description.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Go somewhere calm and quiet.'**
+  String get calmToolDescriptionHint;
+
+  /// Title for choosing a calm tool icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose calm tool icon'**
+  String get chooseCalmToolIcon;
+
+  /// Button or tooltip for enabling an item.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get enable;
+
+  /// Button or tooltip for disabling an item.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get disable;
 }
 
 class _AppLocalizationsDelegate

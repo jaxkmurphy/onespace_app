@@ -3673,4 +3673,221 @@ class AppLocalizationsGa extends AppLocalizations {
   @override
   String get classroomAccessDetailsCopied =>
       'Cóipeáladh sonraí logála isteach an tseomra ranga.';
+
+  @override
+  String get calmPlan => 'Plean Suaimhnis';
+
+  @override
+  String get calmRequests => 'Iarratais';
+
+  @override
+  String get calmTools => 'Uirlisí';
+
+  @override
+  String calmRequestResolved(Object name) {
+    return 'Réitíodh iarratas suaimhnis $name.';
+  }
+
+  @override
+  String calmRequestResolveError(Object error) {
+    return 'Níorbh fhéidir an t-iarratas a réiteach: $error';
+  }
+
+  @override
+  String get calmDefaultsAdded =>
+      'Cuireadh na huirlisí suaimhnis réamhshocraithe leis.';
+
+  @override
+  String calmDefaultsAddError(Object error) {
+    return 'Níorbh fhéidir na réamhshocruithe a chur leis: $error';
+  }
+
+  @override
+  String get calmToolAdded => 'Cuireadh uirlis suaimhnis leis.';
+
+  @override
+  String calmToolAddError(Object error) {
+    return 'Níorbh fhéidir an uirlis a chur leis: $error';
+  }
+
+  @override
+  String get calmToolUpdated => 'Nuashonraíodh an uirlis suaimhnis.';
+
+  @override
+  String calmToolUpdateError(Object error) {
+    return 'Níorbh fhéidir an uirlis a nuashonrú: $error';
+  }
+
+  @override
+  String get deleteCalmToolQuestion => 'Scrios uirlis suaimhnis?';
+
+  @override
+  String deleteCalmToolMessage(Object name) {
+    return 'Bainfidh sé seo “$name” den liosta uirlisí suaimhnis do pháistí.';
+  }
+
+  @override
+  String get calmToolDeleted => 'Scriosadh an uirlis suaimhnis.';
+
+  @override
+  String calmToolDeleteError(Object error) {
+    return 'Níorbh fhéidir an uirlis a scriosadh: $error';
+  }
+
+  @override
+  String get calmRequestsLoadFailed =>
+      'Níorbh fhéidir iarratais suaimhnis a lódáil.';
+
+  @override
+  String get calmSupportRequestsTitle => 'Iarratais tacaíochta suaimhnis';
+
+  @override
+  String get calmSupportRequestsSubtitle =>
+      'Féach cé a d’iarr cabhair, cad a roghnaigh siad, agus cé a réitigh é.';
+
+  @override
+  String get activeRequests => 'Iarratais ghníomhacha';
+
+  @override
+  String get noActiveCalmRequests =>
+      'Níl aon iarratas tacaíochta suaimhnis gníomhach.';
+
+  @override
+  String calmRequestsWaiting(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'iarratas',
+      one: 'iarratas',
+    );
+    return '$count $_temp0 ag fanacht';
+  }
+
+  @override
+  String get allCalmRequestsResolved =>
+      'Tá gach iarratas tacaíochta suaimhnis réitithe.';
+
+  @override
+  String get recentSupportHistory => 'Stair tacaíochta le déanaí';
+
+  @override
+  String get resolvedRequestsAppearHere =>
+      'Beidh iarratais réitithe le feiceáil anseo.';
+
+  @override
+  String resolvedCalmRequestCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'iarratas réitithe',
+      one: 'iarratas réitithe',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get noResolvedCalmRequests =>
+      'Níl aon iarratas tacaíochta suaimhnis réitithe fós.';
+
+  @override
+  String get calmToolsLoadFailed =>
+      'Níorbh fhéidir uirlisí suaimhnis a lódáil.';
+
+  @override
+  String get calmToolsTitle => 'Uirlisí suaimhnis';
+
+  @override
+  String get calmToolsSubtitle =>
+      'Roghnaigh na roghanna suaimhnis is féidir le páistí a úsáid nuair a theastaíonn tacaíocht uathu.';
+
+  @override
+  String get addCalmTool => 'Cuir uirlis leis';
+
+  @override
+  String get saveDefaultsToClassroom => 'Sábháil réamhshocruithe don seomra';
+
+  @override
+  String get addDefaultsIfEmpty => 'Cuir réamhshocruithe leis má tá sé folamh';
+
+  @override
+  String get previewDefaultsTitle => 'Réamhamharc ar uirlisí réamhshocraithe';
+
+  @override
+  String get previewDefaultsMessage =>
+      'Tá na huirlisí réamhshocraithe seo á dtaispeáint mar réamhamharc. Sábháil iad don seomra ranga seo sula gcuirtear in eagar, sula ndíchumasaítear, nó sula scriostar iad.';
+
+  @override
+  String get noCalmTools =>
+      'Níl aon uirlis suaimhnis fós. Cuir ceann leis nó síolraigh na réamhshocruithe.';
+
+  @override
+  String get aChild => 'Páiste';
+
+  @override
+  String get calmSupport => 'tacaíocht suaimhnis';
+
+  @override
+  String get notResolvedYet => 'Níl sé réitithe fós';
+
+  @override
+  String childAskedForHelp(Object name) {
+    return 'D’iarr $name cabhair';
+  }
+
+  @override
+  String get resolved => 'Réitithe';
+
+  @override
+  String resolvedBy(Object name) {
+    return 'Réitithe ag $name';
+  }
+
+  @override
+  String get markResolved => 'Marcáil mar réitithe';
+
+  @override
+  String get oneMinuteAgo => '1 nóim ó shin';
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count nóim ó shin';
+  }
+
+  @override
+  String get oneHourAgo => '1 uair ó shin';
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count uair ó shin';
+  }
+
+  @override
+  String get oneDayAgo => '1 lá ó shin';
+
+  @override
+  String daysAgo(Object count) {
+    return '$count lá ó shin';
+  }
+
+  @override
+  String get editCalmTool => 'Cuir uirlis suaimhnis in eagar';
+
+  @override
+  String get calmToolName => 'Ainm na huirlise';
+
+  @override
+  String get calmToolNameHint => 'Sampla: Áit chiúin';
+
+  @override
+  String get calmToolDescriptionHint =>
+      'Sampla: Téigh go háit chiúin agus shuaimhneach.';
+
+  @override
+  String get chooseCalmToolIcon => 'Roghnaigh deilbhín don uirlis suaimhnis';
+
+  @override
+  String get enable => 'Cumasaigh';
+
+  @override
+  String get disable => 'Díchumasaigh';
 }

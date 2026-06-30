@@ -12,6 +12,8 @@ import 'child_access_page.dart';
 import 'incident_log_page.dart';
 import 'staff_schedule_page.dart';
 import 'word_learning_page.dart';
+import '../data/app_icon_catalog.dart';
+import '../models/calm_plan_models.dart';
 
 class StaffProfileDashboard extends StatefulWidget {
   final StaffProfile profile;
@@ -144,6 +146,14 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 )
                 : null;
 
+        final calmRequestsPanel =
+            _isFeatureEnabled(ClassroomFeature.calmPlan)
+                ? _CalmRequestsPanel(
+                  firestoreService: _firestoreService,
+                  staffProfile: widget.profile,
+                )
+                : null;
+
         final dailyTools = <Widget>[
           if (_isFeatureEnabled(ClassroomFeature.zones))
             StaffDashboardFeatureCard(
@@ -220,6 +230,23 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
+          if (_isFeatureEnabled(ClassroomFeature.calmPlan))
+            StaffDashboardFeatureCard(
+              icon: Icons.spa_rounded,
+              title: 'Calm Plan',
+              subtitle: 'Review calm support requests and manage calm tools.',
+              color: const Color(0xFF26A69A),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/calm-plan-management',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
           if (_isFeatureEnabled(ClassroomFeature.circleTime))
             StaffDashboardFeatureCard(
               icon: Icons.groups_rounded,
@@ -231,6 +258,20 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                   context,
                   '/circle-time',
                   arguments: {'teacherUid': widget.profile.teacherUid},
+                );
+              },
+            ),
+          if (_isFeatureEnabled(ClassroomFeature.voiceLines))
+            StaffDashboardFeatureCard(
+              icon: Icons.record_voice_over_rounded,
+              title: l10n.voiceLines,
+              subtitle: 'Manage the phrases children can use.',
+              color: const Color(0xFF7E57C2),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/voice-lines-management',
+                  arguments: widget.profile,
                 );
               },
             ),
@@ -362,20 +403,6 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             color: const Color(0xFF455A64),
             onTap: _openChildAccess,
           ),
-          if (_isFeatureEnabled(ClassroomFeature.voiceLines))
-            StaffDashboardFeatureCard(
-              icon: Icons.record_voice_over_rounded,
-              title: l10n.voiceLines,
-              subtitle: 'Manage the phrases children can use.',
-              color: const Color(0xFF7E57C2),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/voice-lines-management',
-                  arguments: widget.profile,
-                );
-              },
-            ),
           if (_isFeatureEnabled(ClassroomFeature.incidentLog))
             StaffDashboardFeatureCard(
               icon: Icons.event_note_rounded,
@@ -447,6 +474,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                       profile: widget.profile,
                       classroomName: _classroomName,
                       todayOverviewCard: todayOverviewCard,
+                      calmRequestsPanel: calmRequestsPanel,
                       dailyTools: dailyTools,
                       communicationTools: communicationTools,
                       learningTools: learningTools,
@@ -464,6 +492,7 @@ class _StaffDashboardBody extends StatelessWidget {
   final StaffProfile profile;
   final String classroomName;
   final Widget? todayOverviewCard;
+  final Widget? calmRequestsPanel;
   final List<Widget> dailyTools;
   final List<Widget> communicationTools;
   final List<Widget> learningTools;
@@ -474,6 +503,7 @@ class _StaffDashboardBody extends StatelessWidget {
     required this.profile,
     required this.classroomName,
     required this.todayOverviewCard,
+    required this.calmRequestsPanel,
     required this.dailyTools,
     required this.communicationTools,
     required this.learningTools,
@@ -519,6 +549,10 @@ class _StaffDashboardBody extends StatelessWidget {
                         profile: profile,
                         classroomName: classroomName,
                       ),
+                      if (calmRequestsPanel != null) ...[
+                        const SizedBox(height: 18),
+                        calmRequestsPanel!,
+                      ],
                       if (todayOverviewCard != null) ...[
                         const SizedBox(height: 18),
                         todayOverviewCard!,
@@ -692,6 +726,270 @@ class _StaffHeroCard extends StatelessWidget {
               Row(children: [text]),
               const SizedBox(height: 14),
               chip,
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CalmRequestsPanel extends StatelessWidget {
+  final FirestoreService firestoreService;
+  final StaffProfile staffProfile;
+
+  const _CalmRequestsPanel({
+    required this.firestoreService,
+    required this.staffProfile,
+  });
+
+  Future<void> _resolveRequest(
+    BuildContext context,
+    CalmRequest request,
+  ) async {
+    try {
+      await firestoreService.resolveCurrentCalmRequest(
+        requestId: request.id,
+        staffId: staffProfile.id,
+        staffName: staffProfile.name,
+      );
+
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${request.childName} calm request resolved.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not resolve calm request: $error'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const color = Color(0xFF26A69A);
+
+    return StreamBuilder<List<CalmRequest>>(
+      stream: firestoreService.getCurrentActiveCalmRequests(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.orange.shade200),
+            ),
+            child: const Text(
+              'Could not load calm support requests.',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+          );
+        }
+
+        if (!snapshot.hasData) {
+          return const SizedBox.shrink();
+        }
+
+        final requests = snapshot.data!;
+
+        if (requests.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.92),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: color.withValues(alpha: 0.22), width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.10),
+                blurRadius: 24,
+                offset: const Offset(0, 12),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: const Icon(
+                      Icons.spa_rounded,
+                      color: color,
+                      size: 30,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Calm support requested',
+                          style: TextStyle(
+                            fontSize: 21,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          '${requests.length} active request${requests.length == 1 ? '' : 's'}',
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              ...requests.map(
+                (request) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _CalmRequestCard(
+                    request: request,
+                    color: color,
+                    onResolve: () => _resolveRequest(context, request),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CalmRequestCard extends StatelessWidget {
+  final CalmRequest request;
+  final Color color;
+  final VoidCallback onResolve;
+
+  const _CalmRequestCard({
+    required this.request,
+    required this.color,
+    required this.onResolve,
+  });
+
+  String _timeLabel() {
+    final createdAt = request.createdAt;
+    if (createdAt == null) return 'Just now';
+
+    final minutes = DateTime.now().difference(createdAt).inMinutes;
+
+    if (minutes < 1) return 'Just now';
+    if (minutes == 1) return '1 min ago';
+    if (minutes < 60) return '$minutes min ago';
+
+    final hours = minutes ~/ 60;
+    if (hours == 1) return '1 hour ago';
+    return '$hours hours ago';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final childName =
+        request.childName.trim().isEmpty ? 'A child' : request.childName;
+    final toolName =
+        request.toolName.trim().isEmpty ? 'calm support' : request.toolName;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: color.withValues(alpha: 0.16)),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 620;
+
+          final icon = Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              appIconForKey(request.toolIconName, fallbackKey: 'leaf'),
+              color: color,
+              size: 28,
+            ),
+          );
+
+          final details = Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$childName needs help',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'Selected: $toolName • ${_timeLabel()}',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          );
+
+          final button = FilledButton.icon(
+            onPressed: onResolve,
+            style: FilledButton.styleFrom(
+              backgroundColor: color,
+              foregroundColor: Colors.white,
+            ),
+            icon: const Icon(Icons.check_circle_rounded),
+            label: const Text('Mark resolved'),
+          );
+
+          if (compact) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(children: [icon, const SizedBox(width: 12), details]),
+                const SizedBox(height: 12),
+                button,
+              ],
+            );
+          }
+
+          return Row(
+            children: [
+              icon,
+              const SizedBox(width: 12),
+              details,
+              const SizedBox(width: 12),
+              button,
             ],
           );
         },

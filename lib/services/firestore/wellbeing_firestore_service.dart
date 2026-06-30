@@ -5,8 +5,10 @@ import '../../models/circle_time_day.dart';
 import '../../models/point_history_entry.dart';
 import '../../models/point_reward.dart';
 import 'firestore_base.dart';
+import '../../models/calm_plan_models.dart';
 
 mixin WellbeingFirestoreService on FirestoreBase {
+
   // ZONES + POINTS
 
   CollectionReference<Map<String, dynamic>> _currentPointHistoryRef(
@@ -823,5 +825,210 @@ Future<void> saveCurrentCircleTimeDay(
     await restoreClassroomSessionFromAuthIfNeeded();
 
     await currentBodyCheckReportsRef().doc(reportId).delete();
+  }
+
+  // CALM PLAN 
+
+    CollectionReference<Map<String, dynamic>> _calmToolsRef({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('calm_tools');
+  }
+
+  CollectionReference<Map<String, dynamic>> _calmRequestsRef({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return db
+        .collection('schools')
+        .doc(schoolId)
+        .collection('classrooms')
+        .doc(classroomId)
+        .collection('calm_requests');
+  }
+
+  Stream<List<CalmTool>> getCurrentCalmTools() {
+    return _calmToolsRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    ).snapshots().map((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        return defaultCalmTools;
+      }
+
+      final tools =
+          snapshot.docs
+              .map((doc) => CalmTool.fromMap(doc.id, doc.data()))
+              .toList();
+
+      tools.sort((first, second) {
+        final sortCompare = first.sortOrder.compareTo(second.sortOrder);
+        if (sortCompare != 0) return sortCompare;
+        return first.name.toLowerCase().compareTo(second.name.toLowerCase());
+      });
+
+      return tools;
+    });
+  }
+
+  Stream<List<CalmTool>> getCurrentActiveCalmTools() {
+    return getCurrentCalmTools().map((tools) {
+      return tools.where((tool) => tool.active).toList();
+    });
+  }
+
+  Future<String> addCurrentCalmTool(CalmTool tool) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final docRef =
+        _calmToolsRef(
+          schoolId: session.requireSchoolId,
+          classroomId: session.requireClassroomId,
+        ).doc();
+
+    await docRef.set({
+      ...tool.copyWith(id: docRef.id).toMap(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    return docRef.id;
+  }
+
+  Future<void> updateCurrentCalmTool(CalmTool tool) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await _calmToolsRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    ).doc(tool.id).update({
+      ...tool.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> deleteCurrentCalmTool(String toolId) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await _calmToolsRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    ).doc(toolId).delete();
+  }
+
+  Future<void> seedCurrentDefaultCalmToolsIfEmpty() async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final ref = _calmToolsRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    );
+
+    final snapshot = await ref.limit(1).get();
+    if (snapshot.docs.isNotEmpty) return;
+
+    final batch = db.batch();
+
+    for (final tool in defaultCalmTools) {
+      final docRef = ref.doc(tool.id);
+      batch.set(docRef, {
+        ...tool.toMap(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    }
+
+    await batch.commit();
+  }
+
+  Stream<List<CalmRequest>> getCurrentCalmRequests({
+    CalmRequestStatus? status,
+  }) {
+    return _calmRequestsRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    ).snapshots().map((snapshot) {
+      final requests =
+          snapshot.docs
+              .map((doc) => CalmRequest.fromMap(doc.id, doc.data()))
+              .where((request) => status == null || request.status == status)
+              .toList();
+
+      requests.sort((first, second) {
+        final firstDate = first.createdAt;
+        final secondDate = second.createdAt;
+
+        if (firstDate != null && secondDate != null) {
+          return secondDate.compareTo(firstDate);
+        }
+
+        return first.childName.toLowerCase().compareTo(
+          second.childName.toLowerCase(),
+        );
+      });
+
+      return requests;
+    });
+  }
+
+  Stream<List<CalmRequest>> getCurrentActiveCalmRequests() {
+    return getCurrentCalmRequests(status: CalmRequestStatus.active);
+  }
+
+  Future<String> createCurrentCalmRequest({
+    required String childId,
+    required String childName,
+    required CalmTool tool,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final docRef =
+        _calmRequestsRef(
+          schoolId: session.requireSchoolId,
+          classroomId: session.requireClassroomId,
+        ).doc();
+
+    final request = CalmRequest(
+      id: docRef.id,
+      childId: childId,
+      childName: childName,
+      toolId: tool.id,
+      toolName: tool.name,
+      toolIconName: tool.iconName,
+      status: CalmRequestStatus.active,
+      resolvedByStaffId: '',
+      resolvedByStaffName: '',
+    );
+
+    await docRef.set({
+      ...request.toMap(),
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    return docRef.id;
+  }
+
+  Future<void> resolveCurrentCalmRequest({
+    required String requestId,
+    required String staffId,
+    required String staffName,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await _calmRequestsRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    ).doc(requestId).update({
+      'status': CalmRequestStatus.resolved.value,
+      'resolvedAt': FieldValue.serverTimestamp(),
+      'resolvedByStaffId': staffId,
+      'resolvedByStaffName': staffName,
+    });
   }
 }
