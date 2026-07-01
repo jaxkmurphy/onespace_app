@@ -3890,4 +3890,287 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get disable => 'Díchumasaigh';
+
+  @override
+  String get classroomHelper => 'Cúntóir Seomra Ranga';
+
+  @override
+  String get childClassroomHelperSubtitle =>
+      'Roghnaigh jab ranga agus taispeáin conas a chabhraigh tú.';
+
+  @override
+  String get staffClassroomHelperSubtitle =>
+      'Bainistigh jabanna cúntóra agus chuimhneacháin chabhracha le déanaí.';
+
+  @override
+  String get classroomHelperStaffTitle => 'Cúntóir Seomra Ranga';
+
+  @override
+  String get classroomHelperStaffIntro =>
+      'Roghnaigh na jabanna cúntóra atá ar fáil agus féach ar chuimhneacháin chabhracha le déanaí.';
+
+  @override
+  String classroomHelperChildTitle(Object name) {
+    return 'Conas is féidir leat cabhrú inniu, $name?';
+  }
+
+  @override
+  String get classroomHelperChildIntro =>
+      'Roghnaigh jab nuair a chabhraigh tú leis an rang.';
+
+  @override
+  String get classroomHelperStarterJobsPreview =>
+      'Tá na jabanna tosaithe seo réidh le húsáid. Sábháil iad sula ndéanann tú eagarthóireacht, díchumasú nó scriosadh.';
+
+  @override
+  String get classroomHelperSaveStarterJobs => 'Sábháil jabanna tosaithe';
+
+  @override
+  String get classroomHelperStarterJobsSaved => 'Sábháladh jabanna tosaithe.';
+
+  @override
+  String classroomHelperSaveFailed(Object error) {
+    return 'Níorbh fhéidir jabanna cúntóra a shábháil: $error';
+  }
+
+  @override
+  String get classroomHelperThankYouTitle => 'Go raibh maith agat as cabhrú!';
+
+  @override
+  String get classroomHelperThankYouMessage =>
+      'Feicfidh múinteoir gur chabhraigh tú leis an rang.';
+
+  @override
+  String get classroomHelperAddJob => 'Cuir jab leis';
+
+  @override
+  String get classroomHelperEditJob => 'Cuir jab in eagar';
+
+  @override
+  String get classroomHelperDescriptionLabel =>
+      'Cad ba chóir don chúntóir a dhéanamh?';
+
+  @override
+  String get classroomHelperChooseIcon => 'Roghnaigh deilbhín don jab';
+
+  @override
+  String get classroomHelperActiveJob => 'Ar fáil do pháistí';
+
+  @override
+  String get classroomHelperJobSaved => 'Sábháladh an jab cúntóra.';
+
+  @override
+  String get classroomHelperDeleteJob => 'Scrios jab cúntóra';
+
+  @override
+  String classroomHelperDeleteJobMessage(Object title) {
+    return 'Scrios “$title”?\n\nNí féidir é seo a chealú.';
+  }
+
+  @override
+  String get classroomHelperJobDeleted => 'Scriosadh an jab cúntóra.';
+
+  @override
+  String get classroomHelperNoJobs => 'Níl aon jab cúntóra ann fós';
+
+  @override
+  String get classroomHelperNoJobsSubtitle =>
+      'Is féidir leis an bhfoireann jabanna cúntóra a chur leis don seomra ranga.';
+
+  @override
+  String get classroomHelperIHelped => 'Chabhraigh mé';
+
+  @override
+  String get classroomHelperRecentHelp => 'Cabhair le déanaí';
+
+  @override
+  String get classroomHelperNoRecentHelp => 'Níor taifeadadh aon chabhair fós.';
+
+  @override
+  String classroomHelperCompletionLine(Object childName, Object jobTitle) {
+    return 'Chabhraigh $childName le $jobTitle';
+  }
+
+  @override
+  String get classroomHelperLoadFailed =>
+      'Níorbh fhéidir Cúntóir Seomra Ranga a lódáil.';
+
+  @override
+  String get classroomHelperJustNow => 'Anois díreach';
+
+  @override
+  String get classroomHelperMinuteAgo => '1 nóim ó shin';
+
+  @override
+  String classroomHelperMinutesAgo(Object count) {
+    return '$count nóim ó shin';
+  }
+
+  @override
+  String get classroomHelperHourAgo => '1 uair ó shin';
+
+  @override
+  String classroomHelperHoursAgo(Object count) {
+    return '$count uair ó shin';
+  }
+
+  @override
+  String get classroomHelperDayAgo => '1 lá ó shin';
+
+  @override
+  String classroomHelperDaysAgo(Object count) {
+    return '$count lá ó shin';
+  }
+
+  @override
+  String classroomHelperAssignJob(Object title) {
+    return 'Sann $title';
+  }
+
+  @override
+  String get classroomHelperAllChildren => 'Gach páiste';
+
+  @override
+  String get classroomHelperAssign => 'Sann';
+
+  @override
+  String get classroomHelperAssigned => 'Sannadh an jab cúntóra.';
+
+  @override
+  String get classroomHelperRequestSent => 'Seiceálfaidh múinteoir do jab.';
+
+  @override
+  String get classroomHelperConfirmed => 'Deimhníodh an jab cúntóra.';
+
+  @override
+  String get classroomHelperRequestCleared => 'Glanadh an t-iarratas.';
+
+  @override
+  String get classroomHelperAssignmentCleared => 'Glanadh an jab cúntóra.';
+
+  @override
+  String classroomHelperNoAssignedJobTitle(Object name) {
+    return 'Níl jab cúntóra agat anois, $name';
+  }
+
+  @override
+  String get classroomHelperNoAssignedJobMessage =>
+      'Is féidir le múinteoir jab cúntóra ranga a thabhairt duit nuair atá sé do sheal.';
+
+  @override
+  String get classroomHelperMyJobToday => 'Mo jab cúntóra inniu';
+
+  @override
+  String get classroomHelperWaitingForTeacher =>
+      'Ag fanacht le múinteoir é a sheiceáil';
+
+  @override
+  String get classroomHelperDidIFinish => 'Ar chríochnaigh mé mo jab?';
+
+  @override
+  String get classroomHelperPendingRequests => 'Le seiceáil';
+
+  @override
+  String get classroomHelperPendingRequestsSubtitle =>
+      'Páistí ag fiafraí an bhfuil a jab cúntóra críochnaithe.';
+
+  @override
+  String get classroomHelperNoPendingRequests =>
+      'Níl aon jab cúntóra ag fanacht le seiceáil.';
+
+  @override
+  String classroomHelperFinishRequestLine(Object childName, Object jobTitle) {
+    return 'Fiafraíonn $childName: ar chríochnaigh mé $jobTitle?';
+  }
+
+  @override
+  String get classroomHelperNotYet => 'Ní fós';
+
+  @override
+  String get classroomHelperConfirm => 'Deimhnigh';
+
+  @override
+  String get classroomHelperCurrentAssignments => 'Sannacháin reatha';
+
+  @override
+  String get classroomHelperOneJobPerChild =>
+      'Cruann jabanna do gach páiste. Taispeántar an jab neamhchríochnaithe is sine ar dtús.';
+
+  @override
+  String classroomHelperQueuedJobs(Object count) {
+    return '$count ag fanacht';
+  }
+
+  @override
+  String get classroomHelperNoJobAssigned => 'Níl jab sannta';
+
+  @override
+  String get classroomHelperClearJob => 'Glan jab';
+
+  @override
+  String get classroomHelperJobLibrary => 'Leabharlann jabanna';
+
+  @override
+  String get classroomHelperJobLibrarySubtitle =>
+      'Cruthaigh jabanna, ansin sann iad do pháiste amháin, roinnt páistí nó gach duine.';
+
+  @override
+  String get classroomHelperCompletedLog => 'Log jabanna críochnaithe';
+
+  @override
+  String get classroomHelperCompletedLogSubtitle =>
+      'Jabanna cúntóra deimhnithe a chríochnaigh páistí.';
+
+  @override
+  String get classroomHelperFilterByChild => 'Scag de réir páiste';
+
+  @override
+  String classroomHelperConfirmedBy(Object staffName) {
+    return 'Deimhnithe ag $staffName';
+  }
+
+  @override
+  String get staffAlertsLoadFailed =>
+      'Níorbh fhéidir foláirimh an tseomra ranga a lódáil.';
+
+  @override
+  String get staffAlertsNeedsAttention => 'Teastaíonn aird';
+
+  @override
+  String staffAlertsActiveCount(num count) {
+    return '$count foláireamh gníomhach';
+  }
+
+  @override
+  String staffAlertsMoreCount(num count) {
+    return '+$count foláireamh eile';
+  }
+
+  @override
+  String staffAlertsBodyCheckSubmitted(Object childName) {
+    return 'Sheol $childName seiceáil coirp';
+  }
+
+  @override
+  String get staffAlertsUnknownChild => 'Páiste';
+
+  @override
+  String staffAlertsCalmRequestResolved(Object childName) {
+    return 'Réitíodh iarratas suaimhnis $childName.';
+  }
+
+  @override
+  String staffAlertsCalmResolveFailed(Object error) {
+    return 'Níorbh fhéidir an t-iarratas suaimhnis a réiteach: $error';
+  }
+
+  @override
+  String staffAlertsCalmNeedsSupport(Object childName) {
+    return 'Teastaíonn tacaíocht suaimhnis ó $childName';
+  }
+
+  @override
+  String staffAlertsCalmSelected(Object toolName, Object time) {
+    return 'Roghnaithe: $toolName • $time';
+  }
 }

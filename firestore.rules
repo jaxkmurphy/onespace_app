@@ -221,6 +221,28 @@ service cloud.firestore {
           allow delete: if isSchoolAdmin(schoolId);
         }
 
+        match /helper_jobs/{jobId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+        }
+
+        match /helper_completions/{completionId} {
+          allow read, create: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+          allow update, delete: if isSchoolAdmin(schoolId);
+        }
+
+        match /helper_assignments/{assignmentId} {
+          allow read, write: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+        }
+
+        match /helper_completion_requests/{requestId} {
+          allow read, create, update: if isSchoolAdmin(schoolId)
+            || isThisClassroom(schoolId, classroomId);
+          allow delete: if isSchoolAdmin(schoolId);
+        }
+
         match /circle_time_days/{dateKey} {
           allow read, write: if isSchoolAdmin(schoolId)
             || isThisClassroom(schoolId, classroomId);

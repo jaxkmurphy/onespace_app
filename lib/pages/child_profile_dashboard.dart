@@ -330,6 +330,23 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             );
           },
         ),
+      if (_isFeatureEnabled(ClassroomFeature.classroomHelper))
+        _DashboardFeature(
+          icon: Icons.volunteer_activism_rounded,
+          title: l10n.classroomHelper,
+          subtitle: l10n.childClassroomHelperSubtitle,
+          color: const Color(0xFFFFB300),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/classroom-helper',
+              arguments: {
+                'firestoreService': widget.firestoreService,
+                'child': profile,
+              },
+            );
+          },
+        ),
     ];
   }
 

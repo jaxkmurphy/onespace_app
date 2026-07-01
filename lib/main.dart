@@ -50,6 +50,7 @@ import 'pages/emotion_detective_page.dart';
 import 'pages/emotion_detective_management_page.dart';
 import 'pages/calm_plan_page.dart';
 import 'pages/calm_plan_management_page.dart';
+import 'pages/classroom_helper_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -462,6 +463,40 @@ class _MyAppState extends State<MyApp> {
           if (firestoreService != null && child != null) {
             return _page(
               CalmPlanPage(firestoreService: firestoreService, child: child),
+            );
+          }
+        }
+        return _errorPage((l10n) => l10n.missingChildProfile);
+
+      case '/classroom-helper-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              ClassroomHelperPage(
+                firestoreService: firestoreService,
+                staffProfile: staffProfile,
+              ),
+            );
+          }
+        }
+        return _errorPage((l10n) => l10n.missingStaffProfile);
+
+      case '/classroom-helper':
+        if (args is Map<String, dynamic>) {
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+          final child = args['child'] as ChildProfile?;
+
+          if (firestoreService != null && child != null) {
+            return _page(
+              ClassroomHelperPage(
+                firestoreService: firestoreService,
+                child: child,
+              ),
             );
           }
         }

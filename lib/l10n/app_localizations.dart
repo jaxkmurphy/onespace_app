@@ -6649,6 +6649,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disable'**
   String get disable;
+
+  /// Feature title for classroom helper jobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom Helper'**
+  String get classroomHelper;
+
+  /// Child dashboard subtitle for classroom helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a classroom job and show how you helped.'**
+  String get childClassroomHelperSubtitle;
+
+  /// Staff dashboard subtitle for classroom helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage classroom helper jobs and recent helping moments.'**
+  String get staffClassroomHelperSubtitle;
+
+  /// Staff page title for classroom helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom Helper'**
+  String get classroomHelperStaffTitle;
+
+  /// Intro text for staff classroom helper page.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which helper jobs are available and review recent helping moments.'**
+  String get classroomHelperStaffIntro;
+
+  /// Child page title for classroom helper.
+  ///
+  /// In en, this message translates to:
+  /// **'How can you help today, {name}?'**
+  String classroomHelperChildTitle(Object name);
+
+  /// Intro text for child classroom helper page.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a job when you have helped the class.'**
+  String get classroomHelperChildIntro;
+
+  /// Message explaining starter classroom helper jobs.
+  ///
+  /// In en, this message translates to:
+  /// **'These starter jobs are ready to use. Save them before editing, disabling or deleting.'**
+  String get classroomHelperStarterJobsPreview;
+
+  /// Button text for saving starter helper jobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Save starter jobs'**
+  String get classroomHelperSaveStarterJobs;
+
+  /// Confirmation after starter helper jobs are saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter helper jobs saved.'**
+  String get classroomHelperStarterJobsSaved;
+
+  /// Error message when classroom helper save fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save helper jobs: {error}'**
+  String classroomHelperSaveFailed(Object error);
+
+  /// Dialog title after a child records helping.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for helping!'**
+  String get classroomHelperThankYouTitle;
+
+  /// Dialog message after a child records helping.
+  ///
+  /// In en, this message translates to:
+  /// **'A teacher can see that you helped the class.'**
+  String get classroomHelperThankYouMessage;
+
+  /// Button and dialog title for adding helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Add job'**
+  String get classroomHelperAddJob;
+
+  /// Dialog title for editing helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit job'**
+  String get classroomHelperEditJob;
+
+  /// Field label for helper job description.
+  ///
+  /// In en, this message translates to:
+  /// **'What should the helper do?'**
+  String get classroomHelperDescriptionLabel;
+
+  /// Button and dialog title for choosing a helper job icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose job icon'**
+  String get classroomHelperChooseIcon;
+
+  /// Switch label for helper job availability.
+  ///
+  /// In en, this message translates to:
+  /// **'Available to children'**
+  String get classroomHelperActiveJob;
+
+  /// Confirmation after helper job is saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper job saved.'**
+  String get classroomHelperJobSaved;
+
+  /// Dialog title for deleting helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete helper job'**
+  String get classroomHelperDeleteJob;
+
+  /// Dialog message for deleting helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{title}”?\n\nThis cannot be undone.'**
+  String classroomHelperDeleteJobMessage(Object title);
+
+  /// Confirmation after helper job is deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper job deleted.'**
+  String get classroomHelperJobDeleted;
+
+  /// Empty state title for classroom helper jobs.
+  ///
+  /// In en, this message translates to:
+  /// **'No helper jobs yet'**
+  String get classroomHelperNoJobs;
+
+  /// Empty state subtitle for classroom helper jobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff can add helper jobs for the classroom.'**
+  String get classroomHelperNoJobsSubtitle;
+
+  /// Child button for recording helper job completion.
+  ///
+  /// In en, this message translates to:
+  /// **'I helped'**
+  String get classroomHelperIHelped;
+
+  /// Staff section title for recent helper completions.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent helping moments'**
+  String get classroomHelperRecentHelp;
+
+  /// Empty state for helper completions.
+  ///
+  /// In en, this message translates to:
+  /// **'No helping moments recorded yet.'**
+  String get classroomHelperNoRecentHelp;
+
+  /// Recent helper completion line.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} helped with {jobTitle}'**
+  String classroomHelperCompletionLine(Object childName, Object jobTitle);
+
+  /// Error title when helper jobs fail to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load classroom helper.'**
+  String get classroomHelperLoadFailed;
+
+  /// Relative time label for classroom helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get classroomHelperJustNow;
+
+  /// Relative time label for one minute ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 min ago'**
+  String get classroomHelperMinuteAgo;
+
+  /// Relative time label for minutes ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String classroomHelperMinutesAgo(Object count);
+
+  /// Relative time label for one hour ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour ago'**
+  String get classroomHelperHourAgo;
+
+  /// Relative time label for hours ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hours ago'**
+  String classroomHelperHoursAgo(Object count);
+
+  /// Relative time label for one day ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day ago'**
+  String get classroomHelperDayAgo;
+
+  /// Relative time label for days ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String classroomHelperDaysAgo(Object count);
+
+  /// Dialog title for assigning a helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign {title}'**
+  String classroomHelperAssignJob(Object title);
+
+  /// Option for selecting all children.
+  ///
+  /// In en, this message translates to:
+  /// **'All children'**
+  String get classroomHelperAllChildren;
+
+  /// Button text for assigning a helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign'**
+  String get classroomHelperAssign;
+
+  /// Confirmation after assigning a helper job.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper job assigned.'**
+  String get classroomHelperAssigned;
+
+  /// Message after child asks if job is finished.
+  ///
+  /// In en, this message translates to:
+  /// **'A teacher will check your job.'**
+  String get classroomHelperRequestSent;
+
+  /// Confirmation after staff confirms helper request.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper job confirmed.'**
+  String get classroomHelperConfirmed;
+
+  /// Confirmation after staff clears helper request.
+  ///
+  /// In en, this message translates to:
+  /// **'Request cleared.'**
+  String get classroomHelperRequestCleared;
+
+  /// Confirmation after clearing a child helper assignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper job cleared.'**
+  String get classroomHelperAssignmentCleared;
+
+  /// Child empty state title when no helper job is assigned.
+  ///
+  /// In en, this message translates to:
+  /// **'No helper job right now, {name}'**
+  String classroomHelperNoAssignedJobTitle(Object name);
+
+  /// Child empty state message when no helper job is assigned.
+  ///
+  /// In en, this message translates to:
+  /// **'A teacher can give you a classroom helper job when it is your turn.'**
+  String get classroomHelperNoAssignedJobMessage;
+
+  /// Child assigned helper job heading.
+  ///
+  /// In en, this message translates to:
+  /// **'My helper job today'**
+  String get classroomHelperMyJobToday;
+
+  /// Child waiting state after asking staff to confirm a job.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for a teacher to check'**
+  String get classroomHelperWaitingForTeacher;
+
+  /// Child button asking staff to confirm job completion.
+  ///
+  /// In en, this message translates to:
+  /// **'Did I finish my job?'**
+  String get classroomHelperDidIFinish;
+
+  /// Staff panel title for pending helper completion requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs checking'**
+  String get classroomHelperPendingRequests;
+
+  /// Staff panel subtitle for pending helper completion requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Children asking if their helper job is finished.'**
+  String get classroomHelperPendingRequestsSubtitle;
+
+  /// Empty state for pending helper completion requests.
+  ///
+  /// In en, this message translates to:
+  /// **'No helper jobs waiting to be checked.'**
+  String get classroomHelperNoPendingRequests;
+
+  /// Pending helper request line.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} asks: did I finish {jobTitle}?'**
+  String classroomHelperFinishRequestLine(Object childName, Object jobTitle);
+
+  /// Button for clearing a helper request without confirming.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get classroomHelperNotYet;
+
+  /// Button for confirming helper request completion.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get classroomHelperConfirm;
+
+  /// Staff panel title for current helper assignments.
+  ///
+  /// In en, this message translates to:
+  /// **'Current assignments'**
+  String get classroomHelperCurrentAssignments;
+
+  /// Staff panel subtitle for helper assignments.
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs stack for each child. The oldest unfinished job shows first.'**
+  String get classroomHelperOneJobPerChild;
+
+  /// Short label showing how many helper jobs are queued behind the current one.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} waiting'**
+  String classroomHelperQueuedJobs(Object count);
+
+  /// Assignment empty label.
+  ///
+  /// In en, this message translates to:
+  /// **'No job assigned'**
+  String get classroomHelperNoJobAssigned;
+
+  /// Button for clearing a child helper assignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear job'**
+  String get classroomHelperClearJob;
+
+  /// Staff panel title for helper jobs library.
+  ///
+  /// In en, this message translates to:
+  /// **'Job library'**
+  String get classroomHelperJobLibrary;
+
+  /// Staff panel subtitle for helper jobs library.
+  ///
+  /// In en, this message translates to:
+  /// **'Create jobs, then assign them to one child, multiple children or everyone.'**
+  String get classroomHelperJobLibrarySubtitle;
+
+  /// Staff panel title for confirmed helper completions.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed jobs log'**
+  String get classroomHelperCompletedLog;
+
+  /// Staff panel subtitle for confirmed helper completions.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed helper jobs completed by children.'**
+  String get classroomHelperCompletedLogSubtitle;
+
+  /// Dropdown label for filtering helper completion log by child.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by child'**
+  String get classroomHelperFilterByChild;
+
+  /// Helper completion log confirmed by label.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed by {staffName}'**
+  String classroomHelperConfirmedBy(Object staffName);
+
+  /// Error message for staff dashboard alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load classroom alerts.'**
+  String get staffAlertsLoadFailed;
+
+  /// Staff dashboard alerts panel title.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get staffAlertsNeedsAttention;
+
+  /// Staff dashboard active alert count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active {count, plural, one {alert} other {alerts}}'**
+  String staffAlertsActiveCount(num count);
+
+  /// Staff dashboard hidden alert count.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more {count, plural, one {alert} other {alerts}}'**
+  String staffAlertsMoreCount(num count);
+
+  /// Staff dashboard body check alert title.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} submitted a body check'**
+  String staffAlertsBodyCheckSubmitted(Object childName);
+
+  /// Fallback child name for staff dashboard alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'A child'**
+  String get staffAlertsUnknownChild;
+
+  /// Confirmation after resolving calm request.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} calm request resolved.'**
+  String staffAlertsCalmRequestResolved(Object childName);
+
+  /// Error when resolving calm request fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not resolve calm request: {error}'**
+  String staffAlertsCalmResolveFailed(Object error);
+
+  /// Staff dashboard calm request alert title.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} needs calm support'**
+  String staffAlertsCalmNeedsSupport(Object childName);
+
+  /// Staff dashboard calm request detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: {toolName} • {time}'**
+  String staffAlertsCalmSelected(Object toolName, Object time);
 }
 
 class _AppLocalizationsDelegate

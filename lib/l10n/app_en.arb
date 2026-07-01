@@ -4996,5 +4996,373 @@
 "disable": "Disable",
 "@disable": {
   "description": "Button or tooltip for disabling an item."
+},
+"classroomHelper": "Classroom Helper",
+"@classroomHelper": {
+  "description": "Feature title for classroom helper jobs."
+},
+"childClassroomHelperSubtitle": "Choose a classroom job and show how you helped.",
+"@childClassroomHelperSubtitle": {
+  "description": "Child dashboard subtitle for classroom helper."
+},
+"staffClassroomHelperSubtitle": "Manage classroom helper jobs and recent helping moments.",
+"@staffClassroomHelperSubtitle": {
+  "description": "Staff dashboard subtitle for classroom helper."
+},
+"classroomHelperStaffTitle": "Classroom Helper",
+"@classroomHelperStaffTitle": {
+  "description": "Staff page title for classroom helper."
+},
+"classroomHelperStaffIntro": "Choose which helper jobs are available and review recent helping moments.",
+"@classroomHelperStaffIntro": {
+  "description": "Intro text for staff classroom helper page."
+},
+"classroomHelperChildTitle": "How can you help today, {name}?",
+"@classroomHelperChildTitle": {
+  "description": "Child page title for classroom helper.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"classroomHelperChildIntro": "Pick a job when you have helped the class.",
+"@classroomHelperChildIntro": {
+  "description": "Intro text for child classroom helper page."
+},
+"classroomHelperStarterJobsPreview": "These starter jobs are ready to use. Save them before editing, disabling or deleting.",
+"@classroomHelperStarterJobsPreview": {
+  "description": "Message explaining starter classroom helper jobs."
+},
+"classroomHelperSaveStarterJobs": "Save starter jobs",
+"@classroomHelperSaveStarterJobs": {
+  "description": "Button text for saving starter helper jobs."
+},
+"classroomHelperStarterJobsSaved": "Starter helper jobs saved.",
+"@classroomHelperStarterJobsSaved": {
+  "description": "Confirmation after starter helper jobs are saved."
+},
+"classroomHelperSaveFailed": "Could not save helper jobs: {error}",
+"@classroomHelperSaveFailed": {
+  "description": "Error message when classroom helper save fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"classroomHelperThankYouTitle": "Thank you for helping!",
+"@classroomHelperThankYouTitle": {
+  "description": "Dialog title after a child records helping."
+},
+"classroomHelperThankYouMessage": "A teacher can see that you helped the class.",
+"@classroomHelperThankYouMessage": {
+  "description": "Dialog message after a child records helping."
+},
+"classroomHelperAddJob": "Add job",
+"@classroomHelperAddJob": {
+  "description": "Button and dialog title for adding helper job."
+},
+"classroomHelperEditJob": "Edit job",
+"@classroomHelperEditJob": {
+  "description": "Dialog title for editing helper job."
+},
+"classroomHelperDescriptionLabel": "What should the helper do?",
+"@classroomHelperDescriptionLabel": {
+  "description": "Field label for helper job description."
+},
+"classroomHelperChooseIcon": "Choose job icon",
+"@classroomHelperChooseIcon": {
+  "description": "Button and dialog title for choosing a helper job icon."
+},
+"classroomHelperActiveJob": "Available to children",
+"@classroomHelperActiveJob": {
+  "description": "Switch label for helper job availability."
+},
+"classroomHelperJobSaved": "Helper job saved.",
+"@classroomHelperJobSaved": {
+  "description": "Confirmation after helper job is saved."
+},
+"classroomHelperDeleteJob": "Delete helper job",
+"@classroomHelperDeleteJob": {
+  "description": "Dialog title for deleting helper job."
+},
+"classroomHelperDeleteJobMessage": "Delete “{title}”?\n\nThis cannot be undone.",
+"@classroomHelperDeleteJobMessage": {
+  "description": "Dialog message for deleting helper job.",
+  "placeholders": {
+    "title": {}
+  }
+},
+"classroomHelperJobDeleted": "Helper job deleted.",
+"@classroomHelperJobDeleted": {
+  "description": "Confirmation after helper job is deleted."
+},
+"classroomHelperNoJobs": "No helper jobs yet",
+"@classroomHelperNoJobs": {
+  "description": "Empty state title for classroom helper jobs."
+},
+"classroomHelperNoJobsSubtitle": "Staff can add helper jobs for the classroom.",
+"@classroomHelperNoJobsSubtitle": {
+  "description": "Empty state subtitle for classroom helper jobs."
+},
+"classroomHelperIHelped": "I helped",
+"@classroomHelperIHelped": {
+  "description": "Child button for recording helper job completion."
+},
+"classroomHelperRecentHelp": "Recent helping moments",
+"@classroomHelperRecentHelp": {
+  "description": "Staff section title for recent helper completions."
+},
+"classroomHelperNoRecentHelp": "No helping moments recorded yet.",
+"@classroomHelperNoRecentHelp": {
+  "description": "Empty state for helper completions."
+},
+"classroomHelperCompletionLine": "{childName} helped with {jobTitle}",
+"@classroomHelperCompletionLine": {
+  "description": "Recent helper completion line.",
+  "placeholders": {
+    "childName": {},
+    "jobTitle": {}
+  }
+},
+"classroomHelperLoadFailed": "Could not load classroom helper.",
+"@classroomHelperLoadFailed": {
+  "description": "Error title when helper jobs fail to load."
+},
+"classroomHelperJustNow": "Just now",
+"@classroomHelperJustNow": {
+  "description": "Relative time label for classroom helper."
+},
+"classroomHelperMinuteAgo": "1 min ago",
+"@classroomHelperMinuteAgo": {
+  "description": "Relative time label for one minute ago."
+},
+"classroomHelperMinutesAgo": "{count} min ago",
+"@classroomHelperMinutesAgo": {
+  "description": "Relative time label for minutes ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"classroomHelperHourAgo": "1 hour ago",
+"@classroomHelperHourAgo": {
+  "description": "Relative time label for one hour ago."
+},
+"classroomHelperHoursAgo": "{count} hours ago",
+"@classroomHelperHoursAgo": {
+  "description": "Relative time label for hours ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"classroomHelperDayAgo": "1 day ago",
+"@classroomHelperDayAgo": {
+  "description": "Relative time label for one day ago."
+},
+"classroomHelperDaysAgo": "{count} days ago",
+"@classroomHelperDaysAgo": {
+  "description": "Relative time label for days ago.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"classroomHelperAssignJob": "Assign {title}",
+"@classroomHelperAssignJob": {
+  "description": "Dialog title for assigning a helper job.",
+  "placeholders": {
+    "title": {}
+  }
+},
+"classroomHelperAllChildren": "All children",
+"@classroomHelperAllChildren": {
+  "description": "Option for selecting all children."
+},
+"classroomHelperAssign": "Assign",
+"@classroomHelperAssign": {
+  "description": "Button text for assigning a helper job."
+},
+"classroomHelperAssigned": "Helper job assigned.",
+"@classroomHelperAssigned": {
+  "description": "Confirmation after assigning a helper job."
+},
+"classroomHelperRequestSent": "A teacher will check your job.",
+"@classroomHelperRequestSent": {
+  "description": "Message after child asks if job is finished."
+},
+"classroomHelperConfirmed": "Helper job confirmed.",
+"@classroomHelperConfirmed": {
+  "description": "Confirmation after staff confirms helper request."
+},
+"classroomHelperRequestCleared": "Request cleared.",
+"@classroomHelperRequestCleared": {
+  "description": "Confirmation after staff clears helper request."
+},
+"classroomHelperAssignmentCleared": "Helper job cleared.",
+"@classroomHelperAssignmentCleared": {
+  "description": "Confirmation after clearing a child helper assignment."
+},
+"classroomHelperNoAssignedJobTitle": "No helper job right now, {name}",
+"@classroomHelperNoAssignedJobTitle": {
+  "description": "Child empty state title when no helper job is assigned.",
+  "placeholders": {
+    "name": {}
+  }
+},
+"classroomHelperNoAssignedJobMessage": "A teacher can give you a classroom helper job when it is your turn.",
+"@classroomHelperNoAssignedJobMessage": {
+  "description": "Child empty state message when no helper job is assigned."
+},
+"classroomHelperMyJobToday": "My helper job today",
+"@classroomHelperMyJobToday": {
+  "description": "Child assigned helper job heading."
+},
+"classroomHelperWaitingForTeacher": "Waiting for a teacher to check",
+"@classroomHelperWaitingForTeacher": {
+  "description": "Child waiting state after asking staff to confirm a job."
+},
+"classroomHelperDidIFinish": "Did I finish my job?",
+"@classroomHelperDidIFinish": {
+  "description": "Child button asking staff to confirm job completion."
+},
+"classroomHelperPendingRequests": "Needs checking",
+"@classroomHelperPendingRequests": {
+  "description": "Staff panel title for pending helper completion requests."
+},
+"classroomHelperPendingRequestsSubtitle": "Children asking if their helper job is finished.",
+"@classroomHelperPendingRequestsSubtitle": {
+  "description": "Staff panel subtitle for pending helper completion requests."
+},
+"classroomHelperNoPendingRequests": "No helper jobs waiting to be checked.",
+"@classroomHelperNoPendingRequests": {
+  "description": "Empty state for pending helper completion requests."
+},
+"classroomHelperFinishRequestLine": "{childName} asks: did I finish {jobTitle}?",
+"@classroomHelperFinishRequestLine": {
+  "description": "Pending helper request line.",
+  "placeholders": {
+    "childName": {},
+    "jobTitle": {}
+  }
+},
+"classroomHelperNotYet": "Not yet",
+"@classroomHelperNotYet": {
+  "description": "Button for clearing a helper request without confirming."
+},
+"classroomHelperConfirm": "Confirm",
+"@classroomHelperConfirm": {
+  "description": "Button for confirming helper request completion."
+},
+"classroomHelperCurrentAssignments": "Current assignments",
+"@classroomHelperCurrentAssignments": {
+  "description": "Staff panel title for current helper assignments."
+},
+"classroomHelperOneJobPerChild": "Jobs stack for each child. The oldest unfinished job shows first.",
+"@classroomHelperOneJobPerChild": {
+  "description": "Staff panel subtitle for helper assignments."
+},
+"classroomHelperQueuedJobs": "{count} waiting",
+"@classroomHelperQueuedJobs": {
+  "description": "Short label showing how many helper jobs are queued behind the current one.",
+  "placeholders": {
+    "count": {}
+  }
+},
+"classroomHelperNoJobAssigned": "No job assigned",
+"@classroomHelperNoJobAssigned": {
+  "description": "Assignment empty label."
+},
+"classroomHelperClearJob": "Clear job",
+"@classroomHelperClearJob": {
+  "description": "Button for clearing a child helper assignment."
+},
+"classroomHelperJobLibrary": "Job library",
+"@classroomHelperJobLibrary": {
+  "description": "Staff panel title for helper jobs library."
+},
+"classroomHelperJobLibrarySubtitle": "Create jobs, then assign them to one child, multiple children or everyone.",
+"@classroomHelperJobLibrarySubtitle": {
+  "description": "Staff panel subtitle for helper jobs library."
+},
+"classroomHelperCompletedLog": "Completed jobs log",
+"@classroomHelperCompletedLog": {
+  "description": "Staff panel title for confirmed helper completions."
+},
+"classroomHelperCompletedLogSubtitle": "Confirmed helper jobs completed by children.",
+"@classroomHelperCompletedLogSubtitle": {
+  "description": "Staff panel subtitle for confirmed helper completions."
+},
+"classroomHelperFilterByChild": "Filter by child",
+"@classroomHelperFilterByChild": {
+  "description": "Dropdown label for filtering helper completion log by child."
+},
+"classroomHelperConfirmedBy": "Confirmed by {staffName}",
+"@classroomHelperConfirmedBy": {
+  "description": "Helper completion log confirmed by label.",
+  "placeholders": {
+    "staffName": {}
+  }
+},
+"staffAlertsLoadFailed": "Could not load classroom alerts.",
+"@staffAlertsLoadFailed": {
+  "description": "Error message for staff dashboard alerts."
+},
+"staffAlertsNeedsAttention": "Needs attention",
+"@staffAlertsNeedsAttention": {
+  "description": "Staff dashboard alerts panel title."
+},
+"staffAlertsActiveCount": "{count} active {count, plural, one {alert} other {alerts}}",
+"@staffAlertsActiveCount": {
+  "description": "Staff dashboard active alert count.",
+  "placeholders": {
+    "count": {
+      "type": "num"
+    }
+  }
+},
+"staffAlertsMoreCount": "+{count} more {count, plural, one {alert} other {alerts}}",
+"@staffAlertsMoreCount": {
+  "description": "Staff dashboard hidden alert count.",
+  "placeholders": {
+    "count": {
+      "type": "num"
+    }
+  }
+},
+"staffAlertsBodyCheckSubmitted": "{childName} submitted a body check",
+"@staffAlertsBodyCheckSubmitted": {
+  "description": "Staff dashboard body check alert title.",
+  "placeholders": {
+    "childName": {}
+  }
+},
+"staffAlertsUnknownChild": "A child",
+"@staffAlertsUnknownChild": {
+  "description": "Fallback child name for staff dashboard alerts."
+},
+"staffAlertsCalmRequestResolved": "{childName} calm request resolved.",
+"@staffAlertsCalmRequestResolved": {
+  "description": "Confirmation after resolving calm request.",
+  "placeholders": {
+    "childName": {}
+  }
+},
+"staffAlertsCalmResolveFailed": "Could not resolve calm request: {error}",
+"@staffAlertsCalmResolveFailed": {
+  "description": "Error when resolving calm request fails.",
+  "placeholders": {
+    "error": {}
+  }
+},
+"staffAlertsCalmNeedsSupport": "{childName} needs calm support",
+"@staffAlertsCalmNeedsSupport": {
+  "description": "Staff dashboard calm request alert title.",
+  "placeholders": {
+    "childName": {}
+  }
+},
+"staffAlertsCalmSelected": "Selected: {toolName} • {time}",
+"@staffAlertsCalmSelected": {
+  "description": "Staff dashboard calm request detail.",
+  "placeholders": {
+    "toolName": {},
+    "time": {}
+  }
 }
 }

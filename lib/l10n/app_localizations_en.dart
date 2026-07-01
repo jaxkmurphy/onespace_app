@@ -3813,4 +3813,296 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get disable => 'Disable';
+
+  @override
+  String get classroomHelper => 'Classroom Helper';
+
+  @override
+  String get childClassroomHelperSubtitle =>
+      'Choose a classroom job and show how you helped.';
+
+  @override
+  String get staffClassroomHelperSubtitle =>
+      'Manage classroom helper jobs and recent helping moments.';
+
+  @override
+  String get classroomHelperStaffTitle => 'Classroom Helper';
+
+  @override
+  String get classroomHelperStaffIntro =>
+      'Choose which helper jobs are available and review recent helping moments.';
+
+  @override
+  String classroomHelperChildTitle(Object name) {
+    return 'How can you help today, $name?';
+  }
+
+  @override
+  String get classroomHelperChildIntro =>
+      'Pick a job when you have helped the class.';
+
+  @override
+  String get classroomHelperStarterJobsPreview =>
+      'These starter jobs are ready to use. Save them before editing, disabling or deleting.';
+
+  @override
+  String get classroomHelperSaveStarterJobs => 'Save starter jobs';
+
+  @override
+  String get classroomHelperStarterJobsSaved => 'Starter helper jobs saved.';
+
+  @override
+  String classroomHelperSaveFailed(Object error) {
+    return 'Could not save helper jobs: $error';
+  }
+
+  @override
+  String get classroomHelperThankYouTitle => 'Thank you for helping!';
+
+  @override
+  String get classroomHelperThankYouMessage =>
+      'A teacher can see that you helped the class.';
+
+  @override
+  String get classroomHelperAddJob => 'Add job';
+
+  @override
+  String get classroomHelperEditJob => 'Edit job';
+
+  @override
+  String get classroomHelperDescriptionLabel => 'What should the helper do?';
+
+  @override
+  String get classroomHelperChooseIcon => 'Choose job icon';
+
+  @override
+  String get classroomHelperActiveJob => 'Available to children';
+
+  @override
+  String get classroomHelperJobSaved => 'Helper job saved.';
+
+  @override
+  String get classroomHelperDeleteJob => 'Delete helper job';
+
+  @override
+  String classroomHelperDeleteJobMessage(Object title) {
+    return 'Delete “$title”?\n\nThis cannot be undone.';
+  }
+
+  @override
+  String get classroomHelperJobDeleted => 'Helper job deleted.';
+
+  @override
+  String get classroomHelperNoJobs => 'No helper jobs yet';
+
+  @override
+  String get classroomHelperNoJobsSubtitle =>
+      'Staff can add helper jobs for the classroom.';
+
+  @override
+  String get classroomHelperIHelped => 'I helped';
+
+  @override
+  String get classroomHelperRecentHelp => 'Recent helping moments';
+
+  @override
+  String get classroomHelperNoRecentHelp => 'No helping moments recorded yet.';
+
+  @override
+  String classroomHelperCompletionLine(Object childName, Object jobTitle) {
+    return '$childName helped with $jobTitle';
+  }
+
+  @override
+  String get classroomHelperLoadFailed => 'Could not load classroom helper.';
+
+  @override
+  String get classroomHelperJustNow => 'Just now';
+
+  @override
+  String get classroomHelperMinuteAgo => '1 min ago';
+
+  @override
+  String classroomHelperMinutesAgo(Object count) {
+    return '$count min ago';
+  }
+
+  @override
+  String get classroomHelperHourAgo => '1 hour ago';
+
+  @override
+  String classroomHelperHoursAgo(Object count) {
+    return '$count hours ago';
+  }
+
+  @override
+  String get classroomHelperDayAgo => '1 day ago';
+
+  @override
+  String classroomHelperDaysAgo(Object count) {
+    return '$count days ago';
+  }
+
+  @override
+  String classroomHelperAssignJob(Object title) {
+    return 'Assign $title';
+  }
+
+  @override
+  String get classroomHelperAllChildren => 'All children';
+
+  @override
+  String get classroomHelperAssign => 'Assign';
+
+  @override
+  String get classroomHelperAssigned => 'Helper job assigned.';
+
+  @override
+  String get classroomHelperRequestSent => 'A teacher will check your job.';
+
+  @override
+  String get classroomHelperConfirmed => 'Helper job confirmed.';
+
+  @override
+  String get classroomHelperRequestCleared => 'Request cleared.';
+
+  @override
+  String get classroomHelperAssignmentCleared => 'Helper job cleared.';
+
+  @override
+  String classroomHelperNoAssignedJobTitle(Object name) {
+    return 'No helper job right now, $name';
+  }
+
+  @override
+  String get classroomHelperNoAssignedJobMessage =>
+      'A teacher can give you a classroom helper job when it is your turn.';
+
+  @override
+  String get classroomHelperMyJobToday => 'My helper job today';
+
+  @override
+  String get classroomHelperWaitingForTeacher =>
+      'Waiting for a teacher to check';
+
+  @override
+  String get classroomHelperDidIFinish => 'Did I finish my job?';
+
+  @override
+  String get classroomHelperPendingRequests => 'Needs checking';
+
+  @override
+  String get classroomHelperPendingRequestsSubtitle =>
+      'Children asking if their helper job is finished.';
+
+  @override
+  String get classroomHelperNoPendingRequests =>
+      'No helper jobs waiting to be checked.';
+
+  @override
+  String classroomHelperFinishRequestLine(Object childName, Object jobTitle) {
+    return '$childName asks: did I finish $jobTitle?';
+  }
+
+  @override
+  String get classroomHelperNotYet => 'Not yet';
+
+  @override
+  String get classroomHelperConfirm => 'Confirm';
+
+  @override
+  String get classroomHelperCurrentAssignments => 'Current assignments';
+
+  @override
+  String get classroomHelperOneJobPerChild =>
+      'Jobs stack for each child. The oldest unfinished job shows first.';
+
+  @override
+  String classroomHelperQueuedJobs(Object count) {
+    return '$count waiting';
+  }
+
+  @override
+  String get classroomHelperNoJobAssigned => 'No job assigned';
+
+  @override
+  String get classroomHelperClearJob => 'Clear job';
+
+  @override
+  String get classroomHelperJobLibrary => 'Job library';
+
+  @override
+  String get classroomHelperJobLibrarySubtitle =>
+      'Create jobs, then assign them to one child, multiple children or everyone.';
+
+  @override
+  String get classroomHelperCompletedLog => 'Completed jobs log';
+
+  @override
+  String get classroomHelperCompletedLogSubtitle =>
+      'Confirmed helper jobs completed by children.';
+
+  @override
+  String get classroomHelperFilterByChild => 'Filter by child';
+
+  @override
+  String classroomHelperConfirmedBy(Object staffName) {
+    return 'Confirmed by $staffName';
+  }
+
+  @override
+  String get staffAlertsLoadFailed => 'Could not load classroom alerts.';
+
+  @override
+  String get staffAlertsNeedsAttention => 'Needs attention';
+
+  @override
+  String staffAlertsActiveCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alerts',
+      one: 'alert',
+    );
+    return '$count active $_temp0';
+  }
+
+  @override
+  String staffAlertsMoreCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alerts',
+      one: 'alert',
+    );
+    return '+$count more $_temp0';
+  }
+
+  @override
+  String staffAlertsBodyCheckSubmitted(Object childName) {
+    return '$childName submitted a body check';
+  }
+
+  @override
+  String get staffAlertsUnknownChild => 'A child';
+
+  @override
+  String staffAlertsCalmRequestResolved(Object childName) {
+    return '$childName calm request resolved.';
+  }
+
+  @override
+  String staffAlertsCalmResolveFailed(Object error) {
+    return 'Could not resolve calm request: $error';
+  }
+
+  @override
+  String staffAlertsCalmNeedsSupport(Object childName) {
+    return '$childName needs calm support';
+  }
+
+  @override
+  String staffAlertsCalmSelected(Object toolName, Object time) {
+    return 'Selected: $toolName • $time';
+  }
 }

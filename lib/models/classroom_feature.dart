@@ -18,6 +18,7 @@ enum ClassroomFeature {
   iconReset('iconReset'),
   calmingSounds('calmingSounds'),
   calmPlan('calmPlan'),
+  classroomHelper('classroomHelper'),
   voiceLines('voiceLines'),
   backgroundPicker('backgroundPicker');
 
@@ -104,6 +105,8 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Calming Sounds';
       case ClassroomFeature.calmPlan:
         return 'Calm Plan';
+      case ClassroomFeature.classroomHelper:
+        return 'Classroom Helper';
       case ClassroomFeature.voiceLines:
         return 'Voice Lines';
       case ClassroomFeature.backgroundPicker:
@@ -151,6 +154,8 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Child calming sounds.';
       case ClassroomFeature.calmPlan:
         return 'Child calm tools and staff calm support requests.';
+      case ClassroomFeature.classroomHelper:
+        return 'Child classroom jobs and staff helper job management.';
       case ClassroomFeature.voiceLines:
         return 'Child voice lines.';
       case ClassroomFeature.backgroundPicker:

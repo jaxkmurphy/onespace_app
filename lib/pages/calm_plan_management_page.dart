@@ -220,18 +220,25 @@ class _CalmPlanManagementPageState extends State<CalmPlanManagementPage>
   }
 }
 
-class _RequestsTab extends StatelessWidget {
+class _RequestsTab extends StatefulWidget {
   final FirestoreService firestoreService;
   final Future<void> Function(CalmRequest request) onResolve;
 
   const _RequestsTab({required this.firestoreService, required this.onResolve});
 
   @override
+  State<_RequestsTab> createState() => _RequestsTabState();
+}
+
+class _RequestsTabState extends State<_RequestsTab> {
+  String _selectedChildId = '';
+
+  @override
   Widget build(BuildContext context) {
     const color = Color(0xFF26A69A);
 
     return StreamBuilder<List<CalmRequest>>(
-      stream: firestoreService.getCurrentCalmRequests(),
+      stream: widget.firestoreService.getCurrentCalmRequests(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(child: Text(context.l10n.calmRequestsLoadFailed));
@@ -242,12 +249,31 @@ class _RequestsTab extends StatelessWidget {
         }
 
         final requests = snapshot.data!;
+        final childOptions = <String, String>{};
+        for (final request in requests) {
+          if (request.childId.trim().isEmpty) continue;
+          childOptions[request.childId] =
+              request.childName.trim().isEmpty
+                  ? context.l10n.aChild
+                  : request.childName;
+        }
+
+        final effectiveChildId =
+            childOptions.containsKey(_selectedChildId) ? _selectedChildId : '';
+
+        final filteredRequests =
+            effectiveChildId.isEmpty
+                ? requests
+                : requests
+                    .where((request) => request.childId == effectiveChildId)
+                    .toList();
+
         final active =
-            requests
+            filteredRequests
                 .where((request) => request.status == CalmRequestStatus.active)
                 .toList();
         final history =
-            requests
+            filteredRequests
                 .where(
                   (request) => request.status == CalmRequestStatus.resolved,
                 )
@@ -263,6 +289,18 @@ class _RequestsTab extends StatelessWidget {
               subtitle: context.l10n.calmSupportRequestsSubtitle,
             ),
             const SizedBox(height: 18),
+            if (childOptions.isNotEmpty) ...[
+              _ChildRequestFilter(
+                selectedChildId: effectiveChildId,
+                childOptions: childOptions,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedChildId = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 18),
+            ],
             _SectionTitle(
               title: context.l10n.activeRequests,
               subtitle:
@@ -284,7 +322,7 @@ class _RequestsTab extends StatelessWidget {
                     request: request,
                     color: color,
                     showResolveButton: true,
-                    onResolve: () => onResolve(request),
+                    onResolve: () => widget.onResolve(request),
                   ),
                 ),
               ),
@@ -317,6 +355,54 @@ class _RequestsTab extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _ChildRequestFilter extends StatelessWidget {
+  final String selectedChildId;
+  final Map<String, String> childOptions;
+  final ValueChanged<String> onChanged;
+
+  const _ChildRequestFilter({
+    required this.selectedChildId,
+    required this.childOptions,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final sortedEntries =
+        childOptions.entries.toList()..sort(
+          (first, second) =>
+              first.value.toLowerCase().compareTo(second.value.toLowerCase()),
+        );
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: DropdownButtonFormField<String>(
+        initialValue: selectedChildId,
+        decoration: InputDecoration(
+          labelText: context.l10n.classroomHelperFilterByChild,
+          border: const OutlineInputBorder(),
+        ),
+        items: [
+          DropdownMenuItem(
+            value: '',
+            child: Text(context.l10n.classroomHelperAllChildren),
+          ),
+          ...sortedEntries.map(
+            (entry) =>
+                DropdownMenuItem(value: entry.key, child: Text(entry.value)),
+          ),
+        ],
+        onChanged: (value) => onChanged(value ?? ''),
+      ),
     );
   }
 }
