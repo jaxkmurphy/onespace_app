@@ -145,41 +145,6 @@ class _CalmPlanManagementPageState extends State<CalmPlanManagementPage>
     }
   }
 
-  Future<void> _deleteTool(CalmTool tool) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            title: Text(context.l10n.deleteCalmToolQuestion),
-            content: Text(context.l10n.deleteCalmToolMessage(tool.name)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(context.l10n.cancel),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red.shade700,
-                ),
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(context.l10n.delete),
-              ),
-            ],
-          ),
-    );
-
-    if (confirmed != true) return;
-
-    try {
-      await widget.firestoreService.deleteCurrentCalmTool(tool.id);
-      if (!mounted) return;
-      _showMessage(context.l10n.calmToolDeleted);
-    } catch (error) {
-      if (!mounted) return;
-      _showMessage(context.l10n.calmToolDeleteError(error.toString()));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -212,7 +177,6 @@ class _CalmPlanManagementPageState extends State<CalmPlanManagementPage>
             onAddTool: _addTool,
             onEditTool: _editTool,
             onToggleTool: _toggleTool,
-            onDeleteTool: _deleteTool,
           ),
         ],
       ),
@@ -413,7 +377,6 @@ class _ToolsTab extends StatelessWidget {
   final Future<void> Function(List<CalmTool> currentTools) onAddTool;
   final Future<void> Function(CalmTool tool) onEditTool;
   final Future<void> Function(CalmTool tool) onToggleTool;
-  final Future<void> Function(CalmTool tool) onDeleteTool;
 
   const _ToolsTab({
     required this.firestoreService,
@@ -421,7 +384,6 @@ class _ToolsTab extends StatelessWidget {
     required this.onAddTool,
     required this.onEditTool,
     required this.onToggleTool,
-    required this.onDeleteTool,
   });
 
   @override
@@ -502,7 +464,6 @@ class _ToolsTab extends StatelessWidget {
                     actionsEnabled: !previewingDefaultTools,
                     onEdit: () => onEditTool(tool),
                     onToggle: () => onToggleTool(tool),
-                    onDelete: () => onDeleteTool(tool),
                   ),
                 ),
               ),
@@ -840,7 +801,6 @@ class _ToolCard extends StatelessWidget {
   final bool actionsEnabled;
   final VoidCallback onEdit;
   final VoidCallback onToggle;
-  final VoidCallback onDelete;
 
   const _ToolCard({
     required this.tool,
@@ -848,7 +808,6 @@ class _ToolCard extends StatelessWidget {
     required this.actionsEnabled,
     required this.onEdit,
     required this.onToggle,
-    required this.onDelete,
   });
 
   @override
@@ -931,11 +890,6 @@ class _ToolCard extends StatelessWidget {
                       ? Icons.visibility_off_rounded
                       : Icons.visibility_rounded,
                 ),
-              ),
-              IconButton(
-                tooltip: context.l10n.delete,
-                onPressed: actionsEnabled ? onDelete : null,
-                icon: const Icon(Icons.delete_outline_rounded),
               ),
             ],
           ),

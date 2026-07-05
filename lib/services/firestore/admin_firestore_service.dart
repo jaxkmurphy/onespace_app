@@ -14,6 +14,9 @@ class SchoolAdminOverview {
   final int inactiveClassrooms;
   final int totalStaffProfiles;
   final int totalChildProfiles;
+  final int uncheckedBodyChecks;
+  final int activeCalmRequests;
+  final int pendingHelperRequests;
 
   const SchoolAdminOverview({
     required this.totalClassrooms,
@@ -21,7 +24,29 @@ class SchoolAdminOverview {
     required this.inactiveClassrooms,
     required this.totalStaffProfiles,
     required this.totalChildProfiles,
+    required this.uncheckedBodyChecks,
+    required this.activeCalmRequests,
+    required this.pendingHelperRequests,
   });
+}
+
+class ClassroomAdminHealth {
+  final int staffProfiles;
+  final int childProfiles;
+  final int uncheckedBodyChecks;
+  final int activeCalmRequests;
+  final int pendingHelperRequests;
+
+  const ClassroomAdminHealth({
+    required this.staffProfiles,
+    required this.childProfiles,
+    required this.uncheckedBodyChecks,
+    required this.activeCalmRequests,
+    required this.pendingHelperRequests,
+  });
+
+  int get totalAlerts =>
+      uncheckedBodyChecks + activeCalmRequests + pendingHelperRequests;
 }
 
 mixin AdminFirestoreService on FirestoreBase {
@@ -423,22 +448,21 @@ mixin AdminFirestoreService on FirestoreBase {
 
     var totalStaffProfiles = 0;
     var totalChildProfiles = 0;
+    var uncheckedBodyChecks = 0;
+    var activeCalmRequests = 0;
+    var pendingHelperRequests = 0;
 
     for (final classroom in classrooms) {
-      final staffSnapshot =
-          await classroomStaffProfilesRef(
-            schoolId: schoolId,
-            classroomId: classroom.id,
-          ).get();
+      final health = await getClassroomAdminHealth(
+        schoolId: schoolId,
+        classroomId: classroom.id,
+      );
 
-      final childSnapshot =
-          await classroomChildProfilesRef(
-            schoolId: schoolId,
-            classroomId: classroom.id,
-          ).get();
-
-      totalStaffProfiles += staffSnapshot.size;
-      totalChildProfiles += childSnapshot.size;
+      totalStaffProfiles += health.staffProfiles;
+      totalChildProfiles += health.childProfiles;
+      uncheckedBodyChecks += health.uncheckedBodyChecks;
+      activeCalmRequests += health.activeCalmRequests;
+      pendingHelperRequests += health.pendingHelperRequests;
     }
 
     return SchoolAdminOverview(
@@ -449,6 +473,55 @@ mixin AdminFirestoreService on FirestoreBase {
           classrooms.where((classroom) => !classroom.active).length,
       totalStaffProfiles: totalStaffProfiles,
       totalChildProfiles: totalChildProfiles,
+      uncheckedBodyChecks: uncheckedBodyChecks,
+      activeCalmRequests: activeCalmRequests,
+      pendingHelperRequests: pendingHelperRequests,
+    );
+  }
+
+  Future<ClassroomAdminHealth> getClassroomAdminHealth({
+    required String schoolId,
+    required String classroomId,
+  }) async {
+    final staffSnapshot =
+        await classroomStaffProfilesRef(
+          schoolId: schoolId,
+          classroomId: classroomId,
+        ).get();
+
+    final childSnapshot =
+        await classroomChildProfilesRef(
+          schoolId: schoolId,
+          classroomId: classroomId,
+        ).get();
+
+    final bodyChecksSnapshot =
+        await classroomCollection(
+          schoolId: schoolId,
+          classroomId: classroomId,
+          collectionName: 'body_check_reports',
+        ).where('checked', isEqualTo: false).get();
+
+    final calmRequestsSnapshot =
+        await classroomCollection(
+          schoolId: schoolId,
+          classroomId: classroomId,
+          collectionName: 'calm_requests',
+        ).where('status', isEqualTo: 'active').get();
+
+    final helperRequestsSnapshot =
+        await classroomCollection(
+          schoolId: schoolId,
+          classroomId: classroomId,
+          collectionName: 'helper_completion_requests',
+        ).where('status', isEqualTo: 'pending').get();
+
+    return ClassroomAdminHealth(
+      staffProfiles: staffSnapshot.size,
+      childProfiles: childSnapshot.size,
+      uncheckedBodyChecks: bodyChecksSnapshot.size,
+      activeCalmRequests: calmRequestsSnapshot.size,
+      pendingHelperRequests: helperRequestsSnapshot.size,
     );
   }
 

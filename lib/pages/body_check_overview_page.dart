@@ -175,63 +175,6 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
     }
   }
 
-  Future<void> _deleteReport(BodyCheckReport report) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          icon: const Icon(
-            Icons.delete_outline_rounded,
-            color: Colors.red,
-            size: 44,
-          ),
-          title: Text(context.l10n.deleteReportQuestion),
-          content: Text(context.l10n.deleteBodyCheckReport(report.childName)),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext, false);
-              },
-              child: Text(context.l10n.cancel),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.pop(dialogContext, true);
-              },
-              child: Text(context.l10n.delete),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed != true || !mounted) return;
-
-    setState(() {
-      _busyReports.add(report.id);
-    });
-
-    try {
-      await widget.firestoreService.deleteCurrentBodyCheckReport(report.id);
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.reportDeleteFailed)));
-    } finally {
-      if (mounted) {
-        setState(() {
-          _busyReports.remove(report.id);
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -678,34 +621,22 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
                 ),
               ],
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  if (!report.checked)
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: isBusy ? null : () => _markChecked(report),
-                        icon:
-                            isBusy
-                                ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                                : const Icon(Icons.check_rounded),
-                        label: Text(context.l10n.markChecked),
-                      ),
-                    ),
-                  if (!report.checked) const SizedBox(width: 10),
-                  IconButton.filledTonal(
-                    tooltip: context.l10n.deleteReport,
-                    onPressed: isBusy ? null : () => _deleteReport(report),
-                    icon: const Icon(Icons.delete_outline_rounded),
-                  ),
-                ],
-              ),
+              if (!report.checked)
+                FilledButton.icon(
+                  onPressed: isBusy ? null : () => _markChecked(report),
+                  icon:
+                      isBusy
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                          : const Icon(Icons.check_rounded),
+                  label: Text(context.l10n.markChecked),
+                ),
             ],
           ),
         ),

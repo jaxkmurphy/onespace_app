@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../models/classroom.dart';
+import '../models/classroom_feature.dart';
 import '../models/school.dart';
 import '../services/firestore/admin_firestore_service.dart';
 import '../services/firestore_service.dart';
@@ -193,6 +194,31 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                           overview.totalChildProfiles
                                               .toString(),
                                     ),
+                                    _AdminStatChip(
+                                      icon: Icons.pending_actions_rounded,
+                                      label: 'Body checks',
+                                      value:
+                                          overview.uncheckedBodyChecks
+                                              .toString(),
+                                      isAlert: overview.uncheckedBodyChecks > 0,
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.notifications_active_outlined,
+                                      label: 'Calm requests',
+                                      value:
+                                          overview.activeCalmRequests
+                                              .toString(),
+                                      isAlert: overview.activeCalmRequests > 0,
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.volunteer_activism_outlined,
+                                      label: 'Helper requests',
+                                      value:
+                                          overview.pendingHelperRequests
+                                              .toString(),
+                                      isAlert:
+                                          overview.pendingHelperRequests > 0,
+                                    ),
                                   ],
                                 );
                               },
@@ -266,6 +292,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
                       return _ClassroomListCard(
                         classroom: classroom,
+                        schoolId: widget.schoolId,
+                        firestoreService: _firestoreService,
                         onTap: () {
                           Navigator.pushNamed(
                             context,
@@ -337,9 +365,16 @@ class _ClassroomFilterBar extends StatelessWidget {
 
 class _ClassroomListCard extends StatelessWidget {
   final Classroom classroom;
+  final String schoolId;
+  final FirestoreService firestoreService;
   final VoidCallback onTap;
 
-  const _ClassroomListCard({required this.classroom, required this.onTap});
+  const _ClassroomListCard({
+    required this.classroom,
+    required this.schoolId,
+    required this.firestoreService,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -351,38 +386,165 @@ class _ClassroomListCard extends StatelessWidget {
           inactive
               ? colourScheme.surfaceContainerHighest.withValues(alpha: 0.55)
               : null,
-      child: ListTile(
-        leading: Icon(
-          inactive ? Icons.archive_outlined : Icons.meeting_room,
-          color: inactive ? colourScheme.outline : null,
-        ),
-        title: Text(
-          classroom.name,
-          style: TextStyle(
-            color: inactive ? colourScheme.outline : null,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        subtitle: Text(
-          context.l10n.classroomListSummary(
-            classroom.classroomCode,
-            classroom.active ? context.l10n.yes : context.l10n.no,
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Chip(
-              visualDensity: VisualDensity.compact,
-              label: Text(
-                classroom.active ? context.l10n.active : context.l10n.inactive,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color:
+                      inactive
+                          ? colourScheme.surfaceContainerHighest
+                          : colourScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(
+                  inactive ? Icons.archive_outlined : Icons.meeting_room,
+                  color:
+                      inactive
+                          ? colourScheme.outline
+                          : colourScheme.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            classroom.name,
+                            style: TextStyle(
+                              color: inactive ? colourScheme.outline : null,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Chip(
+                          visualDensity: VisualDensity.compact,
+                          label: Text(
+                            classroom.active
+                                ? context.l10n.active
+                                : context.l10n.inactive,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      context.l10n.classroomListSummary(
+                        classroom.classroomCode,
+                        classroom.active ? context.l10n.yes : context.l10n.no,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${classroom.enabledFeatures.length}/${ClassroomFeature.values.length} features enabled',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colourScheme.outline,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    FutureBuilder<ClassroomAdminHealth>(
+                      future: firestoreService.getClassroomAdminHealth(
+                        schoolId: schoolId,
+                        classroomId: classroom.id,
+                      ),
+                      builder: (context, snapshot) {
+                        final health = snapshot.data;
+
+                        if (health == null) {
+                          return const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          );
+                        }
+
+                        return Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _MiniStatusPill(
+                              icon: Icons.badge_outlined,
+                              label: '${health.staffProfiles} staff',
+                            ),
+                            _MiniStatusPill(
+                              icon: Icons.child_care_outlined,
+                              label: '${health.childProfiles} children',
+                            ),
+                            _MiniStatusPill(
+                              icon: Icons.notifications_active_outlined,
+                              label: '${health.totalAlerts} alerts',
+                              isAlert: health.totalAlerts > 0,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniStatusPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isAlert;
+
+  const _MiniStatusPill({
+    required this.icon,
+    required this.label,
+    this.isAlert = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+    final background =
+        isAlert
+            ? colourScheme.errorContainer.withValues(alpha: 0.8)
+            : colourScheme.surfaceContainerHighest.withValues(alpha: 0.75);
+    final foreground =
+        isAlert ? colourScheme.onErrorContainer : colourScheme.onSurfaceVariant;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 15, color: foreground),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              color: foreground,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -392,11 +554,13 @@ class _AdminStatChip extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final bool isAlert;
 
   const _AdminStatChip({
     required this.icon,
     required this.label,
     required this.value,
+    this.isAlert = false,
   });
 
   @override
@@ -406,18 +570,31 @@ class _AdminStatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: colourScheme.primaryContainer.withValues(alpha: 0.55),
+        color:
+            isAlert
+                ? colourScheme.errorContainer.withValues(alpha: 0.75)
+                : colourScheme.primaryContainer.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: colourScheme.onPrimaryContainer),
+          Icon(
+            icon,
+            size: 18,
+            color:
+                isAlert
+                    ? colourScheme.onErrorContainer
+                    : colourScheme.onPrimaryContainer,
+          ),
           const SizedBox(width: 8),
           Text(
             '$label: $value',
             style: TextStyle(
-              color: colourScheme.onPrimaryContainer,
+              color:
+                  isAlert
+                      ? colourScheme.onErrorContainer
+                      : colourScheme.onPrimaryContainer,
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -217,40 +217,6 @@ class _ProfilesPageState extends State<ProfilesPage> {
     }
   }
 
-  Future<void> _onDeleteStaffProfile(String profileId) async {
-    final l10n = context.l10n;
-    final confirmed = await _checkPin();
-
-    if (!confirmed) {
-      _showSnack(l10n.accessDeniedIncorrectPin);
-      return;
-    }
-
-    try {
-      await firestoreService.deleteCurrentStaffProfile(profileId);
-      _showSnack(l10n.staffProfileDeleted);
-    } catch (e) {
-      _showSnack(l10n.staffProfileDeleteFailed(e.toString()));
-    }
-  }
-
-  Future<void> _onDeleteChildProfile(String profileId) async {
-    final l10n = context.l10n;
-    final confirmed = await _checkPin();
-
-    if (!confirmed) {
-      _showSnack(l10n.accessDeniedIncorrectPin);
-      return;
-    }
-
-    try {
-      await firestoreService.deleteCurrentChildProfile(profileId);
-      _showSnack(l10n.childProfileDeleted);
-    } catch (e) {
-      _showSnack(l10n.childProfileDeleteFailed(e.toString()));
-    }
-  }
-
   Future<void> _logout() async {
     final shouldLogout = await showDialog<bool>(
       context: context,
@@ -363,8 +329,6 @@ class _ProfilesPageState extends State<ProfilesPage> {
                   childProfiles: childProfiles,
                   onStaffTap: _onStaffTap,
                   onChildTap: _onChildTap,
-                  onDeleteStaffProfile: _onDeleteStaffProfile,
-                  onDeleteChildProfile: _onDeleteChildProfile,
                   onGoToAddProfile: _goToAddProfile,
                   onGoToSettings: _goToSettings,
                 );
@@ -384,8 +348,6 @@ class _ProfilesBody extends StatelessWidget {
   final List<ChildProfile> childProfiles;
   final ValueChanged<StaffProfile> onStaffTap;
   final ValueChanged<ChildProfile> onChildTap;
-  final ValueChanged<String> onDeleteStaffProfile;
-  final ValueChanged<String> onDeleteChildProfile;
   final VoidCallback onGoToAddProfile;
   final VoidCallback onGoToSettings;
 
@@ -396,8 +358,6 @@ class _ProfilesBody extends StatelessWidget {
     required this.childProfiles,
     required this.onStaffTap,
     required this.onChildTap,
-    required this.onDeleteStaffProfile,
-    required this.onDeleteChildProfile,
     required this.onGoToAddProfile,
     required this.onGoToSettings,
   });
@@ -450,7 +410,6 @@ class _ProfilesBody extends StatelessWidget {
                               color: colourScheme.primary,
                               isChild: false,
                               onTap: () => onStaffTap(staff),
-                              onDelete: () => onDeleteStaffProfile(staff.id),
                             ),
                           )
                           .toList(),
@@ -484,7 +443,6 @@ class _ProfilesBody extends StatelessWidget {
                                     : colourScheme.error,
                             isChild: true,
                             onTap: () => onChildTap(child),
-                            onDelete: () => onDeleteChildProfile(child.id),
                           ),
                         );
                       }).toList(),

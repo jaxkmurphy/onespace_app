@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import '../l10n/l10n.dart';
 import '../models/classroom.dart';
 import '../models/classroom_feature.dart';
-import '../models/child_profile.dart';
 import '../models/staff_profile.dart';
+import '../services/firestore/admin_firestore_service.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import 'incident_log_page.dart';
@@ -294,7 +294,7 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
     );
   }
 
-  void _openClassroomRoute(String routeName) {
+  void _openStaffManagementRoute(String routeName) {
     final classroom = _classroom;
     if (classroom == null) return;
 
@@ -304,7 +304,21 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
       classroomName: classroom.name,
     );
 
-    Navigator.pushNamed(context, routeName);
+    final adminProfile = StaffProfile(
+      id: 'school-admin',
+      name: context.l10n.schoolAdminStaffName,
+      role: context.l10n.schoolAdminStaffName,
+      teacherUid: widget.classroomId,
+    );
+
+    Navigator.pushNamed(
+      context,
+      routeName,
+      arguments: {
+        'firestoreService': _firestoreService,
+        'staffProfile': adminProfile,
+      },
+    );
   }
 
   void _openBodyCheckOverview() {
@@ -436,10 +450,10 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
                           schoolCode: _schoolCode,
                           onCopyAllAccessDetails: _copyAllAccessDetails,
                           onOpenProfiles: _openClassroomProfiles,
-                          onOpenSchedule:
-                              () => _openClassroomRoute('/staffSchedule'),
-                          onOpenZones:
-                              () => _openClassroomRoute('/zone-overview'),
+                          onOpenCalmPlan:
+                              () => _openStaffManagementRoute(
+                                '/calm-plan-management',
+                              ),
                           onOpenBodyChecks: _openBodyCheckOverview,
                           onOpenIncidents: _openIncidentLog,
                           onCopySchoolCode:
@@ -639,8 +653,7 @@ class _ClassroomOverviewCard extends StatelessWidget {
   final String schoolCode;
   final VoidCallback onCopyAllAccessDetails;
   final VoidCallback onOpenProfiles;
-  final VoidCallback onOpenSchedule;
-  final VoidCallback onOpenZones;
+  final VoidCallback onOpenCalmPlan;
   final VoidCallback onOpenBodyChecks;
   final VoidCallback onOpenIncidents;
   final VoidCallback onCopySchoolCode;
@@ -655,8 +668,7 @@ class _ClassroomOverviewCard extends StatelessWidget {
     required this.schoolCode,
     required this.onCopyAllAccessDetails,
     required this.onOpenProfiles,
-    required this.onOpenSchedule,
-    required this.onOpenZones,
+    required this.onOpenCalmPlan,
     required this.onOpenBodyChecks,
     required this.onOpenIncidents,
     required this.onCopySchoolCode,
@@ -751,38 +763,55 @@ class _ClassroomOverviewCard extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            StreamBuilder<List<StaffProfile>>(
-              stream: firestoreService.getClassroomStaffProfiles(
+            FutureBuilder<ClassroomAdminHealth>(
+              future: firestoreService.getClassroomAdminHealth(
                 schoolId: schoolId,
                 classroomId: classroomId,
               ),
-              builder: (context, staffSnapshot) {
-                return StreamBuilder<List<ChildProfile>>(
-                  stream: firestoreService.getClassroomChildProfiles(
-                    schoolId: schoolId,
-                    classroomId: classroomId,
-                  ),
-                  builder: (context, childSnapshot) {
-                    final staffCount = staffSnapshot.data?.length ?? 0;
-                    final childCount = childSnapshot.data?.length ?? 0;
+              builder: (context, snapshot) {
+                final health = snapshot.data;
 
-                    return Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        _ClassroomStatChip(
-                          icon: Icons.badge_outlined,
-                          label: context.l10n.staffProfiles,
-                          value: staffCount.toString(),
-                        ),
-                        _ClassroomStatChip(
-                          icon: Icons.child_care_outlined,
-                          label: context.l10n.childProfiles,
-                          value: childCount.toString(),
-                        ),
-                      ],
-                    );
-                  },
+                if (health == null) {
+                  return const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  );
+                }
+
+                return Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    _ClassroomStatChip(
+                      icon: Icons.badge_outlined,
+                      label: context.l10n.staffProfiles,
+                      value: health.staffProfiles.toString(),
+                    ),
+                    _ClassroomStatChip(
+                      icon: Icons.child_care_outlined,
+                      label: context.l10n.childProfiles,
+                      value: health.childProfiles.toString(),
+                    ),
+                    _ClassroomStatChip(
+                      icon: Icons.pending_actions_rounded,
+                      label: 'Body checks',
+                      value: health.uncheckedBodyChecks.toString(),
+                      isAlert: health.uncheckedBodyChecks > 0,
+                    ),
+                    _ClassroomStatChip(
+                      icon: Icons.notifications_active_outlined,
+                      label: 'Calm requests',
+                      value: health.activeCalmRequests.toString(),
+                      isAlert: health.activeCalmRequests > 0,
+                    ),
+                    _ClassroomStatChip(
+                      icon: Icons.volunteer_activism_outlined,
+                      label: 'Helper requests',
+                      value: health.pendingHelperRequests.toString(),
+                      isAlert: health.pendingHelperRequests > 0,
+                    ),
+                  ],
                 );
               },
             ),
@@ -852,14 +881,9 @@ class _ClassroomOverviewCard extends StatelessWidget {
                   onPressed: onOpenProfiles,
                 ),
                 _QuickActionButton(
-                  icon: Icons.schedule_rounded,
-                  label: context.l10n.openSchedule,
-                  onPressed: onOpenSchedule,
-                ),
-                _QuickActionButton(
-                  icon: Icons.mood_rounded,
-                  label: context.l10n.openZonesOverview,
-                  onPressed: onOpenZones,
+                  icon: Icons.spa_rounded,
+                  label: 'Calm Plan',
+                  onPressed: onOpenCalmPlan,
                 ),
                 _QuickActionButton(
                   icon: Icons.health_and_safety_outlined,
@@ -894,6 +918,8 @@ class _FeatureSettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
+    final enabledCount = enabledFeatures.length;
+    final totalCount = ClassroomFeature.values.length;
 
     return Card(
       child: Padding(
@@ -928,7 +954,7 @@ class _FeatureSettingsCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        'Choose which tools are available in this classroom.',
+                        'Choose which tools are available in this classroom. $enabledCount/$totalCount currently enabled.',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -943,18 +969,44 @@ class _FeatureSettingsCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            ...ClassroomFeature.values.map((feature) {
-              return SwitchListTile(
-                value: enabledFeatures.contains(feature),
-                onChanged:
-                    isSaving
-                        ? null
-                        : (enabled) => onFeatureChanged(feature, enabled),
-                title: Text(feature.adminLabel),
-                subtitle: Text(feature.adminDescription),
-                secondary: Icon(_iconForFeature(feature)),
-              );
-            }),
+            Container(
+              decoration: BoxDecoration(
+                color: colourScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.35,
+                ),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: colourScheme.outlineVariant.withValues(alpha: 0.65),
+                ),
+              ),
+              constraints: const BoxConstraints(maxHeight: 430),
+              child: ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: ClassroomFeature.values.length,
+                separatorBuilder:
+                    (_, __) => Divider(
+                      height: 1,
+                      indent: 72,
+                      color: colourScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                itemBuilder: (context, index) {
+                  final feature = ClassroomFeature.values[index];
+
+                  return SwitchListTile(
+                    value: enabledFeatures.contains(feature),
+                    onChanged:
+                        isSaving
+                            ? null
+                            : (enabled) => onFeatureChanged(feature, enabled),
+                    title: Text(feature.adminLabel),
+                    subtitle: Text(feature.adminDescription),
+                    secondary: Icon(_iconForFeature(feature)),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -1076,11 +1128,13 @@ class _ClassroomStatChip extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final bool isAlert;
 
   const _ClassroomStatChip({
     required this.icon,
     required this.label,
     required this.value,
+    this.isAlert = false,
   });
 
   @override
@@ -1090,18 +1144,31 @@ class _ClassroomStatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: colourScheme.secondaryContainer.withValues(alpha: 0.7),
+        color:
+            isAlert
+                ? colourScheme.errorContainer.withValues(alpha: 0.78)
+                : colourScheme.secondaryContainer.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: colourScheme.onSecondaryContainer),
+          Icon(
+            icon,
+            size: 18,
+            color:
+                isAlert
+                    ? colourScheme.onErrorContainer
+                    : colourScheme.onSecondaryContainer,
+          ),
           const SizedBox(width: 8),
           Text(
             '$label: $value',
             style: TextStyle(
-              color: colourScheme.onSecondaryContainer,
+              color:
+                  isAlert
+                      ? colourScheme.onErrorContainer
+                      : colourScheme.onSecondaryContainer,
               fontWeight: FontWeight.w600,
             ),
           ),
