@@ -6,14 +6,18 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isClassroomSession() {
+    function hasTokenField(field) {
       return signedIn()
         && ('token' in request.auth)
-        && ('role' in request.auth.token)
+        && (field in request.auth.token);
+    }
+
+    function isClassroomSession() {
+      return hasTokenField('role')
         && request.auth.token.role == 'classroom'
-        && ('schoolId' in request.auth.token)
+        && hasTokenField('schoolId')
         && request.auth.token.schoolId is string
-        && ('classroomId' in request.auth.token)
+        && hasTokenField('classroomId')
         && request.auth.token.classroomId is string;
     }
 
@@ -25,9 +29,11 @@ service cloud.firestore {
 
     function isEmailUser() {
       return signedIn()
-        && (!('token' in request.auth)
+        && (
+          !('token' in request.auth)
           || !('role' in request.auth.token)
-          || request.auth.token.role != 'classroom');
+          || request.auth.token.role != 'classroom'
+        );
     }
 
     function schoolMemberPath(schoolId, uid) {
@@ -39,6 +45,10 @@ service cloud.firestore {
         && exists(schoolMemberPath(schoolId, request.auth.uid))
         && get(schoolMemberPath(schoolId, request.auth.uid)).data.role == 'schoolAdmin'
         && get(schoolMemberPath(schoolId, request.auth.uid)).data.active == true;
+    }
+
+    function canAccessClassroom(schoolId, classroomId) {
+      return isSchoolAdmin(schoolId) || isThisClassroom(schoolId, classroomId);
     }
 
     function createsOwnSchoolAdminMember(schoolId, uid) {
@@ -66,22 +76,22 @@ service cloud.firestore {
 
     match /account_lookup/{uid} {
       allow get: if isEmailUser() && uid == request.auth.uid;
-      allow list: if false;
+      allow list, update, delete: if false;
       allow create: if createsOwnAccountLookup(uid);
-      allow update: if false;
-      allow delete: if false;
     }
 
     match /schools/{schoolId} {
       allow get: if isSchoolAdmin(schoolId)
-        || (isClassroomSession() && request.auth.token.schoolId == schoolId);
+        || (
+          isClassroomSession()
+          && request.auth.token.schoolId == schoolId
+        );
       allow list: if isEmailUser();
 
       allow create: if isEmailUser()
         && request.resource.data.active == true
         && request.resource.data.schoolCode is string
         && request.resource.data.classroomLimit is int;
-
       allow update: if isSchoolAdmin(schoolId);
       allow delete: if false;
 
@@ -94,183 +104,135 @@ service cloud.firestore {
       }
 
       match /classrooms/{classroomId} {
-        allow get: if isSchoolAdmin(schoolId)
-          || isThisClassroom(schoolId, classroomId);
-        allow list: if isSchoolAdmin(schoolId);
-        allow create, update: if isSchoolAdmin(schoolId);
+        allow get: if canAccessClassroom(schoolId, classroomId);
+        allow list, create, update: if isSchoolAdmin(schoolId);
         allow delete: if false;
 
         match /staff_profiles/{profileId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /child_profiles/{profileId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
 
           match /{childSubcollection}/{childDocumentId} {
-            allow read, write: if isSchoolAdmin(schoolId)
-              || isThisClassroom(schoolId, classroomId);
+            allow read, write: if canAccessClassroom(schoolId, classroomId);
           }
         }
 
         match /quizzes/{quizId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /quiz_attempts/{attemptId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /word_packs/{packId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
 
           match /words/{wordId} {
-            allow read, write: if isSchoolAdmin(schoolId)
-              || isThisClassroom(schoolId, classroomId);
+            allow read, write: if canAccessClassroom(schoolId, classroomId);
           }
         }
 
         match /word_attempts/{attemptId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
-        }
-
-        match /odd_one_out_packs/{packId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
-
-          match /rounds/{roundId} {
-            allow read, write: if isSchoolAdmin(schoolId)
-              || isThisClassroom(schoolId, classroomId);
-          }
-        }
-
-        match /emotion_detective_packs/{packId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
-
-          match /scenarios/{scenarioId} {
-            allow read, write: if isSchoolAdmin(schoolId)
-              || isThisClassroom(schoolId, classroomId);
-          }
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /association_pair_packs/{packId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
 
           match /pairs/{pairId} {
-            allow read, write: if isSchoolAdmin(schoolId)
-              || isThisClassroom(schoolId, classroomId);
+            allow read, write: if canAccessClassroom(schoolId, classroomId);
           }
         }
 
         match /number_sequence_challenges/{challengeId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
-        match /when_then_options/{optionGroupId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+        match /odd_one_out_packs/{packId} {
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
 
-          match /items/{itemId} {
-            allow read, write: if isSchoolAdmin(schoolId)
-              || isThisClassroom(schoolId, classroomId);
+          match /rounds/{roundId} {
+            allow read, write: if canAccessClassroom(schoolId, classroomId);
           }
         }
 
-        match /association_pair_packs/{packId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-        || isThisClassroom(schoolId, classroomId);
+        match /emotion_detective_packs/{packId} {
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
 
-        match /pairs/{pairId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-          || isThisClassroom(schoolId, classroomId);
+          match /scenarios/{scenarioId} {
+            allow read, write: if canAccessClassroom(schoolId, classroomId);
+          }
         }
-      }
 
-      match /number_sequence_challenges/{challengeId} {
-        allow read, write: if isSchoolAdmin(schoolId)
-        || isThisClassroom(schoolId, classroomId);
-      }
+        match /when_then_options/{optionGroupId} {
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
+
+          match /items/{itemId} {
+            allow read, write: if canAccessClassroom(schoolId, classroomId);
+          }
+        }
 
         match /point_rewards/{rewardId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /voice_lines/{voiceLineId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
-                match /calm_tools/{toolId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+        match /calm_tools/{toolId} {
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /calm_requests/{requestId} {
-          allow read, create, update: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, create, update: if canAccessClassroom(schoolId, classroomId);
           allow delete: if isSchoolAdmin(schoolId);
         }
 
         match /helper_jobs/{jobId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
-        }
-
-        match /helper_completions/{completionId} {
-          allow read, create: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
-          allow update, delete: if isSchoolAdmin(schoolId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /helper_assignments/{assignmentId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /helper_completion_requests/{requestId} {
-          allow read, create, update: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, create, update: if canAccessClassroom(schoolId, classroomId);
           allow delete: if isSchoolAdmin(schoolId);
         }
 
+        match /helper_completions/{completionId} {
+          allow read, create: if canAccessClassroom(schoolId, classroomId);
+          allow update, delete: if isSchoolAdmin(schoolId);
+        }
+
         match /circle_time_days/{dateKey} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /incident_logs/{incidentId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /body_check_reports/{reportId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /handover_overview/{documentId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /staff_handover_documents/{documentId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /handover_quick_notes/{noteId} {
-          allow read, write: if isSchoolAdmin(schoolId)
-            || isThisClassroom(schoolId, classroomId);
+          allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
       }
     }
