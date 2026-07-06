@@ -8,10 +8,7 @@ import '../services/firestore_service.dart';
 class HandoverHubPage extends StatefulWidget {
   final StaffProfile currentStaff;
 
-  const HandoverHubPage({
-    super.key,
-    required this.currentStaff,
-  });
+  const HandoverHubPage({super.key, required this.currentStaff});
 
   @override
   State<HandoverHubPage> createState() => _HandoverHubPageState();
@@ -76,17 +73,11 @@ class _StartHereTab extends StatelessWidget {
 
   void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
-  Future<void> _editOverview(
-    BuildContext context,
-    String currentText,
-  ) async {
+  Future<void> _editOverview(BuildContext context, String currentText) async {
     final controller = TextEditingController(text: currentText);
 
     final result = await showDialog<String>(
@@ -114,10 +105,7 @@ class _StartHereTab extends StatelessWidget {
             ),
             FilledButton.icon(
               onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  controller.text.trim(),
-                );
+                Navigator.pop(dialogContext, controller.text.trim());
               },
               icon: const Icon(Icons.save_rounded),
               label: Text(context.l10n.save),
@@ -167,10 +155,7 @@ class _StartHereTab extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFF3F7FF),
-                Color(0xFFF8F2FF),
-              ],
+              colors: [Color(0xFFF3F7FF), Color(0xFFF8F2FF)],
             ),
           ),
           child: SingleChildScrollView(
@@ -183,8 +168,7 @@ class _StartHereTab extends StatelessWidget {
                     _HandoverHeader(
                       icon: Icons.flag_rounded,
                       title: context.l10n.readThisFirst,
-                      description:
-                          context.l10n.startHereDescription,
+                      description: context.l10n.startHereDescription,
                       color: const Color(0xFF7E57C2),
                     ),
                     const SizedBox(height: 18),
@@ -196,58 +180,55 @@ class _StartHereTab extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(26),
                         border: Border.all(
-                          color: const Color(0xFF7E57C2)
-                              .withValues(alpha: 0.22),
+                          color: const Color(
+                            0xFF7E57C2,
+                          ).withValues(alpha: 0.22),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black
-                                .withValues(alpha: 0.06),
+                            color: Colors.black.withValues(alpha: 0.06),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
                         ],
                       ),
-                      child: content.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.description_outlined,
-                                    size: 62,
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  const SizedBox(height: 14),
-                                  Text(
-                                    context.l10n
-                                        .noStartHereInformation,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.grey.shade700,
-                                      fontSize: 17,
+                      child:
+                          content.isEmpty
+                              ? Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.description_outlined,
+                                      size: 62,
+                                      color: Colors.grey.shade400,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(height: 14),
+                                    Text(
+                                      context.l10n.noStartHereInformation,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.grey.shade700,
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              : SelectableText(
+                                content,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  height: 1.55,
+                                ),
                               ),
-                            )
-                          : SelectableText(
-                              content,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                height: 1.55,
-                              ),
-                            ),
                     ),
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
                       height: 54,
                       child: FilledButton.icon(
-                        onPressed: () => _editOverview(
-                          context,
-                          content,
-                        ),
+                        onPressed: () => _editOverview(context, content),
                         icon: const Icon(Icons.edit_rounded),
                         label: Text(context.l10n.editStartHere),
                       ),
@@ -303,7 +284,7 @@ class _StaffDocumentsTab extends StatelessWidget {
             _HandoverHeader(
               icon: Icons.folder_shared_rounded,
               title: context.l10n.handoverStaffDocumentsTab,
-              description: context.l10n.startHereDescription,
+              description: context.l10n.handoverStaffGuidanceDescription,
               color: const Color(0xFF42A5F5),
             ),
             const SizedBox(height: 18),
@@ -344,10 +325,7 @@ class _StaffDocumentCard extends StatelessWidget {
 
   void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -355,27 +333,26 @@ class _StaffDocumentCard extends StatelessWidget {
     BuildContext context,
     StaffHandoverDocument document,
   ) async {
-    final aboutController =
-        TextEditingController(text: document.aboutThisClass);
-    final worksController =
-        TextEditingController(text: document.whatWorksWell);
-    final triggersController =
-        TextEditingController(text: document.commonTriggers);
-    final strategiesController =
-        TextEditingController(text: document.successfulStrategies);
-    final communicationController =
-        TextEditingController(text: document.communicationTips);
-    final otherController =
-        TextEditingController(text: document.otherNotes);
+    final aboutController = TextEditingController(
+      text: document.aboutThisClass,
+    );
+    final worksController = TextEditingController(text: document.whatWorksWell);
+    final triggersController = TextEditingController(
+      text: document.commonTriggers,
+    );
+    final strategiesController = TextEditingController(
+      text: document.successfulStrategies,
+    );
+    final communicationController = TextEditingController(
+      text: document.communicationTips,
+    );
+    final otherController = TextEditingController(text: document.otherNotes);
 
-    final updatedDocument =
-        await showDialog<StaffHandoverDocument>(
+    final updatedDocument = await showDialog<StaffHandoverDocument>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(
-            context.l10n.editStaffDocument(staff.name),
-          ),
+          title: Text(context.l10n.editStaffDocument(staff.name)),
           content: SizedBox(
             width: 680,
             child: SingleChildScrollView(
@@ -421,16 +398,11 @@ class _StaffDocumentCard extends StatelessWidget {
                   StaffHandoverDocument(
                     staffProfileId: staff.id,
                     staffName: staff.name,
-                    aboutThisClass:
-                        aboutController.text.trim(),
-                    whatWorksWell:
-                        worksController.text.trim(),
-                    commonTriggers:
-                        triggersController.text.trim(),
-                    successfulStrategies:
-                        strategiesController.text.trim(),
-                    communicationTips:
-                        communicationController.text.trim(),
+                    aboutThisClass: aboutController.text.trim(),
+                    whatWorksWell: worksController.text.trim(),
+                    commonTriggers: triggersController.text.trim(),
+                    successfulStrategies: strategiesController.text.trim(),
+                    communicationTips: communicationController.text.trim(),
                     otherNotes: otherController.text.trim(),
                   ),
                 );
@@ -466,9 +438,7 @@ class _StaffDocumentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<StaffHandoverDocument>(
-      stream: firestoreService.getCurrentStaffHandoverDocument(
-        staff: staff,
-      ),
+      stream: firestoreService.getCurrentStaffHandoverDocument(staff: staff),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Card(
@@ -479,7 +449,8 @@ class _StaffDocumentCard extends StatelessWidget {
           );
         }
 
-        final document = snapshot.data ??
+        final document =
+            snapshot.data ??
             StaffHandoverDocument.empty(
               staffProfileId: staff.id,
               staffName: staff.name,
@@ -490,14 +461,12 @@ class _StaffDocumentCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
             side: BorderSide(
-              color: const Color(0xFF42A5F5)
-                  .withValues(alpha: 0.25),
+              color: const Color(0xFF42A5F5).withValues(alpha: 0.25),
             ),
           ),
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: const Color(0xFF42A5F5)
-                  .withValues(alpha: 0.14),
+              backgroundColor: const Color(0xFF42A5F5).withValues(alpha: 0.14),
               child: Text(
                 staff.name.isEmpty
                     ? '?'
@@ -516,22 +485,20 @@ class _StaffDocumentCard extends StatelessWidget {
               document.updatedAt == null
                   ? context.l10n.nothingAddedYet
                   : context.l10n.lastUpdated(
-                      _formatDate(context, document.updatedAt!),
-                    ),
-            ),
-            trailing: canEdit
-                ? IconButton(
-                    tooltip: context.l10n.edit,
-                    onPressed: () => _editDocument(
-                      context,
-                      document,
-                    ),
-                    icon: const Icon(Icons.edit_rounded),
-                  )
-                : Tooltip(
-                    message: context.l10n.viewOnly,
-                    child: const Icon(Icons.visibility_rounded),
+                    _formatDate(context, document.updatedAt!),
                   ),
+            ),
+            trailing:
+                canEdit
+                    ? IconButton(
+                      tooltip: context.l10n.edit,
+                      onPressed: () => _editDocument(context, document),
+                      icon: const Icon(Icons.edit_rounded),
+                    )
+                    : Tooltip(
+                      message: context.l10n.viewOnly,
+                      child: const Icon(Icons.visibility_rounded),
+                    ),
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
@@ -602,10 +569,7 @@ class _QuickNotesTab extends StatelessWidget {
 
   void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -613,10 +577,8 @@ class _QuickNotesTab extends StatelessWidget {
     BuildContext context, {
     HandoverQuickNote? note,
   }) async {
-    final titleController =
-        TextEditingController(text: note?.title ?? '');
-    final contentController =
-        TextEditingController(text: note?.content ?? '');
+    final titleController = TextEditingController(text: note?.title ?? '');
+    final contentController = TextEditingController(text: note?.content ?? '');
 
     final result = await showDialog<_QuickNoteDraft>(
       context: context,
@@ -634,8 +596,7 @@ class _QuickNotesTab extends StatelessWidget {
               children: [
                 TextField(
                   controller: titleController,
-                  textCapitalization:
-                      TextCapitalization.sentences,
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     labelText: context.l10n.titleLabel,
                     border: const OutlineInputBorder(),
@@ -644,8 +605,7 @@ class _QuickNotesTab extends StatelessWidget {
                 const SizedBox(height: 14),
                 TextField(
                   controller: contentController,
-                  textCapitalization:
-                      TextCapitalization.sentences,
+                  textCapitalization: TextCapitalization.sentences,
                   minLines: 4,
                   maxLines: 8,
                   decoration: InputDecoration(
@@ -671,10 +631,7 @@ class _QuickNotesTab extends StatelessWidget {
 
                 Navigator.pop(
                   dialogContext,
-                  _QuickNoteDraft(
-                    title: title,
-                    content: content,
-                  ),
+                  _QuickNoteDraft(title: title, content: content),
                 );
               },
               icon: const Icon(Icons.save_rounded),
@@ -711,10 +668,7 @@ class _QuickNotesTab extends StatelessWidget {
     }
   }
 
-  Future<void> _deleteNote(
-    BuildContext context,
-    HandoverQuickNote note,
-  ) async {
+  Future<void> _deleteNote(BuildContext context, HandoverQuickNote note) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -723,20 +677,14 @@ class _QuickNotesTab extends StatelessWidget {
           content: Text(context.l10n.deleteNoteMessage),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                false,
-              ),
+              onPressed: () => Navigator.pop(dialogContext, false),
               child: Text(context.l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red.shade700,
               ),
-              onPressed: () => Navigator.pop(
-                dialogContext,
-                true,
-              ),
+              onPressed: () => Navigator.pop(dialogContext, true),
               child: Text(context.l10n.delete),
             ),
           ],
@@ -747,9 +695,7 @@ class _QuickNotesTab extends StatelessWidget {
     if (confirmed != true) return;
 
     try {
-      await firestoreService.deleteCurrentHandoverQuickNote(
-        note.id,
-      );
+      await firestoreService.deleteCurrentHandoverQuickNote(note.id);
     } catch (_) {
       if (context.mounted) {
         _showMessage(context, context.l10n.handoverDeleteError);
@@ -789,13 +735,12 @@ class _QuickNotesTab extends StatelessWidget {
               _HandoverHeader(
                 icon: Icons.sticky_note_2_rounded,
                 title: context.l10n.handoverQuickNotesTab,
-                description: context.l10n.startHereDescription,
+                description: context.l10n.handoverClassroomRemindersDescription,
                 color: const Color(0xFFFFA726),
               ),
               const SizedBox(height: 18),
               ...notes.map((note) {
-                final canEdit =
-                    note.createdByStaffId == currentStaff.id;
+                final canEdit = note.createdByStaffId == currentStaff.id;
 
                 final date = note.updatedAt ?? note.createdAt;
 
@@ -805,15 +750,13 @@ class _QuickNotesTab extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22),
                     side: BorderSide(
-                      color: const Color(0xFFFFA726)
-                          .withValues(alpha: 0.24),
+                      color: const Color(0xFFFFA726).withValues(alpha: 0.24),
                     ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -830,55 +773,43 @@ class _QuickNotesTab extends StatelessWidget {
                                 note.title.isEmpty
                                     ? context.l10n.untitled
                                     : note.title,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.w900),
                               ),
                             ),
                             if (canEdit)
                               PopupMenuButton<String>(
                                 onSelected: (value) {
                                   if (value == 'edit') {
-                                    _openNoteDialog(
-                                      context,
-                                      note: note,
-                                    );
+                                    _openNoteDialog(context, note: note);
                                   } else if (value == 'delete') {
                                     _deleteNote(context, note);
                                   }
                                 },
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    value: 'edit',
-                                    child: ListTile(
-                                      contentPadding:
-                                          EdgeInsets.zero,
-                                      leading: const Icon(
-                                        Icons.edit_rounded,
+                                itemBuilder:
+                                    (context) => [
+                                      PopupMenuItem(
+                                        value: 'edit',
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: const Icon(
+                                            Icons.edit_rounded,
+                                          ),
+                                          title: Text(context.l10n.edit),
+                                        ),
                                       ),
-                                      title: Text(
-                                        context.l10n.edit,
+                                      PopupMenuItem(
+                                        value: 'delete',
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: const Icon(
+                                            Icons.delete_outline_rounded,
+                                            color: Colors.red,
+                                          ),
+                                          title: Text(context.l10n.delete),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'delete',
-                                    child: ListTile(
-                                      contentPadding:
-                                          EdgeInsets.zero,
-                                      leading: const Icon(
-                                        Icons.delete_outline_rounded,
-                                        color: Colors.red,
-                                      ),
-                                      title: Text(
-                                        context.l10n.delete,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                    ],
                               ),
                           ],
                         ),
@@ -886,10 +817,7 @@ class _QuickNotesTab extends StatelessWidget {
                           const SizedBox(height: 14),
                           SelectableText(
                             note.content,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              height: 1.45,
-                            ),
+                            style: const TextStyle(fontSize: 16, height: 1.45),
                           ),
                         ],
                         const SizedBox(height: 14),
@@ -950,10 +878,7 @@ class _HandoverHeader extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            color,
-            color.withValues(alpha: 0.74),
-          ],
+          colors: [color, color.withValues(alpha: 0.74)],
         ),
         borderRadius: BorderRadius.circular(26),
       ),
@@ -966,11 +891,7 @@ class _HandoverHeader extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.20),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 35,
-            ),
+            child: Icon(icon, color: Colors.white, size: 35),
           ),
           const SizedBox(width: 17),
           Expanded(
@@ -988,10 +909,7 @@ class _HandoverHeader extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   description,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    height: 1.3,
-                  ),
+                  style: const TextStyle(color: Colors.white, height: 1.3),
                 ),
               ],
             ),
@@ -1006,10 +924,7 @@ class _DocumentTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
 
-  const _DocumentTextField({
-    required this.label,
-    required this.controller,
-  });
+  const _DocumentTextField({required this.label, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -1052,9 +967,7 @@ class _DocumentSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: color.withValues(alpha: 0.22),
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1067,16 +980,11 @@ class _DocumentSection extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(color: color, fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 6),
                 SelectableText(
-                  content.isEmpty
-                      ? context.l10n.nothingAddedYet
-                      : content,
+                  content.isEmpty ? context.l10n.nothingAddedYet : content,
                   style: const TextStyle(height: 1.4),
                 ),
               ],
@@ -1092,31 +1000,19 @@ class _NoteMetadata extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _NoteMetadata({
-    required this.icon,
-    required this.text,
-  });
+  const _NoteMetadata({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 17),
-          const SizedBox(width: 5),
-          Text(text),
-        ],
+        children: [Icon(icon, size: 17), const SizedBox(width: 5), Text(text)],
       ),
     );
   }
@@ -1126,10 +1022,7 @@ class _HandoverMessageState extends StatelessWidget {
   final IconData icon;
   final String title;
 
-  const _HandoverMessageState({
-    required this.icon,
-    required this.title,
-  });
+  const _HandoverMessageState({required this.icon, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -1139,19 +1032,14 @@ class _HandoverMessageState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 72,
-              color: const Color(0xFF7E57C2),
-            ),
+            Icon(icon, size: 72, color: const Color(0xFF7E57C2)),
             const SizedBox(height: 16),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
           ],
         ),
@@ -1164,8 +1052,5 @@ class _QuickNoteDraft {
   final String title;
   final String content;
 
-  const _QuickNoteDraft({
-    required this.title,
-    required this.content,
-  });
+  const _QuickNoteDraft({required this.title, required this.content});
 }

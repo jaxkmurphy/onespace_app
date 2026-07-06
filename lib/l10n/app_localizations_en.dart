@@ -129,17 +129,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get handoverStartHereTab => 'Start Here';
 
   @override
-  String get handoverStaffDocumentsTab => 'Staff Documents';
+  String get handoverStaffDocumentsTab => 'Staff Guidance';
 
   @override
-  String get handoverQuickNotesTab => 'Quick Notes';
+  String get handoverQuickNotesTab => 'Classroom Reminders';
 
   @override
   String get readThisFirst => 'Read this first';
 
   @override
   String get startHereDescription =>
-      'This section should contain the most important things a substitute teacher or SNA needs to know immediately.';
+      'The essential classroom guide for substitutes, SNAs, teachers, and staff who need the most important information quickly.';
 
   @override
   String get noStartHereInformation =>
@@ -160,12 +160,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String staffDocumentTitle(String staffName) {
-    return '$staffName Document';
+    return '$staffName Guidance';
   }
 
   @override
   String editStaffDocument(String staffName) {
-    return 'Edit $staffName Document';
+    return 'Edit $staffName Guidance';
   }
 
   @override
@@ -190,10 +190,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nothingAddedYet => 'Nothing added yet.';
 
   @override
-  String get editQuickNote => 'Edit Quick Note';
+  String get editQuickNote => 'Edit Classroom Reminder';
 
   @override
-  String get addQuickNote => 'Add Quick Note';
+  String get addQuickNote => 'Add Classroom Reminder';
 
   @override
   String get titleLabel => 'Title';
@@ -202,13 +202,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteLabel => 'Note';
 
   @override
-  String get deleteNoteTitle => 'Delete note?';
+  String get deleteNoteTitle => 'Delete reminder?';
 
   @override
-  String get deleteNoteMessage => 'Are you sure you want to delete this note?';
+  String get deleteNoteMessage =>
+      'Are you sure you want to delete this classroom reminder?';
 
   @override
-  String get noQuickNotes => 'No quick notes yet.';
+  String get noQuickNotes => 'No classroom reminders yet.';
 
   @override
   String quickNoteBy(String staffName) {
@@ -3773,15 +3774,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get oneMinuteAgo => '1 min ago';
 
   @override
-  String minutesAgo(Object count) {
-    return '$count min ago';
+  String minutesAgo(int count) {
+    return '$count mins ago';
   }
 
   @override
   String get oneHourAgo => '1 hour ago';
 
   @override
-  String hoursAgo(Object count) {
+  String hoursAgo(int count) {
     return '$count hours ago';
   }
 
@@ -4105,4 +4106,136 @@ class AppLocalizationsEn extends AppLocalizations {
   String staffAlertsCalmSelected(Object toolName, Object time) {
     return 'Selected: $toolName • $time';
   }
+
+  @override
+  String get handoverStaffGuidanceDescription =>
+      'Practical classroom guidance from staff who know this room well.';
+
+  @override
+  String get handoverClassroomRemindersDescription =>
+      'Short classroom-wide reminders for staff, substitutes, and SNAs.';
+
+  @override
+  String get childNotes => 'Child Notes';
+
+  @override
+  String get childNotesSubtitle =>
+      'Shared and private staff notes for each child.';
+
+  @override
+  String get staffChildNotesSubtitle =>
+      'Write shared or private staff notes for children.';
+
+  @override
+  String get addChildProfilesBeforeNotes =>
+      'Add child profiles before creating child notes.';
+
+  @override
+  String couldNotLoadChildren(String error) {
+    return 'Could not load children: $error';
+  }
+
+  @override
+  String couldNotLoadNotes(String error) {
+    return 'Could not load notes: $error';
+  }
+
+  @override
+  String couldNotSaveNote(String error) {
+    return 'Could not save note: $error';
+  }
+
+  @override
+  String get noteAdded => 'Note added.';
+
+  @override
+  String get noteUpdated => 'Note updated.';
+
+  @override
+  String visibleNoteCount(int count) {
+    return '$count visible';
+  }
+
+  @override
+  String sharedNoteCount(int count) {
+    return '$count shared';
+  }
+
+  @override
+  String privateNoteCount(int count) {
+    return '$count private';
+  }
+
+  @override
+  String get child => 'Child';
+
+  @override
+  String get allChildren => 'All children';
+
+  @override
+  String get allCategories => 'All categories';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get allVisible => 'All visible';
+
+  @override
+  String get myNotes => 'My notes';
+
+  @override
+  String get shared => 'Shared';
+
+  @override
+  String get private => 'Private';
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get sensory => 'Sensory';
+
+  @override
+  String get health => 'Health';
+
+  @override
+  String get parent => 'Parent';
+
+  @override
+  String get noNotesForChildYet => 'No notes for this child yet.';
+
+  @override
+  String get chooseChildOrAddFirstNote =>
+      'Choose a child or add your first note.';
+
+  @override
+  String get chooseChildToAddNote =>
+      'To add a note, choose a child from the dropdown first.';
+
+  @override
+  String addNoteForChild(String childName) {
+    return 'Add note for $childName';
+  }
+
+  @override
+  String get editNote => 'Edit note';
+
+  @override
+  String get saveNote => 'Save note';
+
+  @override
+  String get pleaseWriteNoteFirst => 'Please write a note first.';
+
+  @override
+  String get privateNoteStaffOnly =>
+      'Private note - visible only to you in this staff view.';
+
+  @override
+  String get privateNoteExplanation =>
+      'Private notes are hidden from other staff in the app. They are future-ready for stronger staff-level rules.';
+
+  @override
+  String get sharedNoteExplanation =>
+      'Shared notes can be seen by staff in this classroom.';
 }

@@ -130,17 +130,17 @@ class AppLocalizationsGa extends AppLocalizations {
   String get handoverStartHereTab => 'Tosaigh Anseo';
 
   @override
-  String get handoverStaffDocumentsTab => 'Doiciméid Foirne';
+  String get handoverStaffDocumentsTab => 'Treoir Foirne';
 
   @override
-  String get handoverQuickNotesTab => 'Nótaí Tapa';
+  String get handoverQuickNotesTab => 'Meabhrúcháin Ranga';
 
   @override
   String get readThisFirst => 'Léigh é seo ar dtús';
 
   @override
   String get startHereDescription =>
-      'Ba cheart an t-eolas is tábhachtaí atá de dhíth láithreach ar mhúinteoir ionaid nó ar CRS a bheith sa rannóg seo.';
+      'An treoir riachtanach ranga do mhúinteoirí ionaid, CRSanna, múinteoirí agus baill foirne a bhfuil an t-eolas is tábhachtaí de dhíth orthu go tapa.';
 
   @override
   String get noStartHereInformation => 'Níl aon eolas curtha leis anseo fós.';
@@ -159,12 +159,12 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String staffDocumentTitle(String staffName) {
-    return 'Doiciméad $staffName';
+    return 'Treoir $staffName';
   }
 
   @override
   String editStaffDocument(String staffName) {
-    return 'Cuir Doiciméad $staffName in Eagar';
+    return 'Cuir Treoir $staffName in eagar';
   }
 
   @override
@@ -189,10 +189,10 @@ class AppLocalizationsGa extends AppLocalizations {
   String get nothingAddedYet => 'Níl aon rud curtha leis fós.';
 
   @override
-  String get editQuickNote => 'Cuir Nóta Tapa in Eagar';
+  String get editQuickNote => 'Cuir Meabhrúchán Ranga in eagar';
 
   @override
-  String get addQuickNote => 'Cuir Nóta Tapa Leis';
+  String get addQuickNote => 'Cuir Meabhrúchán Ranga leis';
 
   @override
   String get titleLabel => 'Teideal';
@@ -201,14 +201,14 @@ class AppLocalizationsGa extends AppLocalizations {
   String get noteLabel => 'Nóta';
 
   @override
-  String get deleteNoteTitle => 'Scrios an nóta?';
+  String get deleteNoteTitle => 'Scrios meabhrúchán?';
 
   @override
   String get deleteNoteMessage =>
-      'An bhfuil tú cinnte gur mhaith leat an nóta seo a scriosadh?';
+      'An bhfuil tú cinnte gur mhaith leat an meabhrúchán ranga seo a scriosadh?';
 
   @override
-  String get noQuickNotes => 'Níl aon nótaí tapa ann fós.';
+  String get noQuickNotes => 'Níl aon mheabhrúcháin ranga fós.';
 
   @override
   String quickNoteBy(String staffName) {
@@ -3849,7 +3849,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get oneMinuteAgo => '1 nóim ó shin';
 
   @override
-  String minutesAgo(Object count) {
+  String minutesAgo(int count) {
     return '$count nóim ó shin';
   }
 
@@ -3857,7 +3857,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get oneHourAgo => '1 uair ó shin';
 
   @override
-  String hoursAgo(Object count) {
+  String hoursAgo(int count) {
     return '$count uair ó shin';
   }
 
@@ -4173,4 +4173,136 @@ class AppLocalizationsGa extends AppLocalizations {
   String staffAlertsCalmSelected(Object toolName, Object time) {
     return 'Roghnaithe: $toolName • $time';
   }
+
+  @override
+  String get handoverStaffGuidanceDescription =>
+      'Treoir phraiticiúil ranga ó bhaill foirne a bhfuil aithne mhaith acu ar an seomra seo.';
+
+  @override
+  String get handoverClassroomRemindersDescription =>
+      'Meabhrúcháin ghearra don rang iomlán do bhaill foirne, múinteoirí ionaid agus CRSanna.';
+
+  @override
+  String get childNotes => 'Nótaí Páistí';
+
+  @override
+  String get childNotesSubtitle =>
+      'Nótaí foirne comhroinnte agus príobháideacha do gach páiste.';
+
+  @override
+  String get staffChildNotesSubtitle =>
+      'Scríobh nótaí foirne comhroinnte nó príobháideacha do pháistí.';
+
+  @override
+  String get addChildProfilesBeforeNotes =>
+      'Cuir próifílí páistí leis sula gcruthaíonn tú nótaí páistí.';
+
+  @override
+  String couldNotLoadChildren(String error) {
+    return 'Níorbh fhéidir na páistí a luchtú: $error';
+  }
+
+  @override
+  String couldNotLoadNotes(String error) {
+    return 'Níorbh fhéidir na nótaí a luchtú: $error';
+  }
+
+  @override
+  String couldNotSaveNote(String error) {
+    return 'Níorbh fhéidir an nóta a shábháil: $error';
+  }
+
+  @override
+  String get noteAdded => 'Cuireadh an nóta leis.';
+
+  @override
+  String get noteUpdated => 'Nuashonraíodh an nóta.';
+
+  @override
+  String visibleNoteCount(int count) {
+    return '$count le feiceáil';
+  }
+
+  @override
+  String sharedNoteCount(int count) {
+    return '$count comhroinnte';
+  }
+
+  @override
+  String privateNoteCount(int count) {
+    return '$count príobháideach';
+  }
+
+  @override
+  String get child => 'Páiste';
+
+  @override
+  String get allChildren => 'Gach páiste';
+
+  @override
+  String get allCategories => 'Gach catagóir';
+
+  @override
+  String get category => 'Catagóir';
+
+  @override
+  String get allVisible => 'Gach ceann le feiceáil';
+
+  @override
+  String get myNotes => 'Mo nótaí';
+
+  @override
+  String get shared => 'Comhroinnte';
+
+  @override
+  String get private => 'Príobháideach';
+
+  @override
+  String get general => 'Ginearálta';
+
+  @override
+  String get sensory => 'Céadfach';
+
+  @override
+  String get health => 'Sláinte';
+
+  @override
+  String get parent => 'Tuismitheoir';
+
+  @override
+  String get noNotesForChildYet => 'Níl aon nótaí don pháiste seo fós.';
+
+  @override
+  String get chooseChildOrAddFirstNote =>
+      'Roghnaigh páiste nó cuir do chéad nóta leis.';
+
+  @override
+  String get chooseChildToAddNote =>
+      'Chun nóta a chur leis, roghnaigh páiste ón roghchlár anuas ar dtús.';
+
+  @override
+  String addNoteForChild(String childName) {
+    return 'Cuir nóta le $childName';
+  }
+
+  @override
+  String get editNote => 'Cuir nóta in eagar';
+
+  @override
+  String get saveNote => 'Sábháil nóta';
+
+  @override
+  String get pleaseWriteNoteFirst => 'Scríobh nóta ar dtús le do thoil.';
+
+  @override
+  String get privateNoteStaffOnly =>
+      'Nóta príobháideach - le feiceáil agatsa amháin sa radharc foirne seo.';
+
+  @override
+  String get privateNoteExplanation =>
+      'Tá nótaí príobháideacha i bhfolach ó bhaill foirne eile san aip. Tá siad réidh don todhchaí do rialacha níos láidre ag leibhéal foirne.';
+
+  @override
+  String get sharedNoteExplanation =>
+      'Is féidir le baill foirne sa seomra ranga seo nótaí comhroinnte a fheiceáil.';
 }

@@ -274,8 +274,8 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
           if (_isFeatureEnabled(ClassroomFeature.childNotes))
             StaffDashboardFeatureCard(
               icon: Icons.sticky_note_2_rounded,
-              title: 'Child Notes',
-              subtitle: 'Write shared or private staff notes for children.',
+              title: l10n.childNotes,
+              subtitle: l10n.staffChildNotesSubtitle,
               color: const Color(0xFF5E7CE2),
               onTap: () {
                 Navigator.pushNamed(

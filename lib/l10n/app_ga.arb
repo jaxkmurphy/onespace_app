@@ -160,11 +160,11 @@
   "@handoverStartHereTab": {
     "description": "Text used in the app for handover start here tab."
   },
-  "handoverStaffDocumentsTab": "Doiciméid Foirne",
+  "handoverStaffDocumentsTab": "Treoir Foirne",
   "@handoverStaffDocumentsTab": {
     "description": "Text used in the app for handover staff documents tab."
   },
-  "handoverQuickNotesTab": "Nótaí Tapa",
+  "handoverQuickNotesTab": "Meabhrúcháin Ranga",
   "@handoverQuickNotesTab": {
     "description": "Text used in the app for handover quick notes tab."
   },
@@ -172,7 +172,7 @@
   "@readThisFirst": {
     "description": "Text used in the app for read this first."
   },
-  "startHereDescription": "Ba cheart an t-eolas is tábhachtaí atá de dhíth láithreach ar mhúinteoir ionaid nó ar CRS a bheith sa rannóg seo.",
+  "startHereDescription": "An treoir riachtanach ranga do mhúinteoirí ionaid, CRSanna, múinteoirí agus baill foirne a bhfuil an t-eolas is tábhachtaí de dhíth orthu go tapa.",
   "@startHereDescription": {
     "description": "Text used in the app for start here description."
   },
@@ -196,7 +196,7 @@
   "@noStaffProfilesFound": {
     "description": "Text used in the app for no staff profiles found."
   },
-  "staffDocumentTitle": "Doiciméad {staffName}",
+  "staffDocumentTitle": "Treoir {staffName}",
   "@staffDocumentTitle": {
     "placeholders": {
       "staffName": {
@@ -205,7 +205,7 @@
     },
     "description": "Text used in the app for staff document title."
   },
-  "editStaffDocument": "Cuir Doiciméad {staffName} in Eagar",
+  "editStaffDocument": "Cuir Treoir {staffName} in eagar",
   "@editStaffDocument": {
     "placeholders": {
       "staffName": {
@@ -242,11 +242,11 @@
   "@nothingAddedYet": {
     "description": "Text used in the app for nothing added yet."
   },
-  "editQuickNote": "Cuir Nóta Tapa in Eagar",
+  "editQuickNote": "Cuir Meabhrúchán Ranga in eagar",
   "@editQuickNote": {
     "description": "Text used in the app for edit quick note."
   },
-  "addQuickNote": "Cuir Nóta Tapa Leis",
+  "addQuickNote": "Cuir Meabhrúchán Ranga leis",
   "@addQuickNote": {
     "description": "Text used in the app for add quick note."
   },
@@ -256,17 +256,17 @@
   },
   "noteLabel": "Nóta",
   "@noteLabel": {
-    "description": "Text used in the app for note label."
+    "description": "Label for a note text field."
   },
-  "deleteNoteTitle": "Scrios an nóta?",
+  "deleteNoteTitle": "Scrios meabhrúchán?",
   "@deleteNoteTitle": {
     "description": "Text used in the app for delete note title."
   },
-  "deleteNoteMessage": "An bhfuil tú cinnte gur mhaith leat an nóta seo a scriosadh?",
+  "deleteNoteMessage": "An bhfuil tú cinnte gur mhaith leat an meabhrúchán ranga seo a scriosadh?",
   "@deleteNoteMessage": {
     "description": "Text used in the app for delete note message."
   },
-  "noQuickNotes": "Níl aon nótaí tapa ann fós.",
+  "noQuickNotes": "Níl aon mheabhrúcháin ranga fós.",
   "@noQuickNotes": {
     "description": "Text used in the app for no quick notes."
   },
@@ -468,7 +468,7 @@
   },
   "behaviour": "Iompar",
   "@behaviour": {
-    "description": "Text used in the app for behaviour."
+    "description": "Behaviour child note category."
   },
   "injury": "Gortú",
   "@injury": {
@@ -962,7 +962,7 @@
   },
   "communication": "Cumarsáid",
   "@communication": {
-    "description": "Text used in the app for communication."
+    "description": "Communication child note category."
   },
   "bodyCheckReports": "Tuairiscí Seiceála Coirp",
   "@bodyCheckReports": {
@@ -982,7 +982,7 @@
   },
   "learning": "Foghlaim",
   "@learning": {
-    "description": "Text used in the app for learning."
+    "description": "Learning child note category."
   },
   "quizzes": "Tráthanna na gCeist",
   "@quizzes": {
@@ -1764,7 +1764,7 @@
   },
   "justNow": "Díreach anois",
   "@justNow": {
-    "description": "Timestamp for a new entry."
+    "description": "Relative time label for just now."
   },
   "todayAt": "Inniu ag {time}",
   "@todayAt": {
@@ -2828,7 +2828,7 @@
   },
   "active": "Gníomhach",
   "@active": {
-    "description": "Text used in the app for active."
+    "description": "Status label for active items."
   },
   "inactive": "Neamhghníomhach",
   "@inactive": {
@@ -4641,62 +4641,60 @@
   "@iMightFeel": {
     "description": "Text used in the app for i might feel."
   },
-
   "activeClassrooms": "Seomraí ranga gníomhacha",
   "@activeClassrooms": {
-  "description": "Label for active classrooms count."
-},
-"inactiveClassrooms": "Seomraí ranga neamhghníomhacha",
-"@inactiveClassrooms": {
-  "description": "Label for inactive classrooms count."
-},
-"deactivate": "Díghníomhachtaigh",
-"@deactivate": {
-  "description": "Button text for deactivating something."
-},
-"deactivateClassroom": "Díghníomhachtaigh Seomra Ranga",
-"@deactivateClassroom": {
-  "description": "Text used for deactivating a classroom."
-},
-"deactivateClassroomConfirmation": "Díghníomhachtaigh an seomra ranga seo? Ní bheidh foireann in ann logáil isteach a thuilleadh, ach coinneofar na sonraí.",
-"@deactivateClassroomConfirmation": {
-  "description": "Confirmation message before deactivating a classroom."
-},
-"classroomDeactivated": "Díghníomhachtaíodh an seomra ranga.",
-"@classroomDeactivated": {
-  "description": "Message shown after a classroom is deactivated."
-},
-"classroomDeactivateError": "Níorbh fhéidir an seomra ranga a dhíghníomhachtú: {error}",
-"@classroomDeactivateError": {
-  "description": "Error shown when classroom deactivation fails.",
-  "placeholders": {
-    "error": {}
-  }
-},
-
+    "description": "Label for active classrooms count."
+  },
+  "inactiveClassrooms": "Seomraí ranga neamhghníomhacha",
+  "@inactiveClassrooms": {
+    "description": "Label for inactive classrooms count."
+  },
+  "deactivate": "Díghníomhachtaigh",
+  "@deactivate": {
+    "description": "Button text for deactivating something."
+  },
+  "deactivateClassroom": "Díghníomhachtaigh Seomra Ranga",
+  "@deactivateClassroom": {
+    "description": "Text used for deactivating a classroom."
+  },
+  "deactivateClassroomConfirmation": "Díghníomhachtaigh an seomra ranga seo? Ní bheidh foireann in ann logáil isteach a thuilleadh, ach coinneofar na sonraí.",
+  "@deactivateClassroomConfirmation": {
+    "description": "Confirmation message before deactivating a classroom."
+  },
+  "classroomDeactivated": "Díghníomhachtaíodh an seomra ranga.",
+  "@classroomDeactivated": {
+    "description": "Message shown after a classroom is deactivated."
+  },
+  "classroomDeactivateError": "Níorbh fhéidir an seomra ranga a dhíghníomhachtú: {error}",
+  "@classroomDeactivateError": {
+    "description": "Error shown when classroom deactivation fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
   "reactivate": "Athghníomhachtaigh",
-"@reactivate": {
-  "description": "Button text for reactivating something."
-},
-"reactivateClassroom": "Athghníomhachtaigh Seomra Ranga",
-"@reactivateClassroom": {
-  "description": "Text used for reactivating a classroom."
-},
-"reactivateClassroomConfirmation": "Athghníomhachtaigh an seomra ranga seo? Beidh foireann in ann logáil isteach arís.",
-"@reactivateClassroomConfirmation": {
-  "description": "Confirmation message before reactivating a classroom."
-},
-"classroomReactivated": "Athghníomhachtaíodh an seomra ranga.",
-"@classroomReactivated": {
-  "description": "Message shown after a classroom is reactivated."
-},
-"classroomReactivateError": "Níorbh fhéidir an seomra ranga a athghníomhachtú: {error}",
-"@classroomReactivateError": {
-  "description": "Error shown when classroom reactivation fails.",
-  "placeholders": {
-    "error": {}
-  }
-},
+  "@reactivate": {
+    "description": "Button text for reactivating something."
+  },
+  "reactivateClassroom": "Athghníomhachtaigh Seomra Ranga",
+  "@reactivateClassroom": {
+    "description": "Text used for reactivating a classroom."
+  },
+  "reactivateClassroomConfirmation": "Athghníomhachtaigh an seomra ranga seo? Beidh foireann in ann logáil isteach arís.",
+  "@reactivateClassroomConfirmation": {
+    "description": "Confirmation message before reactivating a classroom."
+  },
+  "classroomReactivated": "Athghníomhachtaíodh an seomra ranga.",
+  "@classroomReactivated": {
+    "description": "Message shown after a classroom is reactivated."
+  },
+  "classroomReactivateError": "Níorbh fhéidir an seomra ranga a athghníomhachtú: {error}",
+  "@classroomReactivateError": {
+    "description": "Error shown when classroom reactivation fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
   "accessDetails": "Sonraí Rochtana",
   "@accessDetails": {
     "description": "Heading for classroom login/access details."
@@ -4717,651 +4715,825 @@
   "@classroomPinCopied": {
     "description": "Message shown after copying the classroom PIN."
   },
-
   "copyAllLoginDetails": "Cóipeáil Gach Sonra Logála Isteach",
-"@copyAllLoginDetails": {
-  "description": "Button text for copying all classroom login details."
-},
-"classroomAccessDetailsCopied": "Cóipeáladh sonraí logála isteach an tseomra ranga.",
-"@classroomAccessDetailsCopied": {
-  "description": "Message shown after copying all classroom login details."
-},
-"calmPlan": "Plean Suaimhnis",
-"@calmPlan": {
-  "description": "Title for the staff Calm Plan feature."
-},
-"calmRequests": "Iarratais",
-"@calmRequests": {
-  "description": "Tab title for Calm Plan support requests."
-},
-"calmTools": "Uirlisí",
-"@calmTools": {
-  "description": "Tab title for Calm Plan tools."
-},
-"calmRequestResolved": "Réitíodh iarratas suaimhnis {name}.",
-"@calmRequestResolved": {
-  "description": "Message shown after resolving a calm support request.",
-  "placeholders": {
-    "name": {}
-  }
-},
-"calmRequestResolveError": "Níorbh fhéidir an t-iarratas a réiteach: {error}",
-"@calmRequestResolveError": {
-  "description": "Error shown when a calm support request cannot be resolved.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"calmDefaultsAdded": "Cuireadh na huirlisí suaimhnis réamhshocraithe leis.",
-"@calmDefaultsAdded": {
-  "description": "Message shown after saving default calm tools."
-},
-"calmDefaultsAddError": "Níorbh fhéidir na réamhshocruithe a chur leis: {error}",
-"@calmDefaultsAddError": {
-  "description": "Error shown when default calm tools cannot be added.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"calmToolAdded": "Cuireadh uirlis suaimhnis leis.",
-"@calmToolAdded": {
-  "description": "Message shown after adding a calm tool."
-},
-"calmToolAddError": "Níorbh fhéidir an uirlis a chur leis: {error}",
-"@calmToolAddError": {
-  "description": "Error shown when a calm tool cannot be added.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"calmToolUpdated": "Nuashonraíodh an uirlis suaimhnis.",
-"@calmToolUpdated": {
-  "description": "Message shown after updating a calm tool."
-},
-"calmToolUpdateError": "Níorbh fhéidir an uirlis a nuashonrú: {error}",
-"@calmToolUpdateError": {
-  "description": "Error shown when a calm tool cannot be updated.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"deleteCalmToolQuestion": "Scrios uirlis suaimhnis?",
-"@deleteCalmToolQuestion": {
-  "description": "Confirmation title for deleting a calm tool."
-},
-"deleteCalmToolMessage": "Bainfidh sé seo “{name}” den liosta uirlisí suaimhnis do pháistí.",
-"@deleteCalmToolMessage": {
-  "description": "Confirmation message for deleting a calm tool.",
-  "placeholders": {
-    "name": {}
-  }
-},
-"calmToolDeleted": "Scriosadh an uirlis suaimhnis.",
-"@calmToolDeleted": {
-  "description": "Message shown after deleting a calm tool."
-},
-"calmToolDeleteError": "Níorbh fhéidir an uirlis a scriosadh: {error}",
-"@calmToolDeleteError": {
-  "description": "Error shown when a calm tool cannot be deleted.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"calmRequestsLoadFailed": "Níorbh fhéidir iarratais suaimhnis a lódáil.",
-"@calmRequestsLoadFailed": {
-  "description": "Error shown when calm support requests cannot load."
-},
-"calmSupportRequestsTitle": "Iarratais tacaíochta suaimhnis",
-"@calmSupportRequestsTitle": {
-  "description": "Heading for calm support requests."
-},
-"calmSupportRequestsSubtitle": "Féach cé a d’iarr cabhair, cad a roghnaigh siad, agus cé a réitigh é.",
-"@calmSupportRequestsSubtitle": {
-  "description": "Subtitle for calm support requests."
-},
-"activeRequests": "Iarratais ghníomhacha",
-"@activeRequests": {
-  "description": "Heading for active calm support requests."
-},
-"noActiveCalmRequests": "Níl aon iarratas tacaíochta suaimhnis gníomhach.",
-"@noActiveCalmRequests": {
-  "description": "Message shown when there are no active calm support requests."
-},
-"calmRequestsWaiting": "{count} {count, plural, =1{iarratas} other{iarratas}} ag fanacht",
-"@calmRequestsWaiting": {
-  "description": "Count of active calm support requests.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"allCalmRequestsResolved": "Tá gach iarratas tacaíochta suaimhnis réitithe.",
-"@allCalmRequestsResolved": {
-  "description": "Message shown when all calm support requests are resolved."
-},
-"recentSupportHistory": "Stair tacaíochta le déanaí",
-"@recentSupportHistory": {
-  "description": "Heading for recent calm support history."
-},
-"resolvedRequestsAppearHere": "Beidh iarratais réitithe le feiceáil anseo.",
-"@resolvedRequestsAppearHere": {
-  "description": "Message shown when resolved calm requests will appear later."
-},
-"resolvedCalmRequestCount": "{count} {count, plural, =1{iarratas réitithe} other{iarratas réitithe}}",
-"@resolvedCalmRequestCount": {
-  "description": "Count of resolved calm support requests.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"noResolvedCalmRequests": "Níl aon iarratas tacaíochta suaimhnis réitithe fós.",
-"@noResolvedCalmRequests": {
-  "description": "Message shown when there are no resolved calm support requests."
-},
-"calmToolsLoadFailed": "Níorbh fhéidir uirlisí suaimhnis a lódáil.",
-"@calmToolsLoadFailed": {
-  "description": "Error shown when calm tools cannot load."
-},
-"calmToolsTitle": "Uirlisí suaimhnis",
-"@calmToolsTitle": {
-  "description": "Heading for calm tools management."
-},
-"calmToolsSubtitle": "Roghnaigh na roghanna suaimhnis is féidir le páistí a úsáid nuair a theastaíonn tacaíocht uathu.",
-"@calmToolsSubtitle": {
-  "description": "Subtitle for calm tools management."
-},
-"addCalmTool": "Cuir uirlis leis",
-"@addCalmTool": {
-  "description": "Button text for adding a calm tool."
-},
-"saveDefaultsToClassroom": "Sábháil réamhshocruithe don seomra",
-"@saveDefaultsToClassroom": {
-  "description": "Button text for saving default calm tools to Firestore."
-},
-"addDefaultsIfEmpty": "Cuir réamhshocruithe leis má tá sé folamh",
-"@addDefaultsIfEmpty": {
-  "description": "Button text for seeding default calm tools only if empty."
-},
-"previewDefaultsTitle": "Réamhamharc ar uirlisí réamhshocraithe",
-"@previewDefaultsTitle": {
-  "description": "Title for preview-only default calm tools banner."
-},
-"previewDefaultsMessage": "Tá na huirlisí réamhshocraithe seo á dtaispeáint mar réamhamharc. Sábháil iad don seomra ranga seo sula gcuirtear in eagar, sula ndíchumasaítear, nó sula scriostar iad.",
-"@previewDefaultsMessage": {
-  "description": "Message explaining preview-only calm tools."
-},
-"noCalmTools": "Níl aon uirlis suaimhnis fós. Cuir ceann leis nó síolraigh na réamhshocruithe.",
-"@noCalmTools": {
-  "description": "Message shown when there are no calm tools."
-},
-"aChild": "Páiste",
-"@aChild": {
-  "description": "Fallback child name."
-},
-"calmSupport": "tacaíocht suaimhnis",
-"@calmSupport": {
-  "description": "Fallback calm support label."
-},
-"notResolvedYet": "Níl sé réitithe fós",
-"@notResolvedYet": {
-  "description": "Fallback label for unresolved requests."
-},
-"childAskedForHelp": "D’iarr {name} cabhair",
-"@childAskedForHelp": {
-  "description": "Text showing a child asked for calm support.",
-  "placeholders": {
-    "name": {}
-  }
-},
-"active": "Gníomhach",
-"@active": {
-  "description": "Status label for active items."
-},
-"resolved": "Réitithe",
-"@resolved": {
-  "description": "Status label for resolved items."
-},
-"resolvedBy": "Réitithe ag {name}",
-"@resolvedBy": {
-  "description": "Label showing who resolved a calm support request.",
-  "placeholders": {
-    "name": {}
-  }
-},
-"markResolved": "Marcáil mar réitithe",
-"@markResolved": {
-  "description": "Button text for resolving a calm support request."
-},
-"justNow": "Díreach anois",
-"@justNow": {
-  "description": "Relative time label."
-},
-"oneMinuteAgo": "1 nóim ó shin",
-"@oneMinuteAgo": {
-  "description": "Relative time label for one minute ago."
-},
-"minutesAgo": "{count} nóim ó shin",
-"@minutesAgo": {
-  "description": "Relative time label for minutes ago.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"oneHourAgo": "1 uair ó shin",
-"@oneHourAgo": {
-  "description": "Relative time label for one hour ago."
-},
-"hoursAgo": "{count} uair ó shin",
-"@hoursAgo": {
-  "description": "Relative time label for hours ago.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"oneDayAgo": "1 lá ó shin",
-"@oneDayAgo": {
-  "description": "Relative time label for one day ago."
-},
-"daysAgo": "{count} lá ó shin",
-"@daysAgo": {
-  "description": "Relative time label for days ago.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"editCalmTool": "Cuir uirlis suaimhnis in eagar",
-"@editCalmTool": {
-  "description": "Title for editing a calm tool."
-},
-"calmToolName": "Ainm na huirlise",
-"@calmToolName": {
-  "description": "Field label for calm tool name."
-},
-"calmToolNameHint": "Sampla: Áit chiúin",
-"@calmToolNameHint": {
-  "description": "Hint for calm tool name."
-},
-"calmToolDescriptionHint": "Sampla: Téigh go háit chiúin agus shuaimhneach.",
-"@calmToolDescriptionHint": {
-  "description": "Hint for calm tool description."
-},
-"chooseCalmToolIcon": "Roghnaigh deilbhín don uirlis suaimhnis",
-"@chooseCalmToolIcon": {
-  "description": "Title for choosing a calm tool icon."
-},
-"enable": "Cumasaigh",
-"@enable": {
-  "description": "Button or tooltip for enabling an item."
-},
-"disable": "Díchumasaigh",
-"@disable": {
-  "description": "Button or tooltip for disabling an item."
-},
-"classroomHelper": "Cúntóir Seomra Ranga",
-"@classroomHelper": {
-  "description": "Feature title for classroom helper jobs."
-},
-"childClassroomHelperSubtitle": "Roghnaigh jab ranga agus taispeáin conas a chabhraigh tú.",
-"@childClassroomHelperSubtitle": {
-  "description": "Child dashboard subtitle for classroom helper."
-},
-"staffClassroomHelperSubtitle": "Bainistigh jabanna cúntóra agus chuimhneacháin chabhracha le déanaí.",
-"@staffClassroomHelperSubtitle": {
-  "description": "Staff dashboard subtitle for classroom helper."
-},
-"classroomHelperStaffTitle": "Cúntóir Seomra Ranga",
-"@classroomHelperStaffTitle": {
-  "description": "Staff page title for classroom helper."
-},
-"classroomHelperStaffIntro": "Roghnaigh na jabanna cúntóra atá ar fáil agus féach ar chuimhneacháin chabhracha le déanaí.",
-"@classroomHelperStaffIntro": {
-  "description": "Intro text for staff classroom helper page."
-},
-"classroomHelperChildTitle": "Conas is féidir leat cabhrú inniu, {name}?",
-"@classroomHelperChildTitle": {
-  "description": "Child page title for classroom helper.",
-  "placeholders": {
-    "name": {}
-  }
-},
-"classroomHelperChildIntro": "Roghnaigh jab nuair a chabhraigh tú leis an rang.",
-"@classroomHelperChildIntro": {
-  "description": "Intro text for child classroom helper page."
-},
-"classroomHelperStarterJobsPreview": "Tá na jabanna tosaithe seo réidh le húsáid. Sábháil iad sula ndéanann tú eagarthóireacht, díchumasú nó scriosadh.",
-"@classroomHelperStarterJobsPreview": {
-  "description": "Message explaining starter classroom helper jobs."
-},
-"classroomHelperSaveStarterJobs": "Sábháil jabanna tosaithe",
-"@classroomHelperSaveStarterJobs": {
-  "description": "Button text for saving starter helper jobs."
-},
-"classroomHelperStarterJobsSaved": "Sábháladh jabanna tosaithe.",
-"@classroomHelperStarterJobsSaved": {
-  "description": "Confirmation after starter helper jobs are saved."
-},
-"classroomHelperSaveFailed": "Níorbh fhéidir jabanna cúntóra a shábháil: {error}",
-"@classroomHelperSaveFailed": {
-  "description": "Error message when classroom helper save fails.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"classroomHelperThankYouTitle": "Go raibh maith agat as cabhrú!",
-"@classroomHelperThankYouTitle": {
-  "description": "Dialog title after a child records helping."
-},
-"classroomHelperThankYouMessage": "Feicfidh múinteoir gur chabhraigh tú leis an rang.",
-"@classroomHelperThankYouMessage": {
-  "description": "Dialog message after a child records helping."
-},
-"classroomHelperAddJob": "Cuir jab leis",
-"@classroomHelperAddJob": {
-  "description": "Button and dialog title for adding helper job."
-},
-"classroomHelperEditJob": "Cuir jab in eagar",
-"@classroomHelperEditJob": {
-  "description": "Dialog title for editing helper job."
-},
-"classroomHelperDescriptionLabel": "Cad ba chóir don chúntóir a dhéanamh?",
-"@classroomHelperDescriptionLabel": {
-  "description": "Field label for helper job description."
-},
-"classroomHelperChooseIcon": "Roghnaigh deilbhín don jab",
-"@classroomHelperChooseIcon": {
-  "description": "Button and dialog title for choosing a helper job icon."
-},
-"classroomHelperActiveJob": "Ar fáil do pháistí",
-"@classroomHelperActiveJob": {
-  "description": "Switch label for helper job availability."
-},
-"classroomHelperJobSaved": "Sábháladh an jab cúntóra.",
-"@classroomHelperJobSaved": {
-  "description": "Confirmation after helper job is saved."
-},
-"classroomHelperDeleteJob": "Scrios jab cúntóra",
-"@classroomHelperDeleteJob": {
-  "description": "Dialog title for deleting helper job."
-},
-"classroomHelperDeleteJobMessage": "Scrios “{title}”?\n\nNí féidir é seo a chealú.",
-"@classroomHelperDeleteJobMessage": {
-  "description": "Dialog message for deleting helper job.",
-  "placeholders": {
-    "title": {}
-  }
-},
-"classroomHelperJobDeleted": "Scriosadh an jab cúntóra.",
-"@classroomHelperJobDeleted": {
-  "description": "Confirmation after helper job is deleted."
-},
-"classroomHelperNoJobs": "Níl aon jab cúntóra ann fós",
-"@classroomHelperNoJobs": {
-  "description": "Empty state title for classroom helper jobs."
-},
-"classroomHelperNoJobsSubtitle": "Is féidir leis an bhfoireann jabanna cúntóra a chur leis don seomra ranga.",
-"@classroomHelperNoJobsSubtitle": {
-  "description": "Empty state subtitle for classroom helper jobs."
-},
-"classroomHelperIHelped": "Chabhraigh mé",
-"@classroomHelperIHelped": {
-  "description": "Child button for recording helper job completion."
-},
-"classroomHelperRecentHelp": "Cabhair le déanaí",
-"@classroomHelperRecentHelp": {
-  "description": "Staff section title for recent helper completions."
-},
-"classroomHelperNoRecentHelp": "Níor taifeadadh aon chabhair fós.",
-"@classroomHelperNoRecentHelp": {
-  "description": "Empty state for helper completions."
-},
-"classroomHelperCompletionLine": "Chabhraigh {childName} le {jobTitle}",
-"@classroomHelperCompletionLine": {
-  "description": "Recent helper completion line.",
-  "placeholders": {
-    "childName": {},
-    "jobTitle": {}
-  }
-},
-"classroomHelperLoadFailed": "Níorbh fhéidir Cúntóir Seomra Ranga a lódáil.",
-"@classroomHelperLoadFailed": {
-  "description": "Error title when helper jobs fail to load."
-},
-"classroomHelperJustNow": "Anois díreach",
-"@classroomHelperJustNow": {
-  "description": "Relative time label for classroom helper."
-},
-"classroomHelperMinuteAgo": "1 nóim ó shin",
-"@classroomHelperMinuteAgo": {
-  "description": "Relative time label for one minute ago."
-},
-"classroomHelperMinutesAgo": "{count} nóim ó shin",
-"@classroomHelperMinutesAgo": {
-  "description": "Relative time label for minutes ago.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"classroomHelperHourAgo": "1 uair ó shin",
-"@classroomHelperHourAgo": {
-  "description": "Relative time label for one hour ago."
-},
-"classroomHelperHoursAgo": "{count} uair ó shin",
-"@classroomHelperHoursAgo": {
-  "description": "Relative time label for hours ago.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"classroomHelperDayAgo": "1 lá ó shin",
-"@classroomHelperDayAgo": {
-  "description": "Relative time label for one day ago."
-},
-"classroomHelperDaysAgo": "{count} lá ó shin",
-"@classroomHelperDaysAgo": {
-  "description": "Relative time label for days ago.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"classroomHelperAssignJob": "Sann {title}",
-"@classroomHelperAssignJob": {
-  "description": "Dialog title for assigning a helper job.",
-  "placeholders": {
-    "title": {}
-  }
-},
-"classroomHelperAllChildren": "Gach páiste",
-"@classroomHelperAllChildren": {
-  "description": "Option for selecting all children."
-},
-"classroomHelperAssign": "Sann",
-"@classroomHelperAssign": {
-  "description": "Button text for assigning a helper job."
-},
-"classroomHelperAssigned": "Sannadh an jab cúntóra.",
-"@classroomHelperAssigned": {
-  "description": "Confirmation after assigning a helper job."
-},
-"classroomHelperRequestSent": "Seiceálfaidh múinteoir do jab.",
-"@classroomHelperRequestSent": {
-  "description": "Message after child asks if job is finished."
-},
-"classroomHelperConfirmed": "Deimhníodh an jab cúntóra.",
-"@classroomHelperConfirmed": {
-  "description": "Confirmation after staff confirms helper request."
-},
-"classroomHelperRequestCleared": "Glanadh an t-iarratas.",
-"@classroomHelperRequestCleared": {
-  "description": "Confirmation after staff clears helper request."
-},
-"classroomHelperAssignmentCleared": "Glanadh an jab cúntóra.",
-"@classroomHelperAssignmentCleared": {
-  "description": "Confirmation after clearing a child helper assignment."
-},
-"classroomHelperNoAssignedJobTitle": "Níl jab cúntóra agat anois, {name}",
-"@classroomHelperNoAssignedJobTitle": {
-  "description": "Child empty state title when no helper job is assigned.",
-  "placeholders": {
-    "name": {}
-  }
-},
-"classroomHelperNoAssignedJobMessage": "Is féidir le múinteoir jab cúntóra ranga a thabhairt duit nuair atá sé do sheal.",
-"@classroomHelperNoAssignedJobMessage": {
-  "description": "Child empty state message when no helper job is assigned."
-},
-"classroomHelperMyJobToday": "Mo jab cúntóra inniu",
-"@classroomHelperMyJobToday": {
-  "description": "Child assigned helper job heading."
-},
-"classroomHelperWaitingForTeacher": "Ag fanacht le múinteoir é a sheiceáil",
-"@classroomHelperWaitingForTeacher": {
-  "description": "Child waiting state after asking staff to confirm a job."
-},
-"classroomHelperDidIFinish": "Ar chríochnaigh mé mo jab?",
-"@classroomHelperDidIFinish": {
-  "description": "Child button asking staff to confirm job completion."
-},
-"classroomHelperPendingRequests": "Le seiceáil",
-"@classroomHelperPendingRequests": {
-  "description": "Staff panel title for pending helper completion requests."
-},
-"classroomHelperPendingRequestsSubtitle": "Páistí ag fiafraí an bhfuil a jab cúntóra críochnaithe.",
-"@classroomHelperPendingRequestsSubtitle": {
-  "description": "Staff panel subtitle for pending helper completion requests."
-},
-"classroomHelperNoPendingRequests": "Níl aon jab cúntóra ag fanacht le seiceáil.",
-"@classroomHelperNoPendingRequests": {
-  "description": "Empty state for pending helper completion requests."
-},
-"classroomHelperFinishRequestLine": "Fiafraíonn {childName}: ar chríochnaigh mé {jobTitle}?",
-"@classroomHelperFinishRequestLine": {
-  "description": "Pending helper request line.",
-  "placeholders": {
-    "childName": {},
-    "jobTitle": {}
-  }
-},
-"classroomHelperNotYet": "Ní fós",
-"@classroomHelperNotYet": {
-  "description": "Button for clearing a helper request without confirming."
-},
-"classroomHelperConfirm": "Deimhnigh",
-"@classroomHelperConfirm": {
-  "description": "Button for confirming helper request completion."
-},
-"classroomHelperCurrentAssignments": "Sannacháin reatha",
-"@classroomHelperCurrentAssignments": {
-  "description": "Staff panel title for current helper assignments."
-},
-"classroomHelperOneJobPerChild": "Cruann jabanna do gach páiste. Taispeántar an jab neamhchríochnaithe is sine ar dtús.",
-"@classroomHelperOneJobPerChild": {
-  "description": "Staff panel subtitle for helper assignments."
-},
-"classroomHelperQueuedJobs": "{count} ag fanacht",
-"@classroomHelperQueuedJobs": {
-  "description": "Short label showing how many helper jobs are queued behind the current one.",
-  "placeholders": {
-    "count": {}
-  }
-},
-"classroomHelperNoJobAssigned": "Níl jab sannta",
-"@classroomHelperNoJobAssigned": {
-  "description": "Assignment empty label."
-},
-"classroomHelperClearJob": "Glan jab",
-"@classroomHelperClearJob": {
-  "description": "Button for clearing a child helper assignment."
-},
-"classroomHelperJobLibrary": "Leabharlann jabanna",
-"@classroomHelperJobLibrary": {
-  "description": "Staff panel title for helper jobs library."
-},
-"classroomHelperJobLibrarySubtitle": "Cruthaigh jabanna, ansin sann iad do pháiste amháin, roinnt páistí nó gach duine.",
-"@classroomHelperJobLibrarySubtitle": {
-  "description": "Staff panel subtitle for helper jobs library."
-},
-"classroomHelperCompletedLog": "Log jabanna críochnaithe",
-"@classroomHelperCompletedLog": {
-  "description": "Staff panel title for confirmed helper completions."
-},
-"classroomHelperCompletedLogSubtitle": "Jabanna cúntóra deimhnithe a chríochnaigh páistí.",
-"@classroomHelperCompletedLogSubtitle": {
-  "description": "Staff panel subtitle for confirmed helper completions."
-},
-"classroomHelperFilterByChild": "Scag de réir páiste",
-"@classroomHelperFilterByChild": {
-  "description": "Dropdown label for filtering helper completion log by child."
-},
-"classroomHelperConfirmedBy": "Deimhnithe ag {staffName}",
-"@classroomHelperConfirmedBy": {
-  "description": "Helper completion log confirmed by label.",
-  "placeholders": {
-    "staffName": {}
-  }
-},
-"staffAlertsLoadFailed": "Níorbh fhéidir foláirimh an tseomra ranga a lódáil.",
-"@staffAlertsLoadFailed": {
-  "description": "Error message for staff dashboard alerts."
-},
-"staffAlertsNeedsAttention": "Teastaíonn aird",
-"@staffAlertsNeedsAttention": {
-  "description": "Staff dashboard alerts panel title."
-},
-"staffAlertsActiveCount": "{count} foláireamh gníomhach",
-"@staffAlertsActiveCount": {
-  "description": "Staff dashboard active alert count.",
-  "placeholders": {
-    "count": {
-      "type": "num"
+  "@copyAllLoginDetails": {
+    "description": "Button text for copying all classroom login details."
+  },
+  "classroomAccessDetailsCopied": "Cóipeáladh sonraí logála isteach an tseomra ranga.",
+  "@classroomAccessDetailsCopied": {
+    "description": "Message shown after copying all classroom login details."
+  },
+  "calmPlan": "Plean Suaimhnis",
+  "@calmPlan": {
+    "description": "Title for the staff Calm Plan feature."
+  },
+  "calmRequests": "Iarratais",
+  "@calmRequests": {
+    "description": "Tab title for Calm Plan support requests."
+  },
+  "calmTools": "Uirlisí",
+  "@calmTools": {
+    "description": "Tab title for Calm Plan tools."
+  },
+  "calmRequestResolved": "Réitíodh iarratas suaimhnis {name}.",
+  "@calmRequestResolved": {
+    "description": "Message shown after resolving a calm support request.",
+    "placeholders": {
+      "name": {}
     }
-  }
-},
-"staffAlertsMoreCount": "+{count} foláireamh eile",
-"@staffAlertsMoreCount": {
-  "description": "Staff dashboard hidden alert count.",
-  "placeholders": {
-    "count": {
-      "type": "num"
+  },
+  "calmRequestResolveError": "Níorbh fhéidir an t-iarratas a réiteach: {error}",
+  "@calmRequestResolveError": {
+    "description": "Error shown when a calm support request cannot be resolved.",
+    "placeholders": {
+      "error": {}
     }
+  },
+  "calmDefaultsAdded": "Cuireadh na huirlisí suaimhnis réamhshocraithe leis.",
+  "@calmDefaultsAdded": {
+    "description": "Message shown after saving default calm tools."
+  },
+  "calmDefaultsAddError": "Níorbh fhéidir na réamhshocruithe a chur leis: {error}",
+  "@calmDefaultsAddError": {
+    "description": "Error shown when default calm tools cannot be added.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "calmToolAdded": "Cuireadh uirlis suaimhnis leis.",
+  "@calmToolAdded": {
+    "description": "Message shown after adding a calm tool."
+  },
+  "calmToolAddError": "Níorbh fhéidir an uirlis a chur leis: {error}",
+  "@calmToolAddError": {
+    "description": "Error shown when a calm tool cannot be added.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "calmToolUpdated": "Nuashonraíodh an uirlis suaimhnis.",
+  "@calmToolUpdated": {
+    "description": "Message shown after updating a calm tool."
+  },
+  "calmToolUpdateError": "Níorbh fhéidir an uirlis a nuashonrú: {error}",
+  "@calmToolUpdateError": {
+    "description": "Error shown when a calm tool cannot be updated.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteCalmToolQuestion": "Scrios uirlis suaimhnis?",
+  "@deleteCalmToolQuestion": {
+    "description": "Confirmation title for deleting a calm tool."
+  },
+  "deleteCalmToolMessage": "Bainfidh sé seo “{name}” den liosta uirlisí suaimhnis do pháistí.",
+  "@deleteCalmToolMessage": {
+    "description": "Confirmation message for deleting a calm tool.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "calmToolDeleted": "Scriosadh an uirlis suaimhnis.",
+  "@calmToolDeleted": {
+    "description": "Message shown after deleting a calm tool."
+  },
+  "calmToolDeleteError": "Níorbh fhéidir an uirlis a scriosadh: {error}",
+  "@calmToolDeleteError": {
+    "description": "Error shown when a calm tool cannot be deleted.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "calmRequestsLoadFailed": "Níorbh fhéidir iarratais suaimhnis a lódáil.",
+  "@calmRequestsLoadFailed": {
+    "description": "Error shown when calm support requests cannot load."
+  },
+  "calmSupportRequestsTitle": "Iarratais tacaíochta suaimhnis",
+  "@calmSupportRequestsTitle": {
+    "description": "Heading for calm support requests."
+  },
+  "calmSupportRequestsSubtitle": "Féach cé a d’iarr cabhair, cad a roghnaigh siad, agus cé a réitigh é.",
+  "@calmSupportRequestsSubtitle": {
+    "description": "Subtitle for calm support requests."
+  },
+  "activeRequests": "Iarratais ghníomhacha",
+  "@activeRequests": {
+    "description": "Heading for active calm support requests."
+  },
+  "noActiveCalmRequests": "Níl aon iarratas tacaíochta suaimhnis gníomhach.",
+  "@noActiveCalmRequests": {
+    "description": "Message shown when there are no active calm support requests."
+  },
+  "calmRequestsWaiting": "{count} {count, plural, =1{iarratas} other{iarratas}} ag fanacht",
+  "@calmRequestsWaiting": {
+    "description": "Count of active calm support requests.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "allCalmRequestsResolved": "Tá gach iarratas tacaíochta suaimhnis réitithe.",
+  "@allCalmRequestsResolved": {
+    "description": "Message shown when all calm support requests are resolved."
+  },
+  "recentSupportHistory": "Stair tacaíochta le déanaí",
+  "@recentSupportHistory": {
+    "description": "Heading for recent calm support history."
+  },
+  "resolvedRequestsAppearHere": "Beidh iarratais réitithe le feiceáil anseo.",
+  "@resolvedRequestsAppearHere": {
+    "description": "Message shown when resolved calm requests will appear later."
+  },
+  "resolvedCalmRequestCount": "{count} {count, plural, =1{iarratas réitithe} other{iarratas réitithe}}",
+  "@resolvedCalmRequestCount": {
+    "description": "Count of resolved calm support requests.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "noResolvedCalmRequests": "Níl aon iarratas tacaíochta suaimhnis réitithe fós.",
+  "@noResolvedCalmRequests": {
+    "description": "Message shown when there are no resolved calm support requests."
+  },
+  "calmToolsLoadFailed": "Níorbh fhéidir uirlisí suaimhnis a lódáil.",
+  "@calmToolsLoadFailed": {
+    "description": "Error shown when calm tools cannot load."
+  },
+  "calmToolsTitle": "Uirlisí suaimhnis",
+  "@calmToolsTitle": {
+    "description": "Heading for calm tools management."
+  },
+  "calmToolsSubtitle": "Roghnaigh na roghanna suaimhnis is féidir le páistí a úsáid nuair a theastaíonn tacaíocht uathu.",
+  "@calmToolsSubtitle": {
+    "description": "Subtitle for calm tools management."
+  },
+  "addCalmTool": "Cuir uirlis leis",
+  "@addCalmTool": {
+    "description": "Button text for adding a calm tool."
+  },
+  "saveDefaultsToClassroom": "Sábháil réamhshocruithe don seomra",
+  "@saveDefaultsToClassroom": {
+    "description": "Button text for saving default calm tools to Firestore."
+  },
+  "addDefaultsIfEmpty": "Cuir réamhshocruithe leis má tá sé folamh",
+  "@addDefaultsIfEmpty": {
+    "description": "Button text for seeding default calm tools only if empty."
+  },
+  "previewDefaultsTitle": "Réamhamharc ar uirlisí réamhshocraithe",
+  "@previewDefaultsTitle": {
+    "description": "Title for preview-only default calm tools banner."
+  },
+  "previewDefaultsMessage": "Tá na huirlisí réamhshocraithe seo á dtaispeáint mar réamhamharc. Sábháil iad don seomra ranga seo sula gcuirtear in eagar, sula ndíchumasaítear, nó sula scriostar iad.",
+  "@previewDefaultsMessage": {
+    "description": "Message explaining preview-only calm tools."
+  },
+  "noCalmTools": "Níl aon uirlis suaimhnis fós. Cuir ceann leis nó síolraigh na réamhshocruithe.",
+  "@noCalmTools": {
+    "description": "Message shown when there are no calm tools."
+  },
+  "aChild": "Páiste",
+  "@aChild": {
+    "description": "Fallback child name."
+  },
+  "calmSupport": "tacaíocht suaimhnis",
+  "@calmSupport": {
+    "description": "Fallback calm support label."
+  },
+  "notResolvedYet": "Níl sé réitithe fós",
+  "@notResolvedYet": {
+    "description": "Fallback label for unresolved requests."
+  },
+  "childAskedForHelp": "D’iarr {name} cabhair",
+  "@childAskedForHelp": {
+    "description": "Text showing a child asked for calm support.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "resolved": "Réitithe",
+  "@resolved": {
+    "description": "Status label for resolved items."
+  },
+  "resolvedBy": "Réitithe ag {name}",
+  "@resolvedBy": {
+    "description": "Label showing who resolved a calm support request.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "markResolved": "Marcáil mar réitithe",
+  "@markResolved": {
+    "description": "Button text for resolving a calm support request."
+  },
+  "oneMinuteAgo": "1 nóim ó shin",
+  "@oneMinuteAgo": {
+    "description": "Relative time label for one minute ago."
+  },
+  "minutesAgo": "{count} nóim ó shin",
+  "@minutesAgo": {
+    "description": "Relative time label for minutes ago.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "oneHourAgo": "1 uair ó shin",
+  "@oneHourAgo": {
+    "description": "Relative time label for one hour ago."
+  },
+  "hoursAgo": "{count} uair ó shin",
+  "@hoursAgo": {
+    "description": "Relative time label for hours ago.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "oneDayAgo": "1 lá ó shin",
+  "@oneDayAgo": {
+    "description": "Relative time label for one day ago."
+  },
+  "daysAgo": "{count} lá ó shin",
+  "@daysAgo": {
+    "description": "Relative time label for days ago.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "editCalmTool": "Cuir uirlis suaimhnis in eagar",
+  "@editCalmTool": {
+    "description": "Title for editing a calm tool."
+  },
+  "calmToolName": "Ainm na huirlise",
+  "@calmToolName": {
+    "description": "Field label for calm tool name."
+  },
+  "calmToolNameHint": "Sampla: Áit chiúin",
+  "@calmToolNameHint": {
+    "description": "Hint for calm tool name."
+  },
+  "calmToolDescriptionHint": "Sampla: Téigh go háit chiúin agus shuaimhneach.",
+  "@calmToolDescriptionHint": {
+    "description": "Hint for calm tool description."
+  },
+  "chooseCalmToolIcon": "Roghnaigh deilbhín don uirlis suaimhnis",
+  "@chooseCalmToolIcon": {
+    "description": "Title for choosing a calm tool icon."
+  },
+  "enable": "Cumasaigh",
+  "@enable": {
+    "description": "Button or tooltip for enabling an item."
+  },
+  "disable": "Díchumasaigh",
+  "@disable": {
+    "description": "Button or tooltip for disabling an item."
+  },
+  "classroomHelper": "Cúntóir Seomra Ranga",
+  "@classroomHelper": {
+    "description": "Feature title for classroom helper jobs."
+  },
+  "childClassroomHelperSubtitle": "Roghnaigh jab ranga agus taispeáin conas a chabhraigh tú.",
+  "@childClassroomHelperSubtitle": {
+    "description": "Child dashboard subtitle for classroom helper."
+  },
+  "staffClassroomHelperSubtitle": "Bainistigh jabanna cúntóra agus chuimhneacháin chabhracha le déanaí.",
+  "@staffClassroomHelperSubtitle": {
+    "description": "Staff dashboard subtitle for classroom helper."
+  },
+  "classroomHelperStaffTitle": "Cúntóir Seomra Ranga",
+  "@classroomHelperStaffTitle": {
+    "description": "Staff page title for classroom helper."
+  },
+  "classroomHelperStaffIntro": "Roghnaigh na jabanna cúntóra atá ar fáil agus féach ar chuimhneacháin chabhracha le déanaí.",
+  "@classroomHelperStaffIntro": {
+    "description": "Intro text for staff classroom helper page."
+  },
+  "classroomHelperChildTitle": "Conas is féidir leat cabhrú inniu, {name}?",
+  "@classroomHelperChildTitle": {
+    "description": "Child page title for classroom helper.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "classroomHelperChildIntro": "Roghnaigh jab nuair a chabhraigh tú leis an rang.",
+  "@classroomHelperChildIntro": {
+    "description": "Intro text for child classroom helper page."
+  },
+  "classroomHelperStarterJobsPreview": "Tá na jabanna tosaithe seo réidh le húsáid. Sábháil iad sula ndéanann tú eagarthóireacht, díchumasú nó scriosadh.",
+  "@classroomHelperStarterJobsPreview": {
+    "description": "Message explaining starter classroom helper jobs."
+  },
+  "classroomHelperSaveStarterJobs": "Sábháil jabanna tosaithe",
+  "@classroomHelperSaveStarterJobs": {
+    "description": "Button text for saving starter helper jobs."
+  },
+  "classroomHelperStarterJobsSaved": "Sábháladh jabanna tosaithe.",
+  "@classroomHelperStarterJobsSaved": {
+    "description": "Confirmation after starter helper jobs are saved."
+  },
+  "classroomHelperSaveFailed": "Níorbh fhéidir jabanna cúntóra a shábháil: {error}",
+  "@classroomHelperSaveFailed": {
+    "description": "Error message when classroom helper save fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "classroomHelperThankYouTitle": "Go raibh maith agat as cabhrú!",
+  "@classroomHelperThankYouTitle": {
+    "description": "Dialog title after a child records helping."
+  },
+  "classroomHelperThankYouMessage": "Feicfidh múinteoir gur chabhraigh tú leis an rang.",
+  "@classroomHelperThankYouMessage": {
+    "description": "Dialog message after a child records helping."
+  },
+  "classroomHelperAddJob": "Cuir jab leis",
+  "@classroomHelperAddJob": {
+    "description": "Button and dialog title for adding helper job."
+  },
+  "classroomHelperEditJob": "Cuir jab in eagar",
+  "@classroomHelperEditJob": {
+    "description": "Dialog title for editing helper job."
+  },
+  "classroomHelperDescriptionLabel": "Cad ba chóir don chúntóir a dhéanamh?",
+  "@classroomHelperDescriptionLabel": {
+    "description": "Field label for helper job description."
+  },
+  "classroomHelperChooseIcon": "Roghnaigh deilbhín don jab",
+  "@classroomHelperChooseIcon": {
+    "description": "Button and dialog title for choosing a helper job icon."
+  },
+  "classroomHelperActiveJob": "Ar fáil do pháistí",
+  "@classroomHelperActiveJob": {
+    "description": "Switch label for helper job availability."
+  },
+  "classroomHelperJobSaved": "Sábháladh an jab cúntóra.",
+  "@classroomHelperJobSaved": {
+    "description": "Confirmation after helper job is saved."
+  },
+  "classroomHelperDeleteJob": "Scrios jab cúntóra",
+  "@classroomHelperDeleteJob": {
+    "description": "Dialog title for deleting helper job."
+  },
+  "classroomHelperDeleteJobMessage": "Scrios “{title}”?\n\nNí féidir é seo a chealú.",
+  "@classroomHelperDeleteJobMessage": {
+    "description": "Dialog message for deleting helper job.",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "classroomHelperJobDeleted": "Scriosadh an jab cúntóra.",
+  "@classroomHelperJobDeleted": {
+    "description": "Confirmation after helper job is deleted."
+  },
+  "classroomHelperNoJobs": "Níl aon jab cúntóra ann fós",
+  "@classroomHelperNoJobs": {
+    "description": "Empty state title for classroom helper jobs."
+  },
+  "classroomHelperNoJobsSubtitle": "Is féidir leis an bhfoireann jabanna cúntóra a chur leis don seomra ranga.",
+  "@classroomHelperNoJobsSubtitle": {
+    "description": "Empty state subtitle for classroom helper jobs."
+  },
+  "classroomHelperIHelped": "Chabhraigh mé",
+  "@classroomHelperIHelped": {
+    "description": "Child button for recording helper job completion."
+  },
+  "classroomHelperRecentHelp": "Cabhair le déanaí",
+  "@classroomHelperRecentHelp": {
+    "description": "Staff section title for recent helper completions."
+  },
+  "classroomHelperNoRecentHelp": "Níor taifeadadh aon chabhair fós.",
+  "@classroomHelperNoRecentHelp": {
+    "description": "Empty state for helper completions."
+  },
+  "classroomHelperCompletionLine": "Chabhraigh {childName} le {jobTitle}",
+  "@classroomHelperCompletionLine": {
+    "description": "Recent helper completion line.",
+    "placeholders": {
+      "childName": {},
+      "jobTitle": {}
+    }
+  },
+  "classroomHelperLoadFailed": "Níorbh fhéidir Cúntóir Seomra Ranga a lódáil.",
+  "@classroomHelperLoadFailed": {
+    "description": "Error title when helper jobs fail to load."
+  },
+  "classroomHelperJustNow": "Anois díreach",
+  "@classroomHelperJustNow": {
+    "description": "Relative time label for classroom helper."
+  },
+  "classroomHelperMinuteAgo": "1 nóim ó shin",
+  "@classroomHelperMinuteAgo": {
+    "description": "Relative time label for one minute ago."
+  },
+  "classroomHelperMinutesAgo": "{count} nóim ó shin",
+  "@classroomHelperMinutesAgo": {
+    "description": "Relative time label for minutes ago.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "classroomHelperHourAgo": "1 uair ó shin",
+  "@classroomHelperHourAgo": {
+    "description": "Relative time label for one hour ago."
+  },
+  "classroomHelperHoursAgo": "{count} uair ó shin",
+  "@classroomHelperHoursAgo": {
+    "description": "Relative time label for hours ago.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "classroomHelperDayAgo": "1 lá ó shin",
+  "@classroomHelperDayAgo": {
+    "description": "Relative time label for one day ago."
+  },
+  "classroomHelperDaysAgo": "{count} lá ó shin",
+  "@classroomHelperDaysAgo": {
+    "description": "Relative time label for days ago.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "classroomHelperAssignJob": "Sann {title}",
+  "@classroomHelperAssignJob": {
+    "description": "Dialog title for assigning a helper job.",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "classroomHelperAllChildren": "Gach páiste",
+  "@classroomHelperAllChildren": {
+    "description": "Option for selecting all children."
+  },
+  "classroomHelperAssign": "Sann",
+  "@classroomHelperAssign": {
+    "description": "Button text for assigning a helper job."
+  },
+  "classroomHelperAssigned": "Sannadh an jab cúntóra.",
+  "@classroomHelperAssigned": {
+    "description": "Confirmation after assigning a helper job."
+  },
+  "classroomHelperRequestSent": "Seiceálfaidh múinteoir do jab.",
+  "@classroomHelperRequestSent": {
+    "description": "Message after child asks if job is finished."
+  },
+  "classroomHelperConfirmed": "Deimhníodh an jab cúntóra.",
+  "@classroomHelperConfirmed": {
+    "description": "Confirmation after staff confirms helper request."
+  },
+  "classroomHelperRequestCleared": "Glanadh an t-iarratas.",
+  "@classroomHelperRequestCleared": {
+    "description": "Confirmation after staff clears helper request."
+  },
+  "classroomHelperAssignmentCleared": "Glanadh an jab cúntóra.",
+  "@classroomHelperAssignmentCleared": {
+    "description": "Confirmation after clearing a child helper assignment."
+  },
+  "classroomHelperNoAssignedJobTitle": "Níl jab cúntóra agat anois, {name}",
+  "@classroomHelperNoAssignedJobTitle": {
+    "description": "Child empty state title when no helper job is assigned.",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "classroomHelperNoAssignedJobMessage": "Is féidir le múinteoir jab cúntóra ranga a thabhairt duit nuair atá sé do sheal.",
+  "@classroomHelperNoAssignedJobMessage": {
+    "description": "Child empty state message when no helper job is assigned."
+  },
+  "classroomHelperMyJobToday": "Mo jab cúntóra inniu",
+  "@classroomHelperMyJobToday": {
+    "description": "Child assigned helper job heading."
+  },
+  "classroomHelperWaitingForTeacher": "Ag fanacht le múinteoir é a sheiceáil",
+  "@classroomHelperWaitingForTeacher": {
+    "description": "Child waiting state after asking staff to confirm a job."
+  },
+  "classroomHelperDidIFinish": "Ar chríochnaigh mé mo jab?",
+  "@classroomHelperDidIFinish": {
+    "description": "Child button asking staff to confirm job completion."
+  },
+  "classroomHelperPendingRequests": "Le seiceáil",
+  "@classroomHelperPendingRequests": {
+    "description": "Staff panel title for pending helper completion requests."
+  },
+  "classroomHelperPendingRequestsSubtitle": "Páistí ag fiafraí an bhfuil a jab cúntóra críochnaithe.",
+  "@classroomHelperPendingRequestsSubtitle": {
+    "description": "Staff panel subtitle for pending helper completion requests."
+  },
+  "classroomHelperNoPendingRequests": "Níl aon jab cúntóra ag fanacht le seiceáil.",
+  "@classroomHelperNoPendingRequests": {
+    "description": "Empty state for pending helper completion requests."
+  },
+  "classroomHelperFinishRequestLine": "Fiafraíonn {childName}: ar chríochnaigh mé {jobTitle}?",
+  "@classroomHelperFinishRequestLine": {
+    "description": "Pending helper request line.",
+    "placeholders": {
+      "childName": {},
+      "jobTitle": {}
+    }
+  },
+  "classroomHelperNotYet": "Ní fós",
+  "@classroomHelperNotYet": {
+    "description": "Button for clearing a helper request without confirming."
+  },
+  "classroomHelperConfirm": "Deimhnigh",
+  "@classroomHelperConfirm": {
+    "description": "Button for confirming helper request completion."
+  },
+  "classroomHelperCurrentAssignments": "Sannacháin reatha",
+  "@classroomHelperCurrentAssignments": {
+    "description": "Staff panel title for current helper assignments."
+  },
+  "classroomHelperOneJobPerChild": "Cruann jabanna do gach páiste. Taispeántar an jab neamhchríochnaithe is sine ar dtús.",
+  "@classroomHelperOneJobPerChild": {
+    "description": "Staff panel subtitle for helper assignments."
+  },
+  "classroomHelperQueuedJobs": "{count} ag fanacht",
+  "@classroomHelperQueuedJobs": {
+    "description": "Short label showing how many helper jobs are queued behind the current one.",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "classroomHelperNoJobAssigned": "Níl jab sannta",
+  "@classroomHelperNoJobAssigned": {
+    "description": "Assignment empty label."
+  },
+  "classroomHelperClearJob": "Glan jab",
+  "@classroomHelperClearJob": {
+    "description": "Button for clearing a child helper assignment."
+  },
+  "classroomHelperJobLibrary": "Leabharlann jabanna",
+  "@classroomHelperJobLibrary": {
+    "description": "Staff panel title for helper jobs library."
+  },
+  "classroomHelperJobLibrarySubtitle": "Cruthaigh jabanna, ansin sann iad do pháiste amháin, roinnt páistí nó gach duine.",
+  "@classroomHelperJobLibrarySubtitle": {
+    "description": "Staff panel subtitle for helper jobs library."
+  },
+  "classroomHelperCompletedLog": "Log jabanna críochnaithe",
+  "@classroomHelperCompletedLog": {
+    "description": "Staff panel title for confirmed helper completions."
+  },
+  "classroomHelperCompletedLogSubtitle": "Jabanna cúntóra deimhnithe a chríochnaigh páistí.",
+  "@classroomHelperCompletedLogSubtitle": {
+    "description": "Staff panel subtitle for confirmed helper completions."
+  },
+  "classroomHelperFilterByChild": "Scag de réir páiste",
+  "@classroomHelperFilterByChild": {
+    "description": "Dropdown label for filtering helper completion log by child."
+  },
+  "classroomHelperConfirmedBy": "Deimhnithe ag {staffName}",
+  "@classroomHelperConfirmedBy": {
+    "description": "Helper completion log confirmed by label.",
+    "placeholders": {
+      "staffName": {}
+    }
+  },
+  "staffAlertsLoadFailed": "Níorbh fhéidir foláirimh an tseomra ranga a lódáil.",
+  "@staffAlertsLoadFailed": {
+    "description": "Error message for staff dashboard alerts."
+  },
+  "staffAlertsNeedsAttention": "Teastaíonn aird",
+  "@staffAlertsNeedsAttention": {
+    "description": "Staff dashboard alerts panel title."
+  },
+  "staffAlertsActiveCount": "{count} foláireamh gníomhach",
+  "@staffAlertsActiveCount": {
+    "description": "Staff dashboard active alert count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "staffAlertsMoreCount": "+{count} foláireamh eile",
+  "@staffAlertsMoreCount": {
+    "description": "Staff dashboard hidden alert count.",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "staffAlertsBodyCheckSubmitted": "Sheol {childName} seiceáil coirp",
+  "@staffAlertsBodyCheckSubmitted": {
+    "description": "Staff dashboard body check alert title.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "staffAlertsUnknownChild": "Páiste",
+  "@staffAlertsUnknownChild": {
+    "description": "Fallback child name for staff dashboard alerts."
+  },
+  "staffAlertsCalmRequestResolved": "Réitíodh iarratas suaimhnis {childName}.",
+  "@staffAlertsCalmRequestResolved": {
+    "description": "Confirmation after resolving calm request.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "staffAlertsCalmResolveFailed": "Níorbh fhéidir an t-iarratas suaimhnis a réiteach: {error}",
+  "@staffAlertsCalmResolveFailed": {
+    "description": "Error when resolving calm request fails.",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "staffAlertsCalmNeedsSupport": "Teastaíonn tacaíocht suaimhnis ó {childName}",
+  "@staffAlertsCalmNeedsSupport": {
+    "description": "Staff dashboard calm request alert title.",
+    "placeholders": {
+      "childName": {}
+    }
+  },
+  "staffAlertsCalmSelected": "Roghnaithe: {toolName} • {time}",
+  "@staffAlertsCalmSelected": {
+    "description": "Staff dashboard calm request detail.",
+    "placeholders": {
+      "toolName": {},
+      "time": {}
+    }
+  },
+  "handoverStaffGuidanceDescription": "Treoir phraiticiúil ranga ó bhaill foirne a bhfuil aithne mhaith acu ar an seomra seo.",
+  "handoverClassroomRemindersDescription": "Meabhrúcháin ghearra don rang iomlán do bhaill foirne, múinteoirí ionaid agus CRSanna.",
+  "childNotes": "Nótaí Páistí",
+  "childNotesSubtitle": "Nótaí foirne comhroinnte agus príobháideacha do gach páiste.",
+  "staffChildNotesSubtitle": "Scríobh nótaí foirne comhroinnte nó príobháideacha do pháistí.",
+  "addChildProfilesBeforeNotes": "Cuir próifílí páistí leis sula gcruthaíonn tú nótaí páistí.",
+  "couldNotLoadChildren": "Níorbh fhéidir na páistí a luchtú: {error}",
+  "couldNotLoadNotes": "Níorbh fhéidir na nótaí a luchtú: {error}",
+  "couldNotSaveNote": "Níorbh fhéidir an nóta a shábháil: {error}",
+  "noteAdded": "Cuireadh an nóta leis.",
+  "noteUpdated": "Nuashonraíodh an nóta.",
+  "visibleNoteCount": "{count} le feiceáil",
+  "sharedNoteCount": "{count} comhroinnte",
+  "privateNoteCount": "{count} príobháideach",
+  "child": "Páiste",
+  "allChildren": "Gach páiste",
+  "allCategories": "Gach catagóir",
+  "category": "Catagóir",
+  "allVisible": "Gach ceann le feiceáil",
+  "myNotes": "Mo nótaí",
+  "shared": "Comhroinnte",
+  "private": "Príobháideach",
+  "general": "Ginearálta",
+  "sensory": "Céadfach",
+  "health": "Sláinte",
+  "parent": "Tuismitheoir",
+  "noNotesForChildYet": "Níl aon nótaí don pháiste seo fós.",
+  "chooseChildOrAddFirstNote": "Roghnaigh páiste nó cuir do chéad nóta leis.",
+  "chooseChildToAddNote": "Chun nóta a chur leis, roghnaigh páiste ón roghchlár anuas ar dtús.",
+  "addNoteForChild": "Cuir nóta le {childName}",
+  "editNote": "Cuir nóta in eagar",
+  "saveNote": "Sábháil nóta",
+  "pleaseWriteNoteFirst": "Scríobh nóta ar dtús le do thoil.",
+  "privateNoteStaffOnly": "Nóta príobháideach - le feiceáil agatsa amháin sa radharc foirne seo.",
+  "privateNoteExplanation": "Tá nótaí príobháideacha i bhfolach ó bhaill foirne eile san aip. Tá siad réidh don todhchaí do rialacha níos láidre ag leibhéal foirne.",
+  "sharedNoteExplanation": "Is féidir le baill foirne sa seomra ranga seo nótaí comhroinnte a fheiceáil.",
+  "@handoverStaffGuidanceDescription": {
+    "description": "Description for the staff guidance handover tab."
+  },
+  "@handoverClassroomRemindersDescription": {
+    "description": "Description for the classroom reminders handover tab."
+  },
+  "@childNotes": {
+    "description": "Title for the child notes feature."
+  },
+  "@childNotesSubtitle": {
+    "description": "Subtitle for the child notes feature."
+  },
+  "@staffChildNotesSubtitle": {
+    "description": "Staff dashboard subtitle for child notes."
+  },
+  "@addChildProfilesBeforeNotes": {
+    "description": "Empty state when no child profiles exist for child notes."
+  },
+  "@couldNotLoadChildren": {
+    "description": "Error shown when child notes cannot load child profiles.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@couldNotLoadNotes": {
+    "description": "Error shown when child notes cannot load notes.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@couldNotSaveNote": {
+    "description": "Error shown when a child note cannot be saved.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@noteAdded": {
+    "description": "Snackbar shown after adding a child note."
+  },
+  "@noteUpdated": {
+    "description": "Snackbar shown after updating a child note."
+  },
+  "@visibleNoteCount": {
+    "description": "Count of visible child notes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@sharedNoteCount": {
+    "description": "Count of shared child notes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@privateNoteCount": {
+    "description": "Count of private child notes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@child": {
+    "description": "Label for selecting a child."
+  },
+  "@allChildren": {
+    "description": "Filter option for all children."
+  },
+  "@allCategories": {
+    "description": "Filter option for all child note categories."
+  },
+  "@category": {
+    "description": "Label for a category field."
+  },
+  "@allVisible": {
+    "description": "Filter option for all visible child notes."
+  },
+  "@myNotes": {
+    "description": "Filter option for notes created by the current staff member."
+  },
+  "@shared": {
+    "description": "Shared visibility label."
+  },
+  "@private": {
+    "description": "Private visibility label."
+  },
+  "@general": {
+    "description": "General child note category."
+  },
+  "@sensory": {
+    "description": "Sensory child note category."
+  },
+  "@health": {
+    "description": "Health child note category."
+  },
+  "@parent": {
+    "description": "Parent child note category."
+  },
+  "@noNotesForChildYet": {
+    "description": "Empty state when selected child has no notes."
+  },
+  "@chooseChildOrAddFirstNote": {
+    "description": "Empty state when no child is selected for child notes."
+  },
+  "@chooseChildToAddNote": {
+    "description": "Hint shown in empty child notes state."
+  },
+  "@addNoteForChild": {
+    "description": "Dialog title for adding a note for a child.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "@editNote": {
+    "description": "Dialog title for editing a child note."
+  },
+  "@saveNote": {
+    "description": "Button label for saving a child note."
+  },
+  "@pleaseWriteNoteFirst": {
+    "description": "Validation message when a child note is empty."
+  },
+  "@privateNoteStaffOnly": {
+    "description": "Private note explanation shown on a child note card."
+  },
+  "@privateNoteExplanation": {
+    "description": "Dialog explanation for private child notes."
+  },
+  "@sharedNoteExplanation": {
+    "description": "Dialog explanation for shared child notes."
   }
-},
-"staffAlertsBodyCheckSubmitted": "Sheol {childName} seiceáil coirp",
-"@staffAlertsBodyCheckSubmitted": {
-  "description": "Staff dashboard body check alert title.",
-  "placeholders": {
-    "childName": {}
-  }
-},
-"staffAlertsUnknownChild": "Páiste",
-"@staffAlertsUnknownChild": {
-  "description": "Fallback child name for staff dashboard alerts."
-},
-"staffAlertsCalmRequestResolved": "Réitíodh iarratas suaimhnis {childName}.",
-"@staffAlertsCalmRequestResolved": {
-  "description": "Confirmation after resolving calm request.",
-  "placeholders": {
-    "childName": {}
-  }
-},
-"staffAlertsCalmResolveFailed": "Níorbh fhéidir an t-iarratas suaimhnis a réiteach: {error}",
-"@staffAlertsCalmResolveFailed": {
-  "description": "Error when resolving calm request fails.",
-  "placeholders": {
-    "error": {}
-  }
-},
-"staffAlertsCalmNeedsSupport": "Teastaíonn tacaíocht suaimhnis ó {childName}",
-"@staffAlertsCalmNeedsSupport": {
-  "description": "Staff dashboard calm request alert title.",
-  "placeholders": {
-    "childName": {}
-  }
-},
-"staffAlertsCalmSelected": "Roghnaithe: {toolName} • {time}",
-"@staffAlertsCalmSelected": {
-  "description": "Staff dashboard calm request detail.",
-  "placeholders": {
-    "toolName": {},
-    "time": {}
-  }
-}
 }

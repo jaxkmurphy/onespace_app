@@ -341,13 +341,13 @@ abstract class AppLocalizations {
   /// Text used in the app for handover staff documents tab.
   ///
   /// In en, this message translates to:
-  /// **'Staff Documents'**
+  /// **'Staff Guidance'**
   String get handoverStaffDocumentsTab;
 
   /// Text used in the app for handover quick notes tab.
   ///
   /// In en, this message translates to:
-  /// **'Quick Notes'**
+  /// **'Classroom Reminders'**
   String get handoverQuickNotesTab;
 
   /// Text used in the app for read this first.
@@ -359,7 +359,7 @@ abstract class AppLocalizations {
   /// Text used in the app for start here description.
   ///
   /// In en, this message translates to:
-  /// **'This section should contain the most important things a substitute teacher or SNA needs to know immediately.'**
+  /// **'The essential classroom guide for substitutes, SNAs, teachers, and staff who need the most important information quickly.'**
   String get startHereDescription;
 
   /// Text used in the app for no start here information.
@@ -395,13 +395,13 @@ abstract class AppLocalizations {
   /// Text used in the app for staff document title.
   ///
   /// In en, this message translates to:
-  /// **'{staffName} Document'**
+  /// **'{staffName} Guidance'**
   String staffDocumentTitle(String staffName);
 
   /// Text used in the app for edit staff document.
   ///
   /// In en, this message translates to:
-  /// **'Edit {staffName} Document'**
+  /// **'Edit {staffName} Guidance'**
   String editStaffDocument(String staffName);
 
   /// Text used in the app for about this class.
@@ -449,13 +449,13 @@ abstract class AppLocalizations {
   /// Text used in the app for edit quick note.
   ///
   /// In en, this message translates to:
-  /// **'Edit Quick Note'**
+  /// **'Edit Classroom Reminder'**
   String get editQuickNote;
 
   /// Text used in the app for add quick note.
   ///
   /// In en, this message translates to:
-  /// **'Add Quick Note'**
+  /// **'Add Classroom Reminder'**
   String get addQuickNote;
 
   /// Text used in the app for title label.
@@ -464,7 +464,7 @@ abstract class AppLocalizations {
   /// **'Title'**
   String get titleLabel;
 
-  /// Text used in the app for note label.
+  /// Label for a note text field.
   ///
   /// In en, this message translates to:
   /// **'Note'**
@@ -473,19 +473,19 @@ abstract class AppLocalizations {
   /// Text used in the app for delete note title.
   ///
   /// In en, this message translates to:
-  /// **'Delete note?'**
+  /// **'Delete reminder?'**
   String get deleteNoteTitle;
 
   /// Text used in the app for delete note message.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this note?'**
+  /// **'Are you sure you want to delete this classroom reminder?'**
   String get deleteNoteMessage;
 
   /// Text used in the app for no quick notes.
   ///
   /// In en, this message translates to:
-  /// **'No quick notes yet.'**
+  /// **'No classroom reminders yet.'**
   String get noQuickNotes;
 
   /// Text used in the app for quick note by.
@@ -722,7 +722,7 @@ abstract class AppLocalizations {
   /// **'Incident Category'**
   String get incidentCategory;
 
-  /// Text used in the app for behaviour.
+  /// Behaviour child note category.
   ///
   /// In en, this message translates to:
   /// **'Behaviour'**
@@ -1340,7 +1340,7 @@ abstract class AppLocalizations {
   /// **'Open the classroom timer.'**
   String get staffTimerSubtitle;
 
-  /// Text used in the app for communication.
+  /// Communication child note category.
   ///
   /// In en, this message translates to:
   /// **'Communication'**
@@ -1370,7 +1370,7 @@ abstract class AppLocalizations {
   /// **'Move children between home and school.'**
   String get staffCircleTimeSubtitle;
 
-  /// Text used in the app for learning.
+  /// Learning child note category.
   ///
   /// In en, this message translates to:
   /// **'Learning'**
@@ -2366,7 +2366,7 @@ abstract class AppLocalizations {
   /// **'Your achievements will appear here.'**
   String get achievementsWillAppear;
 
-  /// Relative time label.
+  /// Relative time label for just now.
   ///
   /// In en, this message translates to:
   /// **'Just now'**
@@ -6581,8 +6581,8 @@ abstract class AppLocalizations {
   /// Relative time label for minutes ago.
   ///
   /// In en, this message translates to:
-  /// **'{count} min ago'**
-  String minutesAgo(Object count);
+  /// **'{count} mins ago'**
+  String minutesAgo(int count);
 
   /// Relative time label for one hour ago.
   ///
@@ -6594,7 +6594,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{count} hours ago'**
-  String hoursAgo(Object count);
+  String hoursAgo(int count);
 
   /// Relative time label for one day ago.
   ///
@@ -7105,6 +7105,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected: {toolName} • {time}'**
   String staffAlertsCalmSelected(Object toolName, Object time);
+
+  /// Description for the staff guidance handover tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Practical classroom guidance from staff who know this room well.'**
+  String get handoverStaffGuidanceDescription;
+
+  /// Description for the classroom reminders handover tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Short classroom-wide reminders for staff, substitutes, and SNAs.'**
+  String get handoverClassroomRemindersDescription;
+
+  /// Title for the child notes feature.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Notes'**
+  String get childNotes;
+
+  /// Subtitle for the child notes feature.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared and private staff notes for each child.'**
+  String get childNotesSubtitle;
+
+  /// Staff dashboard subtitle for child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Write shared or private staff notes for children.'**
+  String get staffChildNotesSubtitle;
+
+  /// Empty state when no child profiles exist for child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add child profiles before creating child notes.'**
+  String get addChildProfilesBeforeNotes;
+
+  /// Error shown when child notes cannot load child profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load children: {error}'**
+  String couldNotLoadChildren(String error);
+
+  /// Error shown when child notes cannot load notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load notes: {error}'**
+  String couldNotLoadNotes(String error);
+
+  /// Error shown when a child note cannot be saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save note: {error}'**
+  String couldNotSaveNote(String error);
+
+  /// Snackbar shown after adding a child note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note added.'**
+  String get noteAdded;
+
+  /// Snackbar shown after updating a child note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note updated.'**
+  String get noteUpdated;
+
+  /// Count of visible child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} visible'**
+  String visibleNoteCount(int count);
+
+  /// Count of shared child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} shared'**
+  String sharedNoteCount(int count);
+
+  /// Count of private child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} private'**
+  String privateNoteCount(int count);
+
+  /// Label for selecting a child.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get child;
+
+  /// Filter option for all children.
+  ///
+  /// In en, this message translates to:
+  /// **'All children'**
+  String get allChildren;
+
+  /// Filter option for all child note categories.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get allCategories;
+
+  /// Label for a category field.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// Filter option for all visible child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'All visible'**
+  String get allVisible;
+
+  /// Filter option for notes created by the current staff member.
+  ///
+  /// In en, this message translates to:
+  /// **'My notes'**
+  String get myNotes;
+
+  /// Shared visibility label.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared'**
+  String get shared;
+
+  /// Private visibility label.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get private;
+
+  /// General child note category.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// Sensory child note category.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensory'**
+  String get sensory;
+
+  /// Health child note category.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get health;
+
+  /// Parent child note category.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent'**
+  String get parent;
+
+  /// Empty state when selected child has no notes.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes for this child yet.'**
+  String get noNotesForChildYet;
+
+  /// Empty state when no child is selected for child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a child or add your first note.'**
+  String get chooseChildOrAddFirstNote;
+
+  /// Hint shown in empty child notes state.
+  ///
+  /// In en, this message translates to:
+  /// **'To add a note, choose a child from the dropdown first.'**
+  String get chooseChildToAddNote;
+
+  /// Dialog title for adding a note for a child.
+  ///
+  /// In en, this message translates to:
+  /// **'Add note for {childName}'**
+  String addNoteForChild(String childName);
+
+  /// Dialog title for editing a child note.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit note'**
+  String get editNote;
+
+  /// Button label for saving a child note.
+  ///
+  /// In en, this message translates to:
+  /// **'Save note'**
+  String get saveNote;
+
+  /// Validation message when a child note is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please write a note first.'**
+  String get pleaseWriteNoteFirst;
+
+  /// Private note explanation shown on a child note card.
+  ///
+  /// In en, this message translates to:
+  /// **'Private note - visible only to you in this staff view.'**
+  String get privateNoteStaffOnly;
+
+  /// Dialog explanation for private child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Private notes are hidden from other staff in the app. They are future-ready for stronger staff-level rules.'**
+  String get privateNoteExplanation;
+
+  /// Dialog explanation for shared child notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared notes can be seen by staff in this classroom.'**
+  String get sharedNoteExplanation;
 }
 
 class _AppLocalizationsDelegate

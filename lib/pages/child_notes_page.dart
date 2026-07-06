@@ -95,7 +95,9 @@ class _ChildNotesPageState extends State<ChildNotesPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(note == null ? 'Note added.' : 'Note updated.'),
+          content: Text(
+            note == null ? context.l10n.noteAdded : context.l10n.noteUpdated,
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -104,7 +106,7 @@ class _ChildNotesPageState extends State<ChildNotesPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Could not save note: $error'),
+          content: Text(context.l10n.couldNotSaveNote(error.toString())),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -112,14 +114,16 @@ class _ChildNotesPageState extends State<ChildNotesPage> {
   }
 
   String _categoryLabel(ChildNoteCategory category) {
+    final l10n = context.l10n;
+
     return switch (category) {
-      ChildNoteCategory.general => 'General',
-      ChildNoteCategory.behaviour => 'Behaviour',
-      ChildNoteCategory.communication => 'Communication',
-      ChildNoteCategory.learning => 'Learning',
-      ChildNoteCategory.sensory => 'Sensory',
-      ChildNoteCategory.health => 'Health',
-      ChildNoteCategory.parent => 'Parent',
+      ChildNoteCategory.general => l10n.general,
+      ChildNoteCategory.behaviour => l10n.behaviour,
+      ChildNoteCategory.communication => l10n.communication,
+      ChildNoteCategory.learning => l10n.learning,
+      ChildNoteCategory.sensory => l10n.sensory,
+      ChildNoteCategory.health => l10n.health,
+      ChildNoteCategory.parent => l10n.parent,
     };
   }
 
@@ -135,17 +139,21 @@ class _ChildNotesPageState extends State<ChildNotesPage> {
     };
   }
 
-  String _formatDate(DateTime? date) {
-    if (date == null) return 'Just now';
+  String _formatDate(BuildContext context, DateTime? date) {
+    final l10n = context.l10n;
+
+    if (date == null) return l10n.justNow;
 
     final now = DateTime.now();
     final difference = now.difference(date);
 
-    if (difference.inMinutes < 1) return 'Just now';
-    if (difference.inMinutes == 1) return '1 min ago';
-    if (difference.inMinutes < 60) return '${difference.inMinutes} mins ago';
-    if (difference.inHours == 1) return '1 hour ago';
-    if (difference.inHours < 24) return '${difference.inHours} hours ago';
+    if (difference.inMinutes < 1) return l10n.justNow;
+    if (difference.inMinutes == 1) return l10n.oneMinuteAgo;
+    if (difference.inMinutes < 60) {
+      return l10n.minutesAgo(difference.inMinutes);
+    }
+    if (difference.inHours == 1) return l10n.oneHourAgo;
+    if (difference.inHours < 24) return l10n.hoursAgo(difference.inHours);
 
     return '${date.day}/${date.month}/${date.year}';
   }
@@ -159,14 +167,14 @@ class _ChildNotesPageState extends State<ChildNotesPage> {
         final selectedChild = _selectedChild(children);
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Child Notes')),
+          appBar: AppBar(title: Text(context.l10n.childNotes)),
           floatingActionButton:
               selectedChild == null
                   ? null
                   : FloatingActionButton.extended(
                     onPressed: () => _openNoteDialog(child: selectedChild),
                     icon: const Icon(Icons.add_rounded),
-                    label: const Text('Add note'),
+                    label: Text(context.l10n.addNote),
                   ),
           body: SafeArea(
             child:
@@ -175,7 +183,9 @@ class _ChildNotesPageState extends State<ChildNotesPage> {
                     : childSnapshot.hasError
                     ? Center(
                       child: Text(
-                        'Could not load children: ${childSnapshot.error}',
+                        context.l10n.couldNotLoadChildren(
+                          childSnapshot.error.toString(),
+                        ),
                       ),
                     )
                     : _ChildNotesBody(
@@ -242,7 +252,7 @@ class _ChildNotesBody extends StatelessWidget {
   final FirestoreService firestoreService;
   final String Function(ChildNoteCategory category) categoryLabel;
   final IconData Function(ChildNoteCategory category) categoryIcon;
-  final String Function(DateTime? date) formatDate;
+  final String Function(BuildContext context, DateTime? date) formatDate;
   final List<ChildNote> Function(List<ChildNote> notes) filteredNotes;
   final ValueChanged<String?> onSelectedChildChanged;
   final ValueChanged<ChildNoteCategory?> onSelectedCategoryChanged;
@@ -274,9 +284,7 @@ class _ChildNotesBody extends StatelessWidget {
     final colourScheme = Theme.of(context).colorScheme;
 
     if (children.isEmpty) {
-      return const Center(
-        child: Text('Add child profiles before creating child notes.'),
-      );
+      return Center(child: Text(context.l10n.addChildProfilesBeforeNotes));
     }
 
     return Container(
@@ -333,8 +341,7 @@ class _ChildNotesBody extends StatelessWidget {
                       categoryLabel: categoryLabel,
                       onSelectedChildChanged: onSelectedChildChanged,
                       onSelectedCategoryChanged: onSelectedCategoryChanged,
-                      onSelectedVisibilityChanged:
-                          onSelectedVisibilityChanged,
+                      onSelectedVisibilityChanged: onSelectedVisibilityChanged,
                       onShowMineOnlyChanged: onShowMineOnlyChanged,
                     );
                   },
@@ -353,7 +360,11 @@ class _ChildNotesBody extends StatelessWidget {
 
                     if (snapshot.hasError) {
                       return Center(
-                        child: Text('Could not load notes: ${snapshot.error}'),
+                        child: Text(
+                          context.l10n.couldNotLoadNotes(
+                            snapshot.error.toString(),
+                          ),
+                        ),
                       );
                     }
 
@@ -427,6 +438,7 @@ class _ChildNotesHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Card(
       elevation: 0,
@@ -452,21 +464,19 @@ class _ChildNotesHeader extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Child Notes',
-                        style: TextStyle(
+                        l10n.childNotes,
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                      SizedBox(height: 3),
-                      Text(
-                        'Shared and private staff notes for each child.',
-                      ),
+                      const SizedBox(height: 3),
+                      Text(l10n.childNotesSubtitle),
                     ],
                   ),
                 ),
@@ -479,30 +489,30 @@ class _ChildNotesHeader extends StatelessWidget {
               children: [
                 _SummaryChip(
                   icon: Icons.sticky_note_2_rounded,
-                  label: '$visibleNoteCount visible',
+                  label: l10n.visibleNoteCount(visibleNoteCount),
                 ),
                 _SummaryChip(
                   icon: Icons.groups_rounded,
-                  label: '$sharedNoteCount shared',
+                  label: l10n.sharedNoteCount(sharedNoteCount),
                 ),
                 _SummaryChip(
                   icon: Icons.lock_rounded,
-                  label: '$privateNoteCount private',
+                  label: l10n.privateNoteCount(privateNoteCount),
                 ),
               ],
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String?>(
               initialValue: selectedChildId,
-              decoration: const InputDecoration(
-                labelText: 'Child',
+              decoration: InputDecoration(
+                labelText: l10n.child,
                 border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.child_care_rounded),
+                prefixIcon: const Icon(Icons.child_care_rounded),
               ),
               items: [
-                const DropdownMenuItem<String?>(
+                DropdownMenuItem<String?>(
                   value: null,
-                  child: Text('All children'),
+                  child: Text(l10n.allChildren),
                 ),
                 ...children.map(
                   (child) => DropdownMenuItem<String?>(
@@ -521,7 +531,7 @@ class _ChildNotesHeader extends StatelessWidget {
               children: [
                 FilterChip(
                   selected: selectedCategory == null,
-                  label: const Text('All categories'),
+                  label: Text(l10n.allCategories),
                   onSelected: (_) => onSelectedCategoryChanged(null),
                 ),
                 ...ChildNoteCategory.values.map(
@@ -541,7 +551,7 @@ class _ChildNotesHeader extends StatelessWidget {
               children: [
                 ChoiceChip(
                   selected: selectedVisibility == _NoteVisibilityFilter.all,
-                  label: const Text('All visible'),
+                  label: Text(context.l10n.allVisible),
                   avatar: const Icon(Icons.visibility_rounded, size: 18),
                   onSelected:
                       (_) => onSelectedVisibilityChanged(
@@ -550,7 +560,7 @@ class _ChildNotesHeader extends StatelessWidget {
                 ),
                 ChoiceChip(
                   selected: selectedVisibility == _NoteVisibilityFilter.shared,
-                  label: const Text('Shared'),
+                  label: Text(context.l10n.shared),
                   avatar: const Icon(Icons.groups_rounded, size: 18),
                   onSelected:
                       (_) => onSelectedVisibilityChanged(
@@ -559,7 +569,7 @@ class _ChildNotesHeader extends StatelessWidget {
                 ),
                 ChoiceChip(
                   selected: selectedVisibility == _NoteVisibilityFilter.private,
-                  label: const Text('Private'),
+                  label: Text(context.l10n.private),
                   avatar: const Icon(Icons.lock_rounded, size: 18),
                   onSelected:
                       (_) => onSelectedVisibilityChanged(
@@ -569,7 +579,7 @@ class _ChildNotesHeader extends StatelessWidget {
                 FilterChip(
                   selected: showMineOnly,
                   avatar: const Icon(Icons.person_rounded, size: 18),
-                  label: const Text('My notes'),
+                  label: Text(context.l10n.myNotes),
                   onSelected: onShowMineOnlyChanged,
                 ),
               ],
@@ -620,7 +630,7 @@ class _ChildNoteCard extends StatelessWidget {
   final bool canEdit;
   final String Function(ChildNoteCategory category) categoryLabel;
   final IconData Function(ChildNoteCategory category) categoryIcon;
-  final String Function(DateTime? date) formatDate;
+  final String Function(BuildContext context, DateTime? date) formatDate;
   final VoidCallback onEdit;
 
   const _ChildNoteCard({
@@ -685,7 +695,10 @@ class _ChildNoteCard extends StatelessWidget {
                         icon: categoryIcon(note.category),
                       ),
                       _NoteChip(
-                        label: isPrivate ? 'Private' : 'Shared',
+                        label:
+                            isPrivate
+                                ? context.l10n.private
+                                : context.l10n.shared,
                         icon:
                             isPrivate
                                 ? Icons.lock_rounded
@@ -697,7 +710,7 @@ class _ChildNoteCard extends StatelessWidget {
                   Text(note.content, style: const TextStyle(height: 1.35)),
                   const SizedBox(height: 12),
                   Text(
-                    '${note.createdByStaffName} • ${formatDate(note.updatedAt ?? note.createdAt)}',
+                    '${note.createdByStaffName} • ${formatDate(context, note.updatedAt ?? note.createdAt)}',
                     style: TextStyle(
                       color: colourScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w700,
@@ -706,7 +719,7 @@ class _ChildNoteCard extends StatelessWidget {
                   if (isPrivate) ...[
                     const SizedBox(height: 8),
                     Text(
-                      'Private note — visible only to you in this staff view.',
+                      context.l10n.privateNoteStaffOnly,
                       style: TextStyle(
                         color: colourScheme.tertiary,
                         fontWeight: FontWeight.w800,
@@ -787,8 +800,8 @@ class _EmptyNotesState extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 hasSelectedChild
-                    ? 'No notes for this child yet.'
-                    : 'Choose a child or add your first note.',
+                    ? context.l10n.noNotesForChildYet
+                    : context.l10n.chooseChildOrAddFirstNote,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 18,
@@ -796,8 +809,8 @@ class _EmptyNotesState extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'To add a note, choose a child from the dropdown first.',
+              Text(
+                context.l10n.chooseChildToAddNote,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -857,14 +870,16 @@ class _ChildNoteDialogState extends State<_ChildNoteDialog> {
   }
 
   String _categoryLabel(ChildNoteCategory category) {
+    final l10n = context.l10n;
+
     return switch (category) {
-      ChildNoteCategory.general => 'General',
-      ChildNoteCategory.behaviour => 'Behaviour',
-      ChildNoteCategory.communication => 'Communication',
-      ChildNoteCategory.learning => 'Learning',
-      ChildNoteCategory.sensory => 'Sensory',
-      ChildNoteCategory.health => 'Health',
-      ChildNoteCategory.parent => 'Parent',
+      ChildNoteCategory.general => l10n.general,
+      ChildNoteCategory.behaviour => l10n.behaviour,
+      ChildNoteCategory.communication => l10n.communication,
+      ChildNoteCategory.learning => l10n.learning,
+      ChildNoteCategory.sensory => l10n.sensory,
+      ChildNoteCategory.health => l10n.health,
+      ChildNoteCategory.parent => l10n.parent,
     };
   }
 
@@ -873,8 +888,8 @@ class _ChildNoteDialogState extends State<_ChildNoteDialog> {
 
     if (content.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please write a note first.'),
+        SnackBar(
+          content: Text(context.l10n.pleaseWriteNoteFirst),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -894,9 +909,12 @@ class _ChildNoteDialogState extends State<_ChildNoteDialog> {
   @override
   Widget build(BuildContext context) {
     final editing = widget.initialNote != null;
+    final l10n = context.l10n;
 
     return AlertDialog(
-      title: Text(editing ? 'Edit note' : 'Add note for ${widget.child.name}'),
+      title: Text(
+        editing ? l10n.editNote : l10n.addNoteForChild(widget.child.name),
+      ),
       content: SizedBox(
         width: 520,
         child: SingleChildScrollView(
@@ -906,18 +924,18 @@ class _ChildNoteDialogState extends State<_ChildNoteDialog> {
                 controller: _contentController,
                 minLines: 4,
                 maxLines: 8,
-                decoration: const InputDecoration(
-                  labelText: 'Note',
+                decoration: InputDecoration(
+                  labelText: l10n.noteLabel,
                   alignLabelWithHint: true,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<ChildNoteCategory>(
                 initialValue: _category,
-                decoration: const InputDecoration(
-                  labelText: 'Category',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.category,
+                  border: const OutlineInputBorder(),
                 ),
                 items:
                     ChildNoteCategory.values.map((category) {
@@ -942,24 +960,24 @@ class _ChildNoteDialogState extends State<_ChildNoteDialog> {
                     _visibility = selection.first;
                   });
                 },
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: ChildNoteVisibility.shared,
-                    icon: Icon(Icons.groups_rounded),
-                    label: Text('Shared'),
+                    icon: const Icon(Icons.groups_rounded),
+                    label: Text(l10n.shared),
                   ),
                   ButtonSegment(
                     value: ChildNoteVisibility.private,
-                    icon: Icon(Icons.lock_rounded),
-                    label: Text('Private'),
+                    icon: const Icon(Icons.lock_rounded),
+                    label: Text(l10n.private),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
               Text(
                 _visibility == ChildNoteVisibility.private
-                    ? 'Private notes are hidden from other staff in the app. They are future-ready for stronger staff-level rules.'
-                    : 'Shared notes can be seen by staff in this classroom.',
+                    ? l10n.privateNoteExplanation
+                    : l10n.sharedNoteExplanation,
                 style: TextStyle(color: Colors.grey.shade700),
               ),
             ],
@@ -973,7 +991,7 @@ class _ChildNoteDialogState extends State<_ChildNoteDialog> {
         ),
         FilledButton(
           onPressed: _submit,
-          child: Text(editing ? 'Save note' : 'Add note'),
+          child: Text(editing ? l10n.saveNote : l10n.addNote),
         ),
       ],
     );
