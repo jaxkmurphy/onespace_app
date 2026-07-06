@@ -1029,6 +1029,8 @@ class _FeatureSettingsCard extends StatelessWidget {
         return Icons.timer_rounded;
       case ClassroomFeature.bodyCheck:
         return Icons.health_and_safety_outlined;
+      case ClassroomFeature.childNotes:
+        return Icons.sticky_note_2_rounded;
       case ClassroomFeature.circleTime:
         return Icons.groups_rounded;
       case ClassroomFeature.quizzes:

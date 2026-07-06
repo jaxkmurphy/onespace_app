@@ -8,6 +8,8 @@ import 'firestore_base.dart';
 import '../../models/calm_plan_models.dart';
 import '../../models/child_profile.dart';
 import '../../models/classroom_helper_models.dart';
+import '../../models/child_note.dart';
+import '../../models/staff_profile.dart';
 
 mixin WellbeingFirestoreService on FirestoreBase {
   // ZONES + POINTS
@@ -1406,5 +1408,119 @@ mixin WellbeingFirestoreService on FirestoreBase {
       'resolvedByStaffId': staffId,
       'resolvedByStaffName': staffName,
     });
+  }
+
+  // CHILD NOTES
+
+  CollectionReference<Map<String, dynamic>> _childNotesRef({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return classroomCollection(
+      schoolId: schoolId,
+      classroomId: classroomId,
+      collectionName: 'child_notes',
+    );
+  }
+
+  Stream<List<ChildNote>> getClassroomChildNotes({
+    required String schoolId,
+    required String classroomId,
+  }) {
+    return _childNotesRef(
+      schoolId: schoolId,
+      classroomId: classroomId,
+    ).orderBy('updatedAt', descending: true).snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => ChildNote.fromMap(doc.id, doc.data()))
+          .toList();
+    });
+  }
+
+  Stream<List<ChildNote>> getCurrentChildNotes() {
+    return getClassroomChildNotes(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    );
+  }
+
+  Stream<List<ChildNote>> getCurrentVisibleChildNotesForStaff({
+    required StaffProfile staff,
+    String? childId,
+  }) {
+    return getCurrentChildNotes().map((notes) {
+      return notes.where((note) {
+        final childMatches = childId == null || note.childId == childId;
+        final visibilityMatches = note.isVisibleToStaff(staff.id);
+
+        return childMatches && visibilityMatches;
+      }).toList();
+    });
+  }
+
+  Future<String> addCurrentChildNote({
+    required ChildProfile child,
+    required StaffProfile staff,
+    required String content,
+    required ChildNoteCategory category,
+    required ChildNoteVisibility visibility,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    final schoolId = session.requireSchoolId;
+    final classroomId = session.requireClassroomId;
+
+    final note = ChildNote(
+      id: '',
+      schoolId: schoolId,
+      classroomId: classroomId,
+      childId: child.id,
+      childName: child.name,
+      content: content.trim(),
+      category: category,
+      visibility: visibility,
+      createdByStaffId: staff.id,
+      createdByStaffName: staff.name,
+    );
+
+    final doc = await _childNotesRef(
+      schoolId: schoolId,
+      classroomId: classroomId,
+    ).add(note.toCreateMap());
+
+    return doc.id;
+  }
+
+  Future<void> updateCurrentChildNote({
+    required ChildNote note,
+    required String content,
+    required ChildNoteCategory category,
+    required ChildNoteVisibility visibility,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await _childNotesRef(
+          schoolId: session.requireSchoolId,
+          classroomId: session.requireClassroomId,
+        )
+        .doc(note.id)
+        .update(
+          note
+              .copyWith(
+                content: content.trim(),
+                category: category,
+                visibility: visibility,
+              )
+              .toUpdateMap(),
+        );
+  }
+
+  Future<void> deleteCurrentChildNote(String noteId) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await _childNotesRef(
+      schoolId: session.requireSchoolId,
+      classroomId: session.requireClassroomId,
+    ).doc(noteId).delete();
   }
 }

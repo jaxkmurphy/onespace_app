@@ -6,6 +6,7 @@ enum ClassroomFeature {
   whenThen('whenThen'),
   visualTimer('visualTimer'),
   bodyCheck('bodyCheck'),
+  childNotes('childNotes'),
   circleTime('circleTime'),
   quizzes('quizzes'),
   associationPairs('associationPairs'),
@@ -81,6 +82,8 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Visual Timer';
       case ClassroomFeature.bodyCheck:
         return 'Body Check';
+      case ClassroomFeature.childNotes:
+        return 'Child Notes';
       case ClassroomFeature.circleTime:
         return 'Circle Time';
       case ClassroomFeature.quizzes:
@@ -130,6 +133,8 @@ extension ClassroomFeatureLabels on ClassroomFeature {
         return 'Shared visual timer.';
       case ClassroomFeature.bodyCheck:
         return 'Child body check and staff reports.';
+      case ClassroomFeature.childNotes:
+        return 'Shared and private staff notes for each child.';
       case ClassroomFeature.circleTime:
         return 'Circle Time classroom view.';
       case ClassroomFeature.quizzes:

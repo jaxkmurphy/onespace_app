@@ -271,6 +271,23 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
+          if (_isFeatureEnabled(ClassroomFeature.childNotes))
+            StaffDashboardFeatureCard(
+              icon: Icons.sticky_note_2_rounded,
+              title: 'Child Notes',
+              subtitle: 'Write shared or private staff notes for children.',
+              color: const Color(0xFF5E7CE2),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/child-notes',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
           if (_isFeatureEnabled(ClassroomFeature.circleTime))
             StaffDashboardFeatureCard(
               icon: Icons.groups_rounded,

@@ -191,6 +191,11 @@ service cloud.firestore {
           allow delete: if isSchoolAdmin(schoolId);
         }
 
+        match /child_notes/{noteId} {
+          allow read, create, update: if canAccessClassroom(schoolId, classroomId);
+          allow delete: if isSchoolAdmin(schoolId);
+        }
+
         match /calm_requests/{requestId} {
           allow read, create, update: if canAccessClassroom(schoolId, classroomId);
           allow delete: if isSchoolAdmin(schoolId);
