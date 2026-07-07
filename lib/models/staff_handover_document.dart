@@ -33,10 +33,7 @@ class StaffHandoverDocument {
     );
   }
 
-  factory StaffHandoverDocument.fromMap(
-    String id,
-    Map<String, dynamic> data,
-  ) {
+  factory StaffHandoverDocument.fromMap(String id, Map<String, dynamic> data) {
     return StaffHandoverDocument(
       staffProfileId: id,
       staffName: data['staffName'] ?? '',
@@ -46,10 +43,20 @@ class StaffHandoverDocument {
       successfulStrategies: data['successfulStrategies'] ?? '',
       communicationTips: data['communicationTips'] ?? '',
       otherNotes: data['otherNotes'] ?? '',
-      updatedAt: data['updatedAt'] is Timestamp
-          ? (data['updatedAt'] as Timestamp).toDate()
-          : null,
+      updatedAt:
+          data['updatedAt'] is Timestamp
+              ? (data['updatedAt'] as Timestamp).toDate()
+              : null,
     );
+  }
+
+  bool get hasContent {
+    return aboutThisClass.trim().isNotEmpty ||
+        whatWorksWell.trim().isNotEmpty ||
+        commonTriggers.trim().isNotEmpty ||
+        successfulStrategies.trim().isNotEmpty ||
+        communicationTips.trim().isNotEmpty ||
+        otherNotes.trim().isNotEmpty;
   }
 
   Map<String, dynamic> toMap() {

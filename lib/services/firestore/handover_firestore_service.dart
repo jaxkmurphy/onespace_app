@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../models/handover_overview.dart';
 import '../../models/handover_quick_note.dart';
 import '../../models/staff_handover_document.dart';
 import '../../models/staff_profile.dart';
@@ -7,17 +8,16 @@ import 'firestore_base.dart';
 mixin HandoverFirestoreService on FirestoreBase {
   // HANDOVER OVERVIEW
 
-  Stream<String> getHandoverOverview(String teacherUid) {
+  Stream<HandoverOverview> getHandoverOverview(String teacherUid) {
     return teacherCollection(
       teacherUid: teacherUid,
       collectionName: 'handover_overview',
     ).doc('main').snapshots().map((doc) {
-      final data = doc.data();
-      return data?['content'] ?? '';
+      return HandoverOverview.fromMap(doc.data());
     });
   }
 
-  Stream<String> getClassroomHandoverOverview({
+  Stream<HandoverOverview> getClassroomHandoverOverview({
     required String schoolId,
     required String classroomId,
   }) {
@@ -26,12 +26,11 @@ mixin HandoverFirestoreService on FirestoreBase {
       classroomId: classroomId,
       collectionName: 'handover_overview',
     ).doc('main').snapshots().map((doc) {
-      final data = doc.data();
-      return data?['content'] ?? '';
+      return HandoverOverview.fromMap(doc.data());
     });
   }
 
-  Stream<String> getCurrentHandoverOverview() {
+  Stream<HandoverOverview> getCurrentHandoverOverview() {
     if (hasClassroomSession) {
       return getClassroomHandoverOverview(
         schoolId: session.requireSchoolId,
@@ -44,38 +43,40 @@ mixin HandoverFirestoreService on FirestoreBase {
 
   Future<void> updateHandoverOverview({
     required String teacherUid,
-    required String content,
+    required HandoverOverview overview,
     required String updatedByName,
   }) async {
     await teacherCollection(
-      teacherUid: teacherUid,
-      collectionName: 'handover_overview',
-    ).doc('main').set({
-      'content': content,
-      'updatedByName': updatedByName,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+          teacherUid: teacherUid,
+          collectionName: 'handover_overview',
+        )
+        .doc('main')
+        .set(
+          overview.toMap(updatedByName: updatedByName),
+          SetOptions(merge: true),
+        );
   }
 
   Future<void> updateClassroomHandoverOverview({
     required String schoolId,
     required String classroomId,
-    required String content,
+    required HandoverOverview overview,
     required String updatedByName,
   }) async {
     await classroomCollection(
-      schoolId: schoolId,
-      classroomId: classroomId,
-      collectionName: 'handover_overview',
-    ).doc('main').set({
-      'content': content,
-      'updatedByName': updatedByName,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+          schoolId: schoolId,
+          classroomId: classroomId,
+          collectionName: 'handover_overview',
+        )
+        .doc('main')
+        .set(
+          overview.toMap(updatedByName: updatedByName),
+          SetOptions(merge: true),
+        );
   }
 
   Future<void> updateCurrentHandoverOverview({
-    required String content,
+    required HandoverOverview overview,
     required String updatedByName,
   }) async {
     await restoreClassroomSessionFromAuthIfNeeded();
@@ -84,7 +85,7 @@ mixin HandoverFirestoreService on FirestoreBase {
       await updateClassroomHandoverOverview(
         schoolId: session.requireSchoolId,
         classroomId: session.requireClassroomId,
-        content: content,
+        overview: overview,
         updatedByName: updatedByName,
       );
       return;
@@ -92,7 +93,7 @@ mixin HandoverFirestoreService on FirestoreBase {
 
     await updateHandoverOverview(
       teacherUid: currentTeacherUid,
-      content: content,
+      overview: overview,
       updatedByName: updatedByName,
     );
   }
@@ -161,12 +162,11 @@ mixin HandoverFirestoreService on FirestoreBase {
     required StaffHandoverDocument document,
   }) async {
     await teacherCollection(
-      teacherUid: teacherUid,
-      collectionName: 'staff_handover_documents',
-    ).doc(document.staffProfileId).set(
-          document.toMap(),
-          SetOptions(merge: true),
-        );
+          teacherUid: teacherUid,
+          collectionName: 'staff_handover_documents',
+        )
+        .doc(document.staffProfileId)
+        .set(document.toMap(), SetOptions(merge: true));
   }
 
   Future<void> updateClassroomStaffHandoverDocument({
@@ -175,13 +175,12 @@ mixin HandoverFirestoreService on FirestoreBase {
     required StaffHandoverDocument document,
   }) async {
     await classroomCollection(
-      schoolId: schoolId,
-      classroomId: classroomId,
-      collectionName: 'staff_handover_documents',
-    ).doc(document.staffProfileId).set(
-          document.toMap(),
-          SetOptions(merge: true),
-        );
+          schoolId: schoolId,
+          classroomId: classroomId,
+          collectionName: 'staff_handover_documents',
+        )
+        .doc(document.staffProfileId)
+        .set(document.toMap(), SetOptions(merge: true));
   }
 
   Future<void> updateCurrentStaffHandoverDocument({
@@ -208,12 +207,16 @@ mixin HandoverFirestoreService on FirestoreBase {
 
   Stream<List<HandoverQuickNote>> getHandoverQuickNotes(String teacherUid) {
     return teacherCollection(
-      teacherUid: teacherUid,
-      collectionName: 'handover_quick_notes',
-    ).orderBy('updatedAt', descending: true).snapshots().map(
-          (snapshot) => snapshot.docs
-              .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
-              .toList(),
+          teacherUid: teacherUid,
+          collectionName: 'handover_quick_notes',
+        )
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
+                  .toList(),
         );
   }
 
@@ -222,13 +225,17 @@ mixin HandoverFirestoreService on FirestoreBase {
     required String classroomId,
   }) {
     return classroomCollection(
-      schoolId: schoolId,
-      classroomId: classroomId,
-      collectionName: 'handover_quick_notes',
-    ).orderBy('updatedAt', descending: true).snapshots().map(
-          (snapshot) => snapshot.docs
-              .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
-              .toList(),
+          schoolId: schoolId,
+          classroomId: classroomId,
+          collectionName: 'handover_quick_notes',
+        )
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => HandoverQuickNote.fromMap(doc.id, doc.data()))
+                  .toList(),
         );
   }
 
@@ -247,6 +254,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     required String teacherUid,
     required String title,
     required String content,
+    required HandoverQuickNotePriority priority,
+    required bool pinned,
     required StaffProfile createdBy,
   }) async {
     await teacherCollection(
@@ -255,6 +264,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     ).add({
       'title': title,
       'content': content,
+      'priority': priority.value,
+      'pinned': pinned,
       'createdByStaffId': createdBy.id,
       'createdByName': createdBy.name,
       'createdAt': FieldValue.serverTimestamp(),
@@ -267,6 +278,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     required String classroomId,
     required String title,
     required String content,
+    required HandoverQuickNotePriority priority,
+    required bool pinned,
     required StaffProfile createdBy,
   }) async {
     await classroomCollection(
@@ -276,6 +289,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     ).add({
       'title': title,
       'content': content,
+      'priority': priority.value,
+      'pinned': pinned,
       'createdByStaffId': createdBy.id,
       'createdByName': createdBy.name,
       'createdAt': FieldValue.serverTimestamp(),
@@ -286,6 +301,8 @@ mixin HandoverFirestoreService on FirestoreBase {
   Future<void> addCurrentHandoverQuickNote({
     required String title,
     required String content,
+    required HandoverQuickNotePriority priority,
+    required bool pinned,
     required StaffProfile createdBy,
   }) async {
     await restoreClassroomSessionFromAuthIfNeeded();
@@ -296,6 +313,8 @@ mixin HandoverFirestoreService on FirestoreBase {
         classroomId: session.requireClassroomId,
         title: title,
         content: content,
+        priority: priority,
+        pinned: pinned,
         createdBy: createdBy,
       );
       return;
@@ -305,6 +324,8 @@ mixin HandoverFirestoreService on FirestoreBase {
       teacherUid: currentTeacherUid,
       title: title,
       content: content,
+      priority: priority,
+      pinned: pinned,
       createdBy: createdBy,
     );
   }
@@ -314,6 +335,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     required String noteId,
     required String title,
     required String content,
+    required HandoverQuickNotePriority priority,
+    required bool pinned,
   }) async {
     await teacherCollection(
       teacherUid: teacherUid,
@@ -321,6 +344,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     ).doc(noteId).update({
       'title': title,
       'content': content,
+      'priority': priority.value,
+      'pinned': pinned,
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }
@@ -331,6 +356,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     required String noteId,
     required String title,
     required String content,
+    required HandoverQuickNotePriority priority,
+    required bool pinned,
   }) async {
     await classroomCollection(
       schoolId: schoolId,
@@ -339,6 +366,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     ).doc(noteId).update({
       'title': title,
       'content': content,
+      'priority': priority.value,
+      'pinned': pinned,
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }
@@ -347,6 +376,8 @@ mixin HandoverFirestoreService on FirestoreBase {
     required String noteId,
     required String title,
     required String content,
+    required HandoverQuickNotePriority priority,
+    required bool pinned,
   }) async {
     await restoreClassroomSessionFromAuthIfNeeded();
 
@@ -357,6 +388,8 @@ mixin HandoverFirestoreService on FirestoreBase {
         noteId: noteId,
         title: title,
         content: content,
+        priority: priority,
+        pinned: pinned,
       );
       return;
     }
@@ -366,6 +399,8 @@ mixin HandoverFirestoreService on FirestoreBase {
       noteId: noteId,
       title: title,
       content: content,
+      priority: priority,
+      pinned: pinned,
     );
   }
 

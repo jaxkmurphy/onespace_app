@@ -5535,5 +5535,113 @@
   },
   "@sharedNoteExplanation": {
     "description": "Dialog explanation for shared child notes."
+  },
+  "classroomSnapshot": "Classroom snapshot",
+  "classroomSnapshotHint": "Who is in the room, what the class is like, and the one-paragraph overview a substitute should read first.",
+  "todayRoutine": "Today's key routine",
+  "todayRoutineHint": "Important routine details, transitions, timetable notes, or changes for today.",
+  "mustKnow": "Must-know information",
+  "mustKnowHint": "Non-negotiables, important context, and the things staff should not miss.",
+  "safetySupports": "Safety and support notes",
+  "safetySupportsHint": "Whole-class safety guidance, support needs, sensory needs, or escalation notes. Avoid unnecessary private detail.",
+  "checkFirst": "Check first in OneSpace",
+  "checkFirstHint": "Which app areas should staff check first, such as Today Overview, Child Notes, Body Check, or Calm Plan.",
+  "urgentGuidance": "Urgent guidance",
+  "urgentGuidanceHint": "What staff should do immediately if something is urgent or unclear.",
+  "relatedStaffTools": "Related staff tools",
+  "relatedStaffToolsDescription": "Jump straight to the tools most useful during a classroom handover.",
+  "todayOverviewShortcutSubtitle": "See the live classroom picture.",
+  "childNotesShortcutSubtitle": "Read child-specific staff notes.",
+  "calmPlanShortcutSubtitle": "Review calm tools and requests.",
+  "bodyCheckShortcutSubtitle": "Check body reports from children.",
+  "classroomHelperShortcutSubtitle": "Review helper jobs and requests.",
+  "guidanceAdded": "Guidance added",
+  "guidanceNeeded": "Needs guidance",
+  "priority": "Priority",
+  "normalPriority": "Normal",
+  "important": "Important",
+  "pinReminder": "Pin reminder",
+  "pinReminderDescription": "Pinned reminders stay above other classroom reminders.",
+  "pinned": "Pinned",
+  "@classroomSnapshot": {
+    "description": "Handover start-here classroom snapshot section title."
+  },
+  "@classroomSnapshotHint": {
+    "description": "Hint for classroom snapshot handover field."
+  },
+  "@todayRoutine": {
+    "description": "Handover start-here daily routine section title."
+  },
+  "@todayRoutineHint": {
+    "description": "Hint for daily routine handover field."
+  },
+  "@mustKnow": {
+    "description": "Handover start-here must-know section title."
+  },
+  "@mustKnowHint": {
+    "description": "Hint for must-know handover field."
+  },
+  "@safetySupports": {
+    "description": "Handover start-here safety and support section title."
+  },
+  "@safetySupportsHint": {
+    "description": "Hint for safety/supports handover field."
+  },
+  "@checkFirst": {
+    "description": "Handover start-here check first section title."
+  },
+  "@checkFirstHint": {
+    "description": "Hint for check-first handover field."
+  },
+  "@urgentGuidance": {
+    "description": "Handover start-here urgent guidance section title."
+  },
+  "@urgentGuidanceHint": {
+    "description": "Hint for urgent guidance handover field."
+  },
+  "@relatedStaffTools": {
+    "description": "Title for related tools panel in handover hub."
+  },
+  "@relatedStaffToolsDescription": {
+    "description": "Description for related tools panel in handover hub."
+  },
+  "@todayOverviewShortcutSubtitle": {
+    "description": "Related tool subtitle for Today Overview."
+  },
+  "@childNotesShortcutSubtitle": {
+    "description": "Related tool subtitle for Child Notes."
+  },
+  "@calmPlanShortcutSubtitle": {
+    "description": "Related tool subtitle for Calm Plan."
+  },
+  "@bodyCheckShortcutSubtitle": {
+    "description": "Related tool subtitle for Body Check."
+  },
+  "@classroomHelperShortcutSubtitle": {
+    "description": "Related tool subtitle for Classroom Helper."
+  },
+  "@guidanceAdded": {
+    "description": "Status label when staff guidance has content."
+  },
+  "@guidanceNeeded": {
+    "description": "Status label when staff guidance is empty."
+  },
+  "@priority": {
+    "description": "Priority field label."
+  },
+  "@normalPriority": {
+    "description": "Normal priority label."
+  },
+  "@important": {
+    "description": "Important priority label."
+  },
+  "@pinReminder": {
+    "description": "Pin classroom reminder switch label."
+  },
+  "@pinReminderDescription": {
+    "description": "Pin classroom reminder switch helper text."
+  },
+  "@pinned": {
+    "description": "Pinned reminder label."
   }
 }

@@ -5535,5 +5535,113 @@
   },
   "@sharedNoteExplanation": {
     "description": "Dialog explanation for shared child notes."
+  },
+  "classroomSnapshot": "Léargas ar an seomra ranga",
+  "classroomSnapshotHint": "Cé atá sa seomra, conas atá an rang, agus an gearrléargas ba chóir do mhúinteoir ionaid a léamh ar dtús.",
+  "todayRoutine": "Príomhghnáthamh an lae inniu",
+  "todayRoutineHint": "Sonraí tábhachtacha faoin ngnáthamh, aistrithe, nótaí ama, nó athruithe don lá inniu.",
+  "mustKnow": "Eolas riachtanach",
+  "mustKnowHint": "Rudaí nach féidir a scipeáil, comhthéacs tábhachtach, agus na rudaí nár chóir don fhoireann a chailleadh.",
+  "safetySupports": "Nótaí sábháilteachta agus tacaíochta",
+  "safetySupportsHint": "Treoir sábháilteachta don rang iomlán, riachtanais tacaíochta, riachtanais chéadfacha, nó nótaí ardaithe. Seachain sonraí príobháideacha nach bhfuil riachtanach.",
+  "checkFirst": "Seice?il ar dtús in OneSpace",
+  "checkFirstHint": "Na codanna den aip ba chóir don fhoireann a sheiceáil ar dtús, mar shampla Forbhreathnú an Lae, Nótaí Páistí, Body Check, nó Calm Plan.",
+  "urgentGuidance": "Treoir phráinneach",
+  "urgentGuidanceHint": "Cad ba chóir don fhoireann a dhéanamh láithreach má tá rud éigin práinneach nó doiléir.",
+  "relatedStaffTools": "Uirlisí foirne gaolmhara",
+  "relatedStaffToolsDescription": "Téigh díreach chuig na huirlisí is úsáidí le linn aistrithe eolais ranga.",
+  "todayOverviewShortcutSubtitle": "Féach ar phictiúr beo an ranga.",
+  "childNotesShortcutSubtitle": "Léigh nótaí foirne faoi pháistí.",
+  "calmPlanShortcutSubtitle": "Seice?il uirlisí calma agus iarratais.",
+  "bodyCheckShortcutSubtitle": "Seice?il tuairiscí coirp ó pháistí.",
+  "classroomHelperShortcutSubtitle": "Seice?il poist chabhrach agus iarratais.",
+  "guidanceAdded": "Cuireadh treoir leis",
+  "guidanceNeeded": "Treoir de dhíth",
+  "priority": "Tosaíocht",
+  "normalPriority": "Gnáth",
+  "important": "Tábhachtach",
+  "pinReminder": "Pionnáil meabhrúchán",
+  "pinReminderDescription": "Fanann meabhrúcháin phionnáilte os cionn meabhrúcháin eile an ranga.",
+  "pinned": "Pionnáilte",
+  "@classroomSnapshot": {
+    "description": "Handover start-here classroom snapshot section title."
+  },
+  "@classroomSnapshotHint": {
+    "description": "Hint for classroom snapshot handover field."
+  },
+  "@todayRoutine": {
+    "description": "Handover start-here daily routine section title."
+  },
+  "@todayRoutineHint": {
+    "description": "Hint for daily routine handover field."
+  },
+  "@mustKnow": {
+    "description": "Handover start-here must-know section title."
+  },
+  "@mustKnowHint": {
+    "description": "Hint for must-know handover field."
+  },
+  "@safetySupports": {
+    "description": "Handover start-here safety and support section title."
+  },
+  "@safetySupportsHint": {
+    "description": "Hint for safety/supports handover field."
+  },
+  "@checkFirst": {
+    "description": "Handover start-here check first section title."
+  },
+  "@checkFirstHint": {
+    "description": "Hint for check-first handover field."
+  },
+  "@urgentGuidance": {
+    "description": "Handover start-here urgent guidance section title."
+  },
+  "@urgentGuidanceHint": {
+    "description": "Hint for urgent guidance handover field."
+  },
+  "@relatedStaffTools": {
+    "description": "Title for related tools panel in handover hub."
+  },
+  "@relatedStaffToolsDescription": {
+    "description": "Description for related tools panel in handover hub."
+  },
+  "@todayOverviewShortcutSubtitle": {
+    "description": "Related tool subtitle for Today Overview."
+  },
+  "@childNotesShortcutSubtitle": {
+    "description": "Related tool subtitle for Child Notes."
+  },
+  "@calmPlanShortcutSubtitle": {
+    "description": "Related tool subtitle for Calm Plan."
+  },
+  "@bodyCheckShortcutSubtitle": {
+    "description": "Related tool subtitle for Body Check."
+  },
+  "@classroomHelperShortcutSubtitle": {
+    "description": "Related tool subtitle for Classroom Helper."
+  },
+  "@guidanceAdded": {
+    "description": "Status label when staff guidance has content."
+  },
+  "@guidanceNeeded": {
+    "description": "Status label when staff guidance is empty."
+  },
+  "@priority": {
+    "description": "Priority field label."
+  },
+  "@normalPriority": {
+    "description": "Normal priority label."
+  },
+  "@important": {
+    "description": "Important priority label."
+  },
+  "@pinReminder": {
+    "description": "Pin classroom reminder switch label."
+  },
+  "@pinReminderDescription": {
+    "description": "Pin classroom reminder switch helper text."
+  },
+  "@pinned": {
+    "description": "Pinned reminder label."
   }
 }

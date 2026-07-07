@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/handover_overview.dart';
 import '../l10n/l10n.dart';
 import '../models/handover_quick_note.dart';
 import '../models/staff_handover_document.dart';
@@ -77,24 +78,71 @@ class _StartHereTab extends StatelessWidget {
     );
   }
 
-  Future<void> _editOverview(BuildContext context, String currentText) async {
-    final controller = TextEditingController(text: currentText);
+  Future<void> _editOverview(
+    BuildContext context,
+    HandoverOverview overview,
+  ) async {
+    final snapshotController = TextEditingController(
+      text:
+          overview.classroomSnapshot.isEmpty
+              ? overview.legacyContent
+              : overview.classroomSnapshot,
+    );
+    final routineController = TextEditingController(
+      text: overview.todayRoutine,
+    );
+    final mustKnowController = TextEditingController(text: overview.mustKnow);
+    final supportsController = TextEditingController(
+      text: overview.safetySupports,
+    );
+    final checkFirstController = TextEditingController(
+      text: overview.checkFirst,
+    );
+    final urgentController = TextEditingController(
+      text: overview.urgentGuidance,
+    );
 
-    final result = await showDialog<String>(
+    final result = await showDialog<HandoverOverview>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(context.l10n.editStartHereTitle),
           content: SizedBox(
-            width: 620,
-            child: TextField(
-              controller: controller,
-              autofocus: true,
-              minLines: 8,
-              maxLines: 14,
-              decoration: InputDecoration(
-                hintText: context.l10n.startHereHint,
-                border: const OutlineInputBorder(),
+            width: 720,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _DocumentTextField(
+                    label: context.l10n.classroomSnapshot,
+                    hint: context.l10n.classroomSnapshotHint,
+                    controller: snapshotController,
+                  ),
+                  _DocumentTextField(
+                    label: context.l10n.todayRoutine,
+                    hint: context.l10n.todayRoutineHint,
+                    controller: routineController,
+                  ),
+                  _DocumentTextField(
+                    label: context.l10n.mustKnow,
+                    hint: context.l10n.mustKnowHint,
+                    controller: mustKnowController,
+                  ),
+                  _DocumentTextField(
+                    label: context.l10n.safetySupports,
+                    hint: context.l10n.safetySupportsHint,
+                    controller: supportsController,
+                  ),
+                  _DocumentTextField(
+                    label: context.l10n.checkFirst,
+                    hint: context.l10n.checkFirstHint,
+                    controller: checkFirstController,
+                  ),
+                  _DocumentTextField(
+                    label: context.l10n.urgentGuidance,
+                    hint: context.l10n.urgentGuidanceHint,
+                    controller: urgentController,
+                  ),
+                ],
               ),
             ),
           ),
@@ -105,7 +153,17 @@ class _StartHereTab extends StatelessWidget {
             ),
             FilledButton.icon(
               onPressed: () {
-                Navigator.pop(dialogContext, controller.text.trim());
+                Navigator.pop(
+                  dialogContext,
+                  HandoverOverview(
+                    classroomSnapshot: snapshotController.text.trim(),
+                    todayRoutine: routineController.text.trim(),
+                    mustKnow: mustKnowController.text.trim(),
+                    safetySupports: supportsController.text.trim(),
+                    checkFirst: checkFirstController.text.trim(),
+                    urgentGuidance: urgentController.text.trim(),
+                  ),
+                );
               },
               icon: const Icon(Icons.save_rounded),
               label: Text(context.l10n.save),
@@ -115,13 +173,18 @@ class _StartHereTab extends StatelessWidget {
       },
     );
 
-    controller.dispose();
+    snapshotController.dispose();
+    routineController.dispose();
+    mustKnowController.dispose();
+    supportsController.dispose();
+    checkFirstController.dispose();
+    urgentController.dispose();
 
     if (result == null) return;
 
     try {
       await firestoreService.updateCurrentHandoverOverview(
-        content: result,
+        overview: result,
         updatedByName: currentStaff.name,
       );
     } catch (_) {
@@ -133,7 +196,7 @@ class _StartHereTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<String>(
+    return StreamBuilder<HandoverOverview>(
       stream: firestoreService.getCurrentHandoverOverview(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -147,7 +210,7 @@ class _StartHereTab extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final content = snapshot.data!;
+        final overview = snapshot.data!;
 
         return Container(
           width: double.infinity,
@@ -172,63 +235,24 @@ class _StartHereTab extends StatelessWidget {
                       color: const Color(0xFF7E57C2),
                     ),
                     const SizedBox(height: 18),
-                    Container(
-                      width: double.infinity,
-                      constraints: const BoxConstraints(minHeight: 280),
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(26),
-                        border: Border.all(
-                          color: const Color(
-                            0xFF7E57C2,
-                          ).withValues(alpha: 0.22),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.06),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child:
-                          content.isEmpty
-                              ? Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.description_outlined,
-                                      size: 62,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    const SizedBox(height: 14),
-                                    Text(
-                                      context.l10n.noStartHereInformation,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade700,
-                                        fontSize: 17,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                              : SelectableText(
-                                content,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  height: 1.55,
-                                ),
-                              ),
+                    if (overview.isEmpty)
+                      _HandoverEmptyCard(
+                        icon: Icons.description_outlined,
+                        title: context.l10n.noStartHereInformation,
+                      )
+                    else
+                      _StartHereOverviewGrid(overview: overview),
+                    const SizedBox(height: 18),
+                    _RelatedToolsPanel(
+                      currentStaff: currentStaff,
+                      firestoreService: firestoreService,
                     ),
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
                       height: 54,
                       child: FilledButton.icon(
-                        onPressed: () => _editOverview(context, content),
+                        onPressed: () => _editOverview(context, overview),
                         icon: const Icon(Icons.edit_rounded),
                         label: Text(context.l10n.editStartHere),
                       ),
@@ -240,6 +264,388 @@ class _StartHereTab extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _StartHereOverviewGrid extends StatelessWidget {
+  final HandoverOverview overview;
+
+  const _StartHereOverviewGrid({required this.overview});
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = [
+      _StartHereSectionData(
+        title: context.l10n.classroomSnapshot,
+        content:
+            overview.classroomSnapshot.isEmpty
+                ? overview.legacyContent
+                : overview.classroomSnapshot,
+        icon: Icons.groups_2_rounded,
+        color: const Color(0xFF42A5F5),
+      ),
+      _StartHereSectionData(
+        title: context.l10n.todayRoutine,
+        content: overview.todayRoutine,
+        icon: Icons.event_note_rounded,
+        color: const Color(0xFF66BB6A),
+      ),
+      _StartHereSectionData(
+        title: context.l10n.mustKnow,
+        content: overview.mustKnow,
+        icon: Icons.priority_high_rounded,
+        color: const Color(0xFFFFA726),
+      ),
+      _StartHereSectionData(
+        title: context.l10n.safetySupports,
+        content: overview.safetySupports,
+        icon: Icons.health_and_safety_rounded,
+        color: const Color(0xFFEF5350),
+      ),
+      _StartHereSectionData(
+        title: context.l10n.checkFirst,
+        content: overview.checkFirst,
+        icon: Icons.checklist_rounded,
+        color: const Color(0xFF26A69A),
+      ),
+      _StartHereSectionData(
+        title: context.l10n.urgentGuidance,
+        content: overview.urgentGuidance,
+        icon: Icons.emergency_rounded,
+        color: const Color(0xFF7E57C2),
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useTwoColumns = constraints.maxWidth >= 760;
+
+        return Wrap(
+          spacing: 14,
+          runSpacing: 14,
+          children:
+              sections.map((section) {
+                final width =
+                    useTwoColumns
+                        ? (constraints.maxWidth - 14) / 2
+                        : constraints.maxWidth;
+
+                return SizedBox(
+                  width: width,
+                  child: _StartHereSectionCard(section: section),
+                );
+              }).toList(),
+        );
+      },
+    );
+  }
+}
+
+class _StartHereSectionData {
+  final String title;
+  final String content;
+  final IconData icon;
+  final Color color;
+
+  const _StartHereSectionData({
+    required this.title,
+    required this.content,
+    required this.icon,
+    required this.color,
+  });
+}
+
+class _StartHereSectionCard extends StatelessWidget {
+  final _StartHereSectionData section;
+
+  const _StartHereSectionCard({required this.section});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasContent = section.content.trim().isNotEmpty;
+
+    return Container(
+      constraints: const BoxConstraints(minHeight: 180),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: section.color.withValues(alpha: 0.22)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: section.color.withValues(alpha: 0.14),
+                child: Icon(section.icon, color: section.color),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  section.title,
+                  style: TextStyle(
+                    color: section.color,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SelectableText(
+            hasContent ? section.content : context.l10n.nothingAddedYet,
+            style: TextStyle(
+              height: 1.45,
+              color: hasContent ? null : Colors.grey.shade600,
+              fontStyle: hasContent ? FontStyle.normal : FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RelatedToolsPanel extends StatelessWidget {
+  final StaffProfile currentStaff;
+  final FirestoreService firestoreService;
+
+  const _RelatedToolsPanel({
+    required this.currentStaff,
+    required this.firestoreService,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tools = [
+      _RelatedToolData(
+        title: context.l10n.todayOverview,
+        subtitle: context.l10n.todayOverviewShortcutSubtitle,
+        icon: Icons.today_rounded,
+        color: const Color(0xFF26A69A),
+        onTap:
+            () => Navigator.pushNamed(
+              context,
+              '/today-overview',
+              arguments: currentStaff,
+            ),
+      ),
+      _RelatedToolData(
+        title: context.l10n.childNotes,
+        subtitle: context.l10n.childNotesShortcutSubtitle,
+        icon: Icons.sticky_note_2_rounded,
+        color: const Color(0xFF5E7CE2),
+        onTap:
+            () => Navigator.pushNamed(
+              context,
+              '/child-notes',
+              arguments: {
+                'staffProfile': currentStaff,
+                'firestoreService': firestoreService,
+              },
+            ),
+      ),
+      _RelatedToolData(
+        title: context.l10n.calmPlan,
+        subtitle: context.l10n.calmPlanShortcutSubtitle,
+        icon: Icons.self_improvement_rounded,
+        color: const Color(0xFF7E57C2),
+        onTap:
+            () => Navigator.pushNamed(
+              context,
+              '/calm-plan-management',
+              arguments: {
+                'staffProfile': currentStaff,
+                'firestoreService': firestoreService,
+              },
+            ),
+      ),
+      _RelatedToolData(
+        title: context.l10n.bodyCheck,
+        subtitle: context.l10n.bodyCheckShortcutSubtitle,
+        icon: Icons.health_and_safety_rounded,
+        color: const Color(0xFFEF5350),
+        onTap:
+            () => Navigator.pushNamed(
+              context,
+              '/body-check-overview',
+              arguments: {
+                'teacherUid': currentStaff.teacherUid,
+                'firestoreService': firestoreService,
+              },
+            ),
+      ),
+      _RelatedToolData(
+        title: context.l10n.classroomHelper,
+        subtitle: context.l10n.classroomHelperShortcutSubtitle,
+        icon: Icons.volunteer_activism_rounded,
+        color: const Color(0xFFFFA726),
+        onTap:
+            () => Navigator.pushNamed(
+              context,
+              '/classroom-helper-management',
+              arguments: {
+                'staffProfile': currentStaff,
+                'firestoreService': firestoreService,
+              },
+            ),
+      ),
+    ];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.86),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: const Color(0xFF7E57C2).withValues(alpha: 0.16),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.relatedStaffTools,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 4),
+          Text(context.l10n.relatedStaffToolsDescription),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children:
+                tools.map((tool) => _RelatedToolChip(data: tool)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RelatedToolData {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _RelatedToolData({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+}
+
+class _RelatedToolChip extends StatelessWidget {
+  final _RelatedToolData data;
+
+  const _RelatedToolChip({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 255,
+      child: Material(
+        color: data.color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: data.onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: data.color.withValues(alpha: 0.16),
+                  child: Icon(data.icon, color: data.color),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.title,
+                        style: const TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        data.subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HandoverEmptyCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+
+  const _HandoverEmptyCard({required this.icon, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 240),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: const Color(0xFF7E57C2).withValues(alpha: 0.22),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 62, color: Colors.grey.shade400),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade700, fontSize: 17),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -481,12 +887,34 @@ class _StaffDocumentCard extends StatelessWidget {
               context.l10n.staffDocumentTitle(staff.name),
               style: const TextStyle(fontWeight: FontWeight.w900),
             ),
-            subtitle: Text(
-              document.updatedAt == null
-                  ? context.l10n.nothingAddedYet
-                  : context.l10n.lastUpdated(
-                    _formatDate(context, document.updatedAt!),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  _NoteMetadata(
+                    icon:
+                        document.hasContent
+                            ? Icons.check_circle_rounded
+                            : Icons.pending_actions_rounded,
+                    text:
+                        document.hasContent
+                            ? context.l10n.guidanceAdded
+                            : context.l10n.guidanceNeeded,
                   ),
+                  _NoteMetadata(
+                    icon: Icons.schedule_rounded,
+                    text:
+                        document.updatedAt == null
+                            ? context.l10n.nothingAddedYet
+                            : context.l10n.lastUpdated(
+                              _formatDate(context, document.updatedAt!),
+                            ),
+                  ),
+                ],
+              ),
             ),
             trailing:
                 canEdit
@@ -579,65 +1007,109 @@ class _QuickNotesTab extends StatelessWidget {
   }) async {
     final titleController = TextEditingController(text: note?.title ?? '');
     final contentController = TextEditingController(text: note?.content ?? '');
+    var selectedPriority = note?.priority ?? HandoverQuickNotePriority.normal;
+    var pinned = note?.pinned ?? false;
 
     final result = await showDialog<_QuickNoteDraft>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(
-            note == null
-                ? context.l10n.addQuickNote
-                : context.l10n.editQuickNote,
-          ),
-          content: SizedBox(
-            width: 560,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.titleLabel,
-                    border: const OutlineInputBorder(),
-                  ),
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(
+                note == null
+                    ? context.l10n.addQuickNote
+                    : context.l10n.editQuickNote,
+              ),
+              content: SizedBox(
+                width: 560,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.titleLabel,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: contentController,
+                      textCapitalization: TextCapitalization.sentences,
+                      minLines: 4,
+                      maxLines: 8,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.noteLabel,
+                        alignLabelWithHint: true,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    DropdownButtonFormField<HandoverQuickNotePriority>(
+                      initialValue: selectedPriority,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.priority,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items:
+                          HandoverQuickNotePriority.values.map((priority) {
+                            return DropdownMenuItem(
+                              value: priority,
+                              child: Text(_priorityLabel(context, priority)),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setDialogState(() {
+                          selectedPriority = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: pinned,
+                      title: Text(context.l10n.pinReminder),
+                      subtitle: Text(context.l10n.pinReminderDescription),
+                      onChanged: (value) {
+                        setDialogState(() {
+                          pinned = value;
+                        });
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: contentController,
-                  textCapitalization: TextCapitalization.sentences,
-                  minLines: 4,
-                  maxLines: 8,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.noteLabel,
-                    alignLabelWithHint: true,
-                    border: const OutlineInputBorder(),
-                  ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: Text(context.l10n.cancel),
+                ),
+                FilledButton.icon(
+                  onPressed: () {
+                    final title = titleController.text.trim();
+                    final content = contentController.text.trim();
+
+                    if (title.isEmpty && content.isEmpty) return;
+
+                    Navigator.pop(
+                      dialogContext,
+                      _QuickNoteDraft(
+                        title: title,
+                        content: content,
+                        priority: selectedPriority,
+                        pinned: pinned,
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.save_rounded),
+                  label: Text(context.l10n.save),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(context.l10n.cancel),
-            ),
-            FilledButton.icon(
-              onPressed: () {
-                final title = titleController.text.trim();
-                final content = contentController.text.trim();
-
-                if (title.isEmpty && content.isEmpty) return;
-
-                Navigator.pop(
-                  dialogContext,
-                  _QuickNoteDraft(title: title, content: content),
-                );
-              },
-              icon: const Icon(Icons.save_rounded),
-              label: Text(context.l10n.save),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -652,6 +1124,8 @@ class _QuickNotesTab extends StatelessWidget {
         await firestoreService.addCurrentHandoverQuickNote(
           title: result.title,
           content: result.content,
+          priority: result.priority,
+          pinned: result.pinned,
           createdBy: currentStaff,
         );
       } else {
@@ -659,6 +1133,8 @@ class _QuickNotesTab extends StatelessWidget {
           noteId: note.id,
           title: result.title,
           content: result.content,
+          priority: result.priority,
+          pinned: result.pinned,
         );
       }
     } catch (_) {
@@ -666,6 +1142,52 @@ class _QuickNotesTab extends StatelessWidget {
         _showMessage(context, context.l10n.handoverSaveError);
       }
     }
+  }
+
+  String _priorityLabel(
+    BuildContext context,
+    HandoverQuickNotePriority priority,
+  ) {
+    return switch (priority) {
+      HandoverQuickNotePriority.normal => context.l10n.normalPriority,
+      HandoverQuickNotePriority.important => context.l10n.important,
+      HandoverQuickNotePriority.urgent => context.l10n.urgent,
+    };
+  }
+
+  Color _priorityColor(HandoverQuickNotePriority priority) {
+    return switch (priority) {
+      HandoverQuickNotePriority.normal => const Color(0xFF78909C),
+      HandoverQuickNotePriority.important => const Color(0xFFFFA726),
+      HandoverQuickNotePriority.urgent => const Color(0xFFEF5350),
+    };
+  }
+
+  int _priorityRank(HandoverQuickNotePriority priority) {
+    return switch (priority) {
+      HandoverQuickNotePriority.normal => 0,
+      HandoverQuickNotePriority.important => 1,
+      HandoverQuickNotePriority.urgent => 2,
+    };
+  }
+
+  List<HandoverQuickNote> _sortedNotes(List<HandoverQuickNote> notes) {
+    final sorted = [...notes];
+
+    sorted.sort((a, b) {
+      if (a.pinned != b.pinned) return a.pinned ? -1 : 1;
+
+      final priorityCompare = _priorityRank(
+        b.priority,
+      ).compareTo(_priorityRank(a.priority));
+      if (priorityCompare != 0) return priorityCompare;
+
+      final aDate = a.updatedAt ?? a.createdAt ?? DateTime(0);
+      final bDate = b.updatedAt ?? b.createdAt ?? DateTime(0);
+      return bDate.compareTo(aDate);
+    });
+
+    return sorted;
   }
 
   Future<void> _deleteNote(BuildContext context, HandoverQuickNote note) async {
@@ -720,7 +1242,7 @@ class _QuickNotesTab extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final notes = snapshot.data!;
+          final notes = _sortedNotes(snapshot.data!);
 
           if (notes.isEmpty) {
             return _HandoverMessageState(
@@ -743,6 +1265,7 @@ class _QuickNotesTab extends StatelessWidget {
                 final canEdit = note.createdByStaffId == currentStaff.id;
 
                 final date = note.updatedAt ?? note.createdAt;
+                final priorityColor = _priorityColor(note.priority);
 
                 return Card(
                   elevation: 0,
@@ -825,6 +1348,16 @@ class _QuickNotesTab extends StatelessWidget {
                           spacing: 10,
                           runSpacing: 6,
                           children: [
+                            if (note.pinned)
+                              _NoteMetadata(
+                                icon: Icons.push_pin_rounded,
+                                text: context.l10n.pinned,
+                              ),
+                            _NoteMetadata(
+                              icon: Icons.flag_rounded,
+                              text: _priorityLabel(context, note.priority),
+                              color: priorityColor,
+                            ),
                             _NoteMetadata(
                               icon: Icons.person_rounded,
                               text: context.l10n.quickNoteBy(
@@ -922,9 +1455,14 @@ class _HandoverHeader extends StatelessWidget {
 
 class _DocumentTextField extends StatelessWidget {
   final String label;
+  final String? hint;
   final TextEditingController controller;
 
-  const _DocumentTextField({required this.label, required this.controller});
+  const _DocumentTextField({
+    required this.label,
+    this.hint,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -937,6 +1475,7 @@ class _DocumentTextField extends StatelessWidget {
         maxLines: 6,
         decoration: InputDecoration(
           labelText: label,
+          hintText: hint,
           alignLabelWithHint: true,
           border: const OutlineInputBorder(),
         ),
@@ -999,20 +1538,30 @@ class _DocumentSection extends StatelessWidget {
 class _NoteMetadata extends StatelessWidget {
   final IconData icon;
   final String text;
+  final Color? color;
 
-  const _NoteMetadata({required this.icon, required this.text});
+  const _NoteMetadata({required this.icon, required this.text, this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color:
+            color?.withValues(alpha: 0.12) ??
+            Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(icon, size: 17), const SizedBox(width: 5), Text(text)],
+        children: [
+          Icon(icon, size: 17, color: color),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(color: color, fontWeight: FontWeight.w700),
+          ),
+        ],
       ),
     );
   }
@@ -1051,6 +1600,13 @@ class _HandoverMessageState extends StatelessWidget {
 class _QuickNoteDraft {
   final String title;
   final String content;
+  final HandoverQuickNotePriority priority;
+  final bool pinned;
 
-  const _QuickNoteDraft({required this.title, required this.content});
+  const _QuickNoteDraft({
+    required this.title,
+    required this.content,
+    required this.priority,
+    required this.pinned,
+  });
 }

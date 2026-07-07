@@ -4238,4 +4238,94 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sharedNoteExplanation =>
       'Shared notes can be seen by staff in this classroom.';
+
+  @override
+  String get classroomSnapshot => 'Classroom snapshot';
+
+  @override
+  String get classroomSnapshotHint =>
+      'Who is in the room, what the class is like, and the one-paragraph overview a substitute should read first.';
+
+  @override
+  String get todayRoutine => 'Today\'s key routine';
+
+  @override
+  String get todayRoutineHint =>
+      'Important routine details, transitions, timetable notes, or changes for today.';
+
+  @override
+  String get mustKnow => 'Must-know information';
+
+  @override
+  String get mustKnowHint =>
+      'Non-negotiables, important context, and the things staff should not miss.';
+
+  @override
+  String get safetySupports => 'Safety and support notes';
+
+  @override
+  String get safetySupportsHint =>
+      'Whole-class safety guidance, support needs, sensory needs, or escalation notes. Avoid unnecessary private detail.';
+
+  @override
+  String get checkFirst => 'Check first in OneSpace';
+
+  @override
+  String get checkFirstHint =>
+      'Which app areas should staff check first, such as Today Overview, Child Notes, Body Check, or Calm Plan.';
+
+  @override
+  String get urgentGuidance => 'Urgent guidance';
+
+  @override
+  String get urgentGuidanceHint =>
+      'What staff should do immediately if something is urgent or unclear.';
+
+  @override
+  String get relatedStaffTools => 'Related staff tools';
+
+  @override
+  String get relatedStaffToolsDescription =>
+      'Jump straight to the tools most useful during a classroom handover.';
+
+  @override
+  String get todayOverviewShortcutSubtitle => 'See the live classroom picture.';
+
+  @override
+  String get childNotesShortcutSubtitle => 'Read child-specific staff notes.';
+
+  @override
+  String get calmPlanShortcutSubtitle => 'Review calm tools and requests.';
+
+  @override
+  String get bodyCheckShortcutSubtitle => 'Check body reports from children.';
+
+  @override
+  String get classroomHelperShortcutSubtitle =>
+      'Review helper jobs and requests.';
+
+  @override
+  String get guidanceAdded => 'Guidance added';
+
+  @override
+  String get guidanceNeeded => 'Needs guidance';
+
+  @override
+  String get priority => 'Priority';
+
+  @override
+  String get normalPriority => 'Normal';
+
+  @override
+  String get important => 'Important';
+
+  @override
+  String get pinReminder => 'Pin reminder';
+
+  @override
+  String get pinReminderDescription =>
+      'Pinned reminders stay above other classroom reminders.';
+
+  @override
+  String get pinned => 'Pinned';
 }

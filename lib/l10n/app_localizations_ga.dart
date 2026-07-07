@@ -4305,4 +4305,95 @@ class AppLocalizationsGa extends AppLocalizations {
   @override
   String get sharedNoteExplanation =>
       'Is féidir le baill foirne sa seomra ranga seo nótaí comhroinnte a fheiceáil.';
+
+  @override
+  String get classroomSnapshot => 'Léargas ar an seomra ranga';
+
+  @override
+  String get classroomSnapshotHint =>
+      'Cé atá sa seomra, conas atá an rang, agus an gearrléargas ba chóir do mhúinteoir ionaid a léamh ar dtús.';
+
+  @override
+  String get todayRoutine => 'Príomhghnáthamh an lae inniu';
+
+  @override
+  String get todayRoutineHint =>
+      'Sonraí tábhachtacha faoin ngnáthamh, aistrithe, nótaí ama, nó athruithe don lá inniu.';
+
+  @override
+  String get mustKnow => 'Eolas riachtanach';
+
+  @override
+  String get mustKnowHint =>
+      'Rudaí nach féidir a scipeáil, comhthéacs tábhachtach, agus na rudaí nár chóir don fhoireann a chailleadh.';
+
+  @override
+  String get safetySupports => 'Nótaí sábháilteachta agus tacaíochta';
+
+  @override
+  String get safetySupportsHint =>
+      'Treoir sábháilteachta don rang iomlán, riachtanais tacaíochta, riachtanais chéadfacha, nó nótaí ardaithe. Seachain sonraí príobháideacha nach bhfuil riachtanach.';
+
+  @override
+  String get checkFirst => 'Seice?il ar dtús in OneSpace';
+
+  @override
+  String get checkFirstHint =>
+      'Na codanna den aip ba chóir don fhoireann a sheiceáil ar dtús, mar shampla Forbhreathnú an Lae, Nótaí Páistí, Body Check, nó Calm Plan.';
+
+  @override
+  String get urgentGuidance => 'Treoir phráinneach';
+
+  @override
+  String get urgentGuidanceHint =>
+      'Cad ba chóir don fhoireann a dhéanamh láithreach má tá rud éigin práinneach nó doiléir.';
+
+  @override
+  String get relatedStaffTools => 'Uirlisí foirne gaolmhara';
+
+  @override
+  String get relatedStaffToolsDescription =>
+      'Téigh díreach chuig na huirlisí is úsáidí le linn aistrithe eolais ranga.';
+
+  @override
+  String get todayOverviewShortcutSubtitle => 'Féach ar phictiúr beo an ranga.';
+
+  @override
+  String get childNotesShortcutSubtitle => 'Léigh nótaí foirne faoi pháistí.';
+
+  @override
+  String get calmPlanShortcutSubtitle =>
+      'Seice?il uirlisí calma agus iarratais.';
+
+  @override
+  String get bodyCheckShortcutSubtitle => 'Seice?il tuairiscí coirp ó pháistí.';
+
+  @override
+  String get classroomHelperShortcutSubtitle =>
+      'Seice?il poist chabhrach agus iarratais.';
+
+  @override
+  String get guidanceAdded => 'Cuireadh treoir leis';
+
+  @override
+  String get guidanceNeeded => 'Treoir de dhíth';
+
+  @override
+  String get priority => 'Tosaíocht';
+
+  @override
+  String get normalPriority => 'Gnáth';
+
+  @override
+  String get important => 'Tábhachtach';
+
+  @override
+  String get pinReminder => 'Pionnáil meabhrúchán';
+
+  @override
+  String get pinReminderDescription =>
+      'Fanann meabhrúcháin phionnáilte os cionn meabhrúcháin eile an ranga.';
+
+  @override
+  String get pinned => 'Pionnáilte';
 }

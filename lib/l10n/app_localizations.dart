@@ -7321,6 +7321,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shared notes can be seen by staff in this classroom.'**
   String get sharedNoteExplanation;
+
+  /// Handover start-here classroom snapshot section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom snapshot'**
+  String get classroomSnapshot;
+
+  /// Hint for classroom snapshot handover field.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is in the room, what the class is like, and the one-paragraph overview a substitute should read first.'**
+  String get classroomSnapshotHint;
+
+  /// Handover start-here daily routine section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s key routine'**
+  String get todayRoutine;
+
+  /// Hint for daily routine handover field.
+  ///
+  /// In en, this message translates to:
+  /// **'Important routine details, transitions, timetable notes, or changes for today.'**
+  String get todayRoutineHint;
+
+  /// Handover start-here must-know section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Must-know information'**
+  String get mustKnow;
+
+  /// Hint for must-know handover field.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-negotiables, important context, and the things staff should not miss.'**
+  String get mustKnowHint;
+
+  /// Handover start-here safety and support section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety and support notes'**
+  String get safetySupports;
+
+  /// Hint for safety/supports handover field.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole-class safety guidance, support needs, sensory needs, or escalation notes. Avoid unnecessary private detail.'**
+  String get safetySupportsHint;
+
+  /// Handover start-here check first section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Check first in OneSpace'**
+  String get checkFirst;
+
+  /// Hint for check-first handover field.
+  ///
+  /// In en, this message translates to:
+  /// **'Which app areas should staff check first, such as Today Overview, Child Notes, Body Check, or Calm Plan.'**
+  String get checkFirstHint;
+
+  /// Handover start-here urgent guidance section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Urgent guidance'**
+  String get urgentGuidance;
+
+  /// Hint for urgent guidance handover field.
+  ///
+  /// In en, this message translates to:
+  /// **'What staff should do immediately if something is urgent or unclear.'**
+  String get urgentGuidanceHint;
+
+  /// Title for related tools panel in handover hub.
+  ///
+  /// In en, this message translates to:
+  /// **'Related staff tools'**
+  String get relatedStaffTools;
+
+  /// Description for related tools panel in handover hub.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump straight to the tools most useful during a classroom handover.'**
+  String get relatedStaffToolsDescription;
+
+  /// Related tool subtitle for Today Overview.
+  ///
+  /// In en, this message translates to:
+  /// **'See the live classroom picture.'**
+  String get todayOverviewShortcutSubtitle;
+
+  /// Related tool subtitle for Child Notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Read child-specific staff notes.'**
+  String get childNotesShortcutSubtitle;
+
+  /// Related tool subtitle for Calm Plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Review calm tools and requests.'**
+  String get calmPlanShortcutSubtitle;
+
+  /// Related tool subtitle for Body Check.
+  ///
+  /// In en, this message translates to:
+  /// **'Check body reports from children.'**
+  String get bodyCheckShortcutSubtitle;
+
+  /// Related tool subtitle for Classroom Helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Review helper jobs and requests.'**
+  String get classroomHelperShortcutSubtitle;
+
+  /// Status label when staff guidance has content.
+  ///
+  /// In en, this message translates to:
+  /// **'Guidance added'**
+  String get guidanceAdded;
+
+  /// Status label when staff guidance is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs guidance'**
+  String get guidanceNeeded;
+
+  /// Priority field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get priority;
+
+  /// Normal priority label.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get normalPriority;
+
+  /// Important priority label.
+  ///
+  /// In en, this message translates to:
+  /// **'Important'**
+  String get important;
+
+  /// Pin classroom reminder switch label.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin reminder'**
+  String get pinReminder;
+
+  /// Pin classroom reminder switch helper text.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned reminders stay above other classroom reminders.'**
+  String get pinReminderDescription;
+
+  /// Pinned reminder label.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get pinned;
 }
 
 class _AppLocalizationsDelegate
