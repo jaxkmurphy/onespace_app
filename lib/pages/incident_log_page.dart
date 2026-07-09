@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
 import '../models/incident_log_entry.dart';
+import '../models/parent_report_draft.dart';
 import '../models/staff_profile.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
+import '../widgets/parent_report_dialog.dart';
 
 enum IncidentLogMode { create, view }
 
 class IncidentLogPage extends StatefulWidget {
   final StaffProfile staffProfile;
 
-  const IncidentLogPage({
-    super.key,
-    required this.staffProfile,
-  });
+  const IncidentLogPage({super.key, required this.staffProfile});
 
   @override
   State<IncidentLogPage> createState() => _IncidentLogPageState();
@@ -22,15 +21,11 @@ class IncidentLogPage extends StatefulWidget {
 
 class _IncidentLogPageState extends State<IncidentLogPage> {
   final FirestoreService _firestoreService = FirestoreService();
-  final ClassroomSessionService _session =
-      ClassroomSessionService.instance;
+  final ClassroomSessionService _session = ClassroomSessionService.instance;
 
-  final TextEditingController _descriptionController =
-      TextEditingController();
-  final TextEditingController _actionController =
-      TextEditingController();
-  final TextEditingController _followUpController =
-      TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _actionController = TextEditingController();
+  final TextEditingController _followUpController = TextEditingController();
 
   IncidentLogMode _mode = IncidentLogMode.create;
 
@@ -45,6 +40,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 
   DateTime? _selectedDateTime;
   bool _isSaving = false;
+  final Set<String> _preparingReportIds = {};
 
   @override
   void dispose() {
@@ -124,10 +120,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -143,9 +136,10 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 
     final pickedTime = await showTimePicker(
       context: context,
-      initialTime: _selectedDateTime == null
-          ? TimeOfDay.now()
-          : TimeOfDay.fromDateTime(_selectedDateTime!),
+      initialTime:
+          _selectedDateTime == null
+              ? TimeOfDay.now()
+              : TimeOfDay.fromDateTime(_selectedDateTime!),
     );
 
     if (pickedTime == null || !mounted) return;
@@ -161,9 +155,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     });
   }
 
-  Future<void> _saveIncident(
-    List<ChildProfile> children,
-  ) async {
+  Future<void> _saveIncident(List<ChildProfile> children) async {
     if (_selectedChildId == null) {
       _showMessage(context.l10n.pleaseSelectChild);
       return;
@@ -201,9 +193,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     );
 
     try {
-      await _firestoreService.addCurrentIncidentLogEntry(
-        incident,
-      );
+      await _firestoreService.addCurrentIncidentLogEntry(incident);
 
       if (!mounted) return;
 
@@ -233,36 +223,30 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     }
   }
 
-  Future<void> _editIncident(
-    IncidentLogEntry incident,
-  ) async {
+  Future<void> _editIncident(IncidentLogEntry incident) async {
     final updated = await showDialog<IncidentLogEntry>(
       context: context,
-      builder: (_) => _IncidentEditDialog(
-        incident: incident,
-      ),
+      builder: (_) => _IncidentEditDialog(incident: incident),
     );
 
     if (updated == null) return;
 
-        try {
-          await _firestoreService.updateCurrentIncidentLogEntry(
-            entry: updated,
-            updatedByStaffId: widget.staffProfile.id,
-            updatedByStaffName: widget.staffProfile.name,
-          );
+    try {
+      await _firestoreService.updateCurrentIncidentLogEntry(
+        entry: updated,
+        updatedByStaffId: widget.staffProfile.id,
+        updatedByStaffName: widget.staffProfile.name,
+      );
 
-        if (!mounted) return;
-        _showMessage(context.l10n.incidentUpdated);
-      } catch (_) {
-        if (!mounted) return;
-        _showMessage(context.l10n.incidentSaveFailed);
-      }
+      if (!mounted) return;
+      _showMessage(context.l10n.incidentUpdated);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage(context.l10n.incidentSaveFailed);
     }
+  }
 
-  Future<void> _archiveIncident(
-    IncidentLogEntry incident,
-  ) async {
+  Future<void> _archiveIncident(IncidentLogEntry incident) async {
     final reasonController = TextEditingController();
 
     final reason = await showDialog<String>(
@@ -275,11 +259,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  context.l10n.archiveIncidentMessage(
-                    incident.childName,
-                  ),
-                ),
+                Text(context.l10n.archiveIncidentMessage(incident.childName)),
                 const SizedBox(height: 16),
                 TextField(
                   controller: reasonController,
@@ -321,7 +301,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 
     if (reason == null) return;
 
-      try {
+    try {
       await _firestoreService.archiveCurrentIncidentLogEntry(
         incidentId: incident.id,
         reason: reason,
@@ -334,6 +314,170 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     } catch (_) {
       if (!mounted) return;
       _showMessage(context.l10n.incidentArchiveFailed);
+    }
+  }
+
+  ParentReportDraft _buildParentReportDraft(IncidentLogEntry incident) {
+    final staffName =
+        incident.staffName.trim().isEmpty
+            ? context.l10n.staffLabel
+            : incident.staffName.trim();
+
+    final buffer =
+        StringBuffer()
+          ..writeln(context.l10n.parentReportGreeting)
+          ..writeln()
+          ..writeln(context.l10n.parentReportIncidentIntro(incident.childName))
+          ..writeln()
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.child,
+              incident.childName,
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.reportDate,
+              _formatDate(incident.timestamp),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.incidentCategory,
+              _categoryLabel(incident.category),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.severity,
+              _severityLabel(incident.severity),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.description,
+              incident.description.trim(),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.actionTaken,
+              incident.actionTaken.trim(),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.loggedByLabel,
+              staffName,
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.followUpStatusLabel,
+              _followUpLabel(incident.followUpStatus),
+            ),
+          );
+
+    if (incident.followUpNotes.trim().isNotEmpty) {
+      buffer.writeln(
+        context.l10n.parentReportLine(
+          context.l10n.followUpNotes,
+          incident.followUpNotes.trim(),
+        ),
+      );
+    }
+
+    buffer
+      ..writeln()
+      ..writeln(context.l10n.parentReportFooter);
+
+    return ParentReportDraft(
+      type: 'incident',
+      sourceId: incident.id,
+      childId: incident.childId,
+      childName: incident.childName,
+      subject: context.l10n.incidentParentReportSubject(incident.childName),
+      body: buffer.toString(),
+    );
+  }
+
+  Future<void> _prepareParentReport(IncidentLogEntry incident) async {
+    if (_preparingReportIds.contains(incident.id)) return;
+
+    setState(() => _preparingReportIds.add(incident.id));
+
+    try {
+      await _firestoreService.restoreClassroomSessionFromAuthIfNeeded();
+
+      if (!_firestoreService.session.hasClassroomSession) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.parentReportsNeedClassroom)),
+        );
+        return;
+      }
+
+      final schoolId = _firestoreService.session.requireSchoolId;
+      final classroomId = _firestoreService.session.requireClassroomId;
+      final recipients =
+          await _firestoreService
+              .getGuardianContactsForChild(
+                schoolId: schoolId,
+                classroomId: classroomId,
+                childId: incident.childId,
+              )
+              .first;
+
+      final availableRecipients =
+          recipients
+              .where((contact) => contact.active && contact.canReceiveReports)
+              .toList();
+
+      if (!mounted) return;
+
+      if (availableRecipients.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.noGuardianReportContacts)),
+        );
+        return;
+      }
+
+      final draft = _buildParentReportDraft(incident);
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return ParentReportDialog(
+            draft: draft,
+            recipients: availableRecipients,
+            onPrepared: (recipient) {
+              return _firestoreService.addCurrentParentReportPreparation(
+                reportType: draft.type,
+                sourceId: draft.sourceId,
+                childId: draft.childId,
+                childName: draft.childName,
+                recipientContactId: recipient.id,
+                recipientName: recipient.name,
+                recipientEmail: recipient.email,
+                preparedByStaffId: widget.staffProfile.id,
+                preparedByStaffName:
+                    widget.staffProfile.name.trim().isEmpty
+                        ? context.l10n.staffLabel
+                        : widget.staffProfile.name.trim(),
+              );
+            },
+          );
+        },
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.parentReportPrepareFailed)),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _preparingReportIds.remove(incident.id));
+      }
     }
   }
 
@@ -367,9 +511,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     );
   }
 
-  Widget _buildCreateSection(
-    List<ChildProfile> children,
-  ) {
+  Widget _buildCreateSection(List<ChildProfile> children) {
     return _IncidentSection(
       icon: Icons.add_task_rounded,
       title: context.l10n.createIncident,
@@ -383,12 +525,13 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
               prefixIcon: const Icon(Icons.person_search_rounded),
               border: const OutlineInputBorder(),
             ),
-            items: children.map((child) {
-              return DropdownMenuItem(
-                value: child.id,
-                child: Text(child.name),
-              );
-            }).toList(),
+            items:
+                children.map((child) {
+                  return DropdownMenuItem(
+                    value: child.id,
+                    child: Text(child.name),
+                  );
+                }).toList(),
             onChanged: (value) {
               setState(() {
                 _selectedChildId = value;
@@ -476,9 +619,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             label: Text(
               _selectedDateTime == null
                   ? context.l10n.useCurrentTime
-                  : context.l10n.manualTime(
-                      _formatDate(_selectedDateTime!),
-                    ),
+                  : context.l10n.manualTime(_formatDate(_selectedDateTime!)),
             ),
           ),
           if (_selectedDateTime != null)
@@ -563,22 +704,17 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             width: double.infinity,
             height: 54,
             child: FilledButton.icon(
-              onPressed: _isSaving
-                  ? null
-                  : () => _saveIncident(children),
-              icon: _isSaving
-                  ? const SizedBox(
-                      width: 21,
-                      height: 21,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Icon(Icons.save_rounded),
+              onPressed: _isSaving ? null : () => _saveIncident(children),
+              icon:
+                  _isSaving
+                      ? const SizedBox(
+                        width: 21,
+                        height: 21,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                      : const Icon(Icons.save_rounded),
               label: Text(
-                _isSaving
-                    ? context.l10n.saving
-                    : context.l10n.saveIncident,
+                _isSaving ? context.l10n.saving : context.l10n.saveIncident,
               ),
             ),
           ),
@@ -587,14 +723,11 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     );
   }
 
-  List<IncidentLogEntry> _filterIncidents(
-    List<IncidentLogEntry> incidents,
-  ) {
+  List<IncidentLogEntry> _filterIncidents(List<IncidentLogEntry> incidents) {
     return incidents.where((incident) {
       if (incident.isArchived != _showArchived) return false;
 
-      if (_severityFilter != 'All' &&
-          incident.severity != _severityFilter) {
+      if (_severityFilter != 'All' && incident.severity != _severityFilter) {
         return false;
       }
 
@@ -607,9 +740,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
     }).toList();
   }
 
-  Widget _buildViewSection(
-    List<ChildProfile> children,
-  ) {
+  Widget _buildViewSection(List<ChildProfile> children) {
     return StreamBuilder<List<IncidentLogEntry>>(
       stream: _firestoreService.getCurrentIncidentLogEntries(),
       builder: (context, snapshot) {
@@ -629,12 +760,14 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
         return Column(
           children: [
             _IncidentSection(
-              icon: _showArchived
-                  ? Icons.archive_rounded
-                  : Icons.list_alt_rounded,
-              title: _showArchived
-                  ? context.l10n.archivedIncidents
-                  : context.l10n.viewIncidents,
+              icon:
+                  _showArchived
+                      ? Icons.archive_rounded
+                      : Icons.list_alt_rounded,
+              title:
+                  _showArchived
+                      ? context.l10n.archivedIncidents
+                      : context.l10n.viewIncidents,
               color: const Color(0xFF42A5F5),
               child: Column(
                 children: [
@@ -645,8 +778,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                       ChoiceChip(
                         selected: !_showArchived,
                         label: Text(context.l10n.viewIncidents),
-                        avatar:
-                            const Icon(Icons.list_alt_rounded),
+                        avatar: const Icon(Icons.list_alt_rounded),
                         onSelected: (_) {
                           setState(() {
                             _showArchived = false;
@@ -655,8 +787,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                       ),
                       ChoiceChip(
                         selected: _showArchived,
-                        label:
-                            Text(context.l10n.archivedIncidents),
+                        label: Text(context.l10n.archivedIncidents),
                         avatar: const Icon(Icons.archive_rounded),
                         onSelected: (_) {
                           setState(() {
@@ -739,10 +870,9 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       context.l10n.incidentsShown(filtered.length),
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                 ],
@@ -752,9 +882,10 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             if (filtered.isEmpty)
               _IncidentMessageState(
                 icon: Icons.search_off_rounded,
-                message: snapshot.data!.isEmpty
-                    ? context.l10n.noIncidents
-                    : context.l10n.noMatchingIncidents,
+                message:
+                    snapshot.data!.isEmpty
+                        ? context.l10n.noIncidents
+                        : context.l10n.noMatchingIncidents,
               )
             else
               ...filtered.map(_buildIncidentCard),
@@ -788,37 +919,47 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
           style: const TextStyle(fontWeight: FontWeight.w900),
         ),
         subtitle: Text(_formatDate(incident.timestamp)),
-        trailing: incident.isArchived
-            ? const Icon(Icons.archive_rounded)
-            : PopupMenuButton<String>(
-                onSelected: (value) {
-                  if (value == 'edit') {
-                    _editIncident(incident);
-                  } else if (value == 'archive') {
-                    _archiveIncident(incident);
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.edit_rounded),
-                      title: Text(context.l10n.editIncident),
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'archive',
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(
-                        Icons.archive_outlined,
-                      ),
-                      title: Text(context.l10n.archiveIncident),
-                    ),
-                  ),
-                ],
-              ),
+        trailing:
+            incident.isArchived
+                ? const Icon(Icons.archive_rounded)
+                : PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      _editIncident(incident);
+                    } else if (value == 'archive') {
+                      _archiveIncident(incident);
+                    } else if (value == 'parent_report') {
+                      _prepareParentReport(incident);
+                    }
+                  },
+                  itemBuilder:
+                      (context) => [
+                        PopupMenuItem(
+                          value: 'parent_report',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.email_outlined),
+                            title: Text(context.l10n.prepareParentReport),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.edit_rounded),
+                            title: Text(context.l10n.editIncident),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'archive',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.archive_outlined),
+                            title: Text(context.l10n.archiveIncident),
+                          ),
+                        ),
+                      ],
+                ),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
@@ -843,16 +984,12 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                     ),
                     _IncidentChip(
                       icon: Icons.person_rounded,
-                      label: context.l10n.loggedBy(
-                        incident.staffName,
-                      ),
+                      label: context.l10n.loggedBy(incident.staffName),
                       color: const Color(0xFF42A5F5),
                     ),
                     _IncidentChip(
                       icon: Icons.follow_the_signs_rounded,
-                      label: _followUpLabel(
-                        incident.followUpStatus,
-                      ),
+                      label: _followUpLabel(incident.followUpStatus),
                       color: const Color(0xFF26A69A),
                     ),
                   ],
@@ -871,8 +1008,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
                     title: context.l10n.followUpNotes,
                     content: incident.followUpNotes,
                   ),
-                if (incident.isArchived &&
-                    incident.archiveReason.isNotEmpty)
+                if (incident.isArchived && incident.archiveReason.isNotEmpty)
                   _IncidentDetail(
                     title: context.l10n.archiveReason,
                     content: incident.archiveReason,
@@ -889,9 +1025,10 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
   Widget build(BuildContext context) {
     final classroomName = _session.currentClassroomName;
 
-    final title = _session.hasClassroomSession
-        ? context.l10n.incidentLogClassroom(classroomName)
-        : context.l10n.incidentLog;
+    final title =
+        _session.hasClassroomSession
+            ? context.l10n.incidentLogClassroom(classroomName)
+            : context.l10n.incidentLog;
 
     return Scaffold(
       appBar: AppBar(title: Text(title)),
@@ -915,10 +1052,7 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
             width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFFF7F4FF),
-                  Color(0xFFF3F8FF),
-                ],
+                colors: [Color(0xFFF7F4FF), Color(0xFFF3F8FF)],
               ),
             ),
             child: ListView(
@@ -947,17 +1081,13 @@ class _IncidentLogPageState extends State<IncidentLogPage> {
 class _IncidentEditDialog extends StatefulWidget {
   final IncidentLogEntry incident;
 
-  const _IncidentEditDialog({
-    required this.incident,
-  });
+  const _IncidentEditDialog({required this.incident});
 
   @override
-  State<_IncidentEditDialog> createState() =>
-      _IncidentEditDialogState();
+  State<_IncidentEditDialog> createState() => _IncidentEditDialogState();
 }
 
-class _IncidentEditDialogState
-    extends State<_IncidentEditDialog> {
+class _IncidentEditDialogState extends State<_IncidentEditDialog> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _actionController;
   late final TextEditingController _followUpController;
@@ -1041,10 +1171,9 @@ class _IncidentEditDialogState
             children: [
               Text(
                 widget.incident.childName,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.w900),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 16),
               Row(
@@ -1192,8 +1321,7 @@ class _IncidentEditDialogState
         ),
         FilledButton.icon(
           onPressed: () {
-            final description =
-                _descriptionController.text.trim();
+            final description = _descriptionController.text.trim();
             final action = _actionController.text.trim();
 
             if (description.isEmpty || action.isEmpty) return;
@@ -1207,8 +1335,7 @@ class _IncidentEditDialogState
                 severity: _severity,
                 category: _category,
                 followUpStatus: _followUpStatus,
-                followUpNotes:
-                    _followUpController.text.trim(),
+                followUpNotes: _followUpController.text.trim(),
               ),
             );
           },
@@ -1224,10 +1351,7 @@ class _IncidentHeader extends StatelessWidget {
   final String title;
   final String description;
 
-  const _IncidentHeader({
-    required this.title,
-    required this.description,
-  });
+  const _IncidentHeader({required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -1235,10 +1359,7 @@ class _IncidentHeader extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF7E57C2),
-            Color(0xFF5C6BC0),
-          ],
+          colors: [Color(0xFF7E57C2), Color(0xFF5C6BC0)],
         ),
         borderRadius: BorderRadius.circular(26),
       ),
@@ -1263,12 +1384,7 @@ class _IncidentHeader extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
+                Text(description, style: const TextStyle(color: Colors.white)),
               ],
             ),
           ),
@@ -1297,9 +1413,7 @@ class _IncidentSection extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-          color: color.withValues(alpha: 0.25),
-        ),
+        side: BorderSide(color: color.withValues(alpha: 0.25)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -1315,10 +1429,9 @@ class _IncidentSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 Text(
                   title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w900),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
               ],
             ),
@@ -1345,10 +1458,7 @@ class _IncidentChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(20),
@@ -1360,10 +1470,7 @@ class _IncidentChip extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(color: color, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -1375,10 +1482,7 @@ class _IncidentDetail extends StatelessWidget {
   final String title;
   final String content;
 
-  const _IncidentDetail({
-    required this.title,
-    required this.content,
-  });
+  const _IncidentDetail({required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -1387,15 +1491,9 @@ class _IncidentDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w900),
-          ),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
           const SizedBox(height: 4),
-          SelectableText(
-            content,
-            style: const TextStyle(height: 1.4),
-          ),
+          SelectableText(content, style: const TextStyle(height: 1.4)),
         ],
       ),
     );
@@ -1406,10 +1504,7 @@ class _IncidentMessageState extends StatelessWidget {
   final IconData icon;
   final String message;
 
-  const _IncidentMessageState({
-    required this.icon,
-    required this.message,
-  });
+  const _IncidentMessageState({required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -1419,19 +1514,14 @@ class _IncidentMessageState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 68,
-              color: const Color(0xFF7E57C2),
-            ),
+            Icon(icon, size: 68, color: const Color(0xFF7E57C2)),
             const SizedBox(height: 15),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w900),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
           ],
         ),

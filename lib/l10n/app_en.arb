@@ -5643,5 +5643,371 @@
   },
   "@pinned": {
     "description": "Pinned reminder label."
+  },
+  "contactDirectory": "Contact Directory",
+  "contactDirectoryAdminSubtitle": "Manage staff and parent/guardian email contacts for reports and communication.",
+  "staffContacts": "Staff Contacts",
+  "guardianContacts": "Parent / Guardian Contacts",
+  "staffContactsDescription": "School staff email contacts. These can be linked to communication tools later.",
+  "guardianContactsDescription": "Parent and guardian contacts assigned to a specific child profile.",
+  "contactCount": "{count} contacts",
+  "addContact": "Add contact",
+  "addStaffContact": "Add staff contact",
+  "addGuardianContact": "Add guardian contact",
+  "editContact": "Edit contact",
+  "deleteContact": "Delete contact",
+  "deleteContactMessage": "Delete ?{name}? from the contact directory?",
+  "contactAdded": "Contact added.",
+  "contactUpdated": "Contact updated.",
+  "contactDeleted": "Contact deleted.",
+  "contactSaveFailed": "Could not save contact: {error}",
+  "contactDeleteFailed": "Could not delete contact: {error}",
+  "contactsLoadFailed": "Could not load contacts: {error}",
+  "noStaffContacts": "No staff contacts yet.",
+  "noStaffContactsDescription": "Add staff emails that may be useful for school communication later.",
+  "noGuardianContacts": "No parent or guardian contacts yet.",
+  "noGuardianContactsDescription": "Add guardian emails and assign them to the correct child profile.",
+  "assignedChild": "Assigned child",
+  "relationship": "Relationship",
+  "relationshipHint": "Parent, guardian, carer...",
+  "staffContactRoleHint": "Teacher, SNA, principal...",
+  "canReceiveReports": "Can receive reports",
+  "cannotReceiveReports": "Cannot receive reports",
+  "canReceiveReportsDescription": "Only enabled guardian contacts should receive child-specific reports.",
+  "contactActiveDescription": "Inactive contacts stay saved but should not be used for communication.",
+  "contactNameEmailRequired": "Please enter a name and valid email address.",
+  "guardianChildRequired": "Please assign this guardian to a child profile.",
+  "childNotAssigned": "Child not assigned",
+  "name": "Name",
+  "email": "Email",
+  "@contactDirectory": {
+    "description": "Admin contact directory feature title."
+  },
+  "@contactDirectoryAdminSubtitle": {
+    "description": "Admin dashboard subtitle for contact directory."
+  },
+  "@staffContacts": {
+    "description": "Staff contacts tab title."
+  },
+  "@guardianContacts": {
+    "description": "Guardian contacts tab title."
+  },
+  "@staffContactsDescription": {
+    "description": "Description for staff contacts."
+  },
+  "@guardianContactsDescription": {
+    "description": "Description for guardian contacts."
+  },
+  "@contactCount": {
+    "description": "Count of contacts.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@addContact": {
+    "description": "Button label to add a contact."
+  },
+  "@addStaffContact": {
+    "description": "Dialog title for adding a staff contact."
+  },
+  "@addGuardianContact": {
+    "description": "Dialog title for adding a guardian contact."
+  },
+  "@editContact": {
+    "description": "Dialog title for editing a contact."
+  },
+  "@deleteContact": {
+    "description": "Dialog title for deleting a contact."
+  },
+  "@deleteContactMessage": {
+    "description": "Confirmation message for deleting a contact.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactAdded": {
+    "description": "Snackbar shown after adding a contact."
+  },
+  "@contactUpdated": {
+    "description": "Snackbar shown after updating a contact."
+  },
+  "@contactDeleted": {
+    "description": "Snackbar shown after deleting a contact."
+  },
+  "@contactSaveFailed": {
+    "description": "Error shown when saving a contact fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactDeleteFailed": {
+    "description": "Error shown when deleting a contact fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactsLoadFailed": {
+    "description": "Error shown when contacts fail to load.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@noStaffContacts": {
+    "description": "Empty state title for staff contacts."
+  },
+  "@noStaffContactsDescription": {
+    "description": "Empty state subtitle for staff contacts."
+  },
+  "@noGuardianContacts": {
+    "description": "Empty state title for guardian contacts."
+  },
+  "@noGuardianContactsDescription": {
+    "description": "Empty state subtitle for guardian contacts."
+  },
+  "@assignedChild": {
+    "description": "Field label for assigned child."
+  },
+  "@relationship": {
+    "description": "Field label for guardian relationship."
+  },
+  "@relationshipHint": {
+    "description": "Hint for guardian relationship."
+  },
+  "@staffContactRoleHint": {
+    "description": "Hint for staff contact role."
+  },
+  "@canReceiveReports": {
+    "description": "Guardian can receive reports label."
+  },
+  "@cannotReceiveReports": {
+    "description": "Guardian cannot receive reports label."
+  },
+  "@canReceiveReportsDescription": {
+    "description": "Description for guardian report permission."
+  },
+  "@contactActiveDescription": {
+    "description": "Description for active contact toggle."
+  },
+  "@contactNameEmailRequired": {
+    "description": "Validation message for contact name/email."
+  },
+  "@guardianChildRequired": {
+    "description": "Validation message when guardian has no assigned child."
+  },
+  "@childNotAssigned": {
+    "description": "Fallback when contact child is missing."
+  },
+  "@name": {
+    "description": "Generic name field label."
+  },
+  "@email": {
+    "description": "Generic email field label."
+  },
+  "selectClassroomFirst": "Select a classroom first.",
+  "noChildrenInSelectedClassroom": "No child profiles are available in this classroom.",
+  "@selectClassroomFirst": {
+    "description": "Helper text asking admin to select a classroom before choosing a child."
+  },
+  "@noChildrenInSelectedClassroom": {
+    "description": "Message shown when selected classroom has no child profiles."
+  },
+  "searchContacts": "Search contacts",
+  "noMatchingContacts": "No matching contacts",
+  "noMatchingContactsDescription": "Try a different name, email, classroom, child or role.",
+  "staffProfileNotLinked": "Staff profile not linked",
+  "assignedStaffProfile": "Assigned staff profile",
+  "noStaffInSelectedClassroom": "No staff profiles are available in this classroom.",
+  "staffProfileRequired": "Please link this email to a staff profile.",
+  "duplicateEmailWarning": "A contact with this email already exists.",
+  "duplicateEmailExistingContact": "This email is already used by {name}.",
+  "@searchContacts": {
+    "description": "Search field label in contact directory."
+  },
+  "@noMatchingContacts": {
+    "description": "Empty search result title in contact directory."
+  },
+  "@noMatchingContactsDescription": {
+    "description": "Empty search result description in contact directory."
+  },
+  "@staffProfileNotLinked": {
+    "description": "Fallback label when staff contact has no linked staff profile."
+  },
+  "@assignedStaffProfile": {
+    "description": "Field label for linked staff profile."
+  },
+  "@noStaffInSelectedClassroom": {
+    "description": "Message shown when selected classroom has no staff profiles."
+  },
+  "@staffProfileRequired": {
+    "description": "Validation message when staff contact has no linked staff profile."
+  },
+  "@duplicateEmailWarning": {
+    "description": "Snackbar shown when contact email already exists."
+  },
+  "@duplicateEmailExistingContact": {
+    "description": "Inline warning when an email matches an existing contact.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "prepareParentReport": "Prepare parent report",
+  "parentReportPrivacyNotice": "Check this preview before copying. It only includes information for this child and this selected report.",
+  "selectGuardianRecipient": "Select guardian recipient",
+  "parentReportEmailSubject": "Email subject",
+  "parentReportPreview": "Report preview",
+  "copyRecipientEmail": "Copy recipient email",
+  "copySubject": "Copy subject",
+  "copyEmailBody": "Copy email body",
+  "parentReportBodyCopied": "Email body copied and preparation logged.",
+  "parentReportRecipientCopied": "Recipient email copied.",
+  "parentReportSubjectCopied": "Email subject copied.",
+  "parentReportGreeting": "Hello,",
+  "parentReportBodyCheckIntro": "Here is a body check update for {childName}.",
+  "parentReportIncidentIntro": "Here is an incident update for {childName}.",
+  "parentReportLine": "{label}: {value}",
+  "reportDate": "Date",
+  "bodyArea": "Body area",
+  "painLevel": "Pain level",
+  "painType": "Pain type",
+  "status": "Status",
+  "checkedAtLabel": "Checked at",
+  "staffNote": "Staff note",
+  "loggedByLabel": "Logged by",
+  "followUpStatusLabel": "Follow-up status",
+  "parentReportFooter": "Please contact the school if you have any questions.",
+  "bodyCheckParentReportSubject": "Body check update for {childName}",
+  "incidentParentReportSubject": "Incident update for {childName}",
+  "parentReportsNeedClassroom": "Parent reports are only available inside a classroom session.",
+  "noGuardianReportContacts": "No active guardian report contacts are linked to this child.",
+  "parentReportPrepareFailed": "Could not prepare the parent report.",
+  "@prepareParentReport": {
+    "description": "Action for preparing a parent-safe report email."
+  },
+  "@parentReportPrivacyNotice": {
+    "description": "Privacy reminder shown before copying a parent report."
+  },
+  "@selectGuardianRecipient": {
+    "description": "Dropdown label for choosing a guardian report recipient."
+  },
+  "@parentReportEmailSubject": {
+    "description": "Label for a prepared report email subject."
+  },
+  "@parentReportPreview": {
+    "description": "Heading for the prepared parent report preview."
+  },
+  "@copyRecipientEmail": {
+    "description": "Button label for copying a recipient email address."
+  },
+  "@copySubject": {
+    "description": "Button label for copying an email subject."
+  },
+  "@copyEmailBody": {
+    "description": "Button label for copying a prepared email body."
+  },
+  "@parentReportBodyCopied": {
+    "description": "Snackbar after copying a report body."
+  },
+  "@parentReportRecipientCopied": {
+    "description": "Snackbar after copying the recipient email."
+  },
+  "@parentReportSubjectCopied": {
+    "description": "Snackbar after copying the email subject."
+  },
+  "@parentReportGreeting": {
+    "description": "Greeting used in prepared parent reports."
+  },
+  "@parentReportBodyCheckIntro": {
+    "description": "Intro line for body check parent reports.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "@parentReportIncidentIntro": {
+    "description": "Intro line for incident parent reports.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "@parentReportLine": {
+    "description": "Generic label/value line in parent report emails.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@reportDate": {
+    "description": "Date label in parent reports."
+  },
+  "@bodyArea": {
+    "description": "Body area label in parent reports."
+  },
+  "@painLevel": {
+    "description": "Pain level label in parent reports."
+  },
+  "@painType": {
+    "description": "Pain type label in parent reports."
+  },
+  "@status": {
+    "description": "Generic status label."
+  },
+  "@checkedAtLabel": {
+    "description": "Checked-at label in parent reports."
+  },
+  "@staffNote": {
+    "description": "Staff note label in parent reports."
+  },
+  "@loggedByLabel": {
+    "description": "Logged-by label in parent reports."
+  },
+  "@followUpStatusLabel": {
+    "description": "Follow-up status label in parent reports."
+  },
+  "@parentReportFooter": {
+    "description": "Footer used in prepared parent reports."
+  },
+  "@bodyCheckParentReportSubject": {
+    "description": "Email subject for body check reports.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "@incidentParentReportSubject": {
+    "description": "Email subject for incident reports.",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "@parentReportsNeedClassroom": {
+    "description": "Message when report prep needs a classroom session."
+  },
+  "@noGuardianReportContacts": {
+    "description": "Message when no guardian contacts can receive reports."
+  },
+  "@parentReportPrepareFailed": {
+    "description": "Error message when a parent report cannot be prepared."
   }
 }

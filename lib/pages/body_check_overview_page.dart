@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/body_check_report.dart';
+import '../models/parent_report_draft.dart';
 import '../services/firestore_service.dart';
 import '../l10n/body_check_localizations.dart';
 import '../l10n/l10n.dart';
+import '../widgets/parent_report_dialog.dart';
 
 enum BodyCheckFilter { all, unchecked, checked }
 
@@ -171,6 +173,153 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
         setState(() {
           _busyReports.remove(report.id);
         });
+      }
+    }
+  }
+
+  ParentReportDraft _buildParentReportDraft(BodyCheckReport report) {
+    final status =
+        report.checked ? context.l10n.checked : context.l10n.unchecked;
+    final buffer =
+        StringBuffer()
+          ..writeln(context.l10n.parentReportGreeting)
+          ..writeln()
+          ..writeln(context.l10n.parentReportBodyCheckIntro(report.childName))
+          ..writeln()
+          ..writeln(
+            context.l10n.parentReportLine(context.l10n.child, report.childName),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.reportDate,
+              _formatTime(report.timestamp),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.bodyArea,
+              localizedBodyPart(context.l10n, report.bodyPart),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.painLevel,
+              _painLabel(report.painLevel),
+            ),
+          )
+          ..writeln(
+            context.l10n.parentReportLine(
+              context.l10n.painType,
+              localizedPainType(context.l10n, report.painType),
+            ),
+          )
+          ..writeln(context.l10n.parentReportLine(context.l10n.status, status));
+
+    if (report.checkedAt != null) {
+      buffer.writeln(
+        context.l10n.parentReportLine(
+          context.l10n.checkedAtLabel,
+          _formatTime(report.checkedAt!),
+        ),
+      );
+    }
+
+    if (report.checkedNote.trim().isNotEmpty) {
+      buffer.writeln(
+        context.l10n.parentReportLine(
+          context.l10n.staffNote,
+          report.checkedNote.trim(),
+        ),
+      );
+    }
+
+    buffer
+      ..writeln()
+      ..writeln(context.l10n.parentReportFooter);
+
+    return ParentReportDraft(
+      type: 'body_check',
+      sourceId: report.id,
+      childId: report.childId,
+      childName: report.childName,
+      subject: context.l10n.bodyCheckParentReportSubject(report.childName),
+      body: buffer.toString(),
+    );
+  }
+
+  Future<void> _prepareParentReport(BodyCheckReport report) async {
+    if (_busyReports.contains(report.id)) return;
+
+    setState(() => _busyReports.add(report.id));
+
+    try {
+      await widget.firestoreService.restoreClassroomSessionFromAuthIfNeeded();
+
+      if (!widget.firestoreService.session.hasClassroomSession) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.parentReportsNeedClassroom)),
+        );
+        return;
+      }
+
+      final schoolId = widget.firestoreService.session.requireSchoolId;
+      final classroomId = widget.firestoreService.session.requireClassroomId;
+      final recipients =
+          await widget.firestoreService
+              .getGuardianContactsForChild(
+                schoolId: schoolId,
+                classroomId: classroomId,
+                childId: report.childId,
+              )
+              .first;
+
+      final availableRecipients =
+          recipients
+              .where((contact) => contact.active && contact.canReceiveReports)
+              .toList();
+
+      if (!mounted) return;
+
+      if (availableRecipients.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.noGuardianReportContacts)),
+        );
+        return;
+      }
+
+      final draft = _buildParentReportDraft(report);
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return ParentReportDialog(
+            draft: draft,
+            recipients: availableRecipients,
+            onPrepared: (recipient) {
+              return widget.firestoreService.addCurrentParentReportPreparation(
+                reportType: draft.type,
+                sourceId: draft.sourceId,
+                childId: draft.childId,
+                childName: draft.childName,
+                recipientContactId: recipient.id,
+                recipientName: recipient.name,
+                recipientEmail: recipient.email,
+                preparedByStaffId: widget.teacherUid,
+                preparedByStaffName: context.l10n.staffLabel,
+              );
+            },
+          );
+        },
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.parentReportPrepareFailed)),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _busyReports.remove(report.id));
       }
     }
   }
@@ -637,6 +786,12 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
                           : const Icon(Icons.check_rounded),
                   label: Text(context.l10n.markChecked),
                 ),
+              if (!report.checked) const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: isBusy ? null : () => _prepareParentReport(report),
+                icon: const Icon(Icons.email_outlined),
+                label: Text(context.l10n.prepareParentReport),
+              ),
             ],
           ),
         ),

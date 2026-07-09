@@ -765,6 +765,40 @@ mixin WellbeingFirestoreService on FirestoreBase {
     await currentBodyCheckReportsRef().doc(reportId).delete();
   }
 
+  // PARENT REPORT PREPARATION LOGS
+
+  CollectionReference<Map<String, dynamic>>
+  _currentParentReportPreparationsRef() {
+    return currentCollection('parent_report_preparations');
+  }
+
+  Future<void> addCurrentParentReportPreparation({
+    required String reportType,
+    required String sourceId,
+    required String childId,
+    required String childName,
+    required String recipientContactId,
+    required String recipientName,
+    required String recipientEmail,
+    required String preparedByStaffId,
+    required String preparedByStaffName,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await _currentParentReportPreparationsRef().add({
+      'reportType': reportType,
+      'sourceId': sourceId,
+      'childId': childId,
+      'childName': childName,
+      'recipientContactId': recipientContactId,
+      'recipientName': recipientName,
+      'recipientEmail': recipientEmail,
+      'preparedByStaffId': preparedByStaffId,
+      'preparedByStaffName': preparedByStaffName,
+      'preparedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
   // CLASSROOM HELPER
 
   CollectionReference<Map<String, dynamic>> _classroomHelperJobsRef({

@@ -4396,4 +4396,279 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get pinned => 'Pionnáilte';
+
+  @override
+  String get contactDirectory => 'Eolaire Teagmhálaithe';
+
+  @override
+  String get contactDirectoryAdminSubtitle =>
+      'Bainistigh teagmhálaithe ríomhphoist foirne agus tuismitheoirí/caomhnóirí le haghaidh tuairiscí agus cumarsáide.';
+
+  @override
+  String get staffContacts => 'Teagmhálaithe Foirne';
+
+  @override
+  String get guardianContacts => 'Teagmhálaithe Tuismitheora / Caomhnóra';
+
+  @override
+  String get staffContactsDescription =>
+      'Teagmhálaithe ríomhphoist foirne scoile. Is féidir iad seo a nascadh le huirlisí cumarsáide níos déanaí.';
+
+  @override
+  String get guardianContactsDescription =>
+      'Teagmhálaithe tuismitheora agus caomhnóra sannta do phróifíl pháiste ar leith.';
+
+  @override
+  String contactCount(int count) {
+    return '$count teagmháil';
+  }
+
+  @override
+  String get addContact => 'Cuir teagmháil leis';
+
+  @override
+  String get addStaffContact => 'Cuir teagmháil foirne leis';
+
+  @override
+  String get addGuardianContact => 'Cuir teagmháil caomhnóra leis';
+
+  @override
+  String get editContact => 'Cuir teagmháil in eagar';
+
+  @override
+  String get deleteContact => 'Scrios teagmháil';
+
+  @override
+  String deleteContactMessage(String name) {
+    return 'Scrios ?$name? ón eolaire teagmhálaithe?';
+  }
+
+  @override
+  String get contactAdded => 'Cuireadh an teagmháil leis.';
+
+  @override
+  String get contactUpdated => 'Nuashonraíodh an teagmháil.';
+
+  @override
+  String get contactDeleted => 'Scriosadh an teagmháil.';
+
+  @override
+  String contactSaveFailed(String error) {
+    return 'Níorbh fhéidir an teagmháil a shábháil: $error';
+  }
+
+  @override
+  String contactDeleteFailed(String error) {
+    return 'Níorbh fhéidir an teagmháil a scriosadh: $error';
+  }
+
+  @override
+  String contactsLoadFailed(String error) {
+    return 'Níorbh fhéidir na teagmhálaithe a luchtú: $error';
+  }
+
+  @override
+  String get noStaffContacts => 'Níl aon teagmhálaithe foirne fós.';
+
+  @override
+  String get noStaffContactsDescription =>
+      'Cuir ríomhphoist foirne leis a d’fhéadfadh a bheith úsáideach do chumarsáid scoile níos déanaí.';
+
+  @override
+  String get noGuardianContacts =>
+      'Níl aon teagmhálaithe tuismitheora nó caomhnóra fós.';
+
+  @override
+  String get noGuardianContactsDescription =>
+      'Cuir ríomhphoist chaomhnóra leis agus sann iad don phróifíl pháiste cheart.';
+
+  @override
+  String get assignedChild => 'Páiste sannta';
+
+  @override
+  String get relationship => 'Gaol';
+
+  @override
+  String get relationshipHint => 'Tuismitheoir, caomhnóir, cúramóir...';
+
+  @override
+  String get staffContactRoleHint => 'Múinteoir, CRS, príomhoide...';
+
+  @override
+  String get canReceiveReports => 'Is féidir tuairiscí a fháil';
+
+  @override
+  String get cannotReceiveReports => 'Ní féidir tuairiscí a fháil';
+
+  @override
+  String get canReceiveReportsDescription =>
+      'Níor chóir ach teagmhálaithe caomhnóra cumasaithe tuairiscí páiste-shonracha a fháil.';
+
+  @override
+  String get contactActiveDescription =>
+      'Fanann teagmhálaithe neamhghníomhacha sábháilte ach níor chóir iad a úsáid le haghaidh cumarsáide.';
+
+  @override
+  String get contactNameEmailRequired =>
+      'Cuir ainm agus seoladh ríomhphoist bailí isteach le do thoil.';
+
+  @override
+  String get guardianChildRequired =>
+      'Sann an caomhnóir seo do phróifíl pháiste le do thoil.';
+
+  @override
+  String get childNotAssigned => 'Níl páiste sannta';
+
+  @override
+  String get name => 'Ainm';
+
+  @override
+  String get email => 'Ríomhphost';
+
+  @override
+  String get selectClassroomFirst => 'Roghnaigh seomra ranga ar dtús.';
+
+  @override
+  String get noChildrenInSelectedClassroom =>
+      'Níl aon phróifílí páistí ar fáil sa seomra ranga seo.';
+
+  @override
+  String get searchContacts => 'Cuardaigh teagmhálaithe';
+
+  @override
+  String get noMatchingContacts => 'Níl aon teagmhálaithe comhoiriúnacha ann';
+
+  @override
+  String get noMatchingContactsDescription =>
+      'Bain triail as ainm, ríomhphost, seomra ranga, páiste nó ról eile.';
+
+  @override
+  String get staffProfileNotLinked => 'Níl próifíl foirne nasctha';
+
+  @override
+  String get assignedStaffProfile => 'Próifíl foirne sannta';
+
+  @override
+  String get noStaffInSelectedClassroom =>
+      'Níl aon phróifílí foirne ar fáil sa seomra ranga seo.';
+
+  @override
+  String get staffProfileRequired =>
+      'Nasc an ríomhphost seo le próifíl foirne le do thoil.';
+
+  @override
+  String get duplicateEmailWarning =>
+      'Tá teagmháil leis an ríomhphost seo ann cheana.';
+
+  @override
+  String duplicateEmailExistingContact(String name) {
+    return 'Tá an ríomhphost seo in úsáid cheana ag $name.';
+  }
+
+  @override
+  String get prepareParentReport => 'Ullmhaigh tuairisc do thuismitheoir';
+
+  @override
+  String get parentReportPrivacyNotice =>
+      'Seiceáil an réamhamharc seo sula gcóipeálann tú é. Ní chuimsíonn sé ach eolas don pháiste seo agus don tuairisc roghnaithe seo.';
+
+  @override
+  String get selectGuardianRecipient => 'Roghnaigh faighteoir caomhnóra';
+
+  @override
+  String get parentReportEmailSubject => 'Ábhar ríomhphoist';
+
+  @override
+  String get parentReportPreview => 'Réamhamharc na tuairisce';
+
+  @override
+  String get copyRecipientEmail => 'Cóipeáil ríomhphost an fhaighteora';
+
+  @override
+  String get copySubject => 'Cóipeáil an t-ábhar';
+
+  @override
+  String get copyEmailBody => 'Cóipeáil corp an ríomhphoist';
+
+  @override
+  String get parentReportBodyCopied =>
+      'Cóipeáladh corp an ríomhphoist agus logáladh an t-ullmhúchán.';
+
+  @override
+  String get parentReportRecipientCopied =>
+      'Cóipeáladh ríomhphost an fhaighteora.';
+
+  @override
+  String get parentReportSubjectCopied => 'Cóipeáladh ábhar an ríomhphoist.';
+
+  @override
+  String get parentReportGreeting => 'Dia duit,';
+
+  @override
+  String parentReportBodyCheckIntro(String childName) {
+    return 'Seo nuashonrú seiceála coirp do $childName.';
+  }
+
+  @override
+  String parentReportIncidentIntro(String childName) {
+    return 'Seo nuashonrú teagmhais do $childName.';
+  }
+
+  @override
+  String parentReportLine(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get reportDate => 'Dáta';
+
+  @override
+  String get bodyArea => 'Limistéar coirp';
+
+  @override
+  String get painLevel => 'Leibhéal pian';
+
+  @override
+  String get painType => 'Cineál pian';
+
+  @override
+  String get status => 'Stádas';
+
+  @override
+  String get checkedAtLabel => 'Seiceáilte ag';
+
+  @override
+  String get staffNote => 'Nóta foirne';
+
+  @override
+  String get loggedByLabel => 'Logáilte ag';
+
+  @override
+  String get followUpStatusLabel => 'Stádas leantach';
+
+  @override
+  String get parentReportFooter =>
+      'Déan teagmháil leis an scoil má tá aon cheist agat.';
+
+  @override
+  String bodyCheckParentReportSubject(String childName) {
+    return 'Nuashonrú seiceála coirp do $childName';
+  }
+
+  @override
+  String incidentParentReportSubject(String childName) {
+    return 'Nuashonrú teagmhais do $childName';
+  }
+
+  @override
+  String get parentReportsNeedClassroom =>
+      'Níl tuairiscí tuismitheora ar fáil ach laistigh de sheisiún seomra ranga.';
+
+  @override
+  String get noGuardianReportContacts =>
+      'Níl aon teagmhálaithe caomhnóra gníomhacha nasctha leis an bpáiste seo le haghaidh tuairiscí.';
+
+  @override
+  String get parentReportPrepareFailed =>
+      'Níorbh fhéidir an tuairisc do thuismitheoir a ullmhú.';
 }

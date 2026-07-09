@@ -7483,6 +7483,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pinned'**
   String get pinned;
+
+  /// Admin contact directory feature title.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Directory'**
+  String get contactDirectory;
+
+  /// Admin dashboard subtitle for contact directory.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage staff and parent/guardian email contacts for reports and communication.'**
+  String get contactDirectoryAdminSubtitle;
+
+  /// Staff contacts tab title.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff Contacts'**
+  String get staffContacts;
+
+  /// Guardian contacts tab title.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent / Guardian Contacts'**
+  String get guardianContacts;
+
+  /// Description for staff contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'School staff email contacts. These can be linked to communication tools later.'**
+  String get staffContactsDescription;
+
+  /// Description for guardian contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent and guardian contacts assigned to a specific child profile.'**
+  String get guardianContactsDescription;
+
+  /// Count of contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} contacts'**
+  String contactCount(int count);
+
+  /// Button label to add a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get addContact;
+
+  /// Dialog title for adding a staff contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff contact'**
+  String get addStaffContact;
+
+  /// Dialog title for adding a guardian contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add guardian contact'**
+  String get addGuardianContact;
+
+  /// Dialog title for editing a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit contact'**
+  String get editContact;
+
+  /// Dialog title for deleting a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete contact'**
+  String get deleteContact;
+
+  /// Confirmation message for deleting a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete ?{name}? from the contact directory?'**
+  String deleteContactMessage(String name);
+
+  /// Snackbar shown after adding a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact added.'**
+  String get contactAdded;
+
+  /// Snackbar shown after updating a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact updated.'**
+  String get contactUpdated;
+
+  /// Snackbar shown after deleting a contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact deleted.'**
+  String get contactDeleted;
+
+  /// Error shown when saving a contact fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save contact: {error}'**
+  String contactSaveFailed(String error);
+
+  /// Error shown when deleting a contact fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete contact: {error}'**
+  String contactDeleteFailed(String error);
+
+  /// Error shown when contacts fail to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load contacts: {error}'**
+  String contactsLoadFailed(String error);
+
+  /// Empty state title for staff contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff contacts yet.'**
+  String get noStaffContacts;
+
+  /// Empty state subtitle for staff contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff emails that may be useful for school communication later.'**
+  String get noStaffContactsDescription;
+
+  /// Empty state title for guardian contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No parent or guardian contacts yet.'**
+  String get noGuardianContacts;
+
+  /// Empty state subtitle for guardian contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add guardian emails and assign them to the correct child profile.'**
+  String get noGuardianContactsDescription;
+
+  /// Field label for assigned child.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned child'**
+  String get assignedChild;
+
+  /// Field label for guardian relationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship'**
+  String get relationship;
+
+  /// Hint for guardian relationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent, guardian, carer...'**
+  String get relationshipHint;
+
+  /// Hint for staff contact role.
+  ///
+  /// In en, this message translates to:
+  /// **'Teacher, SNA, principal...'**
+  String get staffContactRoleHint;
+
+  /// Guardian can receive reports label.
+  ///
+  /// In en, this message translates to:
+  /// **'Can receive reports'**
+  String get canReceiveReports;
+
+  /// Guardian cannot receive reports label.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot receive reports'**
+  String get cannotReceiveReports;
+
+  /// Description for guardian report permission.
+  ///
+  /// In en, this message translates to:
+  /// **'Only enabled guardian contacts should receive child-specific reports.'**
+  String get canReceiveReportsDescription;
+
+  /// Description for active contact toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive contacts stay saved but should not be used for communication.'**
+  String get contactActiveDescription;
+
+  /// Validation message for contact name/email.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name and valid email address.'**
+  String get contactNameEmailRequired;
+
+  /// Validation message when guardian has no assigned child.
+  ///
+  /// In en, this message translates to:
+  /// **'Please assign this guardian to a child profile.'**
+  String get guardianChildRequired;
+
+  /// Fallback when contact child is missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Child not assigned'**
+  String get childNotAssigned;
+
+  /// Generic name field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// Generic email field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// Helper text asking admin to select a classroom before choosing a child.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a classroom first.'**
+  String get selectClassroomFirst;
+
+  /// Message shown when selected classroom has no child profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No child profiles are available in this classroom.'**
+  String get noChildrenInSelectedClassroom;
+
+  /// Search field label in contact directory.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts'**
+  String get searchContacts;
+
+  /// Empty search result title in contact directory.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching contacts'**
+  String get noMatchingContacts;
+
+  /// Empty search result description in contact directory.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different name, email, classroom, child or role.'**
+  String get noMatchingContactsDescription;
+
+  /// Fallback label when staff contact has no linked staff profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff profile not linked'**
+  String get staffProfileNotLinked;
+
+  /// Field label for linked staff profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned staff profile'**
+  String get assignedStaffProfile;
+
+  /// Message shown when selected classroom has no staff profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff profiles are available in this classroom.'**
+  String get noStaffInSelectedClassroom;
+
+  /// Validation message when staff contact has no linked staff profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Please link this email to a staff profile.'**
+  String get staffProfileRequired;
+
+  /// Snackbar shown when contact email already exists.
+  ///
+  /// In en, this message translates to:
+  /// **'A contact with this email already exists.'**
+  String get duplicateEmailWarning;
+
+  /// Inline warning when an email matches an existing contact.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already used by {name}.'**
+  String duplicateEmailExistingContact(String name);
+
+  /// Action for preparing a parent-safe report email.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare parent report'**
+  String get prepareParentReport;
+
+  /// Privacy reminder shown before copying a parent report.
+  ///
+  /// In en, this message translates to:
+  /// **'Check this preview before copying. It only includes information for this child and this selected report.'**
+  String get parentReportPrivacyNotice;
+
+  /// Dropdown label for choosing a guardian report recipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Select guardian recipient'**
+  String get selectGuardianRecipient;
+
+  /// Label for a prepared report email subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Email subject'**
+  String get parentReportEmailSubject;
+
+  /// Heading for the prepared parent report preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Report preview'**
+  String get parentReportPreview;
+
+  /// Button label for copying a recipient email address.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy recipient email'**
+  String get copyRecipientEmail;
+
+  /// Button label for copying an email subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy subject'**
+  String get copySubject;
+
+  /// Button label for copying a prepared email body.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy email body'**
+  String get copyEmailBody;
+
+  /// Snackbar after copying a report body.
+  ///
+  /// In en, this message translates to:
+  /// **'Email body copied and preparation logged.'**
+  String get parentReportBodyCopied;
+
+  /// Snackbar after copying the recipient email.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient email copied.'**
+  String get parentReportRecipientCopied;
+
+  /// Snackbar after copying the email subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Email subject copied.'**
+  String get parentReportSubjectCopied;
+
+  /// Greeting used in prepared parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello,'**
+  String get parentReportGreeting;
+
+  /// Intro line for body check parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is a body check update for {childName}.'**
+  String parentReportBodyCheckIntro(String childName);
+
+  /// Intro line for incident parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is an incident update for {childName}.'**
+  String parentReportIncidentIntro(String childName);
+
+  /// Generic label/value line in parent report emails.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String parentReportLine(String label, String value);
+
+  /// Date label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get reportDate;
+
+  /// Body area label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Body area'**
+  String get bodyArea;
+
+  /// Pain level label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain level'**
+  String get painLevel;
+
+  /// Pain type label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain type'**
+  String get painType;
+
+  /// Generic status label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// Checked-at label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked at'**
+  String get checkedAtLabel;
+
+  /// Staff note label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff note'**
+  String get staffNote;
+
+  /// Logged-by label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged by'**
+  String get loggedByLabel;
+
+  /// Follow-up status label in parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up status'**
+  String get followUpStatusLabel;
+
+  /// Footer used in prepared parent reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Please contact the school if you have any questions.'**
+  String get parentReportFooter;
+
+  /// Email subject for body check reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Body check update for {childName}'**
+  String bodyCheckParentReportSubject(String childName);
+
+  /// Email subject for incident reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident update for {childName}'**
+  String incidentParentReportSubject(String childName);
+
+  /// Message when report prep needs a classroom session.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent reports are only available inside a classroom session.'**
+  String get parentReportsNeedClassroom;
+
+  /// Message when no guardian contacts can receive reports.
+  ///
+  /// In en, this message translates to:
+  /// **'No active guardian report contacts are linked to this child.'**
+  String get noGuardianReportContacts;
+
+  /// Error message when a parent report cannot be prepared.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not prepare the parent report.'**
+  String get parentReportPrepareFailed;
 }
 
 class _AppLocalizationsDelegate

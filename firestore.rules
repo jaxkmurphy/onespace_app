@@ -103,6 +103,10 @@ service cloud.firestore {
         allow update, delete: if false;
       }
 
+      match /contacts/{contactId} {
+        allow read, create, update, delete: if isSchoolAdmin(schoolId);
+      }
+
       match /classrooms/{classroomId} {
         allow get: if canAccessClassroom(schoolId, classroomId);
         allow list, create, update: if isSchoolAdmin(schoolId);
@@ -230,6 +234,12 @@ service cloud.firestore {
 
         match /body_check_reports/{reportId} {
           allow read, create, update: if canAccessClassroom(schoolId, classroomId);
+          allow delete: if isSchoolAdmin(schoolId);
+        }
+
+        match /parent_report_preparations/{preparationId} {
+          allow read, create: if canAccessClassroom(schoolId, classroomId);
+          allow update: if false;
           allow delete: if isSchoolAdmin(schoolId);
         }
 

@@ -18,6 +18,7 @@ import 'pages/child_profile_dashboard.dart';
 import 'pages/child_schedule_page.dart';
 import 'pages/circle_time_page.dart';
 import 'pages/classroom_details_page.dart';
+import 'pages/contact_directory_page.dart';
 import 'pages/create_classroom_page.dart';
 import 'pages/when_then_child_page.dart';
 import 'pages/when_then_setup_page.dart';
@@ -177,6 +178,14 @@ class _MyAppState extends State<MyApp> {
               schoolId: args['schoolId'] as String,
               schoolName: args['schoolName'] as String,
             ),
+          );
+        }
+        return _errorPage((l10n) => l10n.missingAdminDashboardDetails);
+
+      case '/contact-directory':
+        if (args is Map<String, dynamic> && args['schoolId'] is String) {
+          return _page(
+            ContactDirectoryPage(schoolId: args['schoolId'] as String),
           );
         }
         return _errorPage((l10n) => l10n.missingAdminDashboardDetails);

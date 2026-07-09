@@ -219,6 +219,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                       isAlert:
                                           overview.pendingHelperRequests > 0,
                                     ),
+                                    _AdminStatChip(
+                                      icon: Icons.badge_outlined,
+                                      label: context.l10n.staffContacts,
+                                      value:
+                                          overview.totalStaffContacts
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.family_restroom_outlined,
+                                      label: context.l10n.guardianContacts,
+                                      value:
+                                          overview.totalGuardianContacts
+                                              .toString(),
+                                    ),
                                   ],
                                 );
                               },
@@ -228,6 +242,21 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       ),
                     );
                   },
+                );
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            _AdminActionCard(
+              icon: Icons.contact_mail_outlined,
+              title: context.l10n.contactDirectory,
+              subtitle: context.l10n.contactDirectoryAdminSubtitle,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/contact-directory',
+                  arguments: {'schoolId': widget.schoolId},
                 );
               },
             ),
@@ -328,6 +357,68 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _AdminActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      elevation: 0,
+      color: colourScheme.secondaryContainer.withValues(alpha: 0.45),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: colourScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: colourScheme.onSecondaryContainer),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(subtitle),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded),
+            ],
+          ),
         ),
       ),
     );

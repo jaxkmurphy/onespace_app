@@ -4328,4 +4328,277 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinned => 'Pinned';
+
+  @override
+  String get contactDirectory => 'Contact Directory';
+
+  @override
+  String get contactDirectoryAdminSubtitle =>
+      'Manage staff and parent/guardian email contacts for reports and communication.';
+
+  @override
+  String get staffContacts => 'Staff Contacts';
+
+  @override
+  String get guardianContacts => 'Parent / Guardian Contacts';
+
+  @override
+  String get staffContactsDescription =>
+      'School staff email contacts. These can be linked to communication tools later.';
+
+  @override
+  String get guardianContactsDescription =>
+      'Parent and guardian contacts assigned to a specific child profile.';
+
+  @override
+  String contactCount(int count) {
+    return '$count contacts';
+  }
+
+  @override
+  String get addContact => 'Add contact';
+
+  @override
+  String get addStaffContact => 'Add staff contact';
+
+  @override
+  String get addGuardianContact => 'Add guardian contact';
+
+  @override
+  String get editContact => 'Edit contact';
+
+  @override
+  String get deleteContact => 'Delete contact';
+
+  @override
+  String deleteContactMessage(String name) {
+    return 'Delete ?$name? from the contact directory?';
+  }
+
+  @override
+  String get contactAdded => 'Contact added.';
+
+  @override
+  String get contactUpdated => 'Contact updated.';
+
+  @override
+  String get contactDeleted => 'Contact deleted.';
+
+  @override
+  String contactSaveFailed(String error) {
+    return 'Could not save contact: $error';
+  }
+
+  @override
+  String contactDeleteFailed(String error) {
+    return 'Could not delete contact: $error';
+  }
+
+  @override
+  String contactsLoadFailed(String error) {
+    return 'Could not load contacts: $error';
+  }
+
+  @override
+  String get noStaffContacts => 'No staff contacts yet.';
+
+  @override
+  String get noStaffContactsDescription =>
+      'Add staff emails that may be useful for school communication later.';
+
+  @override
+  String get noGuardianContacts => 'No parent or guardian contacts yet.';
+
+  @override
+  String get noGuardianContactsDescription =>
+      'Add guardian emails and assign them to the correct child profile.';
+
+  @override
+  String get assignedChild => 'Assigned child';
+
+  @override
+  String get relationship => 'Relationship';
+
+  @override
+  String get relationshipHint => 'Parent, guardian, carer...';
+
+  @override
+  String get staffContactRoleHint => 'Teacher, SNA, principal...';
+
+  @override
+  String get canReceiveReports => 'Can receive reports';
+
+  @override
+  String get cannotReceiveReports => 'Cannot receive reports';
+
+  @override
+  String get canReceiveReportsDescription =>
+      'Only enabled guardian contacts should receive child-specific reports.';
+
+  @override
+  String get contactActiveDescription =>
+      'Inactive contacts stay saved but should not be used for communication.';
+
+  @override
+  String get contactNameEmailRequired =>
+      'Please enter a name and valid email address.';
+
+  @override
+  String get guardianChildRequired =>
+      'Please assign this guardian to a child profile.';
+
+  @override
+  String get childNotAssigned => 'Child not assigned';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get selectClassroomFirst => 'Select a classroom first.';
+
+  @override
+  String get noChildrenInSelectedClassroom =>
+      'No child profiles are available in this classroom.';
+
+  @override
+  String get searchContacts => 'Search contacts';
+
+  @override
+  String get noMatchingContacts => 'No matching contacts';
+
+  @override
+  String get noMatchingContactsDescription =>
+      'Try a different name, email, classroom, child or role.';
+
+  @override
+  String get staffProfileNotLinked => 'Staff profile not linked';
+
+  @override
+  String get assignedStaffProfile => 'Assigned staff profile';
+
+  @override
+  String get noStaffInSelectedClassroom =>
+      'No staff profiles are available in this classroom.';
+
+  @override
+  String get staffProfileRequired =>
+      'Please link this email to a staff profile.';
+
+  @override
+  String get duplicateEmailWarning =>
+      'A contact with this email already exists.';
+
+  @override
+  String duplicateEmailExistingContact(String name) {
+    return 'This email is already used by $name.';
+  }
+
+  @override
+  String get prepareParentReport => 'Prepare parent report';
+
+  @override
+  String get parentReportPrivacyNotice =>
+      'Check this preview before copying. It only includes information for this child and this selected report.';
+
+  @override
+  String get selectGuardianRecipient => 'Select guardian recipient';
+
+  @override
+  String get parentReportEmailSubject => 'Email subject';
+
+  @override
+  String get parentReportPreview => 'Report preview';
+
+  @override
+  String get copyRecipientEmail => 'Copy recipient email';
+
+  @override
+  String get copySubject => 'Copy subject';
+
+  @override
+  String get copyEmailBody => 'Copy email body';
+
+  @override
+  String get parentReportBodyCopied =>
+      'Email body copied and preparation logged.';
+
+  @override
+  String get parentReportRecipientCopied => 'Recipient email copied.';
+
+  @override
+  String get parentReportSubjectCopied => 'Email subject copied.';
+
+  @override
+  String get parentReportGreeting => 'Hello,';
+
+  @override
+  String parentReportBodyCheckIntro(String childName) {
+    return 'Here is a body check update for $childName.';
+  }
+
+  @override
+  String parentReportIncidentIntro(String childName) {
+    return 'Here is an incident update for $childName.';
+  }
+
+  @override
+  String parentReportLine(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get reportDate => 'Date';
+
+  @override
+  String get bodyArea => 'Body area';
+
+  @override
+  String get painLevel => 'Pain level';
+
+  @override
+  String get painType => 'Pain type';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get checkedAtLabel => 'Checked at';
+
+  @override
+  String get staffNote => 'Staff note';
+
+  @override
+  String get loggedByLabel => 'Logged by';
+
+  @override
+  String get followUpStatusLabel => 'Follow-up status';
+
+  @override
+  String get parentReportFooter =>
+      'Please contact the school if you have any questions.';
+
+  @override
+  String bodyCheckParentReportSubject(String childName) {
+    return 'Body check update for $childName';
+  }
+
+  @override
+  String incidentParentReportSubject(String childName) {
+    return 'Incident update for $childName';
+  }
+
+  @override
+  String get parentReportsNeedClassroom =>
+      'Parent reports are only available inside a classroom session.';
+
+  @override
+  String get noGuardianReportContacts =>
+      'No active guardian report contacts are linked to this child.';
+
+  @override
+  String get parentReportPrepareFailed =>
+      'Could not prepare the parent report.';
 }
