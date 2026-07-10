@@ -1,0 +1,56 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isClassroomSession(schoolId, classroomId) {
+      return signedIn()
+        && request.auth.token.role == 'classroom'
+        && request.auth.token.schoolId == schoolId
+        && request.auth.token.classroomId == classroomId;
+    }
+
+    function schoolMemberPath(schoolId) {
+      return /databases/(default)/documents/schools/$(schoolId)/members/$(request.auth.uid);
+    }
+
+    function isSchoolAdmin(schoolId) {
+      return signedIn()
+        && request.auth.token.role != 'classroom'
+        && firestore.exists(schoolMemberPath(schoolId))
+        && firestore.get(schoolMemberPath(schoolId)).data.active == true
+        && firestore.get(schoolMemberPath(schoolId)).data.role == 'schoolAdmin';
+    }
+
+    function canAccessClassroom(schoolId, classroomId) {
+      return isSchoolAdmin(schoolId) || isClassroomSession(schoolId, classroomId);
+    }
+
+    function isAllowedMediaSize() {
+      return request.resource.size <= 20 * 1024 * 1024;
+    }
+
+    function isAllowedMediaType() {
+      return request.resource.contentType.matches('image/(jpeg|jpg|png|webp)')
+        || request.resource.contentType.matches('audio/(mpeg|mp3|mp4|m4a|wav|x-wav)')
+        || request.resource.contentType == 'application/pdf';
+    }
+
+    match /schools/{schoolId}/classrooms/{classroomId}/media/{assetId}/{fileName} {
+      allow read: if canAccessClassroom(schoolId, classroomId);
+
+      allow create, update: if canAccessClassroom(schoolId, classroomId)
+        && isAllowedMediaSize()
+        && isAllowedMediaType();
+
+      allow delete: if isSchoolAdmin(schoolId);
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -6009,5 +6009,279 @@
   },
   "@parentReportPrepareFailed": {
     "description": "Error message when a parent report cannot be prepared."
+  },
+  "mediaLibrary": "Media Library",
+  "staffMediaLibrarySubtitle": "Upload and manage classroom images, audio and documents.",
+  "mediaLibraryDescription": "Classroom resources for visual supports, learning activities, calming audio and staff documents.",
+  "uploadMedia": "Upload media",
+  "upload": "Upload",
+  "chooseFile": "Choose file",
+  "mediaImages": "Images",
+  "mediaAudio": "Audio",
+  "mediaDocuments": "Documents",
+  "mediaType": "Media type",
+  "mediaActiveOnly": "Active only",
+  "active": "Active",
+  "inactive": "Inactive",
+  "enable": "Enable",
+  "disable": "Disable",
+  "preview": "Preview",
+  "mediaCopyLink": "Copy link",
+  "mediaLinkCopied": "Media link copied.",
+  "mediaAssetUploaded": "Media uploaded.",
+  "mediaAssetUpdated": "Media updated.",
+  "mediaAssetEnabled": "Media enabled.",
+  "mediaAssetDisabled": "Media disabled.",
+  "mediaAssetDeleted": "Media deleted.",
+  "mediaNoFileSelected": "No file was selected.",
+  "mediaNameRequired": "Please enter a name.",
+  "mediaLoadFailed": "Could not load media: {error}",
+  "mediaUploadFailed": "Could not upload media: {error}",
+  "mediaAssetUpdateFailed": "Could not update media: {error}",
+  "mediaAssetDeleteFailed": "Could not delete media: {error}",
+  "deleteMediaAsset": "Delete media?",
+  "deleteMediaAssetMessage": "Delete {name}? This should only be used for files that are no longer needed.",
+  "editMediaAsset": "Edit media",
+  "noMediaAssetsYet": "No media uploaded yet",
+  "noMediaAssetsYetDescription": "Upload images, audio or PDF documents for this classroom.",
+  "mediaUploadPickerHint": "After choosing these details, you will pick the file from your device.",
+  "mediaPreviewFailed": "Could not preview this media.",
+  "mediaPreviewNotAvailableYet": "Preview is not available for this file type yet. You can copy the file link instead.",
+  "mediaCategoryVisualSupport": "Visual support",
+  "mediaCategoryWordLearningImage": "Word learning image",
+  "mediaCategoryLearningGameImage": "Learning game image",
+  "mediaCategoryScheduleImage": "Schedule image",
+  "mediaCategoryRewardImage": "Reward image",
+  "mediaCategoryCalmingSound": "Calming sound",
+  "mediaCategoryClassroomCue": "Classroom cue",
+  "mediaCategoryGuideline": "Guideline",
+  "mediaCategoryClassroomDocument": "Classroom document",
+  "mediaCategoryOther": "Other",
+  "@mediaLibrary": {
+    "description": "Title for the classroom media library."
+  },
+  "@staffMediaLibrarySubtitle": {
+    "description": "Staff dashboard subtitle for media library."
+  },
+  "@mediaLibraryDescription": {
+    "description": "Description shown at top of media library."
+  },
+  "@uploadMedia": {
+    "description": "Button label for uploading media."
+  },
+  "@upload": {
+    "description": "Generic upload button label."
+  },
+  "@chooseFile": {
+    "description": "Button label for choosing a file."
+  },
+  "@mediaImages": {
+    "description": "Images filter label."
+  },
+  "@mediaAudio": {
+    "description": "Audio filter label."
+  },
+  "@mediaDocuments": {
+    "description": "Documents filter label."
+  },
+  "@mediaType": {
+    "description": "Media type field label."
+  },
+  "@mediaActiveOnly": {
+    "description": "Filter label for showing active media only."
+  },
+  "@active": {
+    "description": "Active status label."
+  },
+  "@inactive": {
+    "description": "Inactive status label."
+  },
+  "@enable": {
+    "description": "Enable action label."
+  },
+  "@disable": {
+    "description": "Disable action label."
+  },
+  "@preview": {
+    "description": "Preview action label."
+  },
+  "@mediaCopyLink": {
+    "description": "Copy media link action label."
+  },
+  "@mediaLinkCopied": {
+    "description": "Snackbar after copying a media link."
+  },
+  "@mediaAssetUploaded": {
+    "description": "Snackbar after media upload succeeds."
+  },
+  "@mediaAssetUpdated": {
+    "description": "Snackbar after media update succeeds."
+  },
+  "@mediaAssetEnabled": {
+    "description": "Snackbar after enabling media."
+  },
+  "@mediaAssetDisabled": {
+    "description": "Snackbar after disabling media."
+  },
+  "@mediaAssetDeleted": {
+    "description": "Snackbar after media delete succeeds."
+  },
+  "@mediaNoFileSelected": {
+    "description": "Message shown when file picking returns no file."
+  },
+  "@mediaNameRequired": {
+    "description": "Validation message for missing media name."
+  },
+  "@mediaLoadFailed": {
+    "description": "Error shown when media cannot load.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaUploadFailed": {
+    "description": "Error shown when media upload fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaAssetUpdateFailed": {
+    "description": "Error shown when media update fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaAssetDeleteFailed": {
+    "description": "Error shown when media delete fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteMediaAsset": {
+    "description": "Delete media confirmation title."
+  },
+  "@deleteMediaAssetMessage": {
+    "description": "Delete media confirmation message.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@editMediaAsset": {
+    "description": "Edit media dialog title."
+  },
+  "@noMediaAssetsYet": {
+    "description": "Empty media library title."
+  },
+  "@noMediaAssetsYetDescription": {
+    "description": "Empty media library description."
+  },
+  "@mediaUploadPickerHint": {
+    "description": "Hint explaining file picker step."
+  },
+  "@mediaPreviewFailed": {
+    "description": "Image preview failed message."
+  },
+  "@mediaPreviewNotAvailableYet": {
+    "description": "Message for non-image preview fallback."
+  },
+  "@mediaCategoryVisualSupport": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryWordLearningImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryLearningGameImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryScheduleImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryRewardImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryCalmingSound": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryClassroomCue": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryGuideline": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryClassroomDocument": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryOther": {
+    "description": "Media category label."
+  },
+  "staffGuidelines": "Guidelines",
+  "staffGuidelinesDashboardSubtitle": "View important classroom guidance documents.",
+  "staffGuidelinesDescription": "Current classroom guidance documents for staff, substitutes and SNAs.",
+  "manageGuidelines": "Manage guidelines",
+  "openMediaLibrary": "Open Media Library",
+  "copyGuidelineLink": "Copy guideline link",
+  "guidelineLinkCopied": "Guideline link copied.",
+  "guidelineOpenHint": "Copy the link and open it in a browser tab to view this PDF. In-app PDF viewing will be added later.",
+  "guidelineUpdated": "Updated {date} • {size}",
+  "noGuidelinesYet": "No guidelines uploaded yet",
+  "noGuidelinesYetDescription": "Upload PDF guidelines in the Media Library using the Guideline category.",
+  "guidelinesLoadFailed": "Could not load guidelines: {error}",
+  "@staffGuidelines": {
+    "description": "Title for the staff guidelines feature."
+  },
+  "@staffGuidelinesDashboardSubtitle": {
+    "description": "Staff dashboard subtitle for guidelines."
+  },
+  "@staffGuidelinesDescription": {
+    "description": "Description shown at the top of the guidelines page."
+  },
+  "@manageGuidelines": {
+    "description": "Button label for managing guideline files."
+  },
+  "@openMediaLibrary": {
+    "description": "Button label for opening the media library."
+  },
+  "@copyGuidelineLink": {
+    "description": "Button label for copying a guideline file link."
+  },
+  "@guidelineLinkCopied": {
+    "description": "Snackbar after copying a guideline link."
+  },
+  "@guidelineOpenHint": {
+    "description": "Hint explaining how to open a guideline PDF."
+  },
+  "@guidelineUpdated": {
+    "description": "Guideline updated date and file size label.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "@noGuidelinesYet": {
+    "description": "Empty state title for guidelines."
+  },
+  "@noGuidelinesYetDescription": {
+    "description": "Empty state description for guidelines."
+  },
+  "@guidelinesLoadFailed": {
+    "description": "Error message when guidelines fail to load.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

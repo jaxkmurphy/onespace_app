@@ -4601,4 +4601,189 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get parentReportPrepareFailed =>
       'Could not prepare the parent report.';
+
+  @override
+  String get mediaLibrary => 'Media Library';
+
+  @override
+  String get staffMediaLibrarySubtitle =>
+      'Upload and manage classroom images, audio and documents.';
+
+  @override
+  String get mediaLibraryDescription =>
+      'Classroom resources for visual supports, learning activities, calming audio and staff documents.';
+
+  @override
+  String get uploadMedia => 'Upload media';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get chooseFile => 'Choose file';
+
+  @override
+  String get mediaImages => 'Images';
+
+  @override
+  String get mediaAudio => 'Audio';
+
+  @override
+  String get mediaDocuments => 'Documents';
+
+  @override
+  String get mediaType => 'Media type';
+
+  @override
+  String get mediaActiveOnly => 'Active only';
+
+  @override
+  String get mediaCopyLink => 'Copy link';
+
+  @override
+  String get mediaLinkCopied => 'Media link copied.';
+
+  @override
+  String get mediaAssetUploaded => 'Media uploaded.';
+
+  @override
+  String get mediaAssetUpdated => 'Media updated.';
+
+  @override
+  String get mediaAssetEnabled => 'Media enabled.';
+
+  @override
+  String get mediaAssetDisabled => 'Media disabled.';
+
+  @override
+  String get mediaAssetDeleted => 'Media deleted.';
+
+  @override
+  String get mediaNoFileSelected => 'No file was selected.';
+
+  @override
+  String get mediaNameRequired => 'Please enter a name.';
+
+  @override
+  String mediaLoadFailed(String error) {
+    return 'Could not load media: $error';
+  }
+
+  @override
+  String mediaUploadFailed(String error) {
+    return 'Could not upload media: $error';
+  }
+
+  @override
+  String mediaAssetUpdateFailed(String error) {
+    return 'Could not update media: $error';
+  }
+
+  @override
+  String mediaAssetDeleteFailed(String error) {
+    return 'Could not delete media: $error';
+  }
+
+  @override
+  String get deleteMediaAsset => 'Delete media?';
+
+  @override
+  String deleteMediaAssetMessage(String name) {
+    return 'Delete $name? This should only be used for files that are no longer needed.';
+  }
+
+  @override
+  String get editMediaAsset => 'Edit media';
+
+  @override
+  String get noMediaAssetsYet => 'No media uploaded yet';
+
+  @override
+  String get noMediaAssetsYetDescription =>
+      'Upload images, audio or PDF documents for this classroom.';
+
+  @override
+  String get mediaUploadPickerHint =>
+      'After choosing these details, you will pick the file from your device.';
+
+  @override
+  String get mediaPreviewFailed => 'Could not preview this media.';
+
+  @override
+  String get mediaPreviewNotAvailableYet =>
+      'Preview is not available for this file type yet. You can copy the file link instead.';
+
+  @override
+  String get mediaCategoryVisualSupport => 'Visual support';
+
+  @override
+  String get mediaCategoryWordLearningImage => 'Word learning image';
+
+  @override
+  String get mediaCategoryLearningGameImage => 'Learning game image';
+
+  @override
+  String get mediaCategoryScheduleImage => 'Schedule image';
+
+  @override
+  String get mediaCategoryRewardImage => 'Reward image';
+
+  @override
+  String get mediaCategoryCalmingSound => 'Calming sound';
+
+  @override
+  String get mediaCategoryClassroomCue => 'Classroom cue';
+
+  @override
+  String get mediaCategoryGuideline => 'Guideline';
+
+  @override
+  String get mediaCategoryClassroomDocument => 'Classroom document';
+
+  @override
+  String get mediaCategoryOther => 'Other';
+
+  @override
+  String get staffGuidelines => 'Guidelines';
+
+  @override
+  String get staffGuidelinesDashboardSubtitle =>
+      'View important classroom guidance documents.';
+
+  @override
+  String get staffGuidelinesDescription =>
+      'Current classroom guidance documents for staff, substitutes and SNAs.';
+
+  @override
+  String get manageGuidelines => 'Manage guidelines';
+
+  @override
+  String get openMediaLibrary => 'Open Media Library';
+
+  @override
+  String get copyGuidelineLink => 'Copy guideline link';
+
+  @override
+  String get guidelineLinkCopied => 'Guideline link copied.';
+
+  @override
+  String get guidelineOpenHint =>
+      'Copy the link and open it in a browser tab to view this PDF. In-app PDF viewing will be added later.';
+
+  @override
+  String guidelineUpdated(String date, String size) {
+    return 'Updated $date • $size';
+  }
+
+  @override
+  String get noGuidelinesYet => 'No guidelines uploaded yet';
+
+  @override
+  String get noGuidelinesYetDescription =>
+      'Upload PDF guidelines in the Media Library using the Guideline category.';
+
+  @override
+  String guidelinesLoadFailed(String error) {
+    return 'Could not load guidelines: $error';
+  }
 }

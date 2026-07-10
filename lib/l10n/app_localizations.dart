@@ -3752,13 +3752,13 @@ abstract class AppLocalizations {
   /// **'Status: {status}'**
   String statusValue(Object status);
 
-  /// Status label for active items.
+  /// Active status label.
   ///
   /// In en, this message translates to:
   /// **'Active'**
   String get active;
 
-  /// Text used in the app for inactive.
+  /// Inactive status label.
   ///
   /// In en, this message translates to:
   /// **'Inactive'**
@@ -5138,7 +5138,7 @@ abstract class AppLocalizations {
   /// **'No description added.'**
   String get noDescriptionAdded;
 
-  /// Text used in the app for preview.
+  /// Preview action label.
   ///
   /// In en, this message translates to:
   /// **'Preview'**
@@ -6638,13 +6638,13 @@ abstract class AppLocalizations {
   /// **'Choose calm tool icon'**
   String get chooseCalmToolIcon;
 
-  /// Button or tooltip for enabling an item.
+  /// Enable action label.
   ///
   /// In en, this message translates to:
   /// **'Enable'**
   String get enable;
 
-  /// Button or tooltip for disabling an item.
+  /// Disable action label.
   ///
   /// In en, this message translates to:
   /// **'Disable'**
@@ -7945,6 +7945,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not prepare the parent report.'**
   String get parentReportPrepareFailed;
+
+  /// Title for the classroom media library.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Library'**
+  String get mediaLibrary;
+
+  /// Staff dashboard subtitle for media library.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload and manage classroom images, audio and documents.'**
+  String get staffMediaLibrarySubtitle;
+
+  /// Description shown at top of media library.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom resources for visual supports, learning activities, calming audio and staff documents.'**
+  String get mediaLibraryDescription;
+
+  /// Button label for uploading media.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload media'**
+  String get uploadMedia;
+
+  /// Generic upload button label.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// Button label for choosing a file.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose file'**
+  String get chooseFile;
+
+  /// Images filter label.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get mediaImages;
+
+  /// Audio filter label.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get mediaAudio;
+
+  /// Documents filter label.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get mediaDocuments;
+
+  /// Media type field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Media type'**
+  String get mediaType;
+
+  /// Filter label for showing active media only.
+  ///
+  /// In en, this message translates to:
+  /// **'Active only'**
+  String get mediaActiveOnly;
+
+  /// Copy media link action label.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get mediaCopyLink;
+
+  /// Snackbar after copying a media link.
+  ///
+  /// In en, this message translates to:
+  /// **'Media link copied.'**
+  String get mediaLinkCopied;
+
+  /// Snackbar after media upload succeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Media uploaded.'**
+  String get mediaAssetUploaded;
+
+  /// Snackbar after media update succeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Media updated.'**
+  String get mediaAssetUpdated;
+
+  /// Snackbar after enabling media.
+  ///
+  /// In en, this message translates to:
+  /// **'Media enabled.'**
+  String get mediaAssetEnabled;
+
+  /// Snackbar after disabling media.
+  ///
+  /// In en, this message translates to:
+  /// **'Media disabled.'**
+  String get mediaAssetDisabled;
+
+  /// Snackbar after media delete succeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Media deleted.'**
+  String get mediaAssetDeleted;
+
+  /// Message shown when file picking returns no file.
+  ///
+  /// In en, this message translates to:
+  /// **'No file was selected.'**
+  String get mediaNoFileSelected;
+
+  /// Validation message for missing media name.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name.'**
+  String get mediaNameRequired;
+
+  /// Error shown when media cannot load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load media: {error}'**
+  String mediaLoadFailed(String error);
+
+  /// Error shown when media upload fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload media: {error}'**
+  String mediaUploadFailed(String error);
+
+  /// Error shown when media update fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update media: {error}'**
+  String mediaAssetUpdateFailed(String error);
+
+  /// Error shown when media delete fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete media: {error}'**
+  String mediaAssetDeleteFailed(String error);
+
+  /// Delete media confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete media?'**
+  String get deleteMediaAsset;
+
+  /// Delete media confirmation message.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}? This should only be used for files that are no longer needed.'**
+  String deleteMediaAssetMessage(String name);
+
+  /// Edit media dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit media'**
+  String get editMediaAsset;
+
+  /// Empty media library title.
+  ///
+  /// In en, this message translates to:
+  /// **'No media uploaded yet'**
+  String get noMediaAssetsYet;
+
+  /// Empty media library description.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload images, audio or PDF documents for this classroom.'**
+  String get noMediaAssetsYetDescription;
+
+  /// Hint explaining file picker step.
+  ///
+  /// In en, this message translates to:
+  /// **'After choosing these details, you will pick the file from your device.'**
+  String get mediaUploadPickerHint;
+
+  /// Image preview failed message.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not preview this media.'**
+  String get mediaPreviewFailed;
+
+  /// Message for non-image preview fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview is not available for this file type yet. You can copy the file link instead.'**
+  String get mediaPreviewNotAvailableYet;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual support'**
+  String get mediaCategoryVisualSupport;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Word learning image'**
+  String get mediaCategoryWordLearningImage;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning game image'**
+  String get mediaCategoryLearningGameImage;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule image'**
+  String get mediaCategoryScheduleImage;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward image'**
+  String get mediaCategoryRewardImage;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Calming sound'**
+  String get mediaCategoryCalmingSound;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom cue'**
+  String get mediaCategoryClassroomCue;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Guideline'**
+  String get mediaCategoryGuideline;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom document'**
+  String get mediaCategoryClassroomDocument;
+
+  /// Media category label.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get mediaCategoryOther;
+
+  /// Title for the staff guidelines feature.
+  ///
+  /// In en, this message translates to:
+  /// **'Guidelines'**
+  String get staffGuidelines;
+
+  /// Staff dashboard subtitle for guidelines.
+  ///
+  /// In en, this message translates to:
+  /// **'View important classroom guidance documents.'**
+  String get staffGuidelinesDashboardSubtitle;
+
+  /// Description shown at the top of the guidelines page.
+  ///
+  /// In en, this message translates to:
+  /// **'Current classroom guidance documents for staff, substitutes and SNAs.'**
+  String get staffGuidelinesDescription;
+
+  /// Button label for managing guideline files.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage guidelines'**
+  String get manageGuidelines;
+
+  /// Button label for opening the media library.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Media Library'**
+  String get openMediaLibrary;
+
+  /// Button label for copying a guideline file link.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy guideline link'**
+  String get copyGuidelineLink;
+
+  /// Snackbar after copying a guideline link.
+  ///
+  /// In en, this message translates to:
+  /// **'Guideline link copied.'**
+  String get guidelineLinkCopied;
+
+  /// Hint explaining how to open a guideline PDF.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the link and open it in a browser tab to view this PDF. In-app PDF viewing will be added later.'**
+  String get guidelineOpenHint;
+
+  /// Guideline updated date and file size label.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {date} • {size}'**
+  String guidelineUpdated(String date, String size);
+
+  /// Empty state title for guidelines.
+  ///
+  /// In en, this message translates to:
+  /// **'No guidelines uploaded yet'**
+  String get noGuidelinesYet;
+
+  /// Empty state description for guidelines.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload PDF guidelines in the Media Library using the Guideline category.'**
+  String get noGuidelinesYetDescription;
+
+  /// Error message when guidelines fail to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load guidelines: {error}'**
+  String guidelinesLoadFailed(String error);
 }
 
 class _AppLocalizationsDelegate

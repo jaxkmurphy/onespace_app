@@ -23,6 +23,7 @@ import 'pages/create_classroom_page.dart';
 import 'pages/when_then_child_page.dart';
 import 'pages/when_then_setup_page.dart';
 import 'pages/handover_hub_page.dart';
+import 'pages/guidelines_page.dart';
 import 'pages/icon_reset_page.dart';
 import 'pages/points_overview_page.dart';
 import 'pages/profiles_page.dart';
@@ -53,6 +54,7 @@ import 'pages/calm_plan_page.dart';
 import 'pages/calm_plan_management_page.dart';
 import 'pages/classroom_helper_page.dart';
 import 'pages/child_notes_page.dart';
+import 'pages/media_library_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -219,6 +221,24 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }
+        return _errorPage((l10n) => l10n.missingStaffProfile);
+
+      case '/media-library':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              MediaLibraryPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+
         return _errorPage((l10n) => l10n.missingStaffProfile);
 
       case '/child-dashboard':
@@ -473,6 +493,24 @@ class _MyAppState extends State<MyApp> {
           if (staffProfile != null && firestoreService != null) {
             return _page(
               ChildNotesPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
+        }
+
+        return _errorPage((l10n) => l10n.missingStaffProfile);
+
+      case '/guidelines':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              GuidelinesPage(
                 staffProfile: staffProfile,
                 firestoreService: firestoreService,
               ),

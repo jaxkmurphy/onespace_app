@@ -4671,4 +4671,190 @@ class AppLocalizationsGa extends AppLocalizations {
   @override
   String get parentReportPrepareFailed =>
       'Níorbh fhéidir an tuairisc do thuismitheoir a ullmhú.';
+
+  @override
+  String get mediaLibrary => 'Leabharlann Meán';
+
+  @override
+  String get staffMediaLibrarySubtitle =>
+      'Uaslódáil agus bainistigh íomhánna, fuaim agus cáipéisí an tseomra ranga.';
+
+  @override
+  String get mediaLibraryDescription =>
+      'Acmhainní seomra ranga do thacaíochtaí amhairc, gníomhaíochtaí foghlama, fuaim shuaimhneach agus cáipéisí foirne.';
+
+  @override
+  String get uploadMedia => 'Uaslódáil meáin';
+
+  @override
+  String get upload => 'Uaslódáil';
+
+  @override
+  String get chooseFile => 'Roghnaigh comhad';
+
+  @override
+  String get mediaImages => 'Íomhánna';
+
+  @override
+  String get mediaAudio => 'Fuaim';
+
+  @override
+  String get mediaDocuments => 'Cáipéisí';
+
+  @override
+  String get mediaType => 'Cineál meáin';
+
+  @override
+  String get mediaActiveOnly => 'Gníomhach amháin';
+
+  @override
+  String get mediaCopyLink => 'Cóipeáil nasc';
+
+  @override
+  String get mediaLinkCopied => 'Cóipeáladh nasc na meán.';
+
+  @override
+  String get mediaAssetUploaded => 'Uaslódáladh na meáin.';
+
+  @override
+  String get mediaAssetUpdated => 'Nuashonraíodh na meáin.';
+
+  @override
+  String get mediaAssetEnabled => 'Cumasaíodh na meáin.';
+
+  @override
+  String get mediaAssetDisabled => 'Díchumasaíodh na meáin.';
+
+  @override
+  String get mediaAssetDeleted => 'Scriosadh na meáin.';
+
+  @override
+  String get mediaNoFileSelected => 'Níor roghnaíodh aon chomhad.';
+
+  @override
+  String get mediaNameRequired => 'Cuir ainm isteach le do thoil.';
+
+  @override
+  String mediaLoadFailed(String error) {
+    return 'Níorbh fhéidir na meáin a lódáil: $error';
+  }
+
+  @override
+  String mediaUploadFailed(String error) {
+    return 'Níorbh fhéidir na meáin a uaslódáil: $error';
+  }
+
+  @override
+  String mediaAssetUpdateFailed(String error) {
+    return 'Níorbh fhéidir na meáin a nuashonrú: $error';
+  }
+
+  @override
+  String mediaAssetDeleteFailed(String error) {
+    return 'Níorbh fhéidir na meáin a scriosadh: $error';
+  }
+
+  @override
+  String get deleteMediaAsset => 'Scrios na meáin?';
+
+  @override
+  String deleteMediaAssetMessage(String name) {
+    return 'Scrios $name? Níor cheart é seo a úsáid ach do chomhaid nach bhfuil ag teastáil a thuilleadh.';
+  }
+
+  @override
+  String get editMediaAsset => 'Cuir meáin in eagar';
+
+  @override
+  String get noMediaAssetsYet => 'Níl aon mheáin uaslódáilte fós';
+
+  @override
+  String get noMediaAssetsYetDescription =>
+      'Uaslódáil íomhánna, fuaim nó cáipéisí PDF don seomra ranga seo.';
+
+  @override
+  String get mediaUploadPickerHint =>
+      'Tar éis duit na sonraí seo a roghnú, roghnóidh tú an comhad ó do ghléas.';
+
+  @override
+  String get mediaPreviewFailed =>
+      'Níorbh fhéidir réamhamharc a dhéanamh ar na meáin seo.';
+
+  @override
+  String get mediaPreviewNotAvailableYet =>
+      'Níl réamhamharc ar fáil don chineál comhaid seo fós. Is féidir leat nasc an chomhaid a chóipeáil ina ionad.';
+
+  @override
+  String get mediaCategoryVisualSupport => 'Tacaíocht amhairc';
+
+  @override
+  String get mediaCategoryWordLearningImage => 'Íomhá foghlama focal';
+
+  @override
+  String get mediaCategoryLearningGameImage => 'Íomhá cluiche foghlama';
+
+  @override
+  String get mediaCategoryScheduleImage => 'Íomhá sceidil';
+
+  @override
+  String get mediaCategoryRewardImage => 'Íomhá luaíochta';
+
+  @override
+  String get mediaCategoryCalmingSound => 'Fuaim shuaimhneach';
+
+  @override
+  String get mediaCategoryClassroomCue => 'Leid seomra ranga';
+
+  @override
+  String get mediaCategoryGuideline => 'Treoirlíne';
+
+  @override
+  String get mediaCategoryClassroomDocument => 'Cáipéis seomra ranga';
+
+  @override
+  String get mediaCategoryOther => 'Eile';
+
+  @override
+  String get staffGuidelines => 'Treoirlínte';
+
+  @override
+  String get staffGuidelinesDashboardSubtitle =>
+      'Féach ar cháipéisí tábhachtacha treorach don seomra ranga.';
+
+  @override
+  String get staffGuidelinesDescription =>
+      'Cáipéisí treorach reatha don seomra ranga do bhaill foirne, ionadaithe agus CRSanna.';
+
+  @override
+  String get manageGuidelines => 'Bainistigh treoirlínte';
+
+  @override
+  String get openMediaLibrary => 'Oscail Leabharlann Meán';
+
+  @override
+  String get copyGuidelineLink => 'Cóipeáil nasc na treoirlíne';
+
+  @override
+  String get guidelineLinkCopied => 'Cóipeáladh nasc na treoirlíne.';
+
+  @override
+  String get guidelineOpenHint =>
+      'Cóipeáil an nasc agus oscail é i gcluaisín brabhsálaí chun an PDF seo a fheiceáil. Cuirfear féachaint PDF san aip leis níos déanaí.';
+
+  @override
+  String guidelineUpdated(String date, String size) {
+    return 'Nuashonraithe $date • $size';
+  }
+
+  @override
+  String get noGuidelinesYet => 'Níl aon treoirlínte uaslódáilte fós';
+
+  @override
+  String get noGuidelinesYetDescription =>
+      'Uaslódáil treoirlínte PDF sa Leabharlann Meán leis an gcatagóir Treoirlíne.';
+
+  @override
+  String guidelinesLoadFailed(String error) {
+    return 'Níorbh fhéidir na treoirlínte a lódáil: $error';
+  }
 }

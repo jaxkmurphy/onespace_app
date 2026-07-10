@@ -6009,5 +6009,279 @@
   },
   "@parentReportPrepareFailed": {
     "description": "Error message when a parent report cannot be prepared."
+  },
+  "mediaLibrary": "Leabharlann Meán",
+  "staffMediaLibrarySubtitle": "Uaslódáil agus bainistigh íomhánna, fuaim agus cáipéisí an tseomra ranga.",
+  "mediaLibraryDescription": "Acmhainní seomra ranga do thacaíochtaí amhairc, gníomhaíochtaí foghlama, fuaim shuaimhneach agus cáipéisí foirne.",
+  "uploadMedia": "Uaslódáil meáin",
+  "upload": "Uaslódáil",
+  "chooseFile": "Roghnaigh comhad",
+  "mediaImages": "Íomhánna",
+  "mediaAudio": "Fuaim",
+  "mediaDocuments": "Cáipéisí",
+  "mediaType": "Cineál meáin",
+  "mediaActiveOnly": "Gníomhach amháin",
+  "active": "Gníomhach",
+  "inactive": "Neamhghníomhach",
+  "enable": "Cumasaigh",
+  "disable": "Díchumasaigh",
+  "preview": "Réamhamharc",
+  "mediaCopyLink": "Cóipeáil nasc",
+  "mediaLinkCopied": "Cóipeáladh nasc na meán.",
+  "mediaAssetUploaded": "Uaslódáladh na meáin.",
+  "mediaAssetUpdated": "Nuashonraíodh na meáin.",
+  "mediaAssetEnabled": "Cumasaíodh na meáin.",
+  "mediaAssetDisabled": "Díchumasaíodh na meáin.",
+  "mediaAssetDeleted": "Scriosadh na meáin.",
+  "mediaNoFileSelected": "Níor roghnaíodh aon chomhad.",
+  "mediaNameRequired": "Cuir ainm isteach le do thoil.",
+  "mediaLoadFailed": "Níorbh fhéidir na meáin a lódáil: {error}",
+  "mediaUploadFailed": "Níorbh fhéidir na meáin a uaslódáil: {error}",
+  "mediaAssetUpdateFailed": "Níorbh fhéidir na meáin a nuashonrú: {error}",
+  "mediaAssetDeleteFailed": "Níorbh fhéidir na meáin a scriosadh: {error}",
+  "deleteMediaAsset": "Scrios na meáin?",
+  "deleteMediaAssetMessage": "Scrios {name}? Níor cheart é seo a úsáid ach do chomhaid nach bhfuil ag teastáil a thuilleadh.",
+  "editMediaAsset": "Cuir meáin in eagar",
+  "noMediaAssetsYet": "Níl aon mheáin uaslódáilte fós",
+  "noMediaAssetsYetDescription": "Uaslódáil íomhánna, fuaim nó cáipéisí PDF don seomra ranga seo.",
+  "mediaUploadPickerHint": "Tar éis duit na sonraí seo a roghnú, roghnóidh tú an comhad ó do ghléas.",
+  "mediaPreviewFailed": "Níorbh fhéidir réamhamharc a dhéanamh ar na meáin seo.",
+  "mediaPreviewNotAvailableYet": "Níl réamhamharc ar fáil don chineál comhaid seo fós. Is féidir leat nasc an chomhaid a chóipeáil ina ionad.",
+  "mediaCategoryVisualSupport": "Tacaíocht amhairc",
+  "mediaCategoryWordLearningImage": "Íomhá foghlama focal",
+  "mediaCategoryLearningGameImage": "Íomhá cluiche foghlama",
+  "mediaCategoryScheduleImage": "Íomhá sceidil",
+  "mediaCategoryRewardImage": "Íomhá luaíochta",
+  "mediaCategoryCalmingSound": "Fuaim shuaimhneach",
+  "mediaCategoryClassroomCue": "Leid seomra ranga",
+  "mediaCategoryGuideline": "Treoirlíne",
+  "mediaCategoryClassroomDocument": "Cáipéis seomra ranga",
+  "mediaCategoryOther": "Eile",
+  "@mediaLibrary": {
+    "description": "Title for the classroom media library."
+  },
+  "@staffMediaLibrarySubtitle": {
+    "description": "Staff dashboard subtitle for media library."
+  },
+  "@mediaLibraryDescription": {
+    "description": "Description shown at top of media library."
+  },
+  "@uploadMedia": {
+    "description": "Button label for uploading media."
+  },
+  "@upload": {
+    "description": "Generic upload button label."
+  },
+  "@chooseFile": {
+    "description": "Button label for choosing a file."
+  },
+  "@mediaImages": {
+    "description": "Images filter label."
+  },
+  "@mediaAudio": {
+    "description": "Audio filter label."
+  },
+  "@mediaDocuments": {
+    "description": "Documents filter label."
+  },
+  "@mediaType": {
+    "description": "Media type field label."
+  },
+  "@mediaActiveOnly": {
+    "description": "Filter label for showing active media only."
+  },
+  "@active": {
+    "description": "Active status label."
+  },
+  "@inactive": {
+    "description": "Inactive status label."
+  },
+  "@enable": {
+    "description": "Enable action label."
+  },
+  "@disable": {
+    "description": "Disable action label."
+  },
+  "@preview": {
+    "description": "Preview action label."
+  },
+  "@mediaCopyLink": {
+    "description": "Copy media link action label."
+  },
+  "@mediaLinkCopied": {
+    "description": "Snackbar after copying a media link."
+  },
+  "@mediaAssetUploaded": {
+    "description": "Snackbar after media upload succeeds."
+  },
+  "@mediaAssetUpdated": {
+    "description": "Snackbar after media update succeeds."
+  },
+  "@mediaAssetEnabled": {
+    "description": "Snackbar after enabling media."
+  },
+  "@mediaAssetDisabled": {
+    "description": "Snackbar after disabling media."
+  },
+  "@mediaAssetDeleted": {
+    "description": "Snackbar after media delete succeeds."
+  },
+  "@mediaNoFileSelected": {
+    "description": "Message shown when file picking returns no file."
+  },
+  "@mediaNameRequired": {
+    "description": "Validation message for missing media name."
+  },
+  "@mediaLoadFailed": {
+    "description": "Error shown when media cannot load.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaUploadFailed": {
+    "description": "Error shown when media upload fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaAssetUpdateFailed": {
+    "description": "Error shown when media update fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaAssetDeleteFailed": {
+    "description": "Error shown when media delete fails.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteMediaAsset": {
+    "description": "Delete media confirmation title."
+  },
+  "@deleteMediaAssetMessage": {
+    "description": "Delete media confirmation message.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@editMediaAsset": {
+    "description": "Edit media dialog title."
+  },
+  "@noMediaAssetsYet": {
+    "description": "Empty media library title."
+  },
+  "@noMediaAssetsYetDescription": {
+    "description": "Empty media library description."
+  },
+  "@mediaUploadPickerHint": {
+    "description": "Hint explaining file picker step."
+  },
+  "@mediaPreviewFailed": {
+    "description": "Image preview failed message."
+  },
+  "@mediaPreviewNotAvailableYet": {
+    "description": "Message for non-image preview fallback."
+  },
+  "@mediaCategoryVisualSupport": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryWordLearningImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryLearningGameImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryScheduleImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryRewardImage": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryCalmingSound": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryClassroomCue": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryGuideline": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryClassroomDocument": {
+    "description": "Media category label."
+  },
+  "@mediaCategoryOther": {
+    "description": "Media category label."
+  },
+  "staffGuidelines": "Treoirlínte",
+  "staffGuidelinesDashboardSubtitle": "Féach ar cháipéisí tábhachtacha treorach don seomra ranga.",
+  "staffGuidelinesDescription": "Cáipéisí treorach reatha don seomra ranga do bhaill foirne, ionadaithe agus CRSanna.",
+  "manageGuidelines": "Bainistigh treoirlínte",
+  "openMediaLibrary": "Oscail Leabharlann Meán",
+  "copyGuidelineLink": "Cóipeáil nasc na treoirlíne",
+  "guidelineLinkCopied": "Cóipeáladh nasc na treoirlíne.",
+  "guidelineOpenHint": "Cóipeáil an nasc agus oscail é i gcluaisín brabhsálaí chun an PDF seo a fheiceáil. Cuirfear féachaint PDF san aip leis níos déanaí.",
+  "guidelineUpdated": "Nuashonraithe {date} • {size}",
+  "noGuidelinesYet": "Níl aon treoirlínte uaslódáilte fós",
+  "noGuidelinesYetDescription": "Uaslódáil treoirlínte PDF sa Leabharlann Meán leis an gcatagóir Treoirlíne.",
+  "guidelinesLoadFailed": "Níorbh fhéidir na treoirlínte a lódáil: {error}",
+  "@staffGuidelines": {
+    "description": "Title for the staff guidelines feature."
+  },
+  "@staffGuidelinesDashboardSubtitle": {
+    "description": "Staff dashboard subtitle for guidelines."
+  },
+  "@staffGuidelinesDescription": {
+    "description": "Description shown at the top of the guidelines page."
+  },
+  "@manageGuidelines": {
+    "description": "Button label for managing guideline files."
+  },
+  "@openMediaLibrary": {
+    "description": "Button label for opening the media library."
+  },
+  "@copyGuidelineLink": {
+    "description": "Button label for copying a guideline file link."
+  },
+  "@guidelineLinkCopied": {
+    "description": "Snackbar after copying a guideline link."
+  },
+  "@guidelineOpenHint": {
+    "description": "Hint explaining how to open a guideline PDF."
+  },
+  "@guidelineUpdated": {
+    "description": "Guideline updated date and file size label.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "@noGuidelinesYet": {
+    "description": "Empty state title for guidelines."
+  },
+  "@noGuidelinesYetDescription": {
+    "description": "Empty state description for guidelines."
+  },
+  "@guidelinesLoadFailed": {
+    "description": "Error message when guidelines fail to load.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

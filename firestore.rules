@@ -190,6 +190,11 @@ service cloud.firestore {
           allow read, write: if canAccessClassroom(schoolId, classroomId);
         }
 
+        match /media_assets/{assetId} {
+          allow read, create, update: if canAccessClassroom(schoolId, classroomId);
+          allow delete: if isSchoolAdmin(schoolId);
+        }
+
         match /calm_tools/{toolId} {
           allow read, create, update: if canAccessClassroom(schoolId, classroomId);
           allow delete: if isSchoolAdmin(schoolId);

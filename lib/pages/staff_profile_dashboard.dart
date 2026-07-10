@@ -474,6 +474,22 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
+          StaffDashboardFeatureCard(
+            icon: Icons.menu_book_rounded,
+            title: l10n.staffGuidelines,
+            subtitle: l10n.staffGuidelinesDashboardSubtitle,
+            color: const Color(0xFF2E7D32),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/guidelines',
+                arguments: {
+                  'staffProfile': widget.profile,
+                  'firestoreService': _firestoreService,
+                },
+              );
+            },
+          ),
           if (_isFeatureEnabled(ClassroomFeature.iconReset))
             StaffDashboardFeatureCard(
               icon: Icons.lock_reset_rounded,
@@ -488,6 +504,22 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
+          StaffDashboardFeatureCard(
+            icon: Icons.perm_media_rounded,
+            title: l10n.mediaLibrary,
+            subtitle: l10n.staffMediaLibrarySubtitle,
+            color: const Color(0xFF5E7CE2),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/media-library',
+                arguments: {
+                  'staffProfile': widget.profile,
+                  'firestoreService': _firestoreService,
+                },
+              );
+            },
+          ),
         ];
 
         return Scaffold(
