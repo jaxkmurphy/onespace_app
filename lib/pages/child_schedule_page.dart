@@ -4,6 +4,7 @@ import '../l10n/l10n.dart';
 import '../models/schedule_entry.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class ChildSchedulePage extends StatefulWidget {
   const ChildSchedulePage({super.key});
@@ -371,7 +372,10 @@ class _ChildSchedulePageState extends State<ChildSchedulePage> {
         ),
         child: Row(
           children: [
-            Icon(type.icon, color: type.colour, size: 31),
+            if (isMediaVisualValue(current.iconName))
+              MediaImagePreview(value: current.iconName, size: 36)
+            else
+              Icon(type.icon, color: type.colour, size: 31),
             const SizedBox(width: 11),
             Expanded(
               child: Column(
@@ -413,7 +417,10 @@ class _ChildSchedulePageState extends State<ChildSchedulePage> {
         ),
         child: Row(
           children: [
-            Icon(type.icon, color: type.colour, size: 31),
+            if (isMediaVisualValue(next.iconName))
+              MediaImagePreview(value: next.iconName, size: 36)
+            else
+              Icon(type.icon, color: type.colour, size: 31),
             const SizedBox(width: 11),
             Expanded(
               child: Column(
@@ -615,7 +622,15 @@ class _ChildSchedulePageState extends State<ChildSchedulePage> {
                           color: type.colour.withValues(alpha: 0.16),
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child: Icon(type.icon, color: type.colour, size: 31),
+                        clipBehavior: Clip.antiAlias,
+                        child:
+                            isMediaVisualValue(entry.iconName)
+                                ? MediaImagePreview(
+                                  value: entry.iconName,
+                                  size: 56,
+                                  borderRadius: BorderRadius.circular(18),
+                                )
+                                : Icon(type.icon, color: type.colour, size: 31),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

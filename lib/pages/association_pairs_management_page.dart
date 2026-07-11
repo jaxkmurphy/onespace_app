@@ -5,9 +5,11 @@ import '../l10n/l10n.dart';
 import '../l10n/learning_game_localizations.dart';
 import '../models/association_pair_pack_models.dart';
 import '../models/child_profile.dart';
+import '../models/media_asset.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
 import '../widgets/app_icon_picker_dialog.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class AssociationPairsManagementPage extends StatefulWidget {
   final StaffProfile staffProfile;
@@ -306,7 +308,7 @@ class _AssociationPairPackEditorPageState
   Future<void> _addPair(int nextSortOrder) async {
     final draft = await showDialog<_PairDraft>(
       context: context,
-      builder: (_) => const _PairDialog(),
+      builder: (_) => _PairDialog(firestoreService: widget.firestoreService),
     );
 
     if (draft == null) return;
@@ -330,7 +332,11 @@ class _AssociationPairPackEditorPageState
   Future<void> _editPair(ManagedAssociationPair pair) async {
     final draft = await showDialog<_PairDraft>(
       context: context,
-      builder: (_) => _PairDialog(pair: pair),
+      builder:
+          (_) => _PairDialog(
+            firestoreService: widget.firestoreService,
+            pair: pair,
+          ),
     );
 
     if (draft == null) return;
@@ -648,9 +654,17 @@ class _PairTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
-        leading: Icon(appIconForKey(pair.first.iconName)),
+        leading:
+            isMediaVisualValue(pair.first.iconName)
+                ? MediaImagePreview(value: pair.first.iconName, size: 32)
+                : Icon(appIconForKey(pair.first.iconName)),
         title: Text('${pair.first.label}  +  ${pair.second.label}'),
-        subtitle: Text('${pair.first.iconName} / ${pair.second.iconName}'),
+        subtitle: Text(
+          isMediaVisualValue(pair.first.iconName) ||
+                  isMediaVisualValue(pair.second.iconName)
+              ? 'Custom media/image pair'
+              : '${pair.first.iconName} / ${pair.second.iconName}',
+        ),
         trailing: Wrap(
           children: [
             IconButton(
@@ -770,9 +784,10 @@ class _PackDialogState extends State<_PackDialog> {
 }
 
 class _PairDialog extends StatefulWidget {
+  final FirestoreService firestoreService;
   final ManagedAssociationPair? pair;
 
-  const _PairDialog({this.pair});
+  const _PairDialog({required this.firestoreService, this.pair});
 
   @override
   State<_PairDialog> createState() => _PairDialogState();
@@ -822,6 +837,26 @@ class _PairDialogState extends State<_PairDialog> {
     });
   }
 
+  Future<void> _chooseMedia({required bool first}) async {
+    final selected = await showMediaAssetPickerDialog(
+      context: context,
+      firestoreService: widget.firestoreService,
+      type: MediaAssetType.image,
+      title: first ? 'Choose first image' : 'Choose matching image',
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      final value = mediaVisualValue(selected);
+      if (first) {
+        _firstIcon = value;
+      } else {
+        _secondIcon = value;
+      }
+    });
+  }
+
   void _save() {
     final firstLabel = _firstController.text.trim();
     final secondLabel = _secondController.text.trim();
@@ -856,6 +891,7 @@ class _PairDialogState extends State<_PairDialog> {
               iconName: _firstIcon,
               label: 'First item',
               onChooseIcon: () => _chooseIcon(first: true),
+              onChooseMedia: () => _chooseMedia(first: true),
             ),
             const SizedBox(height: 14),
             _PairItemField(
@@ -863,6 +899,7 @@ class _PairDialogState extends State<_PairDialog> {
               iconName: _secondIcon,
               label: 'Matching item',
               onChooseIcon: () => _chooseIcon(first: false),
+              onChooseMedia: () => _chooseMedia(first: false),
             ),
           ],
         ),
@@ -887,12 +924,14 @@ class _PairItemField extends StatelessWidget {
   final String iconName;
   final String label;
   final VoidCallback onChooseIcon;
+  final VoidCallback onChooseMedia;
 
   const _PairItemField({
     required this.controller,
     required this.iconName,
     required this.label,
     required this.onChooseIcon,
+    required this.onChooseMedia,
   });
 
   @override
@@ -901,7 +940,10 @@ class _PairItemField extends StatelessWidget {
       children: [
         IconButton.filledTonal(
           onPressed: onChooseIcon,
-          icon: AppIconPreview(iconKey: iconName),
+          icon:
+              isMediaVisualValue(iconName)
+                  ? MediaImagePreview(value: iconName, size: 24)
+                  : AppIconPreview(iconKey: iconName),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -909,6 +951,12 @@ class _PairItemField extends StatelessWidget {
             controller: controller,
             decoration: InputDecoration(labelText: label),
           ),
+        ),
+        const SizedBox(width: 8),
+        IconButton.outlined(
+          tooltip: 'Choose media image',
+          onPressed: onChooseMedia,
+          icon: const Icon(Icons.photo_library_outlined),
         ),
       ],
     );

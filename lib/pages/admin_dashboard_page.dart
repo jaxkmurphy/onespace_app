@@ -101,224 +101,249 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            FutureBuilder<School?>(
-              future: schoolFuture,
-              builder: (context, schoolSnapshot) {
-                final school = schoolSnapshot.data;
+      body: FutureBuilder<School?>(
+        future: schoolFuture,
+        builder: (context, schoolSnapshot) {
+          final school = schoolSnapshot.data;
 
-                return StreamBuilder<List<Classroom>>(
-                  stream: _firestoreService.getClassrooms(widget.schoolId),
-                  builder: (context, classroomSnapshot) {
-                    final classrooms = classroomSnapshot.data ?? [];
-                    final classroomLimit = school?.classroomLimit ?? 3;
-                    final usedClassrooms = classrooms.length;
+          return StreamBuilder<List<Classroom>>(
+            stream: _firestoreService.getClassrooms(widget.schoolId),
+            builder: (context, classroomSnapshot) {
+              final classrooms = classroomSnapshot.data ?? [];
+              final filteredClassrooms = _filteredClassrooms(classrooms);
+              final classroomLimit = school?.classroomLimit ?? 3;
 
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              school?.name ?? widget.schoolName,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              context.l10n.schoolCodeValue(
-                                school?.schoolCode ?? context.l10n.loading,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              context.l10n.classroomsUsed(
-                                usedClassrooms,
-                                classroomLimit,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              context.l10n.statusValue(
-                                (school?.active ?? true)
-                                    ? context.l10n.active
-                                    : context.l10n.inactive,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            FutureBuilder<SchoolAdminOverview>(
-                              future: _firestoreService.getSchoolAdminOverview(
-                                widget.schoolId,
-                              ),
-                              builder: (context, overviewSnapshot) {
-                                if (!overviewSnapshot.hasData) {
-                                  return const SizedBox.shrink();
-                                }
-
-                                final overview = overviewSnapshot.data!;
-
-                                return Wrap(
-                                  spacing: 10,
-                                  runSpacing: 10,
+              return ListView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _AdminStatChip(
-                                      icon: Icons.meeting_room_outlined,
-                                      label: context.l10n.activeClassrooms,
-                                      value:
-                                          overview.activeClassrooms.toString(),
+                                    Text(
+                                      school?.name ?? widget.schoolName,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    _AdminStatChip(
-                                      icon: Icons.archive_outlined,
-                                      label: context.l10n.inactiveClassrooms,
-                                      value:
-                                          overview.inactiveClassrooms
-                                              .toString(),
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.badge_outlined,
-                                      label: context.l10n.staffProfiles,
-                                      value:
-                                          overview.totalStaffProfiles
-                                              .toString(),
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.child_care_outlined,
-                                      label: context.l10n.childProfiles,
-                                      value:
-                                          overview.totalChildProfiles
-                                              .toString(),
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.pending_actions_rounded,
-                                      label: 'Body checks',
-                                      value:
-                                          overview.uncheckedBodyChecks
-                                              .toString(),
-                                      isAlert: overview.uncheckedBodyChecks > 0,
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.notifications_active_outlined,
-                                      label: 'Calm requests',
-                                      value:
-                                          overview.activeCalmRequests
-                                              .toString(),
-                                      isAlert: overview.activeCalmRequests > 0,
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.volunteer_activism_outlined,
-                                      label: 'Helper requests',
-                                      value:
-                                          overview.pendingHelperRequests
-                                              .toString(),
-                                      isAlert:
-                                          overview.pendingHelperRequests > 0,
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.badge_outlined,
-                                      label: context.l10n.staffContacts,
-                                      value:
-                                          overview.totalStaffContacts
-                                              .toString(),
-                                    ),
-                                    _AdminStatChip(
-                                      icon: Icons.family_restroom_outlined,
-                                      label: context.l10n.guardianContacts,
-                                      value:
-                                          overview.totalGuardianContacts
-                                              .toString(),
+                                    const SizedBox(height: 4),
+                                    Wrap(
+                                      spacing: 14,
+                                      runSpacing: 4,
+                                      children: [
+                                        Text(
+                                          context.l10n.schoolCodeValue(
+                                            school?.schoolCode ??
+                                                context.l10n.loading,
+                                          ),
+                                        ),
+                                        Text(
+                                          context.l10n.classroomsUsed(
+                                            classrooms.length,
+                                            classroomLimit,
+                                          ),
+                                        ),
+                                        Text(
+                                          context.l10n.statusValue(
+                                            (school?.active ?? true)
+                                                ? context.l10n.active
+                                                : context.l10n.inactive,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
-                                );
-                              },
+                                ),
+                              ),
+                              if (schoolSnapshot.connectionState ==
+                                  ConnectionState.waiting)
+                                const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          FutureBuilder<SchoolAdminOverview>(
+                            future: _firestoreService.getSchoolAdminOverview(
+                              widget.schoolId,
                             ),
-                          ],
+                            builder: (context, overviewSnapshot) {
+                              if (!overviewSnapshot.hasData) {
+                                return const SizedBox.shrink();
+                              }
+
+                              final overview = overviewSnapshot.data!;
+
+                              return Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  _AdminStatChip(
+                                    icon: Icons.meeting_room_outlined,
+                                    label: context.l10n.activeClassrooms,
+                                    value: overview.activeClassrooms.toString(),
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.archive_outlined,
+                                    label: context.l10n.inactiveClassrooms,
+                                    value:
+                                        overview.inactiveClassrooms.toString(),
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.badge_outlined,
+                                    label: context.l10n.staffProfiles,
+                                    value:
+                                        overview.totalStaffProfiles.toString(),
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.child_care_outlined,
+                                    label: context.l10n.childProfiles,
+                                    value:
+                                        overview.totalChildProfiles.toString(),
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.pending_actions_rounded,
+                                    label: 'Body checks',
+                                    value:
+                                        overview.uncheckedBodyChecks.toString(),
+                                    isAlert: overview.uncheckedBodyChecks > 0,
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.notifications_active_outlined,
+                                    label: 'Calm requests',
+                                    value:
+                                        overview.activeCalmRequests.toString(),
+                                    isAlert: overview.activeCalmRequests > 0,
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.volunteer_activism_outlined,
+                                    label: 'Helper requests',
+                                    value:
+                                        overview.pendingHelperRequests
+                                            .toString(),
+                                    isAlert: overview.pendingHelperRequests > 0,
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.badge_outlined,
+                                    label: context.l10n.staffContacts,
+                                    value:
+                                        overview.totalStaffContacts.toString(),
+                                  ),
+                                  _AdminStatChip(
+                                    icon: Icons.family_restroom_outlined,
+                                    label: context.l10n.guardianContacts,
+                                    value:
+                                        overview.totalGuardianContacts
+                                            .toString(),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _AdminActionCard(
+                    icon: Icons.contact_mail_outlined,
+                    title: context.l10n.contactDirectory,
+                    subtitle: context.l10n.contactDirectoryAdminSubtitle,
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/contact-directory',
+                        arguments: {'schoolId': widget.schoolId},
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ClassroomFilterBar(
+                          selected: _filter,
+                          labelFor: (filter) => _filterLabel(context, filter),
+                          onChanged: (filter) {
+                            setState(() {
+                              _filter = filter;
+                            });
+                          },
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            _AdminActionCard(
-              icon: Icons.contact_mail_outlined,
-              title: context.l10n.contactDirectory,
-              subtitle: context.l10n.contactDirectoryAdminSubtitle,
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/contact-directory',
-                  arguments: {'schoolId': widget.schoolId},
-                );
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            _ClassroomFilterBar(
-              selected: _filter,
-              labelFor: (filter) => _filterLabel(context, filter),
-              onChanged: (filter) {
-                setState(() {
-                  _filter = filter;
-                });
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            Expanded(
-              child: StreamBuilder<List<Classroom>>(
-                stream: _firestoreService.getClassrooms(widget.schoolId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        context.l10n.classroomsLoadError(
-                          snapshot.error.toString(),
+                      const SizedBox(width: 12),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: Text(context.l10n.addClassroom),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/create-classroom',
+                            arguments: {'schoolId': widget.schoolId},
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  if (classroomSnapshot.connectionState ==
+                          ConnectionState.waiting &&
+                      classrooms.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 32),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (classroomSnapshot.hasError)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      child: Center(
+                        child: Text(
+                          context.l10n.classroomsLoadError(
+                            classroomSnapshot.error.toString(),
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    );
-                  }
-
-                  final classrooms = snapshot.data ?? [];
-                  final filteredClassrooms = _filteredClassrooms(classrooms);
-
-                  if (classrooms.isEmpty) {
-                    return Center(
-                      child: Text(
-                        context.l10n.noClassroomsYet,
-                        textAlign: TextAlign.center,
+                    )
+                  else if (classrooms.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      child: Center(
+                        child: Text(
+                          context.l10n.noClassroomsYet,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    );
-                  }
-
-                  if (filteredClassrooms.isEmpty) {
-                    return Center(
-                      child: Text(
-                        '${_filterLabel(context, _filter)}: 0',
-                        textAlign: TextAlign.center,
+                    )
+                  else if (filteredClassrooms.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      child: Center(
+                        child: Text(
+                          '${_filterLabel(context, _filter)}: 0',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    itemCount: filteredClassrooms.length,
-                    itemBuilder: (context, index) {
-                      final classroom = filteredClassrooms[index];
-
+                    )
+                  else
+                    ...filteredClassrooms.map((classroom) {
                       return _ClassroomListCard(
                         classroom: classroom,
                         schoolId: widget.schoolId,
@@ -334,30 +359,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           );
                         },
                       );
-                    },
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.add),
-                label: Text(context.l10n.addClassroom),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/create-classroom',
-                    arguments: {'schoolId': widget.schoolId},
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+                    }),
+                ],
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -387,19 +394,19 @@ class _AdminActionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   color: colourScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: colourScheme.onSecondaryContainer),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -407,12 +414,16 @@ class _AdminActionCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(subtitle),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
                 ),
               ),
@@ -659,20 +670,20 @@ class _AdminStatChip extends StatelessWidget {
     final colourScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color:
             isAlert
                 ? colourScheme.errorContainer.withValues(alpha: 0.75)
                 : colourScheme.primaryContainer.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             icon,
-            size: 18,
+            size: 16,
             color:
                 isAlert
                     ? colourScheme.onErrorContainer
@@ -686,6 +697,7 @@ class _AdminStatChip extends StatelessWidget {
                   isAlert
                       ? colourScheme.onErrorContainer
                       : colourScheme.onPrimaryContainer,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
           ),

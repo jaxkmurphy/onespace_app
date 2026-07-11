@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../data/app_icon_catalog.dart';
+import '../models/media_asset.dart';
 import '../models/point_reward.dart';
 import '../services/firestore_service.dart';
 import '../widgets/app_icon_picker_dialog.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class PointRewardsPage extends StatefulWidget {
   const PointRewardsPage({super.key});
@@ -28,7 +30,10 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
       text: reward?.cost.toString() ?? '',
     );
 
-    String selectedIcon = appIconKeyFor(reward?.iconName ?? 'gift');
+    String selectedIcon =
+        isMediaVisualValue(reward?.iconName ?? '')
+            ? reward!.iconName
+            : appIconKeyFor(reward?.iconName ?? 'gift');
     bool isSaving = false;
 
     await showDialog<void>(
@@ -39,7 +44,8 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
             Future<void> chooseIcon() async {
               final selected = await showAppIconPickerDialog(
                 context: dialogContext,
-                selectedKey: selectedIcon,
+                selectedKey:
+                    isMediaVisualValue(selectedIcon) ? null : selectedIcon,
                 title: _t('Choose an icon', 'Roghnaigh deilbhín'),
                 categories: const [
                   AppIconCategory.objects,
@@ -59,7 +65,26 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
               });
             }
 
-            final selectedOption = appIconOptionForKey(selectedIcon);
+            Future<void> chooseMediaImage() async {
+              final selected = await showMediaAssetPickerDialog(
+                context: dialogContext,
+                firestoreService: _firestoreService,
+                type: MediaAssetType.image,
+                category: MediaAssetCategory.rewardImage,
+                title: 'Choose reward image',
+              );
+
+              if (selected == null) return;
+
+              setDialogState(() {
+                selectedIcon = mediaVisualValue(selected);
+              });
+            }
+
+            final isMedia = isMediaVisualValue(selectedIcon);
+            final selectedOption = appIconOptionForKey(
+              isMedia ? 'gift' : selectedIcon,
+            );
 
             return AlertDialog(
               title: Text(
@@ -137,11 +162,21 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                                   ),
                                   borderRadius: BorderRadius.circular(18),
                                 ),
-                                child: Icon(
-                                  selectedOption.icon,
-                                  color: Colors.deepPurple,
-                                  size: 30,
-                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child:
+                                    isMedia
+                                        ? MediaImagePreview(
+                                          value: selectedIcon,
+                                          size: 54,
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                        )
+                                        : Icon(
+                                          selectedOption.icon,
+                                          color: Colors.deepPurple,
+                                          size: 30,
+                                        ),
                               ),
                               const SizedBox(width: 14),
                               Expanded(
@@ -149,7 +184,9 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      selectedOption.label,
+                                      isMedia
+                                          ? 'Media Library image'
+                                          : selectedOption.label,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w900,
                                         fontSize: 16,
@@ -179,6 +216,23 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                             ],
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: isSaving ? null : chooseIcon,
+                            icon: const Icon(Icons.apps_rounded),
+                            label: const Text('Icon'),
+                          ),
+                          FilledButton.tonalIcon(
+                            onPressed: isSaving ? null : chooseMediaImage,
+                            icon: const Icon(Icons.photo_library_outlined),
+                            label: const Text('Media image'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -238,7 +292,10 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                                   name: name,
                                   description: description,
                                   cost: cost,
-                                  iconName: appIconKeyFor(selectedIcon),
+                                  iconName:
+                                      isMediaVisualValue(selectedIcon)
+                                          ? selectedIcon
+                                          : appIconKeyFor(selectedIcon),
                                 );
                               } else {
                                 await _firestoreService
@@ -247,7 +304,10 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                                         name: name,
                                         description: description,
                                         cost: cost,
-                                        iconName: appIconKeyFor(selectedIcon),
+                                        iconName:
+                                            isMediaVisualValue(selectedIcon)
+                                                ? selectedIcon
+                                                : appIconKeyFor(selectedIcon),
                                       ),
                                     );
                               }
@@ -507,6 +567,7 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
   }
 
   Widget _buildRewardCard(BuildContext context, PointReward reward) {
+    final isMedia = isMediaVisualValue(reward.iconName);
     final icon = appIconForKey(reward.iconName, fallbackKey: 'gift');
 
     return Opacity(
@@ -528,7 +589,15 @@ class _PointRewardsPageState extends State<PointRewardsPage> {
                       color: Colors.deepPurple.withValues(alpha: 0.14),
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    child: Icon(icon, color: Colors.deepPurple, size: 31),
+                    clipBehavior: Clip.antiAlias,
+                    child:
+                        isMedia
+                            ? MediaImagePreview(
+                              value: reward.iconName,
+                              size: 56,
+                              borderRadius: BorderRadius.circular(18),
+                            )
+                            : Icon(icon, color: Colors.deepPurple, size: 31),
                   ),
                   const Spacer(),
                   Chip(

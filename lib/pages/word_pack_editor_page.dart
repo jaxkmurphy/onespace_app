@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import '../data/word_learning_visuals.dart';
 import '../l10n/l10n.dart';
 import '../models/child_profile.dart';
+import '../models/media_asset.dart';
 import '../models/word_item.dart';
 import '../models/word_pack.dart';
 import '../services/firestore_service.dart';
 import '../data/app_icon_catalog.dart';
 import '../widgets/app_icon_picker_dialog.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class WordPackEditorPage extends StatefulWidget {
   final FirestoreService firestoreService;
@@ -141,7 +143,11 @@ class _WordPackEditorPageState extends State<WordPackEditorPage> {
   Future<void> _openWordDialog({WordItem? existingWord}) async {
     final draft = await showDialog<_WordDraft>(
       context: context,
-      builder: (_) => _WordDialog(existingWord: existingWord),
+      builder:
+          (_) => _WordDialog(
+            firestoreService: widget.firestoreService,
+            existingWord: existingWord,
+          ),
     );
 
     if (draft == null) return;
@@ -818,9 +824,10 @@ class _AssignmentDialogState extends State<_AssignmentDialog> {
 }
 
 class _WordDialog extends StatefulWidget {
+  final FirestoreService firestoreService;
   final WordItem? existingWord;
 
-  const _WordDialog({this.existingWord});
+  const _WordDialog({required this.firestoreService, this.existingWord});
 
   @override
   State<_WordDialog> createState() => _WordDialogState();
@@ -884,6 +891,22 @@ class _WordDialogState extends State<_WordDialog> {
     });
   }
 
+  Future<void> _chooseMediaImage() async {
+    final selected = await showMediaAssetPickerDialog(
+      context: context,
+      firestoreService: widget.firestoreService,
+      type: MediaAssetType.image,
+      title: 'Choose word image',
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _imageType = 'media';
+      _imageValue = mediaVisualValue(selected);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final editing = widget.existingWord != null;
@@ -905,84 +928,11 @@ class _WordDialogState extends State<_WordDialog> {
                 ),
               ),
               const SizedBox(height: 14),
-              InkWell(
-                borderRadius: BorderRadius.circular(18),
-                onTap: _chooseIcon,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF66BB6A).withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: const Color(0xFF66BB6A).withValues(alpha: 0.35),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 54,
-                        height: 54,
-                        decoration: BoxDecoration(
-                          color: const Color(
-                            0xFF66BB6A,
-                          ).withValues(alpha: 0.16),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child:
-                            _imageType == 'icon'
-                                ? Icon(
-                                  appIconForKey(
-                                    _imageValue,
-                                    fallbackKey: 'book',
-                                  ),
-                                  color: const Color(0xFF2E7D32),
-                                  size: 30,
-                                )
-                                : Center(
-                                  child: Text(
-                                    _imageValue.isEmpty ? '📚' : _imageValue,
-                                    style: const TextStyle(fontSize: 28),
-                                  ),
-                                ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _imageType == 'icon'
-                                  ? appIconOptionForKey(
-                                    _imageValue,
-                                    fallbackKey: 'book',
-                                  ).label
-                                  : (_imageValue.isEmpty
-                                      ? 'Book'
-                                      : _imageValue),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w900,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              context.l10n.chooseIcon,
-                              style: TextStyle(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.edit_rounded, color: Color(0xFF2E7D32)),
-                    ],
-                  ),
-                ),
+              _WordVisualPickerCard(
+                imageType: _imageType,
+                imageValue: _imageValue,
+                onChooseIcon: _chooseIcon,
+                onChooseMedia: _chooseMediaImage,
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
@@ -1045,9 +995,11 @@ class _WordDialogState extends State<_WordDialog> {
                 word: word,
                 imageType: _imageType,
                 imageValue:
-                    _imageValue.trim().isEmpty
-                        ? appIconKeyFor('book', fallbackKey: 'book')
-                        : appIconKeyFor(_imageValue, fallbackKey: 'book'),
+                    _imageType == 'media'
+                        ? _imageValue
+                        : (_imageValue.trim().isEmpty
+                            ? appIconKeyFor('book', fallbackKey: 'book')
+                            : appIconKeyFor(_imageValue, fallbackKey: 'book')),
                 difficulty: _difficulty,
                 hint: _hintController.text.trim(),
               ),
@@ -1136,6 +1088,10 @@ class _WordVisual extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (word.imageType == 'media' || isMediaVisualValue(word.imageValue)) {
+      return MediaImagePreview(value: word.imageValue, size: size);
+    }
+
     if (word.imageType == 'icon') {
       return Icon(
         appIconForKey(word.imageValue, fallbackKey: 'book'),
@@ -1147,6 +1103,107 @@ class _WordVisual extends StatelessWidget {
     return Text(
       word.imageValue.isEmpty ? '📚' : word.imageValue,
       style: TextStyle(fontSize: size),
+    );
+  }
+}
+
+class _WordVisualPickerCard extends StatelessWidget {
+  final String imageType;
+  final String imageValue;
+  final VoidCallback onChooseIcon;
+  final VoidCallback onChooseMedia;
+
+  const _WordVisualPickerCard({
+    required this.imageType,
+    required this.imageValue,
+    required this.onChooseIcon,
+    required this.onChooseMedia,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+    final isMedia = imageType == 'media' || isMediaVisualValue(imageValue);
+    final title =
+        isMedia
+            ? 'Media Library image'
+            : appIconOptionForKey(imageValue, fallbackKey: 'book').label;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF66BB6A).withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFF66BB6A).withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: const Color(0xFF66BB6A).withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child:
+                isMedia
+                    ? MediaImagePreview(
+                      value: imageValue,
+                      size: 56,
+                      borderRadius: BorderRadius.circular(18),
+                    )
+                    : Icon(
+                      appIconForKey(imageValue, fallbackKey: 'book'),
+                      color: const Color(0xFF2E7D32),
+                      size: 30,
+                    ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  isMedia ? 'Uploaded image selected' : context.l10n.chooseIcon,
+                  style: TextStyle(
+                    color: colourScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: onChooseIcon,
+                      icon: const Icon(Icons.apps_rounded),
+                      label: const Text('Icon'),
+                    ),
+                    FilledButton.tonalIcon(
+                      onPressed: onChooseMedia,
+                      icon: const Icon(Icons.photo_library_outlined),
+                      label: const Text('Media image'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -4,10 +4,12 @@ import '../data/app_icon_catalog.dart';
 import '../l10n/l10n.dart';
 import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
+import '../models/media_asset.dart';
 import '../models/odd_one_out_models.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
 import '../widgets/app_icon_picker_dialog.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class OddOneOutManagementPage extends StatefulWidget {
   final StaffProfile staffProfile;
@@ -170,7 +172,7 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     final draft = await showDialog<_RoundDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const _RoundDialog(),
+      builder: (_) => _RoundDialog(firestoreService: widget.firestoreService),
     );
 
     if (draft == null) return;
@@ -200,7 +202,11 @@ class _OddOneOutManagementPageState extends State<OddOneOutManagementPage> {
     final draft = await showDialog<_RoundDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _RoundDialog(round: round),
+      builder:
+          (_) => _RoundDialog(
+            firestoreService: widget.firestoreService,
+            round: round,
+          ),
     );
 
     if (draft == null) return;
@@ -1193,9 +1199,10 @@ class _AudienceDialogState extends State<_AudienceDialog> {
 }
 
 class _RoundDialog extends StatefulWidget {
+  final FirestoreService firestoreService;
   final OddOneOutRound? round;
 
-  const _RoundDialog({this.round});
+  const _RoundDialog({required this.firestoreService, this.round});
 
   @override
   State<_RoundDialog> createState() => _RoundDialogState();
@@ -1231,7 +1238,14 @@ class _RoundDialogState extends State<_RoundDialog> {
             .toList();
 
     _iconNames =
-        initialItems.map((item) => appIconKeyFor(item.iconName)).toList();
+        initialItems
+            .map(
+              (item) =>
+                  isMediaVisualValue(item.iconName)
+                      ? item.iconName
+                      : appIconKeyFor(item.iconName),
+            )
+            .toList();
 
     _oddIndex = round?.oddIndex.clamp(0, 3) ?? 3;
   }
@@ -1259,6 +1273,21 @@ class _RoundDialogState extends State<_RoundDialog> {
     });
   }
 
+  Future<void> _chooseMedia(int index) async {
+    final selected = await showMediaAssetPickerDialog(
+      context: context,
+      firestoreService: widget.firestoreService,
+      type: MediaAssetType.image,
+      title: 'Choose item image',
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _iconNames[index] = mediaVisualValue(selected);
+    });
+  }
+
   void _save() {
     final items = <OddOneOutItem>[];
 
@@ -1268,7 +1297,13 @@ class _RoundDialogState extends State<_RoundDialog> {
       if (label.isEmpty) return;
 
       items.add(
-        OddOneOutItem(label: label, iconName: appIconKeyFor(_iconNames[index])),
+        OddOneOutItem(
+          label: label,
+          iconName:
+              isMediaVisualValue(_iconNames[index])
+                  ? _iconNames[index]
+                  : appIconKeyFor(_iconNames[index]),
+        ),
       );
     }
 
@@ -1320,6 +1355,7 @@ class _RoundDialogState extends State<_RoundDialog> {
                     iconName: _iconNames[index],
                     isOdd: _oddIndex == index,
                     onChooseIcon: () => _chooseIcon(index),
+                    onChooseMedia: () => _chooseMedia(index),
                     onSetOdd: () {
                       setState(() {
                         _oddIndex = index;
@@ -1376,6 +1412,7 @@ class _RoundItemEditor extends StatelessWidget {
   final String iconName;
   final bool isOdd;
   final VoidCallback onChooseIcon;
+  final VoidCallback onChooseMedia;
   final VoidCallback onSetOdd;
 
   const _RoundItemEditor({
@@ -1384,12 +1421,16 @@ class _RoundItemEditor extends StatelessWidget {
     required this.iconName,
     required this.isOdd,
     required this.onChooseIcon,
+    required this.onChooseMedia,
     required this.onSetOdd,
   });
 
   @override
   Widget build(BuildContext context) {
-    final option = appIconOptionForKey(iconName);
+    final option = appIconOptionForKey(
+      isMediaVisualValue(iconName) ? 'image_in_picture' : iconName,
+    );
+    final isMedia = isMediaVisualValue(iconName);
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -1419,11 +1460,19 @@ class _RoundItemEditor extends StatelessWidget {
                 color: const Color(0xFF7E57C2).withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(
-                option.icon,
-                color: const Color(0xFF7E57C2),
-                size: 30,
-              ),
+              clipBehavior: Clip.antiAlias,
+              child:
+                  isMedia
+                      ? MediaImagePreview(
+                        value: iconName,
+                        size: 54,
+                        borderRadius: BorderRadius.circular(16),
+                      )
+                      : Icon(
+                        option.icon,
+                        color: const Color(0xFF7E57C2),
+                        size: 30,
+                      ),
             ),
           ),
           const SizedBox(width: 12),
@@ -1437,6 +1486,12 @@ class _RoundItemEditor extends StatelessWidget {
                 border: const OutlineInputBorder(),
               ),
             ),
+          ),
+          const SizedBox(width: 10),
+          IconButton.outlined(
+            tooltip: 'Choose media image',
+            onPressed: onChooseMedia,
+            icon: const Icon(Icons.photo_library_outlined),
           ),
           const SizedBox(width: 10),
           ChoiceChip(

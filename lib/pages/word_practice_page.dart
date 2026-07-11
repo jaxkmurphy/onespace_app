@@ -9,6 +9,7 @@ import '../models/word_attempt.dart';
 import '../models/word_item.dart';
 import '../models/word_pack.dart';
 import '../services/firestore_service.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class WordPracticePage extends StatefulWidget {
   final FirestoreService firestoreService;
@@ -672,6 +673,10 @@ class _WordPracticeVisual extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (word.imageType == 'media' || isMediaVisualValue(word.imageValue)) {
+      return MediaImagePreview(value: word.imageValue, size: 92);
+    }
+
     if (word.imageType == 'icon') {
       return Icon(
         appIconForKey(word.imageValue, fallbackKey: 'book'),

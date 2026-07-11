@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../data/app_icon_catalog.dart';
 import '../data/schedule_activity_types.dart';
 import '../l10n/l10n.dart';
+import '../models/media_asset.dart';
 import '../models/schedule_entry.dart';
 import '../services/classroom_session_service.dart';
 import '../services/firestore_service.dart';
 import '../widgets/app_icon_picker_dialog.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class StaffSchedulePage extends StatefulWidget {
   const StaffSchedulePage({super.key});
@@ -301,7 +303,8 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
               final selected = await showAppIconPickerDialog(
                 context: dialogContext,
                 selectedKey:
-                    isStandardScheduleActivityType(selectedIcon)
+                    isStandardScheduleActivityType(selectedIcon) ||
+                            isMediaVisualValue(selectedIcon)
                         ? null
                         : selectedIcon,
                 title: context.l10n.chooseIcon,
@@ -321,6 +324,68 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
               setDialogState(() {
                 selectedIcon = selected.key;
               });
+            }
+
+            Future<void> chooseScheduleImage() async {
+              final selected = await showMediaAssetPickerDialog(
+                context: dialogContext,
+                firestoreService: _firestoreService,
+                type: MediaAssetType.image,
+                category: MediaAssetCategory.scheduleImage,
+                title: context.l10n.chooseIcon,
+              );
+
+              if (selected == null) return;
+
+              setDialogState(() {
+                selectedIcon = mediaVisualValue(selected);
+              });
+            }
+
+            Future<void> chooseOtherVisual() async {
+              final choice = await showModalBottomSheet<String>(
+                context: dialogContext,
+                showDragHandle: true,
+                builder: (context) {
+                  return SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            context.l10n.chooseIcon,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 12),
+                          ListTile(
+                            leading: const Icon(Icons.apps_rounded),
+                            title: const Text('Choose icon'),
+                            subtitle: const Text('Use the icon catalogue.'),
+                            onTap: () => Navigator.pop(context, 'icon'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.photo_library_outlined),
+                            title: const Text('Choose media image'),
+                            subtitle: const Text(
+                              'Use an uploaded image from the Media Library.',
+                            ),
+                            onTap: () => Navigator.pop(context, 'media'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+
+              if (choice == 'icon') {
+                await chooseOtherIcon();
+              } else if (choice == 'media') {
+                await chooseScheduleImage();
+              }
             }
 
             final maximumDuration = dayEndMinutes - startMinutes;
@@ -461,6 +526,7 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                               final selected =
                                   type.key == 'other'
                                       ? selectedIcon == 'other' ||
+                                          isMediaVisualValue(selectedIcon) ||
                                           !isStandardScheduleActivityType(
                                             selectedIcon,
                                           )
@@ -468,7 +534,8 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                               final displayType =
                                   type.key == 'other' &&
                                           selected &&
-                                          selectedIcon != 'other'
+                                          selectedIcon != 'other' &&
+                                          !isMediaVisualValue(selectedIcon)
                                       ? scheduleActivityTypeFor(selectedIcon)
                                       : type;
 
@@ -485,7 +552,7 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                                         ? null
                                         : (_) async {
                                           if (type.key == 'other') {
-                                            await chooseOtherIcon();
+                                            await chooseOtherVisual();
                                             return;
                                           }
 
@@ -496,6 +563,25 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                               );
                             }).toList(),
                       ),
+                      const SizedBox(height: 10),
+                      if (selectedIcon == 'other' ||
+                          isMediaVisualValue(selectedIcon) ||
+                          !isStandardScheduleActivityType(selectedIcon))
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: OutlinedButton.icon(
+                            onPressed:
+                                dialogSaving ? null : chooseScheduleImage,
+                            icon:
+                                isMediaVisualValue(selectedIcon)
+                                    ? MediaImagePreview(
+                                      value: selectedIcon,
+                                      size: 24,
+                                    )
+                                    : const Icon(Icons.photo_library_outlined),
+                            label: const Text('Choose schedule image'),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -1091,7 +1177,15 @@ class _StaffSchedulePageState extends State<StaffSchedulePage> {
                         color: type.colour.withValues(alpha: 0.17),
                         borderRadius: BorderRadius.circular(17),
                       ),
-                      child: Icon(type.icon, color: type.colour, size: 29),
+                      clipBehavior: Clip.antiAlias,
+                      child:
+                          isMediaVisualValue(entry.iconName)
+                              ? MediaImagePreview(
+                                value: entry.iconName,
+                                size: 52,
+                                borderRadius: BorderRadius.circular(17),
+                              )
+                              : Icon(type.icon, color: type.colour, size: 29),
                     ),
                     const SizedBox(width: 14),
                     Expanded(

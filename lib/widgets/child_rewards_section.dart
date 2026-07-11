@@ -3,6 +3,7 @@ import '../data/app_icon_catalog.dart';
 import '../l10n/l10n.dart';
 import '../models/point_reward.dart';
 import '../services/firestore_service.dart';
+import 'media_asset_picker_dialog.dart';
 
 class ChildRewardsSection extends StatelessWidget {
   final int currentPoints;
@@ -102,6 +103,7 @@ class ChildRewardsSection extends StatelessWidget {
 
     final pointsNeeded = reward.cost - currentPoints;
 
+    final isMedia = isMediaVisualValue(reward.iconName);
     final icon = appIconForKey(reward.iconName, fallbackKey: 'gift');
 
     final colour = affordable ? Colors.green : Colors.deepPurple;
@@ -128,7 +130,15 @@ class ChildRewardsSection extends StatelessWidget {
                   color: colour.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(icon, color: colour, size: 28),
+                clipBehavior: Clip.antiAlias,
+                child:
+                    isMedia
+                        ? MediaImagePreview(
+                          value: reward.iconName,
+                          size: 48,
+                          borderRadius: BorderRadius.circular(16),
+                        )
+                        : Icon(icon, color: colour, size: 28),
               ),
               const Spacer(),
               Chip(

@@ -8,6 +8,7 @@ import '../l10n/learning_game_localizations.dart';
 import '../models/association_pair_pack_models.dart';
 import '../models/child_profile.dart';
 import '../services/firestore_service.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class AssociationPairsPage extends StatefulWidget {
   final ChildProfile? child;
@@ -798,11 +799,14 @@ class _AssociationPairCard extends StatelessWidget {
                   ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        appIconForKey(card.item.iconName),
-                        color: color,
-                        size: 42,
-                      ),
+                      if (isMediaVisualValue(card.item.iconName))
+                        MediaImagePreview(value: card.item.iconName, size: 56)
+                      else
+                        Icon(
+                          appIconForKey(card.item.iconName),
+                          color: color,
+                          size: 42,
+                        ),
                       const SizedBox(height: 12),
                       Text(
                         card.item.label,

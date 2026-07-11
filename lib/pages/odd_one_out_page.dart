@@ -8,6 +8,7 @@ import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
 import '../models/odd_one_out_models.dart';
 import '../services/firestore_service.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class OddOneOutPage extends StatefulWidget {
   final ChildProfile profile;
@@ -831,7 +832,10 @@ class _OddChoiceCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(appIconForKey(item.iconName), color: iconColor, size: 58),
+              if (isMediaVisualValue(item.iconName))
+                MediaImagePreview(value: item.iconName, size: 72)
+              else
+                Icon(appIconForKey(item.iconName), color: iconColor, size: 58),
               const SizedBox(height: 12),
               Text(
                 item.label,

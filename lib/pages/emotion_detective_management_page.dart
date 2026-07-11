@@ -5,9 +5,11 @@ import '../l10n/l10n.dart';
 import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
 import '../models/emotion_detective_models.dart';
+import '../models/media_asset.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
 import '../widgets/app_icon_picker_dialog.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 class EmotionDetectiveManagementPage extends StatefulWidget {
   final StaffProfile staffProfile;
@@ -174,7 +176,7 @@ class _EmotionDetectiveManagementPageState
     final draft = await showDialog<_CaseDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const _CaseDialog(),
+      builder: (_) => _CaseDialog(firestoreService: widget.firestoreService),
     );
 
     if (draft == null) return;
@@ -198,7 +200,11 @@ class _EmotionDetectiveManagementPageState
     final draft = await showDialog<_CaseDraft>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _CaseDialog(scenario: scenario),
+      builder:
+          (_) => _CaseDialog(
+            firestoreService: widget.firestoreService,
+            scenario: scenario,
+          ),
     );
 
     if (draft == null) return;
@@ -1000,9 +1006,10 @@ class _PackDialogState extends State<_PackDialog> {
 }
 
 class _CaseDialog extends StatefulWidget {
+  final FirestoreService firestoreService;
   final EmotionDetectiveScenario? scenario;
 
-  const _CaseDialog({this.scenario});
+  const _CaseDialog({required this.firestoreService, this.scenario});
 
   @override
   State<_CaseDialog> createState() => _CaseDialogState();
@@ -1097,6 +1104,21 @@ class _CaseDialogState extends State<_CaseDialog> {
     });
   }
 
+  Future<void> _chooseCaseMedia() async {
+    final selected = await showMediaAssetPickerDialog(
+      context: context,
+      firestoreService: widget.firestoreService,
+      type: MediaAssetType.image,
+      title: 'Choose situation image',
+    );
+
+    if (selected == null) return;
+
+    setState(() {
+      _caseIconName = mediaVisualValue(selected);
+    });
+  }
+
   void _save() {
     final prompt = _promptController.text.trim();
     final explanation = _explanationController.text.trim();
@@ -1145,8 +1167,17 @@ class _CaseDialogState extends State<_CaseDialog> {
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _chooseCaseIcon,
-                icon: AppIconPreview(iconKey: _caseIconName),
+                icon:
+                    isMediaVisualValue(_caseIconName)
+                        ? MediaImagePreview(value: _caseIconName, size: 24)
+                        : AppIconPreview(iconKey: _caseIconName),
                 label: const Text('Choose situation icon'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: _chooseCaseMedia,
+                icon: const Icon(Icons.photo_library_outlined),
+                label: const Text('Choose situation image'),
               ),
               const SizedBox(height: 18),
               _ChoiceGroupEditor(
@@ -1154,6 +1185,7 @@ class _CaseDialogState extends State<_CaseDialog> {
                 helperText: 'Which feeling best fits this situation?',
                 controllers: _feelings,
                 iconPickerTitle: 'Choose feeling icon',
+                firestoreService: widget.firestoreService,
                 onChanged: () => setState(() {}),
               ),
               const SizedBox(height: 16),
@@ -1162,6 +1194,7 @@ class _CaseDialogState extends State<_CaseDialog> {
                 helperText: 'What might the child notice in the body or face?',
                 controllers: _bodyClues,
                 iconPickerTitle: 'Choose clue icon',
+                firestoreService: widget.firestoreService,
                 onChanged: () => setState(() {}),
               ),
               const SizedBox(height: 16),
@@ -1170,6 +1203,7 @@ class _CaseDialogState extends State<_CaseDialog> {
                 helperText: 'What could help in a kind, safe way?',
                 controllers: _helpfulActions,
                 iconPickerTitle: 'Choose action icon',
+                firestoreService: widget.firestoreService,
                 onChanged: () => setState(() {}),
               ),
               const SizedBox(height: 16),
@@ -1215,6 +1249,7 @@ class _ChoiceGroupEditor extends StatelessWidget {
   final String helperText;
   final _ChoiceGroupControllers controllers;
   final String iconPickerTitle;
+  final FirestoreService firestoreService;
   final VoidCallback onChanged;
 
   const _ChoiceGroupEditor({
@@ -1222,6 +1257,7 @@ class _ChoiceGroupEditor extends StatelessWidget {
     required this.helperText,
     required this.controllers,
     required this.iconPickerTitle,
+    required this.firestoreService,
     required this.onChanged,
   });
 
@@ -1236,6 +1272,20 @@ class _ChoiceGroupEditor extends StatelessWidget {
     if (selected == null) return;
 
     controllers.iconNames[index] = selected.key;
+    onChanged();
+  }
+
+  Future<void> _chooseMedia(BuildContext context, int index) async {
+    final selected = await showMediaAssetPickerDialog(
+      context: context,
+      firestoreService: firestoreService,
+      type: MediaAssetType.image,
+      title: 'Choose choice image',
+    );
+
+    if (selected == null) return;
+
+    controllers.iconNames[index] = mediaVisualValue(selected);
     onChanged();
   }
 
@@ -1302,9 +1352,20 @@ class _ChoiceGroupEditor extends StatelessWidget {
                     IconButton(
                       tooltip: 'Choose icon',
                       onPressed: () => _chooseIcon(context, index),
-                      icon: AppIconPreview(
-                        iconKey: controllers.iconNames[index],
-                      ),
+                      icon:
+                          isMediaVisualValue(controllers.iconNames[index])
+                              ? MediaImagePreview(
+                                value: controllers.iconNames[index],
+                                size: 24,
+                              )
+                              : AppIconPreview(
+                                iconKey: controllers.iconNames[index],
+                              ),
+                    ),
+                    IconButton(
+                      tooltip: 'Choose media image',
+                      onPressed: () => _chooseMedia(context, index),
+                      icon: const Icon(Icons.photo_library_outlined),
                     ),
                     const SizedBox(width: 8),
                     Expanded(

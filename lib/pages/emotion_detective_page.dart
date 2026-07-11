@@ -8,6 +8,7 @@ import '../l10n/learning_game_localizations.dart';
 import '../models/child_profile.dart';
 import '../models/emotion_detective_models.dart';
 import '../services/firestore_service.dart';
+import '../widgets/media_asset_picker_dialog.dart';
 
 enum _CaseStep { feeling, bodyClue, helpfulAction }
 
@@ -537,14 +538,22 @@ class _EmotionDetectivePageState extends State<EmotionDetectivePage> {
                     color: color.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Icon(
-                    appIconForKey(
-                      currentCase.source.iconName,
-                      fallbackKey: 'mood_smile',
-                    ),
-                    color: color,
-                    size: 48,
-                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child:
+                      isMediaVisualValue(currentCase.source.iconName)
+                          ? MediaImagePreview(
+                            value: currentCase.source.iconName,
+                            size: 88,
+                            borderRadius: BorderRadius.circular(30),
+                          )
+                          : Icon(
+                            appIconForKey(
+                              currentCase.source.iconName,
+                              fallbackKey: 'mood_smile',
+                            ),
+                            color: color,
+                            size: 48,
+                          ),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -996,11 +1005,14 @@ class _EmotionChoiceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (choice.iconName.trim().isNotEmpty) ...[
-                Icon(
-                  appIconForKey(choice.iconName, fallbackKey: 'mood_smile'),
-                  color: iconColor,
-                  size: 58,
-                ),
+                if (isMediaVisualValue(choice.iconName))
+                  MediaImagePreview(value: choice.iconName, size: 72)
+                else
+                  Icon(
+                    appIconForKey(choice.iconName, fallbackKey: 'mood_smile'),
+                    color: iconColor,
+                    size: 58,
+                  ),
                 const SizedBox(height: 12),
               ],
               Text(
