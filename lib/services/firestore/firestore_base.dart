@@ -180,11 +180,10 @@ mixin FirestoreBase {
   }
 
   CollectionReference<Map<String, dynamic>> currentIncidentLogsRef() {
-  return currentCollection('incident_logs');
-}
+    return currentCollection('incident_logs');
+  }
 
-CollectionReference<Map<String, dynamic>> currentBodyCheckReportsRef() {
-  return currentCollection('body_check_reports');
-}
-
+  CollectionReference<Map<String, dynamic>> currentBodyCheckReportsRef() {
+    return currentCollection('body_check_reports');
+  }
 }

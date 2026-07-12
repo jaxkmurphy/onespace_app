@@ -6,7 +6,9 @@ import '../models/media_asset.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
 
-class GuidelinesPage extends StatelessWidget {
+enum _GuidelineFilter { all, guidelines, classroomDocuments, other }
+
+class GuidelinesPage extends StatefulWidget {
   final StaffProfile staffProfile;
   final FirestoreService firestoreService;
 
@@ -15,6 +17,24 @@ class GuidelinesPage extends StatelessWidget {
     required this.staffProfile,
     required this.firestoreService,
   });
+
+  @override
+  State<GuidelinesPage> createState() => _GuidelinesPageState();
+}
+
+class _GuidelinesPageState extends State<GuidelinesPage> {
+  final TextEditingController _searchController = TextEditingController();
+  _GuidelineFilter _filter = _GuidelineFilter.all;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  String _t(String en, String ga) {
+    return Localizations.localeOf(context).languageCode == 'ga' ? ga : en;
+  }
 
   Future<void> _copyLink(BuildContext context, MediaAsset asset) async {
     final message = context.l10n.guidelineLinkCopied;
@@ -32,8 +52,8 @@ class GuidelinesPage extends StatelessWidget {
       context,
       '/media-library',
       arguments: {
-        'staffProfile': staffProfile,
-        'firestoreService': firestoreService,
+        'staffProfile': widget.staffProfile,
+        'firestoreService': widget.firestoreService,
       },
     );
   }
@@ -57,8 +77,110 @@ class GuidelinesPage extends StatelessWidget {
     return '${mb.toStringAsFixed(1)} MB';
   }
 
+  String _categoryLabel(MediaAssetCategory category) {
+    switch (category) {
+      case MediaAssetCategory.guideline:
+        return context.l10n.mediaCategoryGuideline;
+      case MediaAssetCategory.classroomDocument:
+        return context.l10n.mediaCategoryClassroomDocument;
+      case MediaAssetCategory.other:
+        return context.l10n.mediaCategoryOther;
+      case MediaAssetCategory.visualSupport:
+        return context.l10n.mediaCategoryVisualSupport;
+      case MediaAssetCategory.wordLearningImage:
+        return context.l10n.mediaCategoryWordLearningImage;
+      case MediaAssetCategory.learningGameImage:
+        return context.l10n.mediaCategoryLearningGameImage;
+      case MediaAssetCategory.scheduleImage:
+        return context.l10n.mediaCategoryScheduleImage;
+      case MediaAssetCategory.rewardImage:
+        return context.l10n.mediaCategoryRewardImage;
+      case MediaAssetCategory.calmingSound:
+        return context.l10n.mediaCategoryCalmingSound;
+      case MediaAssetCategory.classroomCue:
+        return context.l10n.mediaCategoryClassroomCue;
+    }
+  }
+
+  String _filterLabel(_GuidelineFilter filter) {
+    switch (filter) {
+      case _GuidelineFilter.all:
+        return _t('All documents', 'Gach cáipéis');
+      case _GuidelineFilter.guidelines:
+        return context.l10n.mediaCategoryGuideline;
+      case _GuidelineFilter.classroomDocuments:
+        return context.l10n.mediaCategoryClassroomDocument;
+      case _GuidelineFilter.other:
+        return context.l10n.mediaCategoryOther;
+    }
+  }
+
+  IconData _categoryIcon(MediaAssetCategory category) {
+    switch (category) {
+      case MediaAssetCategory.guideline:
+        return Icons.policy_rounded;
+      case MediaAssetCategory.classroomDocument:
+        return Icons.school_rounded;
+      default:
+        return Icons.description_rounded;
+    }
+  }
+
+  Color _categoryColor(MediaAssetCategory category) {
+    switch (category) {
+      case MediaAssetCategory.guideline:
+        return const Color(0xFF2E7D32);
+      case MediaAssetCategory.classroomDocument:
+        return const Color(0xFF1565C0);
+      default:
+        return const Color(0xFF6D4C41);
+    }
+  }
+
+  List<MediaAsset> _filteredDocuments(List<MediaAsset> documents) {
+    final query = _searchController.text.trim().toLowerCase();
+
+    return documents.where((asset) {
+      final categoryMatches = switch (_filter) {
+        _GuidelineFilter.all => true,
+        _GuidelineFilter.guidelines =>
+          asset.category == MediaAssetCategory.guideline,
+        _GuidelineFilter.classroomDocuments =>
+          asset.category == MediaAssetCategory.classroomDocument,
+        _GuidelineFilter.other =>
+          asset.category != MediaAssetCategory.guideline &&
+              asset.category != MediaAssetCategory.classroomDocument,
+      };
+
+      final queryMatches =
+          query.isEmpty ||
+          asset.name.toLowerCase().contains(query) ||
+          asset.description.toLowerCase().contains(query) ||
+          asset.fileName.toLowerCase().contains(query) ||
+          _categoryLabel(asset.category).toLowerCase().contains(query);
+
+      return categoryMatches && queryMatches;
+    }).toList();
+  }
+
+  int _countForFilter(List<MediaAsset> documents, _GuidelineFilter filter) {
+    return documents.where((asset) {
+      return switch (filter) {
+        _GuidelineFilter.all => true,
+        _GuidelineFilter.guidelines =>
+          asset.category == MediaAssetCategory.guideline,
+        _GuidelineFilter.classroomDocuments =>
+          asset.category == MediaAssetCategory.classroomDocument,
+        _GuidelineFilter.other =>
+          asset.category != MediaAssetCategory.guideline &&
+              asset.category != MediaAssetCategory.classroomDocument,
+      };
+    }).length;
+  }
+
   Widget _buildGuidelineCard(BuildContext context, MediaAsset asset) {
     final updatedDate = _formatDate(asset.updatedAt ?? asset.createdAt);
+    final color = _categoryColor(asset.category);
 
     return Card(
       elevation: 0,
@@ -76,16 +198,16 @@ class GuidelinesPage extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 54,
-                  height: 54,
+                  width: 58,
+                  height: 58,
                   decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(18),
+                    color: color.withValues(alpha: 0.11),
+                    borderRadius: BorderRadius.circular(19),
                   ),
-                  child: const Icon(
-                    Icons.picture_as_pdf_rounded,
-                    color: Colors.red,
-                    size: 30,
+                  child: Icon(
+                    _categoryIcon(asset.category),
+                    color: color,
+                    size: 31,
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -93,6 +215,28 @@ class GuidelinesPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 6,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Chip(
+                            visualDensity: VisualDensity.compact,
+                            avatar: Icon(
+                              _categoryIcon(asset.category),
+                              size: 17,
+                              color: color,
+                            ),
+                            label: Text(_categoryLabel(asset.category)),
+                          ),
+                          if (!asset.active)
+                            Chip(
+                              visualDensity: VisualDensity.compact,
+                              label: Text(_t('Inactive', 'Neamhghníomhach')),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
                       Text(
                         asset.name,
                         style: Theme.of(context).textTheme.titleMedium
@@ -137,13 +281,24 @@ class GuidelinesPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FilledButton.icon(
-                onPressed: () => _copyLink(context, asset),
-                icon: const Icon(Icons.link_rounded),
-                label: Text(context.l10n.copyGuidelineLink),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _openMediaLibrary(context),
+                    icon: const Icon(Icons.edit_note_rounded),
+                    label: Text(_t('Manage file', 'Bainistigh comhad')),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () => _copyLink(context, asset),
+                    icon: const Icon(Icons.link_rounded),
+                    label: Text(context.l10n.copyGuidelineLink),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -188,6 +343,32 @@ class GuidelinesPage extends StatelessWidget {
     );
   }
 
+  Widget _buildNoResults(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 42, horizontal: 18),
+      child: Column(
+        children: [
+          Icon(
+            Icons.search_off_rounded,
+            size: 62,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            _t(
+              'No documents match this search.',
+              'Níl aon cháipéis ag teacht leis an gcuardach seo.',
+            ),
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,9 +384,8 @@ class GuidelinesPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: StreamBuilder<List<MediaAsset>>(
-          stream: firestoreService.getCurrentMediaAssets(
+          stream: widget.firestoreService.getCurrentMediaAssets(
             type: MediaAssetType.document,
-            category: MediaAssetCategory.guideline,
             activeOnly: true,
           ),
           builder: (context, snapshot) {
@@ -227,9 +407,10 @@ class GuidelinesPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
-            final guidelines = snapshot.data!;
+            final documents = snapshot.data!;
+            final filteredDocuments = _filteredDocuments(documents);
 
-            if (guidelines.isEmpty) {
+            if (documents.isEmpty) {
               return _buildEmptyState(context);
             }
 
@@ -239,15 +420,74 @@ class GuidelinesPage extends StatelessWidget {
                 _GuidelinesHeader(
                   title: context.l10n.staffGuidelines,
                   description: context.l10n.staffGuidelinesDescription,
+                  documentCount: documents.length,
+                  guidelineCount: _countForFilter(
+                    documents,
+                    _GuidelineFilter.guidelines,
+                  ),
+                  classroomDocumentCount: _countForFilter(
+                    documents,
+                    _GuidelineFilter.classroomDocuments,
+                  ),
                   onManage: () => _openMediaLibrary(context),
+                  t: _t,
                 ),
                 const SizedBox(height: 16),
-                ...guidelines.map(
-                  (asset) => Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
-                    child: _buildGuidelineCard(context, asset),
+                TextField(
+                  controller: _searchController,
+                  onChanged: (_) => setState(() {}),
+                  decoration: InputDecoration(
+                    hintText: _t(
+                      'Search guidelines and documents',
+                      'Cuardaigh treoirlínte agus cáipéisí',
+                    ),
+                    prefixIcon: const Icon(Icons.search_rounded),
+                    suffixIcon:
+                        _searchController.text.trim().isEmpty
+                            ? null
+                            : IconButton(
+                              tooltip: _t('Clear search', 'Glan cuardach'),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.close_rounded),
+                            ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
                   ),
                 ),
+                const SizedBox(height: 12),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children:
+                        _GuidelineFilter.values.map((filter) {
+                          final count = _countForFilter(documents, filter);
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: FilterChip(
+                              selected: _filter == filter,
+                              label: Text('${_filterLabel(filter)} ($count)'),
+                              onSelected: (_) {
+                                setState(() => _filter = filter);
+                              },
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                if (filteredDocuments.isEmpty)
+                  _buildNoResults(context)
+                else
+                  ...filteredDocuments.map(
+                    (asset) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _buildGuidelineCard(context, asset),
+                    ),
+                  ),
               ],
             );
           },
@@ -260,12 +500,20 @@ class GuidelinesPage extends StatelessWidget {
 class _GuidelinesHeader extends StatelessWidget {
   final String title;
   final String description;
+  final int documentCount;
+  final int guidelineCount;
+  final int classroomDocumentCount;
   final VoidCallback onManage;
+  final String Function(String en, String ga) t;
 
   const _GuidelinesHeader({
     required this.title,
     required this.description,
+    required this.documentCount,
+    required this.guidelineCount,
+    required this.classroomDocumentCount,
     required this.onManage,
+    required this.t,
   });
 
   @override
@@ -280,7 +528,7 @@ class _GuidelinesHeader extends StatelessWidget {
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final compact = constraints.maxWidth < 620;
+          final compact = constraints.maxWidth < 650;
           final icon = Container(
             width: 58,
             height: 58,
@@ -295,6 +543,28 @@ class _GuidelinesHeader extends StatelessWidget {
             ),
           );
 
+          final stats = Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _GuidelineStatPill(
+                icon: Icons.description_rounded,
+                label: t('Documents', 'Cáipéisí'),
+                value: documentCount.toString(),
+              ),
+              _GuidelineStatPill(
+                icon: Icons.policy_rounded,
+                label: context.l10n.mediaCategoryGuideline,
+                value: guidelineCount.toString(),
+              ),
+              _GuidelineStatPill(
+                icon: Icons.school_rounded,
+                label: context.l10n.mediaCategoryClassroomDocument,
+                value: classroomDocumentCount.toString(),
+              ),
+            ],
+          );
+
           final copy = Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,6 +577,8 @@ class _GuidelinesHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(description),
+                const SizedBox(height: 12),
+                stats,
               ],
             ),
           );
@@ -331,6 +603,8 @@ class _GuidelinesHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(description),
+                const SizedBox(height: 12),
+                stats,
                 const SizedBox(height: 14),
                 action,
               ],
@@ -347,6 +621,40 @@ class _GuidelinesHeader extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _GuidelineStatPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _GuidelineStatPill({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.75),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: const Color(0xFF2E7D32)),
+          const SizedBox(width: 6),
+          Text(
+            '$label: $value',
+            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+          ),
+        ],
       ),
     );
   }

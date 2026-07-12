@@ -234,6 +234,8 @@ class _StartHereTab extends StatelessWidget {
                       description: context.l10n.startHereDescription,
                       color: const Color(0xFF7E57C2),
                     ),
+                    const SizedBox(height: 14),
+                    const _HandoverPurposePanel(),
                     const SizedBox(height: 18),
                     if (overview.isEmpty)
                       _HandoverEmptyCard(
@@ -338,6 +340,69 @@ class _StartHereOverviewGrid extends StatelessWidget {
               }).toList(),
         );
       },
+    );
+  }
+}
+
+class _HandoverPurposePanel extends StatelessWidget {
+  const _HandoverPurposePanel();
+
+  String _t(BuildContext context, String en, String ga) {
+    return Localizations.localeOf(context).languageCode == 'ga' ? ga : en;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.86),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: const Color(0xFF7E57C2).withValues(alpha: 0.16),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CircleAvatar(
+            backgroundColor: Color(0xFFEDE7F6),
+            child: Icon(Icons.lightbulb_rounded, color: Color(0xFF7E57C2)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _t(
+                    context,
+                    'Classroom operating guide',
+                    'Treoir oibre an tseomra ranga',
+                  ),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _t(
+                    context,
+                    'Use this space for the lived classroom context: routines, transitions, supports, reminders, and what a substitute should know before working in this room. Official school or board documents belong in Guidelines.',
+                    'Úsáid an spás seo don chomhthéacs beo ranga: gnáthaimh, aistrithe, tacaíochtaí, meabhrúcháin, agus an rud ba chóir do mhúinteoir ionaid a bheith ar eolas aige/aici sula n-oibríonn sé/sí sa seomra seo. Baineann cáipéisí oifigiúla scoile nó boird le Treoirlínte.',
+                  ),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -979,7 +1044,9 @@ class _StaffDocumentCard extends StatelessWidget {
   }
 }
 
-class _QuickNotesTab extends StatelessWidget {
+enum _QuickNoteFilter { all, pinned, urgent, important, normal }
+
+class _QuickNotesTab extends StatefulWidget {
   final StaffProfile currentStaff;
   final FirestoreService firestoreService;
 
@@ -987,6 +1054,27 @@ class _QuickNotesTab extends StatelessWidget {
     required this.currentStaff,
     required this.firestoreService,
   });
+
+  @override
+  State<_QuickNotesTab> createState() => _QuickNotesTabState();
+}
+
+class _QuickNotesTabState extends State<_QuickNotesTab> {
+  final TextEditingController _searchController = TextEditingController();
+  _QuickNoteFilter _filter = _QuickNoteFilter.all;
+
+  StaffProfile get currentStaff => widget.currentStaff;
+  FirestoreService get firestoreService => widget.firestoreService;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  String _t(String en, String ga) {
+    return Localizations.localeOf(context).languageCode == 'ga' ? ga : en;
+  }
 
   String _formatDate(BuildContext context, DateTime date) {
     final material = MaterialLocalizations.of(context);
@@ -1190,6 +1278,57 @@ class _QuickNotesTab extends StatelessWidget {
     return sorted;
   }
 
+  String _filterLabel(_QuickNoteFilter filter) {
+    return switch (filter) {
+      _QuickNoteFilter.all => _t('All', 'Gach ceann'),
+      _QuickNoteFilter.pinned => context.l10n.pinned,
+      _QuickNoteFilter.urgent => context.l10n.urgent,
+      _QuickNoteFilter.important => context.l10n.important,
+      _QuickNoteFilter.normal => context.l10n.normalPriority,
+    };
+  }
+
+  int _countForFilter(List<HandoverQuickNote> notes, _QuickNoteFilter filter) {
+    return notes.where((note) {
+      return switch (filter) {
+        _QuickNoteFilter.all => true,
+        _QuickNoteFilter.pinned => note.pinned,
+        _QuickNoteFilter.urgent =>
+          note.priority == HandoverQuickNotePriority.urgent,
+        _QuickNoteFilter.important =>
+          note.priority == HandoverQuickNotePriority.important,
+        _QuickNoteFilter.normal =>
+          note.priority == HandoverQuickNotePriority.normal,
+      };
+    }).length;
+  }
+
+  List<HandoverQuickNote> _filteredNotes(List<HandoverQuickNote> notes) {
+    final query = _searchController.text.trim().toLowerCase();
+
+    return notes.where((note) {
+      final filterMatches = switch (_filter) {
+        _QuickNoteFilter.all => true,
+        _QuickNoteFilter.pinned => note.pinned,
+        _QuickNoteFilter.urgent =>
+          note.priority == HandoverQuickNotePriority.urgent,
+        _QuickNoteFilter.important =>
+          note.priority == HandoverQuickNotePriority.important,
+        _QuickNoteFilter.normal =>
+          note.priority == HandoverQuickNotePriority.normal,
+      };
+
+      final searchMatches =
+          query.isEmpty ||
+          note.title.toLowerCase().contains(query) ||
+          note.content.toLowerCase().contains(query) ||
+          note.createdByName.toLowerCase().contains(query) ||
+          _priorityLabel(context, note.priority).toLowerCase().contains(query);
+
+      return filterMatches && searchMatches;
+    }).toList();
+  }
+
   Future<void> _deleteNote(BuildContext context, HandoverQuickNote note) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -1243,6 +1382,7 @@ class _QuickNotesTab extends StatelessWidget {
           }
 
           final notes = _sortedNotes(snapshot.data!);
+          final filteredNotes = _filteredNotes(notes);
 
           if (notes.isEmpty) {
             return _HandoverMessageState(
@@ -1260,124 +1400,191 @@ class _QuickNotesTab extends StatelessWidget {
                 description: context.l10n.handoverClassroomRemindersDescription,
                 color: const Color(0xFFFFA726),
               ),
-              const SizedBox(height: 18),
-              ...notes.map((note) {
-                final canEdit = note.createdByStaffId == currentStaff.id;
-
-                final date = note.updatedAt ?? note.createdAt;
-                final priorityColor = _priorityColor(note.priority);
-
-                return Card(
-                  elevation: 0,
-                  margin: const EdgeInsets.only(bottom: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
-                    side: BorderSide(
-                      color: const Color(0xFFFFA726).withValues(alpha: 0.24),
-                    ),
+              const SizedBox(height: 14),
+              _QuickNotesAtAGlance(
+                total: notes.length,
+                pinned: _countForFilter(notes, _QuickNoteFilter.pinned),
+                urgent: _countForFilter(notes, _QuickNoteFilter.urgent),
+                important: _countForFilter(notes, _QuickNoteFilter.important),
+                t: _t,
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _searchController,
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(
+                  hintText: _t(
+                    'Search classroom reminders',
+                    'Cuardaigh meabhrúcháin ranga',
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundColor: Color(0xFFFFF3E0),
-                              child: Icon(
-                                Icons.sticky_note_2_rounded,
-                                color: Color(0xFFF57C00),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                note.title.isEmpty
-                                    ? context.l10n.untitled
-                                    : note.title,
-                                style: Theme.of(context).textTheme.titleLarge
-                                    ?.copyWith(fontWeight: FontWeight.w900),
-                              ),
-                            ),
-                            if (canEdit)
-                              PopupMenuButton<String>(
-                                onSelected: (value) {
-                                  if (value == 'edit') {
-                                    _openNoteDialog(context, note: note);
-                                  } else if (value == 'delete') {
-                                    _deleteNote(context, note);
-                                  }
-                                },
-                                itemBuilder:
-                                    (context) => [
-                                      PopupMenuItem(
-                                        value: 'edit',
-                                        child: ListTile(
-                                          contentPadding: EdgeInsets.zero,
-                                          leading: const Icon(
-                                            Icons.edit_rounded,
-                                          ),
-                                          title: Text(context.l10n.edit),
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        value: 'delete',
-                                        child: ListTile(
-                                          contentPadding: EdgeInsets.zero,
-                                          leading: const Icon(
-                                            Icons.delete_outline_rounded,
-                                            color: Colors.red,
-                                          ),
-                                          title: Text(context.l10n.delete),
-                                        ),
-                                      ),
-                                    ],
-                              ),
-                          ],
-                        ),
-                        if (note.content.isNotEmpty) ...[
-                          const SizedBox(height: 14),
-                          SelectableText(
-                            note.content,
-                            style: const TextStyle(fontSize: 16, height: 1.45),
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  suffixIcon:
+                      _searchController.text.trim().isEmpty
+                          ? null
+                          : IconButton(
+                            tooltip: _t('Clear search', 'Glan cuardach'),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.close_rounded),
                           ),
-                        ],
-                        const SizedBox(height: 14),
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 6,
-                          children: [
-                            if (note.pinned)
-                              _NoteMetadata(
-                                icon: Icons.push_pin_rounded,
-                                text: context.l10n.pinned,
-                              ),
-                            _NoteMetadata(
-                              icon: Icons.flag_rounded,
-                              text: _priorityLabel(context, note.priority),
-                              color: priorityColor,
-                            ),
-                            _NoteMetadata(
-                              icon: Icons.person_rounded,
-                              text: context.l10n.quickNoteBy(
-                                note.createdByName,
-                              ),
-                            ),
-                            if (date != null)
-                              _NoteMetadata(
-                                icon: Icons.schedule_rounded,
-                                text: context.l10n.lastUpdated(
-                                  _formatDate(context, date),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children:
+                      _QuickNoteFilter.values.map((filter) {
+                        final count = _countForFilter(notes, filter);
+
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: FilterChip(
+                            selected: _filter == filter,
+                            label: Text('${_filterLabel(filter)} ($count)'),
+                            onSelected: (_) {
+                              setState(() => _filter = filter);
+                            },
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ),
+              const SizedBox(height: 18),
+              if (filteredNotes.isEmpty)
+                _HandoverEmptyCard(
+                  icon: Icons.search_off_rounded,
+                  title: _t(
+                    'No reminders match this view.',
+                    'Níl aon mheabhrúchán ag teacht leis an radharc seo.',
+                  ),
+                )
+              else
+                ...filteredNotes.map((note) {
+                  final canEdit = note.createdByStaffId == currentStaff.id;
+
+                  final date = note.updatedAt ?? note.createdAt;
+                  final priorityColor = _priorityColor(note.priority);
+
+                  return Card(
+                    elevation: 0,
+                    margin: const EdgeInsets.only(bottom: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      side: BorderSide(
+                        color: const Color(0xFFFFA726).withValues(alpha: 0.24),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                backgroundColor: Color(0xFFFFF3E0),
+                                child: Icon(
+                                  Icons.sticky_note_2_rounded,
+                                  color: Color(0xFFF57C00),
                                 ),
                               ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  note.title.isEmpty
+                                      ? context.l10n.untitled
+                                      : note.title,
+                                  style: Theme.of(context).textTheme.titleLarge
+                                      ?.copyWith(fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                              if (canEdit)
+                                PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    if (value == 'edit') {
+                                      _openNoteDialog(context, note: note);
+                                    } else if (value == 'delete') {
+                                      _deleteNote(context, note);
+                                    }
+                                  },
+                                  itemBuilder:
+                                      (context) => [
+                                        PopupMenuItem(
+                                          value: 'edit',
+                                          child: ListTile(
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: const Icon(
+                                              Icons.edit_rounded,
+                                            ),
+                                            title: Text(context.l10n.edit),
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'delete',
+                                          child: ListTile(
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: const Icon(
+                                              Icons.delete_outline_rounded,
+                                              color: Colors.red,
+                                            ),
+                                            title: Text(context.l10n.delete),
+                                          ),
+                                        ),
+                                      ],
+                                ),
+                            ],
+                          ),
+                          if (note.content.isNotEmpty) ...[
+                            const SizedBox(height: 14),
+                            SelectableText(
+                              note.content,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                height: 1.45,
+                              ),
+                            ),
                           ],
-                        ),
-                      ],
+                          const SizedBox(height: 14),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 6,
+                            children: [
+                              if (note.pinned)
+                                _NoteMetadata(
+                                  icon: Icons.push_pin_rounded,
+                                  text: context.l10n.pinned,
+                                ),
+                              _NoteMetadata(
+                                icon: Icons.flag_rounded,
+                                text: _priorityLabel(context, note.priority),
+                                color: priorityColor,
+                              ),
+                              _NoteMetadata(
+                                icon: Icons.person_rounded,
+                                text: context.l10n.quickNoteBy(
+                                  note.createdByName,
+                                ),
+                              ),
+                              if (date != null)
+                                _NoteMetadata(
+                                  icon: Icons.schedule_rounded,
+                                  text: context.l10n.lastUpdated(
+                                    _formatDate(context, date),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
             ],
           );
         },
@@ -1443,6 +1650,134 @@ class _HandoverHeader extends StatelessWidget {
                 Text(
                   description,
                   style: const TextStyle(color: Colors.white, height: 1.3),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickNotesAtAGlance extends StatelessWidget {
+  final int total;
+  final int pinned;
+  final int urgent;
+  final int important;
+  final String Function(String en, String ga) t;
+
+  const _QuickNotesAtAGlance({
+    required this.total,
+    required this.pinned,
+    required this.urgent,
+    required this.important,
+    required this.t,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      _QuickNoteStatData(
+        icon: Icons.sticky_note_2_rounded,
+        label: t('Total', 'Iomlán'),
+        value: total.toString(),
+        color: const Color(0xFFFFA726),
+      ),
+      _QuickNoteStatData(
+        icon: Icons.push_pin_rounded,
+        label: context.l10n.pinned,
+        value: pinned.toString(),
+        color: const Color(0xFF7E57C2),
+      ),
+      _QuickNoteStatData(
+        icon: Icons.emergency_rounded,
+        label: context.l10n.urgent,
+        value: urgent.toString(),
+        color: const Color(0xFFEF5350),
+      ),
+      _QuickNoteStatData(
+        icon: Icons.priority_high_rounded,
+        label: context.l10n.important,
+        value: important.toString(),
+        color: const Color(0xFFFFA726),
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width =
+            constraints.maxWidth >= 760
+                ? (constraints.maxWidth - 30) / 4
+                : constraints.maxWidth >= 520
+                ? (constraints.maxWidth - 10) / 2
+                : constraints.maxWidth;
+
+        return Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children:
+              items.map((item) {
+                return SizedBox(width: width, child: _QuickNoteStatCard(item));
+              }).toList(),
+        );
+      },
+    );
+  }
+}
+
+class _QuickNoteStatData {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _QuickNoteStatData({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+}
+
+class _QuickNoteStatCard extends StatelessWidget {
+  final _QuickNoteStatData data;
+
+  const _QuickNoteStatCard(this.data);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: data.color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: data.color.withValues(alpha: 0.20)),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: data.color.withValues(alpha: 0.15),
+            child: Icon(data.icon, color: data.color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.value,
+                  style: TextStyle(
+                    color: data.color,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                Text(
+                  data.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ],
             ),

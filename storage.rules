@@ -8,8 +8,11 @@ service firebase.storage {
 
     function isClassroomSession(schoolId, classroomId) {
       return signedIn()
+        && ('role' in request.auth.token)
         && request.auth.token.role == 'classroom'
+        && ('schoolId' in request.auth.token)
         && request.auth.token.schoolId == schoolId
+        && ('classroomId' in request.auth.token)
         && request.auth.token.classroomId == classroomId;
     }
 
@@ -19,7 +22,10 @@ service firebase.storage {
 
     function isSchoolAdmin(schoolId) {
       return signedIn()
-        && request.auth.token.role != 'classroom'
+        && (
+          !('role' in request.auth.token)
+          || request.auth.token.role != 'classroom'
+        )
         && firestore.exists(schoolMemberPath(schoolId))
         && firestore.get(schoolMemberPath(schoolId)).data.active == true
         && firestore.get(schoolMemberPath(schoolId)).data.role == 'schoolAdmin';
@@ -46,7 +52,7 @@ service firebase.storage {
         && isAllowedMediaSize()
         && isAllowedMediaType();
 
-      allow delete: if isSchoolAdmin(schoolId);
+      allow delete: if canAccessClassroom(schoolId, classroomId);
     }
 
     match /{allPaths=**} {

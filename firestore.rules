@@ -191,8 +191,7 @@ service cloud.firestore {
         }
 
         match /media_assets/{assetId} {
-          allow read, create, update: if canAccessClassroom(schoolId, classroomId);
-          allow delete: if isSchoolAdmin(schoolId);
+          allow read, create, update, delete: if canAccessClassroom(schoolId, classroomId);
         }
 
         match /calm_tools/{toolId} {
