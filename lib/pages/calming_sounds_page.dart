@@ -1,9 +1,17 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+
 import '../l10n/l10n.dart';
+import '../models/calming_sound_models.dart';
+import '../models/media_asset.dart';
+import '../services/firestore_service.dart';
 
 class CalmingSoundsPage extends StatefulWidget {
-  const CalmingSoundsPage({super.key});
+  final FirestoreService firestoreService;
+
+  const CalmingSoundsPage({super.key, required this.firestoreService});
 
   @override
   State<CalmingSoundsPage> createState() => _CalmingSoundsPageState();
@@ -12,169 +20,16 @@ class CalmingSoundsPage extends StatefulWidget {
 class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
   final AudioPlayer _player = AudioPlayer();
 
-  CalmingSoundCategory? _selectedCategory;
-  CalmingSoundTrack? _currentTrack;
+  _CalmingSoundGroup? _selectedGroup;
+  _CalmingSoundTrack? _currentTrack;
 
   bool _isLoading = false;
   bool _isPaused = false;
   double _volume = 0.75;
 
-  final List<CalmingSoundCategory> _categories = const [
-    CalmingSoundCategory(
-      id: 'ocean',
-      titleEn: 'Ocean',
-      titleGa: 'Aigéan',
-      subtitleEn: 'Gentle waves and sea sounds',
-      subtitleGa: 'Tonnta séimhe agus fuaimeanna farraige',
-      emoji: '🌊',
-      icon: Icons.waves_rounded,
-      colors: [Color(0xFF26A69A), Color(0xFF29B6F6)],
-      tracks: [
-        CalmingSoundTrack(
-          titleEn: 'Gentle Waves',
-          titleGa: 'Tonnta Séimhe',
-          assetPath: 'sounds/ocean/oceanSound1.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Calm Beach',
-          titleGa: 'Trá Chiúin',
-          assetPath: 'sounds/ocean/oceanSound2.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Rolling Tide',
-          titleGa: 'Taoide Réidh',
-          assetPath: 'sounds/ocean/oceanSound3.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Soft Sea',
-          titleGa: 'Farraige Bhog',
-          assetPath: 'sounds/ocean/oceanSound4.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Deep Ocean',
-          titleGa: 'Aigéan Domhain',
-          assetPath: 'sounds/ocean/oceanSound5.mp3',
-        ),
-      ],
-    ),
-    CalmingSoundCategory(
-      id: 'rain',
-      titleEn: 'Rain',
-      titleGa: 'Báisteach',
-      subtitleEn: 'Soft rainfall for relaxing',
-      subtitleGa: 'Báisteach bhog le haghaidh scíthe',
-      emoji: '🌧️',
-      icon: Icons.water_drop_rounded,
-      colors: [Color(0xFF42A5F5), Color(0xFF5C6BC0)],
-      tracks: [
-        CalmingSoundTrack(
-          titleEn: 'Soft Rain',
-          titleGa: 'Báisteach Bhog',
-          assetPath: 'sounds/rain/rainSound1.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Rainy Window',
-          titleGa: 'Fuinneog Báistí',
-          assetPath: 'sounds/rain/rainSound2.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Gentle Shower',
-          titleGa: 'Cith Séimh',
-          assetPath: 'sounds/rain/rainSound3.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Calm Rainfall',
-          titleGa: 'Báisteach Chiúin',
-          assetPath: 'sounds/rain/rainSound4.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Peaceful Rain',
-          titleGa: 'Báisteach Shuaimhneach',
-          assetPath: 'sounds/rain/rainSound5.mp3',
-        ),
-      ],
-    ),
-    CalmingSoundCategory(
-      id: 'wind',
-      titleEn: 'Wind',
-      titleGa: 'Gaoth',
-      subtitleEn: 'Soft breeze and peaceful air',
-      subtitleGa: 'Leoithne bhog agus aer suaimhneach',
-      emoji: '🌬️',
-      icon: Icons.air_rounded,
-      colors: [Color(0xFF66BB6A), Color(0xFF26A69A)],
-      tracks: [
-        CalmingSoundTrack(
-          titleEn: 'Soft Breeze',
-          titleGa: 'Leoithne Bhog',
-          assetPath: 'sounds/wind/windSound1.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Gentle Wind',
-          titleGa: 'Gaoth Shéimh',
-          assetPath: 'sounds/wind/windSound2.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Open Air',
-          titleGa: 'Aer Oscailte',
-          assetPath: 'sounds/wind/windSound3.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Quiet Breeze',
-          titleGa: 'Leoithne Chiúin',
-          assetPath: 'sounds/wind/windSound4.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Peaceful Wind',
-          titleGa: 'Gaoth Shuaimhneach',
-          assetPath: 'sounds/wind/windSound5.mp3',
-        ),
-      ],
-    ),
-    CalmingSoundCategory(
-      id: 'whiteNoise',
-      titleEn: 'White Noise',
-      titleGa: 'Torann Bán',
-      subtitleEn: 'Steady sound for focus and calm',
-      subtitleGa: 'Fuaim sheasta le haghaidh fócas agus ciúnais',
-      emoji: '🤍',
-      icon: Icons.blur_on_rounded,
-      colors: [Color(0xFF78909C), Color(0xFFB0BEC5)],
-      tracks: [
-        CalmingSoundTrack(
-          titleEn: 'Soft Static',
-          titleGa: 'Torann Bog',
-          assetPath: 'sounds/whiteNoise/whiteNoiseSound1.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Gentle Noise',
-          titleGa: 'Torann Séimh',
-          assetPath: 'sounds/whiteNoise/whiteNoiseSound2.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Calm Hum',
-          titleGa: 'Crónán Ciúin',
-          assetPath: 'sounds/whiteNoise/whiteNoiseSound3.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Steady Sound',
-          titleGa: 'Fuaim Sheasta',
-          assetPath: 'sounds/whiteNoise/whiteNoiseSound4.mp3',
-        ),
-        CalmingSoundTrack(
-          titleEn: 'Focus Noise',
-          titleGa: 'Torann Fócais',
-          assetPath: 'sounds/whiteNoise/whiteNoiseSound5.mp3',
-        ),
-      ],
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
-
-    _selectedCategory = _categories.first;
 
     _player.setReleaseMode(ReleaseMode.loop);
     _player.setVolume(_volume);
@@ -187,44 +42,143 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     super.dispose();
   }
 
-  Future<void> _playTrack(CalmingSoundTrack track) async {
+  List<_CalmingSoundGroup> _buildGroups({
+    required List<CalmingSoundCategoryConfig> categories,
+    required List<StarterCalmingSound> starterSounds,
+    required List<MediaAsset> uploadedSounds,
+  }) {
+    final locale = Localizations.localeOf(context);
+    final activeCategories =
+        categories.where((category) => category.active).toList()..sort(
+          (first, second) => first.sortOrder.compareTo(second.sortOrder),
+        );
+
+    final groups = <_CalmingSoundGroup>[];
+
+    for (final category in activeCategories) {
+      final tracks = <_CalmingSoundTrack>[
+        ...starterSounds
+            .where((sound) => sound.active && sound.categoryId == category.id)
+            .map(
+              (sound) => _CalmingSoundTrack.local(
+                id: sound.id,
+                title: sound.titleForLocale(locale),
+                source: sound.assetPath,
+                sortOrder: sound.sortOrder,
+              ),
+            ),
+        ...uploadedSounds
+            .where(
+              (asset) =>
+                  asset.active &&
+                  asset.isAudio &&
+                  asset.category == MediaAssetCategory.calmingSound &&
+                  asset.calmingSoundCategoryId == category.id,
+            )
+            .map(
+              (asset) => _CalmingSoundTrack.remote(
+                id: asset.id,
+                title: asset.name,
+                source: asset.downloadUrl,
+                description: asset.description,
+                sortOrder: asset.sortOrder,
+              ),
+            ),
+      ]..sort((first, second) {
+        final orderCompare = first.sortOrder.compareTo(second.sortOrder);
+        if (orderCompare != 0) return orderCompare;
+        return first.title.compareTo(second.title);
+      });
+
+      if (tracks.isEmpty) continue;
+
+      groups.add(
+        _CalmingSoundGroup(
+          id: category.id,
+          title: category.nameForLocale(locale),
+          subtitle: _categorySubtitle(category.id),
+          emoji: category.emoji,
+          icon: calmingSoundIcon(category.iconName),
+          colors: calmingSoundColors(category.id),
+          tracks: tracks,
+        ),
+      );
+    }
+
+    return groups;
+  }
+
+  String _categorySubtitle(String categoryId) {
+    final isIrish = Localizations.localeOf(context).languageCode == 'ga';
+
+    switch (categoryId) {
+      case 'ocean':
+        return isIrish
+            ? 'Tonnta séimhe agus fuaimeanna farraige'
+            : 'Gentle waves and sea sounds';
+      case 'rain':
+        return isIrish
+            ? 'Báisteach bhog le haghaidh scíthe'
+            : 'Soft rainfall for relaxing';
+      case 'wind':
+        return isIrish
+            ? 'Leoithne bhog agus aer suaimhneach'
+            : 'Soft breeze and peaceful air';
+      case 'whiteNoise':
+        return isIrish
+            ? 'Fuaim sheasta le haghaidh fócas agus ciúnais'
+            : 'Steady sound for focus and calm';
+      default:
+        return context.l10n.classroomCalmingSoundsSubtitle;
+    }
+  }
+
+  void _syncSelectedGroup(List<_CalmingSoundGroup> groups) {
+    if (groups.isEmpty) {
+      _selectedGroup = null;
+      return;
+    }
+
+    final current = _selectedGroup;
+    if (current == null ||
+        !groups.any((group) => group.id == current.id) ||
+        current.tracks.isEmpty) {
+      _selectedGroup = groups.first;
+      return;
+    }
+
+    _selectedGroup = groups.firstWhere((group) => group.id == current.id);
+  }
+
+  Future<void> _playTrack(_CalmingSoundTrack track) async {
     if (_isLoading) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      if (_currentTrack?.assetPath == track.assetPath && !_isPaused) {
+      if (_currentTrack?.id == track.id && !_isPaused) {
         await _player.pause();
 
         if (!mounted) return;
-
-        setState(() {
-          _isPaused = true;
-        });
-
+        setState(() => _isPaused = true);
         return;
       }
 
-      if (_currentTrack?.assetPath == track.assetPath && _isPaused) {
+      if (_currentTrack?.id == track.id && _isPaused) {
         await _player.resume();
 
         if (!mounted) return;
-
-        setState(() {
-          _isPaused = false;
-        });
-
+        setState(() => _isPaused = false);
         return;
       }
 
       await _player.stop();
       await _player.setVolume(_volume);
-      await _player.play(AssetSource(track.assetPath));
+      await _player.play(
+        track.isRemote ? UrlSource(track.source) : AssetSource(track.source),
+      );
 
       if (!mounted) return;
-
       setState(() {
         _currentTrack = track;
         _isPaused = false;
@@ -245,9 +199,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       );
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -264,14 +216,11 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
   }
 
   Future<void> _changeVolume(double value) async {
-    setState(() {
-      _volume = value;
-    });
-
+    setState(() => _volume = value);
     await _player.setVolume(value);
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader() {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 18, 16, 12),
       padding: const EdgeInsets.all(22),
@@ -329,17 +278,16 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     );
   }
 
-  Widget _buildNowPlayingCard(BuildContext context) {
+  Widget _buildNowPlayingCard(List<_CalmingSoundGroup> groups) {
     final track = _currentTrack;
-    if (track == null) return const SizedBox.shrink();
+    if (track == null || groups.isEmpty) return const SizedBox.shrink();
 
-    final category = _categories.firstWhere(
-      (category) =>
-          category.tracks.any((item) => item.assetPath == track.assetPath),
-      orElse: () => _categories.first,
+    final group = groups.firstWhere(
+      (group) => group.tracks.any((item) => item.id == track.id),
+      orElse: () => groups.first,
     );
 
-    final mainColor = category.colors.first;
+    final mainColor = group.colors.first;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -347,7 +295,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       constraints: const BoxConstraints(maxWidth: 760),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: category.colors),
+        gradient: LinearGradient(colors: group.colors),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -359,7 +307,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       ),
       child: Column(
         children: [
-          Text(category.emoji, style: const TextStyle(fontSize: 54)),
+          Text(group.emoji, style: const TextStyle(fontSize: 54)),
           const SizedBox(height: 8),
           Text(
             _isPaused ? context.l10n.paused : context.l10n.nowPlaying,
@@ -371,7 +319,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            track.title(context),
+            track.title,
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white,
@@ -459,37 +407,30 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     );
   }
 
-  Widget _buildCategoryCard(
-    BuildContext context,
-    CalmingSoundCategory category,
-  ) {
-    final selected = _selectedCategory?.id == category.id;
+  Widget _buildGroupCard(_CalmingSoundGroup group) {
+    final selected = _selectedGroup?.id == group.id;
 
     return InkWell(
       borderRadius: BorderRadius.circular(28),
-      onTap: () {
-        setState(() {
-          _selectedCategory = category;
-        });
-      },
+      onTap: () => setState(() => _selectedGroup = group),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         width: 240,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: selected ? LinearGradient(colors: category.colors) : null,
+          gradient: selected ? LinearGradient(colors: group.colors) : null,
           color: selected ? null : Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color:
                 selected
                     ? Colors.transparent
-                    : category.colors.first.withValues(alpha: 0.20),
+                    : group.colors.first.withValues(alpha: 0.20),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: category.colors.first.withValues(
+              color: group.colors.first.withValues(
                 alpha: selected ? 0.24 : 0.08,
               ),
               blurRadius: 18,
@@ -499,20 +440,20 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         ),
         child: Column(
           children: [
-            Text(category.emoji, style: const TextStyle(fontSize: 46)),
+            Text(group.emoji, style: const TextStyle(fontSize: 46)),
             const SizedBox(height: 10),
             Text(
-              category.title(context),
+              group.title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: selected ? Colors.white : category.colors.first,
+                color: selected ? Colors.white : group.colors.first,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              category.subtitle(context),
+              group.subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: selected ? Colors.white : Colors.grey.shade700,
@@ -525,7 +466,9 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     );
   }
 
-  Widget _buildCategorySelector(BuildContext context) {
+  Widget _buildGroupSelector(List<_CalmingSoundGroup> groups) {
+    if (groups.length <= 1) return const SizedBox.shrink();
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 18),
       constraints: const BoxConstraints(maxWidth: 1060),
@@ -533,21 +476,14 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         alignment: WrapAlignment.center,
         spacing: 14,
         runSpacing: 14,
-        children:
-            _categories.map((category) {
-              return _buildCategoryCard(context, category);
-            }).toList(),
+        children: groups.map(_buildGroupCard).toList(),
       ),
     );
   }
 
-  Widget _buildTrackCard(
-    BuildContext context,
-    CalmingSoundCategory category,
-    CalmingSoundTrack track,
-  ) {
-    final isCurrent = _currentTrack?.assetPath == track.assetPath;
-    final mainColor = category.colors.first;
+  Widget _buildTrackCard(_CalmingSoundGroup group, _CalmingSoundTrack track) {
+    final isCurrent = _currentTrack?.id == track.id;
+    final mainColor = group.colors.first;
 
     return InkWell(
       borderRadius: BorderRadius.circular(26),
@@ -579,11 +515,11 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
               width: 62,
               height: 62,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: category.colors),
+                gradient: LinearGradient(colors: group.colors),
                 borderRadius: BorderRadius.circular(20),
               ),
               alignment: Alignment.center,
-              child: Text(category.emoji, style: const TextStyle(fontSize: 30)),
+              child: Icon(group.icon, color: Colors.white, size: 32),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -591,7 +527,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    track.title(context),
+                    track.title,
                     style: const TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.w900,
@@ -609,6 +545,18 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                  if (track.description.trim().isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      track.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -635,8 +583,24 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
     );
   }
 
-  Widget _buildTrackList(BuildContext context) {
-    final category = _selectedCategory ?? _categories.first;
+  Widget _buildTrackList() {
+    final group = _selectedGroup;
+    if (group == null) {
+      return Container(
+        margin: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
+        constraints: const BoxConstraints(maxWidth: 720),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Text(
+          context.l10n.noCalmingSoundsAvailable,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+        ),
+      );
+    }
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
@@ -645,9 +609,7 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: category.colors.first.withValues(alpha: 0.12),
-        ),
+        border: Border.all(color: group.colors.first.withValues(alpha: 0.12)),
       ),
       child: Column(
         children: [
@@ -657,33 +619,42 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                 width: 54,
                 height: 54,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: category.colors),
+                  gradient: LinearGradient(colors: group.colors),
                   borderRadius: BorderRadius.circular(18),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  category.emoji,
-                  style: const TextStyle(fontSize: 28),
-                ),
+                child: Icon(group.icon, color: Colors.white, size: 30),
               ),
               const SizedBox(width: 14),
               Expanded(
-                child: Text(
-                  category.title(context),
-                  style: TextStyle(
-                    color: category.colors.first,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w900,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      group.title,
+                      style: TextStyle(
+                        color: group.colors.first,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text(
+                      group.subtitle,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          ...category.tracks.map((track) {
+          ...group.tracks.map((track) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _buildTrackCard(context, category, track),
+              child: _buildTrackCard(group, track),
             );
           }),
         ],
@@ -698,85 +669,149 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
         title: Text(context.l10n.calming_sounds),
         centerTitle: true,
       ),
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 350),
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFF7F2FF), Color(0xFFF3FFF5), Color(0xFFFFF8E8)],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Center(
-              child: Column(
-                children: [
-                  _buildHeader(context),
-                  _buildNowPlayingCard(context),
-                  _buildCategorySelector(context),
-                  _buildTrackList(context),
-                ],
-              ),
-            ),
-          ),
-        ),
+      body: StreamBuilder<List<CalmingSoundCategoryConfig>>(
+        stream: widget.firestoreService.getCurrentCalmingSoundCategories(),
+        builder: (context, categorySnapshot) {
+          return StreamBuilder<List<StarterCalmingSound>>(
+            stream: widget.firestoreService.getCurrentStarterCalmingSounds(),
+            builder: (context, starterSnapshot) {
+              return StreamBuilder<List<MediaAsset>>(
+                stream: widget.firestoreService.getCurrentMediaAssets(
+                  type: MediaAssetType.audio,
+                  category: MediaAssetCategory.calmingSound,
+                  activeOnly: true,
+                ),
+                builder: (context, mediaSnapshot) {
+                  final loading =
+                      !categorySnapshot.hasData ||
+                      !starterSnapshot.hasData ||
+                      !mediaSnapshot.hasData;
+                  final hasError =
+                      categorySnapshot.hasError ||
+                      starterSnapshot.hasError ||
+                      mediaSnapshot.hasError;
+
+                  final groups = _buildGroups(
+                    categories:
+                        categorySnapshot.data ?? defaultCalmingSoundCategories,
+                    starterSounds:
+                        starterSnapshot.data ?? defaultStarterCalmingSounds,
+                    uploadedSounds: mediaSnapshot.data ?? const [],
+                  );
+                  _syncSelectedGroup(groups);
+
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 350),
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFFF7F2FF),
+                          Color(0xFFF3FFF5),
+                          Color(0xFFFFF8E8),
+                        ],
+                      ),
+                    ),
+                    child: SafeArea(
+                      child:
+                          hasError
+                              ? Center(
+                                child: Text(context.l10n.soundPlaybackFailed),
+                              )
+                              : SingleChildScrollView(
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      _buildHeader(),
+                                      if (loading)
+                                        const Padding(
+                                          padding: EdgeInsets.all(18),
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      _buildNowPlayingCard(groups),
+                                      _buildGroupSelector(groups),
+                                      _buildTrackList(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
 
-class CalmingSoundCategory {
+class _CalmingSoundGroup {
   final String id;
-  final String titleEn;
-  final String titleGa;
-  final String subtitleEn;
-  final String subtitleGa;
+  final String title;
+  final String subtitle;
   final String emoji;
   final IconData icon;
   final List<Color> colors;
-  final List<CalmingSoundTrack> tracks;
+  final List<_CalmingSoundTrack> tracks;
 
-  const CalmingSoundCategory({
+  const _CalmingSoundGroup({
     required this.id,
-    required this.titleEn,
-    required this.titleGa,
-    required this.subtitleEn,
-    required this.subtitleGa,
+    required this.title,
+    required this.subtitle,
     required this.emoji,
     required this.icon,
     required this.colors,
     required this.tracks,
   });
-
-  String title(BuildContext context) {
-    return Localizations.localeOf(context).languageCode == 'ga'
-        ? titleGa
-        : titleEn;
-  }
-
-  String subtitle(BuildContext context) {
-    return Localizations.localeOf(context).languageCode == 'ga'
-        ? subtitleGa
-        : subtitleEn;
-  }
 }
 
-class CalmingSoundTrack {
-  final String titleEn;
-  final String titleGa;
-  final String assetPath;
+class _CalmingSoundTrack {
+  final String id;
+  final String title;
+  final String source;
+  final String description;
+  final int sortOrder;
+  final bool isRemote;
 
-  const CalmingSoundTrack({
-    required this.titleEn,
-    required this.titleGa,
-    required this.assetPath,
+  const _CalmingSoundTrack._({
+    required this.id,
+    required this.title,
+    required this.source,
+    required this.description,
+    required this.sortOrder,
+    required this.isRemote,
   });
 
-  String title(BuildContext context) {
-    return Localizations.localeOf(context).languageCode == 'ga'
-        ? titleGa
-        : titleEn;
-  }
+  const _CalmingSoundTrack.local({
+    required String id,
+    required String title,
+    required String source,
+    required int sortOrder,
+  }) : this._(
+         id: id,
+         title: title,
+         source: source,
+         description: '',
+         sortOrder: sortOrder,
+         isRemote: false,
+       );
+
+  const _CalmingSoundTrack.remote({
+    required String id,
+    required String title,
+    required String source,
+    required String description,
+    required int sortOrder,
+  }) : this._(
+         id: id,
+         title: title,
+         source: source,
+         description: description,
+         sortOrder: sortOrder,
+         isRemote: true,
+       );
 }

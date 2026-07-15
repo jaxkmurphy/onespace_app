@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/l10n.dart';
+import '../models/calming_sound_models.dart';
 import '../models/media_asset.dart';
 import '../models/staff_profile.dart';
 import '../services/firestore_service.dart';
@@ -10,11 +11,13 @@ import '../services/firestore_service.dart';
 class MediaLibraryPage extends StatefulWidget {
   final StaffProfile staffProfile;
   final FirestoreService firestoreService;
+  final MediaAssetType? initialType;
 
   const MediaLibraryPage({
     super.key,
     required this.staffProfile,
     required this.firestoreService,
+    this.initialType,
   });
 
   @override
@@ -24,6 +27,13 @@ class MediaLibraryPage extends StatefulWidget {
 class _MediaLibraryPageState extends State<MediaLibraryPage> {
   MediaAssetType? _selectedType;
   bool _showActiveOnly = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedType = widget.initialType;
+  }
 
   String _typeLabel(MediaAssetType type) {
     switch (type) {
@@ -268,6 +278,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
       builder: (context) {
         return _MediaAssetDetailsDialog(
           asset: asset,
+          firestoreService: widget.firestoreService,
           categoryLabel: _categoryLabel,
           categoriesForType: _categoriesForType,
         );
@@ -294,6 +305,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
       context: context,
       builder: (context) {
         return _MediaUploadDialog(
+          firestoreService: widget.firestoreService,
           typeLabel: _typeLabel,
           categoryLabel: _categoryLabel,
           categoriesForType: _categoriesForType,
@@ -333,6 +345,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
         bytes: bytes,
         uploadedByStaffId: widget.staffProfile.id,
         uploadedByStaffName: widget.staffProfile.name,
+        calmingSoundCategoryId: uploadRequest.calmingSoundCategoryId,
       );
 
       _showMessage(successMessage);
@@ -890,16 +903,19 @@ class _MediaUploadRequest {
   final String description;
   final MediaAssetType type;
   final MediaAssetCategory category;
+  final String calmingSoundCategoryId;
 
   const _MediaUploadRequest({
     required this.name,
     required this.description,
     required this.type,
     required this.category,
+    required this.calmingSoundCategoryId,
   });
 }
 
 class _MediaUploadDialog extends StatefulWidget {
+  final FirestoreService firestoreService;
   final String Function(MediaAssetType type) typeLabel;
   final String Function(MediaAssetCategory category) categoryLabel;
   final List<MediaAssetCategory> Function(MediaAssetType type)
@@ -907,6 +923,7 @@ class _MediaUploadDialog extends StatefulWidget {
   final MediaAssetCategory Function(MediaAssetType type) defaultCategoryForType;
 
   const _MediaUploadDialog({
+    required this.firestoreService,
     required this.typeLabel,
     required this.categoryLabel,
     required this.categoriesForType,
@@ -923,6 +940,7 @@ class _MediaUploadDialogState extends State<_MediaUploadDialog> {
 
   MediaAssetType _type = MediaAssetType.image;
   late MediaAssetCategory _category = widget.defaultCategoryForType(_type);
+  String _calmingSoundCategoryId = 'ocean';
 
   @override
   void dispose() {
@@ -955,6 +973,10 @@ class _MediaUploadDialogState extends State<_MediaUploadDialog> {
         description: _descriptionController.text.trim(),
         type: _type,
         category: _category,
+        calmingSoundCategoryId:
+            _category == MediaAssetCategory.calmingSound
+                ? _calmingSoundCategoryId
+                : '',
       ),
     );
   }
@@ -1028,6 +1050,55 @@ class _MediaUploadDialogState extends State<_MediaUploadDialog> {
                   setState(() => _category = category);
                 },
               ),
+              if (_type == MediaAssetType.audio &&
+                  _category == MediaAssetCategory.calmingSound) ...[
+                const SizedBox(height: 12),
+                StreamBuilder<List<CalmingSoundCategoryConfig>>(
+                  stream:
+                      widget.firestoreService
+                          .getCurrentCalmingSoundCategories(),
+                  builder: (context, snapshot) {
+                    final calmingCategories =
+                        snapshot.data ?? defaultCalmingSoundCategories;
+                    final activeCategories =
+                        calmingCategories
+                            .where((category) => category.active)
+                            .toList();
+
+                    if (!activeCategories.any(
+                      (category) => category.id == _calmingSoundCategoryId,
+                    )) {
+                      _calmingSoundCategoryId =
+                          activeCategories.isEmpty
+                              ? 'ocean'
+                              : activeCategories.first.id;
+                    }
+
+                    return DropdownButtonFormField<String>(
+                      initialValue: _calmingSoundCategoryId,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.calmingSoundCategory,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items:
+                          activeCategories.map((category) {
+                            return DropdownMenuItem(
+                              value: category.id,
+                              child: Text(
+                                category.nameForLocale(
+                                  Localizations.localeOf(context),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() => _calmingSoundCategoryId = value);
+                      },
+                    );
+                  },
+                ),
+              ],
               const SizedBox(height: 12),
               Text(
                 context.l10n.mediaUploadPickerHint,
@@ -1054,12 +1125,14 @@ class _MediaUploadDialogState extends State<_MediaUploadDialog> {
 
 class _MediaAssetDetailsDialog extends StatefulWidget {
   final MediaAsset asset;
+  final FirestoreService firestoreService;
   final String Function(MediaAssetCategory category) categoryLabel;
   final List<MediaAssetCategory> Function(MediaAssetType type)
   categoriesForType;
 
   const _MediaAssetDetailsDialog({
     required this.asset,
+    required this.firestoreService,
     required this.categoryLabel,
     required this.categoriesForType,
   });
@@ -1077,6 +1150,10 @@ class _MediaAssetDetailsDialogState extends State<_MediaAssetDetailsDialog> {
       TextEditingController(text: widget.asset.description);
 
   late MediaAssetCategory _category = widget.asset.category;
+  late String _calmingSoundCategoryId =
+      widget.asset.calmingSoundCategoryId.trim().isEmpty
+          ? 'ocean'
+          : widget.asset.calmingSoundCategoryId;
 
   @override
   void dispose() {
@@ -1101,6 +1178,10 @@ class _MediaAssetDetailsDialogState extends State<_MediaAssetDetailsDialog> {
         name: name,
         description: _descriptionController.text.trim(),
         category: _category,
+        calmingSoundCategoryId:
+            _category == MediaAssetCategory.calmingSound
+                ? _calmingSoundCategoryId
+                : '',
       ),
     );
   }
@@ -1157,6 +1238,55 @@ class _MediaAssetDetailsDialogState extends State<_MediaAssetDetailsDialog> {
                   setState(() => _category = category);
                 },
               ),
+              if (widget.asset.type == MediaAssetType.audio &&
+                  _category == MediaAssetCategory.calmingSound) ...[
+                const SizedBox(height: 12),
+                StreamBuilder<List<CalmingSoundCategoryConfig>>(
+                  stream:
+                      widget.firestoreService
+                          .getCurrentCalmingSoundCategories(),
+                  builder: (context, snapshot) {
+                    final calmingCategories =
+                        snapshot.data ?? defaultCalmingSoundCategories;
+                    final activeCategories =
+                        calmingCategories
+                            .where((category) => category.active)
+                            .toList();
+
+                    if (!activeCategories.any(
+                      (category) => category.id == _calmingSoundCategoryId,
+                    )) {
+                      _calmingSoundCategoryId =
+                          activeCategories.isEmpty
+                              ? 'ocean'
+                              : activeCategories.first.id;
+                    }
+
+                    return DropdownButtonFormField<String>(
+                      initialValue: _calmingSoundCategoryId,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.calmingSoundCategory,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items:
+                          activeCategories.map((category) {
+                            return DropdownMenuItem(
+                              value: category.id,
+                              child: Text(
+                                category.nameForLocale(
+                                  Localizations.localeOf(context),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() => _calmingSoundCategoryId = value);
+                      },
+                    );
+                  },
+                ),
+              ],
             ],
           ),
         ),

@@ -13,10 +13,10 @@ export const loginClassroomWithCode = onCall(async (request) => {
     .toUpperCase();
   const pin = String(request.data.pin || "").trim();
 
-  logger.info("Classroom login attempt", {
-    schoolCode,
-    classroomCode,
-    pinLength: pin.length,
+  logger.info("Classroom login attempt received", {
+    hasSchoolCode: schoolCode.length > 0,
+    hasClassroomCode: classroomCode.length > 0,
+    hasPin: pin.length > 0,
   });
 
   if (!schoolCode || !classroomCode || !pin) {
@@ -35,12 +35,8 @@ export const loginClassroomWithCode = onCall(async (request) => {
     .limit(1)
     .get();
 
-  logger.info("School query result", {
-    empty: schoolSnap.empty,
-    count: schoolSnap.size,
-  });
-
   if (schoolSnap.empty) {
+    logger.warn("Classroom login failed: school not found or inactive");
     throw new HttpsError("permission-denied", "Invalid school code.");
   }
 
@@ -53,13 +49,8 @@ export const loginClassroomWithCode = onCall(async (request) => {
     .limit(1)
     .get();
 
-  logger.info("Classroom query result", {
-    schoolId: schoolDoc.id,
-    empty: classroomSnap.empty,
-    count: classroomSnap.size,
-  });
-
   if (classroomSnap.empty) {
+    logger.warn("Classroom login failed: classroom not found or inactive");
     throw new HttpsError("permission-denied", "Invalid classroom code.");
   }
 
@@ -68,14 +59,11 @@ export const loginClassroomWithCode = onCall(async (request) => {
 
   const storedPin = String(classroomData.pin || "").trim();
 
-  logger.info("PIN check", {
-    classroomId: classroomDoc.id,
-    enteredPinLength: pin.length,
-    storedPinLength: storedPin.length,
-    pinMatches: storedPin === pin,
-  });
-
   if (storedPin !== pin) {
+    logger.warn("Classroom login failed: invalid PIN", {
+      schoolId: schoolDoc.id,
+      classroomId: classroomDoc.id,
+    });
     throw new HttpsError("permission-denied", "Invalid classroom PIN.");
   }
 

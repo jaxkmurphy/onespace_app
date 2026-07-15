@@ -194,6 +194,14 @@ service cloud.firestore {
           allow read, create, update, delete: if canAccessClassroom(schoolId, classroomId);
         }
 
+        match /calming_sound_categories/{categoryId} {
+          allow read, create, update, delete: if canAccessClassroom(schoolId, classroomId);
+        }
+
+        match /starter_calming_sounds/{soundId} {
+          allow read, create, update, delete: if canAccessClassroom(schoolId, classroomId);
+        }
+
         match /calm_tools/{toolId} {
           allow read, create, update: if canAccessClassroom(schoolId, classroomId);
           allow delete: if isSchoolAdmin(schoolId);

@@ -4786,4 +4786,104 @@ class AppLocalizationsEn extends AppLocalizations {
   String guidelinesLoadFailed(String error) {
     return 'Could not load guidelines: $error';
   }
+
+  @override
+  String get staffCalmingSoundsSubtitle =>
+      'Manage the relaxing audio children can use.';
+
+  @override
+  String get manageCalmingSounds => 'Manage Calming Sounds';
+
+  @override
+  String get manageCalmingSoundsSubtitle =>
+      'Choose which uploaded calming audio is available on the child dashboard.';
+
+  @override
+  String get classroomCalmingSounds => 'Classroom Sounds';
+
+  @override
+  String get classroomCalmingSoundsSubtitle =>
+      'Sounds chosen by staff for this classroom.';
+
+  @override
+  String get addCalmingSound => 'Add calming sound';
+
+  @override
+  String get totalSounds => 'Total sounds';
+
+  @override
+  String get activeSounds => 'Active sounds';
+
+  @override
+  String get calmingSoundEnabled => 'Calming sound enabled.';
+
+  @override
+  String get calmingSoundDisabled => 'Calming sound disabled.';
+
+  @override
+  String get noCalmingSoundsYet => 'No calming sounds uploaded yet';
+
+  @override
+  String get noCalmingSoundsYetDescription =>
+      'Upload audio in the Media Library and choose the Calming Sound category.';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get sounds => 'sounds';
+
+  @override
+  String get starterSound => 'Starter sound';
+
+  @override
+  String get uploadedSound => 'Uploaded sound';
+
+  @override
+  String get addCalmingCategory => 'Add category';
+
+  @override
+  String get editCalmingCategory => 'Edit category';
+
+  @override
+  String get defaultCalmingCategoryCannotDelete =>
+      'Default categories cannot be deleted. You can turn them off instead.';
+
+  @override
+  String get moveSoundsBeforeDeletingCategory =>
+      'Move sounds out of this category before deleting it.';
+
+  @override
+  String get deleteCalmingCategory => 'Delete category';
+
+  @override
+  String get deleteCalmingCategoryMessage =>
+      'This category will be removed from the classroom sound library.';
+
+  @override
+  String get noSoundsInCategory => 'No sounds in this category yet.';
+
+  @override
+  String get englishName => 'English name';
+
+  @override
+  String get irishName => 'Irish name';
+
+  @override
+  String get icon => 'Icon';
+
+  @override
+  String get calmingSoundCategory => 'Calming sound category';
+
+  @override
+  String get noCalmingSoundsAvailable =>
+      'No calming sounds are available right now. Ask a teacher to add one.';
+
+  @override
+  String get deleteCalmingSound => 'Delete calming sound';
+
+  @override
+  String deleteCalmingSoundMessage(String name) {
+    return 'Delete \"$name\" from this classroom? This also removes the uploaded file.';
+  }
 }

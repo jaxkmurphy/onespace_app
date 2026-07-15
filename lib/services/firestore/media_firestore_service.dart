@@ -3,12 +3,21 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../models/calming_sound_models.dart';
 import '../../models/media_asset.dart';
 import 'firestore_base.dart';
 
 mixin MediaFirestoreService on FirestoreBase {
   CollectionReference<Map<String, dynamic>> currentMediaAssetsRef() {
     return currentCollection('media_assets');
+  }
+
+  CollectionReference<Map<String, dynamic>> currentCalmingSoundCategoriesRef() {
+    return currentCollection('calming_sound_categories');
+  }
+
+  CollectionReference<Map<String, dynamic>> currentStarterCalmingSoundsRef() {
+    return currentCollection('starter_calming_sounds');
   }
 
   String _safeFileName(String fileName) {
@@ -86,6 +95,87 @@ mixin MediaFirestoreService on FirestoreBase {
         });
   }
 
+  Stream<List<CalmingSoundCategoryConfig>> getCurrentCalmingSoundCategories() {
+    return currentCalmingSoundCategoriesRef().snapshots().map((snapshot) {
+      final overrides = {
+        for (final doc in snapshot.docs)
+          doc.id: CalmingSoundCategoryConfig.fromMap(doc.id, doc.data()),
+      };
+
+      final merged = <CalmingSoundCategoryConfig>[];
+
+      for (final category in defaultCalmingSoundCategories) {
+        merged.add(overrides.remove(category.id) ?? category);
+      }
+
+      merged.addAll(overrides.values);
+      merged.sort(
+        (first, second) => first.sortOrder.compareTo(second.sortOrder),
+      );
+
+      return merged;
+    });
+  }
+
+  Stream<List<StarterCalmingSound>> getCurrentStarterCalmingSounds() {
+    return currentStarterCalmingSoundsRef().snapshots().map((snapshot) {
+      final overrides = {for (final doc in snapshot.docs) doc.id: doc.data()};
+
+      final sounds =
+          defaultStarterCalmingSounds
+              .map((sound) => sound.withOverride(overrides[sound.id]))
+              .toList();
+
+      sounds.sort((first, second) {
+        final categoryCompare = first.categoryId.compareTo(second.categoryId);
+        if (categoryCompare != 0) return categoryCompare;
+        return first.sortOrder.compareTo(second.sortOrder);
+      });
+
+      return sounds;
+    });
+  }
+
+  Future<void> upsertCurrentCalmingSoundCategory(
+    CalmingSoundCategoryConfig category,
+  ) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentCalmingSoundCategoriesRef()
+        .doc(category.id)
+        .set(category.toMap(), SetOptions(merge: true));
+  }
+
+  Future<void> deleteCurrentCalmingSoundCategory(String categoryId) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentCalmingSoundCategoriesRef().doc(categoryId).delete();
+  }
+
+  Future<void> updateCurrentStarterCalmingSound(
+    StarterCalmingSound sound,
+  ) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentStarterCalmingSoundsRef()
+        .doc(sound.id)
+        .set(sound.toOverrideMap(), SetOptions(merge: true));
+  }
+
+  Future<void> updateCurrentMediaAssetCalmingSoundPlacement({
+    required String assetId,
+    required String calmingSoundCategoryId,
+    required int sortOrder,
+  }) async {
+    await restoreClassroomSessionFromAuthIfNeeded();
+
+    await currentMediaAssetsRef().doc(assetId).update({
+      'calmingSoundCategoryId': calmingSoundCategoryId,
+      'sortOrder': sortOrder,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
   Future<MediaAsset> uploadCurrentMediaAsset({
     required String name,
     required String description,
@@ -97,6 +187,8 @@ mixin MediaFirestoreService on FirestoreBase {
     required Uint8List bytes,
     required String uploadedByStaffId,
     required String uploadedByStaffName,
+    String calmingSoundCategoryId = '',
+    int sortOrder = 0,
   }) async {
     await restoreClassroomSessionFromAuthIfNeeded();
     _ensureClassroomMediaContext();
@@ -140,6 +232,8 @@ mixin MediaFirestoreService on FirestoreBase {
       active: true,
       uploadedByStaffId: uploadedByStaffId,
       uploadedByStaffName: uploadedByStaffName,
+      calmingSoundCategoryId: calmingSoundCategoryId,
+      sortOrder: sortOrder,
     );
 
     await assetDoc.set(asset.toCreateMap());

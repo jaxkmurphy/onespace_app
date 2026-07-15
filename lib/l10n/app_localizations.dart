@@ -8269,6 +8269,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load guidelines: {error}'**
   String guidelinesLoadFailed(String error);
+
+  /// Staff dashboard subtitle for calming sounds management.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the relaxing audio children can use.'**
+  String get staffCalmingSoundsSubtitle;
+
+  /// Title for the staff calming sounds management page.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Calming Sounds'**
+  String get manageCalmingSounds;
+
+  /// Description for the staff calming sounds management page.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which uploaded calming audio is available on the child dashboard.'**
+  String get manageCalmingSoundsSubtitle;
+
+  /// Group title for uploaded classroom calming sounds on the child page.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom Sounds'**
+  String get classroomCalmingSounds;
+
+  /// Group subtitle for uploaded classroom calming sounds on the child page.
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds chosen by staff for this classroom.'**
+  String get classroomCalmingSoundsSubtitle;
+
+  /// Button label for adding a calming sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Add calming sound'**
+  String get addCalmingSound;
+
+  /// Stats label for total calming sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Total sounds'**
+  String get totalSounds;
+
+  /// Stats label for active calming sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Active sounds'**
+  String get activeSounds;
+
+  /// Snackbar shown when a calming sound is enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Calming sound enabled.'**
+  String get calmingSoundEnabled;
+
+  /// Snackbar shown when a calming sound is disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Calming sound disabled.'**
+  String get calmingSoundDisabled;
+
+  /// Empty state title for calming sounds management.
+  ///
+  /// In en, this message translates to:
+  /// **'No calming sounds uploaded yet'**
+  String get noCalmingSoundsYet;
+
+  /// Empty state description for calming sounds management.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload audio in the Media Library and choose the Calming Sound category.'**
+  String get noCalmingSoundsYetDescription;
+
+  /// Generic label for categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// Plural label for sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'sounds'**
+  String get sounds;
+
+  /// Label for bundled starter calming sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter sound'**
+  String get starterSound;
+
+  /// Label for uploaded calming sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded sound'**
+  String get uploadedSound;
+
+  /// Button label for adding a calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get addCalmingCategory;
+
+  /// Dialog title for editing a calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit category'**
+  String get editCalmingCategory;
+
+  /// Message shown when trying to delete a default calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'Default categories cannot be deleted. You can turn them off instead.'**
+  String get defaultCalmingCategoryCannotDelete;
+
+  /// Message shown when a category still contains sounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Move sounds out of this category before deleting it.'**
+  String get moveSoundsBeforeDeletingCategory;
+
+  /// Dialog title for deleting a calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete category'**
+  String get deleteCalmingCategory;
+
+  /// Dialog message for deleting a calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'This category will be removed from the classroom sound library.'**
+  String get deleteCalmingCategoryMessage;
+
+  /// Empty state text for an empty calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'No sounds in this category yet.'**
+  String get noSoundsInCategory;
+
+  /// Label for an English name field.
+  ///
+  /// In en, this message translates to:
+  /// **'English name'**
+  String get englishName;
+
+  /// Label for an Irish name field.
+  ///
+  /// In en, this message translates to:
+  /// **'Irish name'**
+  String get irishName;
+
+  /// Label for an icon field.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get icon;
+
+  /// Label for choosing a calming sound category.
+  ///
+  /// In en, this message translates to:
+  /// **'Calming sound category'**
+  String get calmingSoundCategory;
+
+  /// Child-facing empty state when no calming sounds are active.
+  ///
+  /// In en, this message translates to:
+  /// **'No calming sounds are available right now. Ask a teacher to add one.'**
+  String get noCalmingSoundsAvailable;
+
+  /// Dialog title for deleting an uploaded calming sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete calming sound'**
+  String get deleteCalmingSound;
+
+  /// Dialog message for deleting an uploaded calming sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\" from this classroom? This also removes the uploaded file.'**
+  String deleteCalmingSoundMessage(String name);
 }
 
 class _AppLocalizationsDelegate

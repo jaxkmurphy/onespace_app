@@ -6283,5 +6283,130 @@
         "type": "String"
       }
     }
+  },
+  "staffCalmingSoundsSubtitle": "Bainistigh an fhuaim shuaimhneach is féidir le páistí a úsáid.",
+  "manageCalmingSounds": "Bainistigh Fuaimeanna Suaimhneacha",
+  "manageCalmingSoundsSubtitle": "Roghnaigh cén fhuaim shuaimhneach uaslódáilte atá ar fáil ar dheais an pháiste.",
+  "classroomCalmingSounds": "Fuaimeanna an tSeomra Ranga",
+  "classroomCalmingSoundsSubtitle": "Fuaimeanna roghnaithe ag an bhfoireann don seomra ranga seo.",
+  "addCalmingSound": "Cuir fuaim shuaimhneach leis",
+  "totalSounds": "Fuaimeanna iomlána",
+  "activeSounds": "Fuaimeanna gníomhacha",
+  "calmingSoundEnabled": "Cumasaíodh an fhuaim shuaimhneach.",
+  "calmingSoundDisabled": "Díchumasaíodh an fhuaim shuaimhneach.",
+  "noCalmingSoundsYet": "Níl aon fhuaimeanna suaimhneacha uaslódáilte fós",
+  "noCalmingSoundsYetDescription": "Uaslódáil fuaim sa Leabharlann Meán agus roghnaigh an chatagóir Fuaim Shuaimhneach.",
+  "@staffCalmingSoundsSubtitle": {
+    "description": "Staff dashboard subtitle for calming sounds management."
+  },
+  "@manageCalmingSounds": {
+    "description": "Title for the staff calming sounds management page."
+  },
+  "@manageCalmingSoundsSubtitle": {
+    "description": "Description for the staff calming sounds management page."
+  },
+  "@classroomCalmingSounds": {
+    "description": "Group title for uploaded classroom calming sounds on the child page."
+  },
+  "@classroomCalmingSoundsSubtitle": {
+    "description": "Group subtitle for uploaded classroom calming sounds on the child page."
+  },
+  "@addCalmingSound": {
+    "description": "Button label for adding a calming sound."
+  },
+  "@totalSounds": {
+    "description": "Stats label for total calming sounds."
+  },
+  "@activeSounds": {
+    "description": "Stats label for active calming sounds."
+  },
+  "@calmingSoundEnabled": {
+    "description": "Snackbar shown when a calming sound is enabled."
+  },
+  "@calmingSoundDisabled": {
+    "description": "Snackbar shown when a calming sound is disabled."
+  },
+  "@noCalmingSoundsYet": {
+    "description": "Empty state title for calming sounds management."
+  },
+  "@noCalmingSoundsYetDescription": {
+    "description": "Empty state description for calming sounds management."
+  },
+  "categories": "Catagóirí",
+  "sounds": "fuaimeanna",
+  "starterSound": "Fuaim thosaithe",
+  "uploadedSound": "Fuaim uaslódáilte",
+  "addCalmingCategory": "Cuir catagóir leis",
+  "editCalmingCategory": "Cuir catagóir in eagar",
+  "defaultCalmingCategoryCannotDelete": "Ní féidir catagóirí réamhshocraithe a scriosadh. Is féidir iad a mhúchadh ina ionad.",
+  "moveSoundsBeforeDeletingCategory": "Bog fuaimeanna amach as an gcatagóir seo sula scriosann tú í.",
+  "deleteCalmingCategory": "Scrios catagóir",
+  "deleteCalmingCategoryMessage": "Bainfear an chatagóir seo de leabharlann fuaimeanna an tseomra ranga.",
+  "noSoundsInCategory": "Níl aon fhuaimeanna sa chatagóir seo fós.",
+  "englishName": "Ainm Béarla",
+  "irishName": "Ainm Gaeilge",
+  "icon": "Deilbhín",
+  "calmingSoundCategory": "Catagóir fuaime suaimhní",
+  "noCalmingSoundsAvailable": "Níl aon fhuaimeanna suaimhneacha ar fáil faoi láthair. Iarr ar mhúinteoir ceann a chur leis.",
+  "@categories": {
+    "description": "Generic label for categories."
+  },
+  "@sounds": {
+    "description": "Plural label for sounds."
+  },
+  "@starterSound": {
+    "description": "Label for bundled starter calming sounds."
+  },
+  "@uploadedSound": {
+    "description": "Label for uploaded calming sounds."
+  },
+  "@addCalmingCategory": {
+    "description": "Button label for adding a calming sound category."
+  },
+  "@editCalmingCategory": {
+    "description": "Dialog title for editing a calming sound category."
+  },
+  "@defaultCalmingCategoryCannotDelete": {
+    "description": "Message shown when trying to delete a default calming sound category."
+  },
+  "@moveSoundsBeforeDeletingCategory": {
+    "description": "Message shown when a category still contains sounds."
+  },
+  "@deleteCalmingCategory": {
+    "description": "Dialog title for deleting a calming sound category."
+  },
+  "@deleteCalmingCategoryMessage": {
+    "description": "Dialog message for deleting a calming sound category."
+  },
+  "@noSoundsInCategory": {
+    "description": "Empty state text for an empty calming sound category."
+  },
+  "@englishName": {
+    "description": "Label for an English name field."
+  },
+  "@irishName": {
+    "description": "Label for an Irish name field."
+  },
+  "@icon": {
+    "description": "Label for an icon field."
+  },
+  "@calmingSoundCategory": {
+    "description": "Label for choosing a calming sound category."
+  },
+  "@noCalmingSoundsAvailable": {
+    "description": "Child-facing empty state when no calming sounds are active."
+  },
+  "deleteCalmingSound": "Scrios fuaim shuaimhneach",
+  "deleteCalmingSoundMessage": "Scrios \"{name}\" ón seomra ranga seo? Bainfear an comhad uaslódáilte freisin.",
+  "@deleteCalmingSound": {
+    "description": "Dialog title for deleting an uploaded calming sound."
+  },
+  "@deleteCalmingSoundMessage": {
+    "description": "Dialog message for deleting an uploaded calming sound.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -316,6 +316,23 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
                 );
               },
             ),
+          if (_isFeatureEnabled(ClassroomFeature.calmingSounds))
+            StaffDashboardFeatureCard(
+              icon: Icons.headphones_rounded,
+              title: l10n.calming_sounds,
+              subtitle: l10n.staffCalmingSoundsSubtitle,
+              color: const Color(0xFF5E35B1),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/calming-sounds-management',
+                  arguments: {
+                    'staffProfile': widget.profile,
+                    'firestoreService': _firestoreService,
+                  },
+                );
+              },
+            ),
         ];
 
         final learningTools = <Widget>[

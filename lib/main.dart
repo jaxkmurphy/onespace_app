@@ -6,6 +6,7 @@ import 'auth_gate.dart';
 import 'firebase_options.dart';
 import 'locale_notifier.dart';
 import 'models/child_profile.dart';
+import 'models/media_asset.dart';
 import 'models/quiz.dart';
 import 'models/staff_profile.dart';
 import 'pages/account_settings_page.dart';
@@ -52,6 +53,7 @@ import 'pages/emotion_detective_page.dart';
 import 'pages/emotion_detective_management_page.dart';
 import 'pages/calm_plan_page.dart';
 import 'pages/calm_plan_management_page.dart';
+import 'pages/calming_sounds_management_page.dart';
 import 'pages/classroom_helper_page.dart';
 import 'pages/child_notes_page.dart';
 import 'pages/media_library_page.dart';
@@ -234,6 +236,7 @@ class _MyAppState extends State<MyApp> {
               MediaLibraryPage(
                 staffProfile: staffProfile,
                 firestoreService: firestoreService,
+                initialType: args['initialType'] as MediaAssetType?,
               ),
             );
           }
@@ -464,6 +467,23 @@ class _MyAppState extends State<MyApp> {
       case '/voice-lines-management':
         if (args is StaffProfile) {
           return _page(VoiceLinesManagementPage(staffProfile: args));
+        }
+        return _errorPage((l10n) => l10n.missingStaffProfile);
+
+      case '/calming-sounds-management':
+        if (args is Map<String, dynamic>) {
+          final staffProfile = args['staffProfile'] as StaffProfile?;
+          final firestoreService =
+              args['firestoreService'] as FirestoreService?;
+
+          if (staffProfile != null && firestoreService != null) {
+            return _page(
+              CalmingSoundsManagementPage(
+                staffProfile: staffProfile,
+                firestoreService: firestoreService,
+              ),
+            );
+          }
         }
         return _errorPage((l10n) => l10n.missingStaffProfile);
 

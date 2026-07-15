@@ -392,7 +392,12 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => CalmingSoundsPage()),
+              MaterialPageRoute(
+                builder:
+                    (_) => CalmingSoundsPage(
+                      firestoreService: widget.firestoreService,
+                    ),
+              ),
             );
           },
         ),

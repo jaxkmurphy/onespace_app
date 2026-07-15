@@ -57,6 +57,8 @@ class MediaAsset {
   final bool active;
   final String uploadedByStaffId;
   final String uploadedByStaffName;
+  final String calmingSoundCategoryId;
+  final int sortOrder;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -76,6 +78,8 @@ class MediaAsset {
     required this.active,
     required this.uploadedByStaffId,
     required this.uploadedByStaffName,
+    this.calmingSoundCategoryId = '',
+    this.sortOrder = 0,
     this.createdAt,
     this.updatedAt,
   });
@@ -113,6 +117,9 @@ class MediaAsset {
       active: data['active'] != false,
       uploadedByStaffId: data['uploadedByStaffId'] as String? ?? '',
       uploadedByStaffName: data['uploadedByStaffName'] as String? ?? '',
+      calmingSoundCategoryId:
+          data['calmingSoundCategoryId'] as String? ?? 'ocean',
+      sortOrder: data['sortOrder'] as int? ?? 0,
       createdAt: dateFromValue(data['createdAt']),
       updatedAt: dateFromValue(data['updatedAt']),
     );
@@ -134,6 +141,8 @@ class MediaAsset {
       'active': active,
       'uploadedByStaffId': uploadedByStaffId,
       'uploadedByStaffName': uploadedByStaffName,
+      'calmingSoundCategoryId': calmingSoundCategoryId,
+      'sortOrder': sortOrder,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     };
@@ -145,6 +154,8 @@ class MediaAsset {
       'description': description.trim(),
       'category': category.value,
       'active': active,
+      'calmingSoundCategoryId': calmingSoundCategoryId,
+      'sortOrder': sortOrder,
       'updatedAt': FieldValue.serverTimestamp(),
     };
   }
@@ -165,6 +176,8 @@ class MediaAsset {
     bool? active,
     String? uploadedByStaffId,
     String? uploadedByStaffName,
+    String? calmingSoundCategoryId,
+    int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -184,6 +197,9 @@ class MediaAsset {
       active: active ?? this.active,
       uploadedByStaffId: uploadedByStaffId ?? this.uploadedByStaffId,
       uploadedByStaffName: uploadedByStaffName ?? this.uploadedByStaffName,
+      calmingSoundCategoryId:
+          calmingSoundCategoryId ?? this.calmingSoundCategoryId,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

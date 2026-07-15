@@ -6283,5 +6283,130 @@
         "type": "String"
       }
     }
+  },
+  "staffCalmingSoundsSubtitle": "Manage the relaxing audio children can use.",
+  "manageCalmingSounds": "Manage Calming Sounds",
+  "manageCalmingSoundsSubtitle": "Choose which uploaded calming audio is available on the child dashboard.",
+  "classroomCalmingSounds": "Classroom Sounds",
+  "classroomCalmingSoundsSubtitle": "Sounds chosen by staff for this classroom.",
+  "addCalmingSound": "Add calming sound",
+  "totalSounds": "Total sounds",
+  "activeSounds": "Active sounds",
+  "calmingSoundEnabled": "Calming sound enabled.",
+  "calmingSoundDisabled": "Calming sound disabled.",
+  "noCalmingSoundsYet": "No calming sounds uploaded yet",
+  "noCalmingSoundsYetDescription": "Upload audio in the Media Library and choose the Calming Sound category.",
+  "@staffCalmingSoundsSubtitle": {
+    "description": "Staff dashboard subtitle for calming sounds management."
+  },
+  "@manageCalmingSounds": {
+    "description": "Title for the staff calming sounds management page."
+  },
+  "@manageCalmingSoundsSubtitle": {
+    "description": "Description for the staff calming sounds management page."
+  },
+  "@classroomCalmingSounds": {
+    "description": "Group title for uploaded classroom calming sounds on the child page."
+  },
+  "@classroomCalmingSoundsSubtitle": {
+    "description": "Group subtitle for uploaded classroom calming sounds on the child page."
+  },
+  "@addCalmingSound": {
+    "description": "Button label for adding a calming sound."
+  },
+  "@totalSounds": {
+    "description": "Stats label for total calming sounds."
+  },
+  "@activeSounds": {
+    "description": "Stats label for active calming sounds."
+  },
+  "@calmingSoundEnabled": {
+    "description": "Snackbar shown when a calming sound is enabled."
+  },
+  "@calmingSoundDisabled": {
+    "description": "Snackbar shown when a calming sound is disabled."
+  },
+  "@noCalmingSoundsYet": {
+    "description": "Empty state title for calming sounds management."
+  },
+  "@noCalmingSoundsYetDescription": {
+    "description": "Empty state description for calming sounds management."
+  },
+  "categories": "Categories",
+  "sounds": "sounds",
+  "starterSound": "Starter sound",
+  "uploadedSound": "Uploaded sound",
+  "addCalmingCategory": "Add category",
+  "editCalmingCategory": "Edit category",
+  "defaultCalmingCategoryCannotDelete": "Default categories cannot be deleted. You can turn them off instead.",
+  "moveSoundsBeforeDeletingCategory": "Move sounds out of this category before deleting it.",
+  "deleteCalmingCategory": "Delete category",
+  "deleteCalmingCategoryMessage": "This category will be removed from the classroom sound library.",
+  "noSoundsInCategory": "No sounds in this category yet.",
+  "englishName": "English name",
+  "irishName": "Irish name",
+  "icon": "Icon",
+  "calmingSoundCategory": "Calming sound category",
+  "noCalmingSoundsAvailable": "No calming sounds are available right now. Ask a teacher to add one.",
+  "@categories": {
+    "description": "Generic label for categories."
+  },
+  "@sounds": {
+    "description": "Plural label for sounds."
+  },
+  "@starterSound": {
+    "description": "Label for bundled starter calming sounds."
+  },
+  "@uploadedSound": {
+    "description": "Label for uploaded calming sounds."
+  },
+  "@addCalmingCategory": {
+    "description": "Button label for adding a calming sound category."
+  },
+  "@editCalmingCategory": {
+    "description": "Dialog title for editing a calming sound category."
+  },
+  "@defaultCalmingCategoryCannotDelete": {
+    "description": "Message shown when trying to delete a default calming sound category."
+  },
+  "@moveSoundsBeforeDeletingCategory": {
+    "description": "Message shown when a category still contains sounds."
+  },
+  "@deleteCalmingCategory": {
+    "description": "Dialog title for deleting a calming sound category."
+  },
+  "@deleteCalmingCategoryMessage": {
+    "description": "Dialog message for deleting a calming sound category."
+  },
+  "@noSoundsInCategory": {
+    "description": "Empty state text for an empty calming sound category."
+  },
+  "@englishName": {
+    "description": "Label for an English name field."
+  },
+  "@irishName": {
+    "description": "Label for an Irish name field."
+  },
+  "@icon": {
+    "description": "Label for an icon field."
+  },
+  "@calmingSoundCategory": {
+    "description": "Label for choosing a calming sound category."
+  },
+  "@noCalmingSoundsAvailable": {
+    "description": "Child-facing empty state when no calming sounds are active."
+  },
+  "deleteCalmingSound": "Delete calming sound",
+  "deleteCalmingSoundMessage": "Delete \"{name}\" from this classroom? This also removes the uploaded file.",
+  "@deleteCalmingSound": {
+    "description": "Dialog title for deleting an uploaded calming sound."
+  },
+  "@deleteCalmingSoundMessage": {
+    "description": "Dialog message for deleting an uploaded calming sound.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

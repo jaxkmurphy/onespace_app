@@ -4857,4 +4857,105 @@ class AppLocalizationsGa extends AppLocalizations {
   String guidelinesLoadFailed(String error) {
     return 'Níorbh fhéidir na treoirlínte a lódáil: $error';
   }
+
+  @override
+  String get staffCalmingSoundsSubtitle =>
+      'Bainistigh an fhuaim shuaimhneach is féidir le páistí a úsáid.';
+
+  @override
+  String get manageCalmingSounds => 'Bainistigh Fuaimeanna Suaimhneacha';
+
+  @override
+  String get manageCalmingSoundsSubtitle =>
+      'Roghnaigh cén fhuaim shuaimhneach uaslódáilte atá ar fáil ar dheais an pháiste.';
+
+  @override
+  String get classroomCalmingSounds => 'Fuaimeanna an tSeomra Ranga';
+
+  @override
+  String get classroomCalmingSoundsSubtitle =>
+      'Fuaimeanna roghnaithe ag an bhfoireann don seomra ranga seo.';
+
+  @override
+  String get addCalmingSound => 'Cuir fuaim shuaimhneach leis';
+
+  @override
+  String get totalSounds => 'Fuaimeanna iomlána';
+
+  @override
+  String get activeSounds => 'Fuaimeanna gníomhacha';
+
+  @override
+  String get calmingSoundEnabled => 'Cumasaíodh an fhuaim shuaimhneach.';
+
+  @override
+  String get calmingSoundDisabled => 'Díchumasaíodh an fhuaim shuaimhneach.';
+
+  @override
+  String get noCalmingSoundsYet =>
+      'Níl aon fhuaimeanna suaimhneacha uaslódáilte fós';
+
+  @override
+  String get noCalmingSoundsYetDescription =>
+      'Uaslódáil fuaim sa Leabharlann Meán agus roghnaigh an chatagóir Fuaim Shuaimhneach.';
+
+  @override
+  String get categories => 'Catagóirí';
+
+  @override
+  String get sounds => 'fuaimeanna';
+
+  @override
+  String get starterSound => 'Fuaim thosaithe';
+
+  @override
+  String get uploadedSound => 'Fuaim uaslódáilte';
+
+  @override
+  String get addCalmingCategory => 'Cuir catagóir leis';
+
+  @override
+  String get editCalmingCategory => 'Cuir catagóir in eagar';
+
+  @override
+  String get defaultCalmingCategoryCannotDelete =>
+      'Ní féidir catagóirí réamhshocraithe a scriosadh. Is féidir iad a mhúchadh ina ionad.';
+
+  @override
+  String get moveSoundsBeforeDeletingCategory =>
+      'Bog fuaimeanna amach as an gcatagóir seo sula scriosann tú í.';
+
+  @override
+  String get deleteCalmingCategory => 'Scrios catagóir';
+
+  @override
+  String get deleteCalmingCategoryMessage =>
+      'Bainfear an chatagóir seo de leabharlann fuaimeanna an tseomra ranga.';
+
+  @override
+  String get noSoundsInCategory => 'Níl aon fhuaimeanna sa chatagóir seo fós.';
+
+  @override
+  String get englishName => 'Ainm Béarla';
+
+  @override
+  String get irishName => 'Ainm Gaeilge';
+
+  @override
+  String get icon => 'Deilbhín';
+
+  @override
+  String get calmingSoundCategory => 'Catagóir fuaime suaimhní';
+
+  @override
+  String get noCalmingSoundsAvailable =>
+      'Níl aon fhuaimeanna suaimhneacha ar fáil faoi láthair. Iarr ar mhúinteoir ceann a chur leis.';
+
+  @override
+  String get deleteCalmingSound => 'Scrios fuaim shuaimhneach';
+
+  @override
+  String deleteCalmingSoundMessage(String name) {
+    return 'Scrios \"$name\" ón seomra ranga seo? Bainfear an comhad uaslódáilte freisin.';
+  }
 }
