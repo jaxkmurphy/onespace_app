@@ -2291,6 +2291,26 @@
   "@schoolCodeHint": {
     "description": "Text used in the app for school code hint."
   },
+  "schoolSetupCode": "Cód Socraithe",
+  "@schoolSetupCode": {
+    "description": "Label for the private setup code required to create a school admin account."
+  },
+  "schoolSetupCodeHint": "Cód socraithe príobháideach",
+  "@schoolSetupCodeHint": {
+    "description": "Hint for the private setup code required to create a school admin account."
+  },
+  "schoolSetupCodeIncorrect": "Tá an cód socraithe mícheart.",
+  "@schoolSetupCodeIncorrect": {
+    "description": "Message shown when school registration setup code is incorrect."
+  },
+  "adminOnlyArea": "Níl an chuid seo ar fáil ach do riarthóir scoile.",
+  "@adminOnlyArea": {
+    "description": "Message shown when a non-admin session tries to open an admin-only page."
+  },
+  "schoolRegistrationAlreadyExists": "Tá an cód scoile nó ríomhphost an riarthóra sin in úsáid cheana féin.",
+  "@schoolRegistrationAlreadyExists": {
+    "description": "Message shown when school registration uses an existing school code or admin email."
+  },
   "adminEmail": "Ríomhphost an Riarthóra",
   "@adminEmail": {
     "description": "Text used in the app for admin email."
@@ -2298,6 +2318,14 @@
   "password": "Focal Faire",
   "@password": {
     "description": "Text used in the app for password."
+  },
+  "showPassword": "Taispeáin an focal faire",
+  "@showPassword": {
+    "description": "Tooltip for showing hidden password or PIN text."
+  },
+  "hidePassword": "Folaigh an focal faire",
+  "@hidePassword": {
+    "description": "Tooltip for hiding visible password or PIN text."
   },
   "pleaseWait": "Fan go fóill...",
   "@pleaseWait": {
@@ -2359,7 +2387,7 @@
   "@classroom": {
     "description": "Text used in the app for classroom."
   },
-  "enterSchoolDetails": "Cuir ainm scoile agus cód scoile isteach.",
+  "enterSchoolDetails": "Cuir ainm scoile, cód scoile agus cód socraithe isteach.",
   "@enterSchoolDetails": {
     "description": "Text used in the app for enter school details."
   },
@@ -2378,6 +2406,10 @@
   "classroomLoginIncorrect": "Tá sonraí logála isteach an tseomra ranga mícheart.",
   "@classroomLoginIncorrect": {
     "description": "Text used in the app for classroom login incorrect."
+  },
+  "classroomLoginTooManyAttempts": "An iomarca iarrachtaí logála isteach. Fan cúpla nóiméad agus bain triail eile as.",
+  "@classroomLoginTooManyAttempts": {
+    "description": "Message shown when classroom login is temporarily locked after repeated failed attempts."
   },
   "checkLoginFields": "Seiceáil na réimsí logála isteach go léir.",
   "@checkLoginFields": {

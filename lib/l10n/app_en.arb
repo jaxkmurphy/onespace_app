@@ -2291,6 +2291,26 @@
   "@schoolCodeHint": {
     "description": "Text used in the app for school code hint."
   },
+  "schoolSetupCode": "Setup Code",
+  "@schoolSetupCode": {
+    "description": "Label for the private setup code required to create a school admin account."
+  },
+  "schoolSetupCodeHint": "Private setup code",
+  "@schoolSetupCodeHint": {
+    "description": "Hint for the private setup code required to create a school admin account."
+  },
+  "schoolSetupCodeIncorrect": "The setup code is incorrect.",
+  "@schoolSetupCodeIncorrect": {
+    "description": "Message shown when school registration setup code is incorrect."
+  },
+  "adminOnlyArea": "This area is only available to a school admin.",
+  "@adminOnlyArea": {
+    "description": "Message shown when a non-admin session tries to open an admin-only page."
+  },
+  "schoolRegistrationAlreadyExists": "That school code or admin email is already in use.",
+  "@schoolRegistrationAlreadyExists": {
+    "description": "Message shown when school registration uses an existing school code or admin email."
+  },
   "adminEmail": "Admin Email",
   "@adminEmail": {
     "description": "Text used in the app for admin email."
@@ -2298,6 +2318,14 @@
   "password": "Password",
   "@password": {
     "description": "Text used in the app for password."
+  },
+  "showPassword": "Show password",
+  "@showPassword": {
+    "description": "Tooltip for showing hidden password or PIN text."
+  },
+  "hidePassword": "Hide password",
+  "@hidePassword": {
+    "description": "Tooltip for hiding visible password or PIN text."
   },
   "pleaseWait": "Please wait...",
   "@pleaseWait": {
@@ -2359,7 +2387,7 @@
   "@classroom": {
     "description": "Text used in the app for classroom."
   },
-  "enterSchoolDetails": "Please enter a school name and school code.",
+  "enterSchoolDetails": "Please enter a school name, school code and setup code.",
   "@enterSchoolDetails": {
     "description": "Text used in the app for enter school details."
   },
@@ -2378,6 +2406,10 @@
   "classroomLoginIncorrect": "Classroom login details are incorrect.",
   "@classroomLoginIncorrect": {
     "description": "Text used in the app for classroom login incorrect."
+  },
+  "classroomLoginTooManyAttempts": "Too many login attempts. Please wait a few minutes and try again.",
+  "@classroomLoginTooManyAttempts": {
+    "description": "Message shown when classroom login is temporarily locked after repeated failed attempts."
   },
   "checkLoginFields": "Please check all login fields.",
   "@checkLoginFields": {

@@ -1722,10 +1722,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schoolCodeHint => 'Example: STM123';
 
   @override
+  String get schoolSetupCode => 'Setup Code';
+
+  @override
+  String get schoolSetupCodeHint => 'Private setup code';
+
+  @override
+  String get schoolSetupCodeIncorrect => 'The setup code is incorrect.';
+
+  @override
+  String get adminOnlyArea => 'This area is only available to a school admin.';
+
+  @override
+  String get schoolRegistrationAlreadyExists =>
+      'That school code or admin email is already in use.';
+
+  @override
   String get adminEmail => 'Admin Email';
 
   @override
   String get password => 'Password';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
 
   @override
   String get pleaseWait => 'Please wait...';
@@ -1774,7 +1796,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterSchoolDetails =>
-      'Please enter a school name and school code.';
+      'Please enter a school name, school code and setup code.';
 
   @override
   String get adminAccountCreateFailed => 'Could not create admin account.';
@@ -1789,6 +1811,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get classroomLoginIncorrect =>
       'Classroom login details are incorrect.';
+
+  @override
+  String get classroomLoginTooManyAttempts =>
+      'Too many login attempts. Please wait a few minutes and try again.';
 
   @override
   String get checkLoginFields => 'Please check all login fields.';

@@ -3026,6 +3026,36 @@ abstract class AppLocalizations {
   /// **'Example: STM123'**
   String get schoolCodeHint;
 
+  /// Label for the private setup code required to create a school admin account.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Code'**
+  String get schoolSetupCode;
+
+  /// Hint for the private setup code required to create a school admin account.
+  ///
+  /// In en, this message translates to:
+  /// **'Private setup code'**
+  String get schoolSetupCodeHint;
+
+  /// Message shown when school registration setup code is incorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'The setup code is incorrect.'**
+  String get schoolSetupCodeIncorrect;
+
+  /// Message shown when a non-admin session tries to open an admin-only page.
+  ///
+  /// In en, this message translates to:
+  /// **'This area is only available to a school admin.'**
+  String get adminOnlyArea;
+
+  /// Message shown when school registration uses an existing school code or admin email.
+  ///
+  /// In en, this message translates to:
+  /// **'That school code or admin email is already in use.'**
+  String get schoolRegistrationAlreadyExists;
+
   /// Text used in the app for admin email.
   ///
   /// In en, this message translates to:
@@ -3037,6 +3067,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password'**
   String get password;
+
+  /// Tooltip for showing hidden password or PIN text.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// Tooltip for hiding visible password or PIN text.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
 
   /// Text used in the app for please wait.
   ///
@@ -3131,7 +3173,7 @@ abstract class AppLocalizations {
   /// Text used in the app for enter school details.
   ///
   /// In en, this message translates to:
-  /// **'Please enter a school name and school code.'**
+  /// **'Please enter a school name, school code and setup code.'**
   String get enterSchoolDetails;
 
   /// Text used in the app for admin account create failed.
@@ -3157,6 +3199,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Classroom login details are incorrect.'**
   String get classroomLoginIncorrect;
+
+  /// Message shown when classroom login is temporarily locked after repeated failed attempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many login attempts. Please wait a few minutes and try again.'**
+  String get classroomLoginTooManyAttempts;
 
   /// Text used in the app for check login fields.
   ///

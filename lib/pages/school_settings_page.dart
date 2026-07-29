@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/school.dart';
 import '../services/firestore_service.dart';
 import '../l10n/l10n.dart';
@@ -38,6 +39,20 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
 
   Future<void> _loadSchool() async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      final tokenResult = await user?.getIdTokenResult();
+      final claims = tokenResult?.claims ?? {};
+
+      if (claims['role'] == 'classroom') {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.adminOnlyArea)));
+        Navigator.pop(context);
+        return;
+      }
+
       final school = await _firestoreService.getSchool(widget.schoolId);
 
       if (!mounted) return;

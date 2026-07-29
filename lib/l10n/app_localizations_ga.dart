@@ -1760,10 +1760,33 @@ class AppLocalizationsGa extends AppLocalizations {
   String get schoolCodeHint => 'Sampla: STM123';
 
   @override
+  String get schoolSetupCode => 'Cód Socraithe';
+
+  @override
+  String get schoolSetupCodeHint => 'Cód socraithe príobháideach';
+
+  @override
+  String get schoolSetupCodeIncorrect => 'Tá an cód socraithe mícheart.';
+
+  @override
+  String get adminOnlyArea =>
+      'Níl an chuid seo ar fáil ach do riarthóir scoile.';
+
+  @override
+  String get schoolRegistrationAlreadyExists =>
+      'Tá an cód scoile nó ríomhphost an riarthóra sin in úsáid cheana féin.';
+
+  @override
   String get adminEmail => 'Ríomhphost an Riarthóra';
 
   @override
   String get password => 'Focal Faire';
+
+  @override
+  String get showPassword => 'Taispeáin an focal faire';
+
+  @override
+  String get hidePassword => 'Folaigh an focal faire';
 
   @override
   String get pleaseWait => 'Fan go fóill...';
@@ -1812,7 +1835,8 @@ class AppLocalizationsGa extends AppLocalizations {
   String get classroom => 'Seomra Ranga';
 
   @override
-  String get enterSchoolDetails => 'Cuir ainm scoile agus cód scoile isteach.';
+  String get enterSchoolDetails =>
+      'Cuir ainm scoile, cód scoile agus cód socraithe isteach.';
 
   @override
   String get adminAccountCreateFailed =>
@@ -1828,6 +1852,10 @@ class AppLocalizationsGa extends AppLocalizations {
   @override
   String get classroomLoginIncorrect =>
       'Tá sonraí logála isteach an tseomra ranga mícheart.';
+
+  @override
+  String get classroomLoginTooManyAttempts =>
+      'An iomarca iarrachtaí logála isteach. Fan cúpla nóiméad agus bain triail eile as.';
 
   @override
   String get checkLoginFields => 'Seiceáil na réimsí logála isteach go léir.';

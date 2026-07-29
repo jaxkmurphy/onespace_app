@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/firestore_service.dart';
 import '../l10n/l10n.dart';
 
@@ -19,7 +20,36 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
 
   final _firestoreService = FirestoreService();
 
+  bool _isCheckingAccess = true;
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAccess();
+  }
+
+  Future<void> _checkAccess() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final tokenResult = await user?.getIdTokenResult();
+    final claims = tokenResult?.claims ?? {};
+
+    if (claims['role'] == 'classroom') {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.adminOnlyArea)));
+      Navigator.pop(context);
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _isCheckingAccess = false;
+      });
+    }
+  }
 
   String _createError(Object error) {
     final message = error.toString();
@@ -82,6 +112,10 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isCheckingAccess) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.createClassroom)),
       body: SingleChildScrollView(

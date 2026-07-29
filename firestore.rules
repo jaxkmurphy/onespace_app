@@ -51,33 +51,9 @@ service cloud.firestore {
       return isSchoolAdmin(schoolId) || isThisClassroom(schoolId, classroomId);
     }
 
-    function createsOwnSchoolAdminMember(schoolId, uid) {
-      return isEmailUser()
-        && uid == request.auth.uid
-        && request.resource.data.schoolId == schoolId
-        && request.resource.data.email == request.auth.token.email
-        && request.resource.data.role == 'schoolAdmin'
-        && request.resource.data.active == true
-        && !exists(/databases/$(database)/documents/schools/$(schoolId))
-        && existsAfter(/databases/$(database)/documents/schools/$(schoolId));
-    }
-
-    function createsOwnAccountLookup(uid) {
-      return isEmailUser()
-        && uid == request.auth.uid
-        && request.resource.data.schoolId is string
-        && request.resource.data.email == request.auth.token.email
-        && request.resource.data.role == 'schoolAdmin'
-        && request.resource.data.active == true
-        && existsAfter(
-          /databases/$(database)/documents/schools/$(request.resource.data.schoolId)/members/$(uid)
-        );
-    }
-
     match /account_lookup/{uid} {
       allow get: if isEmailUser() && uid == request.auth.uid;
-      allow list, update, delete: if false;
-      allow create: if createsOwnAccountLookup(uid);
+      allow list, create, update, delete: if false;
     }
 
     match /schools/{schoolId} {
@@ -88,10 +64,7 @@ service cloud.firestore {
         );
       allow list: if isEmailUser();
 
-      allow create: if isEmailUser()
-        && request.resource.data.active == true
-        && request.resource.data.schoolCode is string
-        && request.resource.data.classroomLimit is int;
+      allow create: if false;
       allow update: if isSchoolAdmin(schoolId);
       allow delete: if false;
 
@@ -99,7 +72,7 @@ service cloud.firestore {
         allow get: if isSchoolAdmin(schoolId)
           || (isEmailUser() && uid == request.auth.uid);
         allow list: if isSchoolAdmin(schoolId);
-        allow create: if createsOwnSchoolAdminMember(schoolId, uid);
+        allow create: if false;
         allow update, delete: if false;
       }
 

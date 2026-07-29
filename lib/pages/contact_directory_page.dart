@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../l10n/l10n.dart';
 import '../models/school_contact.dart';
 import '../services/firestore/admin_firestore_service.dart';
@@ -18,16 +19,41 @@ class _ContactDirectoryPageState extends State<ContactDirectoryPage> {
 
   Future<List<AdminChildProfileOption>>? _childOptionsFuture;
   Future<List<AdminStaffProfileOption>>? _staffOptionsFuture;
+  bool _isCheckingAccess = true;
 
   @override
   void initState() {
     super.initState();
+    _checkAccess();
+  }
+
+  Future<void> _checkAccess() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final tokenResult = await user?.getIdTokenResult();
+    final claims = tokenResult?.claims ?? {};
+
+    if (claims['role'] == 'classroom') {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.adminOnlyArea)));
+      Navigator.pop(context);
+      return;
+    }
+
     _childOptionsFuture = _firestoreService.getSchoolChildProfileOptions(
       widget.schoolId,
     );
     _staffOptionsFuture = _firestoreService.getSchoolStaffProfileOptions(
       widget.schoolId,
     );
+
+    if (mounted) {
+      setState(() {
+        _isCheckingAccess = false;
+      });
+    }
   }
 
   Future<void> _refreshProfileOptions() async {
@@ -133,6 +159,10 @@ class _ContactDirectoryPageState extends State<ContactDirectoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isCheckingAccess) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(

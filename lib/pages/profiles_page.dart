@@ -31,6 +31,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
   final ClassroomSessionService session = ClassroomSessionService.instance;
 
   bool _isRestoringSession = true;
+  bool _isLoggingOut = false;
 
   bool get _isClassroomMode => session.hasClassroomSession;
 
@@ -238,9 +239,14 @@ class _ProfilesPageState extends State<ProfilesPage> {
     );
 
     if (shouldLogout == true) {
-      session.clearSession();
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = true;
+        });
+      }
 
       await FirebaseAuth.instance.signOut();
+      session.clearSession();
 
       if (!mounted) return;
 
@@ -263,7 +269,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isRestoringSession) {
+    if (_isRestoringSession || _isLoggingOut) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 

@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final schoolNameController = TextEditingController();
   final schoolCodeController = TextEditingController();
+  final setupCodeController = TextEditingController();
 
   final classroomSchoolCodeController = TextEditingController();
   final classroomCodeController = TextEditingController();
@@ -29,6 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isRegistering = false;
   bool isLoading = false;
+  bool _showAdminPassword = false;
+  bool _showSetupCode = false;
+  bool _showClassroomPin = false;
   int selectedTab = 0;
 
   Future<void> _handleAdminAuth() async {
@@ -42,25 +46,18 @@ class _LoginScreenState extends State<LoginScreen> {
       if (isRegistering) {
         final schoolName = schoolNameController.text.trim();
         final schoolCode = schoolCodeController.text.trim().toUpperCase();
+        final setupCode = setupCodeController.text.trim();
 
-        if (schoolName.isEmpty || schoolCode.isEmpty) {
+        if (schoolName.isEmpty || schoolCode.isEmpty || setupCode.isEmpty) {
           throw Exception(l10n.enterSchoolDetails);
         }
 
-        final userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
-
-        final user = userCredential.user;
-
-        if (user == null) {
-          throw Exception(l10n.adminAccountCreateFailed);
-        }
-
-        final schoolId = await _firestoreService.createSchool(
-          name: schoolName,
+        final result = await _classroomAuthService.registerSchoolAdmin(
+          email: email,
+          password: password,
+          schoolName: schoolName,
           schoolCode: schoolCode,
-          adminUid: user.uid,
-          adminEmail: email,
+          setupCode: setupCode,
         );
 
         if (!mounted) return;
@@ -68,7 +65,10 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(
           context,
           '/admin-dashboard',
-          arguments: {'schoolId': schoolId, 'schoolName': schoolName},
+          arguments: {
+            'schoolId': result['schoolId'],
+            'schoolName': result['schoolName'],
+          },
         );
       } else {
         final userCredential = await FirebaseAuth.instance
@@ -176,6 +176,19 @@ class _LoginScreenState extends State<LoginScreen> {
       return context.l10n.classroomLoginIncorrect;
     }
 
+    if (message.contains('resource-exhausted') ||
+        message.contains('classroom-login-rate-limited')) {
+      return context.l10n.classroomLoginTooManyAttempts;
+    }
+
+    if (message.contains('school-registration-not-allowed')) {
+      return context.l10n.schoolSetupCodeIncorrect;
+    }
+
+    if (message.contains('school-registration-already-exists')) {
+      return context.l10n.schoolRegistrationAlreadyExists;
+    }
+
     if (message.contains('invalid-argument')) {
       return context.l10n.checkLoginFields;
     }
@@ -195,6 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
     schoolNameController.dispose();
     schoolCodeController.dispose();
+    setupCodeController.dispose();
     classroomSchoolCodeController.dispose();
     classroomCodeController.dispose();
     classroomPinController.dispose();
@@ -287,6 +301,37 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 14),
+          TextField(
+            controller: setupCodeController,
+            obscureText: !_showSetupCode,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: context.l10n.schoolSetupCode,
+              hintText: context.l10n.schoolSetupCodeHint,
+              prefixIcon: const Icon(Icons.verified_user_outlined),
+              suffixIcon: IconButton(
+                tooltip:
+                    _showSetupCode
+                        ? context.l10n.hidePassword
+                        : context.l10n.showPassword,
+                icon: Icon(
+                  _showSetupCode
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+                onPressed:
+                    isLoading
+                        ? null
+                        : () {
+                          setState(() {
+                            _showSetupCode = !_showSetupCode;
+                          });
+                        },
+              ),
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 14),
         ],
         TextField(
           controller: emailController,
@@ -301,7 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
         const SizedBox(height: 14),
         TextField(
           controller: passwordController,
-          obscureText: true,
+          obscureText: !_showAdminPassword,
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
             if (!isLoading) _handleAdminAuth();
@@ -309,6 +354,25 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: InputDecoration(
             labelText: context.l10n.password,
             prefixIcon: const Icon(Icons.lock_outline),
+            suffixIcon: IconButton(
+              tooltip:
+                  _showAdminPassword
+                      ? context.l10n.hidePassword
+                      : context.l10n.showPassword,
+              icon: Icon(
+                _showAdminPassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+              ),
+              onPressed:
+                  isLoading
+                      ? null
+                      : () {
+                        setState(() {
+                          _showAdminPassword = !_showAdminPassword;
+                        });
+                      },
+            ),
             border: const OutlineInputBorder(),
           ),
         ),
@@ -383,7 +447,7 @@ class _LoginScreenState extends State<LoginScreen> {
         const SizedBox(height: 14),
         TextField(
           controller: classroomPinController,
-          obscureText: true,
+          obscureText: !_showClassroomPin,
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
@@ -392,6 +456,25 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: InputDecoration(
             labelText: context.l10n.classroomPin,
             prefixIcon: const Icon(Icons.lock_outline),
+            suffixIcon: IconButton(
+              tooltip:
+                  _showClassroomPin
+                      ? context.l10n.hidePassword
+                      : context.l10n.showPassword,
+              icon: Icon(
+                _showClassroomPin
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+              ),
+              onPressed:
+                  isLoading
+                      ? null
+                      : () {
+                        setState(() {
+                          _showClassroomPin = !_showClassroomPin;
+                        });
+                      },
+            ),
             border: const OutlineInputBorder(),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../l10n/l10n.dart';
 import '../models/classroom.dart';
 import '../models/classroom_feature.dart';
@@ -48,6 +49,20 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
 
   Future<void> _loadClassroom() async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      final tokenResult = await user?.getIdTokenResult();
+      final claims = tokenResult?.claims ?? {};
+
+      if (claims['role'] == 'classroom') {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.adminOnlyArea)));
+        Navigator.pop(context);
+        return;
+      }
+
       final classroom = await _firestoreService.getClassroom(
         schoolId: widget.schoolId,
         classroomId: widget.classroomId,
@@ -847,6 +862,7 @@ class _ClassroomOverviewCard extends StatelessWidget {
               icon: Icons.lock_outline,
               label: context.l10n.classroomPin,
               value: classroom.pin,
+              obscureValue: true,
               onCopy: onCopyClassroomPin,
             ),
 
@@ -1069,12 +1085,14 @@ class _AccessDetailRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final bool obscureValue;
   final VoidCallback onCopy;
 
   const _AccessDetailRow({
     required this.icon,
     required this.label,
     required this.value,
+    this.obscureValue = false,
     required this.onCopy,
   });
 
@@ -1107,7 +1125,7 @@ class _AccessDetailRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  value,
+                  obscureValue ? '••••' : value,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
