@@ -565,7 +565,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
   }
 }
 
-class _StaffDashboardBody extends StatelessWidget {
+class _StaffDashboardBody extends StatefulWidget {
   final bool isLoadingClassroomFeatures;
   final StaffProfile profile;
   final String classroomName;
@@ -589,6 +589,19 @@ class _StaffDashboardBody extends StatelessWidget {
   });
 
   @override
+  State<_StaffDashboardBody> createState() => _StaffDashboardBodyState();
+}
+
+class _StaffDashboardBodyState extends State<_StaffDashboardBody> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
 
@@ -608,8 +621,9 @@ class _StaffDashboardBody extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
+            controller: _scrollController,
             key: PageStorageKey<String>(
-              'staff-dashboard-${profile.teacherUid}-${profile.id}',
+              'staff-dashboard-${widget.profile.teacherUid}-${widget.profile.id}',
             ),
             padding: const EdgeInsets.fromLTRB(16, 18, 16, 34),
             child: ConstrainedBox(
@@ -622,21 +636,21 @@ class _StaffDashboardBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      if (isLoadingClassroomFeatures) ...[
+                      if (widget.isLoadingClassroomFeatures) ...[
                         const LinearProgressIndicator(),
                         const SizedBox(height: 16),
                       ],
                       _StaffHeroCard(
-                        profile: profile,
-                        classroomName: classroomName,
+                        profile: widget.profile,
+                        classroomName: widget.classroomName,
                       ),
-                      if (alertsPanel != null) ...[
+                      if (widget.alertsPanel != null) ...[
                         const SizedBox(height: 18),
-                        alertsPanel!,
+                        widget.alertsPanel!,
                       ],
-                      if (todayOverviewCard != null) ...[
+                      if (widget.todayOverviewCard != null) ...[
                         const SizedBox(height: 18),
-                        todayOverviewCard!,
+                        widget.todayOverviewCard!,
                       ],
                       const SizedBox(height: 22),
                       _HubSection(
@@ -644,28 +658,28 @@ class _StaffDashboardBody extends StatelessWidget {
                         title: context.l10n.dailyTools,
                         subtitle: context.l10n.staffDailyToolsSubtitle,
                         color: const Color(0xFF5E7CE2),
-                        children: dailyTools,
+                        children: widget.dailyTools,
                       ),
                       _HubSection(
                         icon: Icons.forum_rounded,
                         title: context.l10n.communication,
                         subtitle: context.l10n.staffCommunicationSubtitle,
                         color: const Color(0xFF26A69A),
-                        children: communicationTools,
+                        children: widget.communicationTools,
                       ),
                       _HubSection(
                         icon: Icons.school_rounded,
                         title: context.l10n.learning,
                         subtitle: context.l10n.staffLearningSubtitle,
                         color: const Color(0xFF66BB6A),
-                        children: learningTools,
+                        children: widget.learningTools,
                       ),
                       _HubSection(
                         icon: Icons.admin_panel_settings_rounded,
                         title: context.l10n.staffAdmin,
                         subtitle: context.l10n.staffAdminToolsSubtitle,
                         color: const Color(0xFF455A64),
-                        children: adminTools,
+                        children: widget.adminTools,
                       ),
                     ],
                   ),

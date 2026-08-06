@@ -338,7 +338,7 @@ class _EmotionDetectiveManagementPageState
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 430,
-                          mainAxisExtent: 315,
+                          mainAxisExtent: 285,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
                         ),
@@ -485,22 +485,7 @@ class _PackSummaryCard extends StatelessWidget {
         onTap: onOpen,
         child: Column(
           children: [
-            Container(
-              height: 92,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [color, color.withValues(alpha: 0.72)],
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  appIconForKey(pack.iconName, fallbackKey: 'mood_smile'),
-                  color: Colors.white,
-                  size: 52,
-                ),
-              ),
-            ),
+            Container(height: 8, color: color),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(18, 16, 12, 14),
@@ -509,6 +494,19 @@ class _PackSummaryCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        CircleAvatar(
+                          radius: 27,
+                          backgroundColor: color.withValues(alpha: 0.15),
+                          child: Icon(
+                            appIconForKey(
+                              pack.iconName,
+                              fallbackKey: 'mood_smile',
+                            ),
+                            color: color,
+                            size: 29,
+                          ),
+                        ),
+                        const SizedBox(width: 13),
                         Expanded(
                           child: Text(
                             pack.title,
@@ -539,7 +537,7 @@ class _PackSummaryCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 12),
                     Text(
                       pack.description.isEmpty
                           ? 'Social-emotional case pack'
