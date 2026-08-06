@@ -80,11 +80,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'This profile is paused for now. Please talk to a teacher.',
-        ),
-      ),
+      SnackBar(content: Text(context.l10n.childProfilePausedMessage)),
     );
 
     Navigator.pushNamedAndRemoveUntil(context, '/profiles', (route) => false);
@@ -404,14 +400,8 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
       if (_isFeatureEnabled(ClassroomFeature.calmPlan))
         _DashboardFeature(
           icon: Icons.spa_rounded,
-          title:
-              Localizations.localeOf(context).languageCode == 'ga'
-                  ? 'Mo Uirlisí Suaimhnis'
-                  : 'My Calm Tools',
-          subtitle:
-              Localizations.localeOf(context).languageCode == 'ga'
-                  ? 'Roghnaigh rud a chabhróidh leat.'
-                  : 'Choose what might help.',
+          title: l10n.childCalmToolsTitle,
+          subtitle: l10n.childCalmToolsSubtitle,
           color: const Color(0xFF26A69A),
           onTap: () {
             Navigator.pushNamed(
@@ -626,6 +616,9 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                     ),
                     child: SafeArea(
                       child: SingleChildScrollView(
+                        key: PageStorageKey<String>(
+                          'child-dashboard-${profile.teacherUid}-${profile.id}',
+                        ),
                         padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
                         child: Center(
                           child: ConstrainedBox(
@@ -720,6 +713,13 @@ class _DashboardSection extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(28),
         border: Border.all(color: Colors.white.withValues(alpha: 0.86)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.08),
+            blurRadius: 18,
+            offset: const Offset(0, 9),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -765,7 +765,7 @@ class _DashboardSection extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: columns,
-                  mainAxisExtent: 126,
+                  mainAxisExtent: 134,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),

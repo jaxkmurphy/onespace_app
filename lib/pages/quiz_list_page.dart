@@ -141,6 +141,7 @@ class _QuizListPageState extends State<QuizListPage> {
             final horizontalPadding = constraints.maxWidth > 700 ? 24.0 : 14.0;
 
             return GridView.builder(
+              key: const PageStorageKey('quiz-library-grid'),
               padding: EdgeInsets.fromLTRB(
                 horizontalPadding,
                 18,
@@ -208,6 +209,7 @@ class _QuizListPageState extends State<QuizListPage> {
             }
 
             return ListView(
+              key: const PageStorageKey('quiz-results-list'),
               padding: const EdgeInsets.fromLTRB(16, 18, 16, 40),
               children: [
                 Text(

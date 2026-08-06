@@ -27,37 +27,29 @@ class ChildDashboardFeatureCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(
-            color: color.withValues(alpha: 0.28),
-            width: 2,
-          ),
+          side: BorderSide(color: color.withValues(alpha: 0.28), width: 2),
         ),
         child: InkWell(
+          borderRadius: BorderRadius.circular(24),
           onTap: onTap,
           child: Ink(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  color.withValues(alpha: 0.10),
-                ],
+                colors: [Colors.white, color.withValues(alpha: 0.10)],
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(18),
               child: Row(
                 children: [
                   Container(
-                    width: 62,
-                    height: 62,
+                    width: 64,
+                    height: 64,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [
-                          color,
-                          color.withValues(alpha: 0.76),
-                        ],
+                        colors: [color, color.withValues(alpha: 0.76)],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
@@ -68,11 +60,7 @@ class ChildDashboardFeatureCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(
-                      icon,
-                      size: 34,
-                      color: Colors.white,
-                    ),
+                    child: Icon(icon, size: 34, color: Colors.white),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -84,12 +72,8 @@ class ChildDashboardFeatureCard extends StatelessWidget {
                           title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w900,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w900),
                         ),
                         const SizedBox(height: 5),
                         Text(
@@ -106,8 +90,8 @@ class ChildDashboardFeatureCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Container(
-                    width: 34,
-                    height: 34,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.13),
                       shape: BoxShape.circle,

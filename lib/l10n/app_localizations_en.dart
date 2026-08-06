@@ -4912,4 +4912,143 @@ class AppLocalizationsEn extends AppLocalizations {
   String deleteCalmingSoundMessage(String name) {
     return 'Delete \"$name\" from this classroom? This also removes the uploaded file.';
   }
+
+  @override
+  String get adminStatBodyChecks => 'Body checks';
+
+  @override
+  String get adminStatCalmRequests => 'Calm requests';
+
+  @override
+  String get adminStatHelperRequests => 'Helper requests';
+
+  @override
+  String get classroomFeaturesTitle => 'Classroom features';
+
+  @override
+  String classroomFeaturesSummary(int enabledCount, int totalCount) {
+    return 'Choose which tools are available in this classroom. $enabledCount/$totalCount currently enabled.';
+  }
+
+  @override
+  String classroomFeaturesEnabledShort(int enabledCount, int totalCount) {
+    return '$enabledCount/$totalCount features enabled';
+  }
+
+  @override
+  String adminMiniStaffCount(int count) {
+    return '$count staff';
+  }
+
+  @override
+  String adminMiniChildCount(int count) {
+    return '$count children';
+  }
+
+  @override
+  String adminMiniAlertCount(int count) {
+    return '$count alerts';
+  }
+
+  @override
+  String get staffCalmPlanSubtitle =>
+      'Review calm support requests and manage calm tools.';
+
+  @override
+  String get staffVoiceLinesSubtitle => 'Manage the phrases children can use.';
+
+  @override
+  String get staffAssociationPairsSubtitle =>
+      'Create matching-pair learning packs.';
+
+  @override
+  String get staffNumberSequenceSubtitle =>
+      'Create number ordering challenge presets.';
+
+  @override
+  String get staffOddOneOutSubtitle =>
+      'Create visual odd-one-out reasoning packs.';
+
+  @override
+  String get staffEmotionDetectiveSubtitle =>
+      'Create feelings and social reasoning packs.';
+
+  @override
+  String get childAccess => 'Child Access';
+
+  @override
+  String get staffChildAccessSubtitle =>
+      'Pause or reopen access to child profiles.';
+
+  @override
+  String get staffDailyToolsSubtitle =>
+      'Fast access to the tools used during the day.';
+
+  @override
+  String get staffCommunicationSubtitle =>
+      'Record, review and support classroom needs.';
+
+  @override
+  String get staffLearningSubtitle => 'Create and support learning activities.';
+
+  @override
+  String get staffAdminToolsSubtitle =>
+      'Classroom controls and staff-only tools.';
+
+  @override
+  String staffWelcome(String staffName) {
+    return 'Welcome, $staffName';
+  }
+
+  @override
+  String get staffToolsReady => 'Your staff tools are ready.';
+
+  @override
+  String get staffAlertsJustNow => 'Just now';
+
+  @override
+  String get staffAlertsOneMinuteAgo => '1 min ago';
+
+  @override
+  String staffAlertsMinutesAgo(int count) {
+    return '$count min ago';
+  }
+
+  @override
+  String get staffAlertsOneHourAgo => '1 hour ago';
+
+  @override
+  String staffAlertsHoursAgo(int count) {
+    return '$count hours ago';
+  }
+
+  @override
+  String get childProfilePausedMessage =>
+      'This profile is paused for now. Please talk to a teacher.';
+
+  @override
+  String get childCalmToolsTitle => 'My Calm Tools';
+
+  @override
+  String get childCalmToolsSubtitle => 'Choose what might help.';
+
+  @override
+  String get noGuidelinesMatchSearch => 'No documents match this search.';
+
+  @override
+  String get chooseStaffProfileForTools =>
+      'Choose a staff profile to open classroom tools.';
+
+  @override
+  String get chooseChildProfileForSpace =>
+      'Choose your profile to enter your space.';
+
+  @override
+  String get profilePausedTalkToTeacher => 'Paused - talk to a teacher';
+
+  @override
+  String get profilePausedTitle => 'Profile paused';
+
+  @override
+  String get manageProfilesAndAppOptions => 'Manage profiles and app options.';
 }

@@ -927,33 +927,47 @@ class _TodayOverviewPageState extends State<TodayOverviewPage> {
 
           return SafeArea(
             child: ListView(
+              key: const PageStorageKey<String>('today-overview'),
               padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
               children: [
-                _buildHero(children),
-                _sectionTitle(context.l10n.quickActions, Icons.bolt_rounded),
-                _buildQuickActions(),
-                const SizedBox(height: 14),
-                _buildChildrenSummary(children),
-                _sectionTitle(
-                  context.l10n.zonesSnapshot,
-                  Icons.palette_rounded,
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1040),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildHero(children),
+                        _sectionTitle(
+                          context.l10n.quickActions,
+                          Icons.bolt_rounded,
+                        ),
+                        _buildQuickActions(),
+                        const SizedBox(height: 14),
+                        _buildChildrenSummary(children),
+                        _sectionTitle(
+                          context.l10n.zonesSnapshot,
+                          Icons.palette_rounded,
+                        ),
+                        _buildZoneSnapshot(children),
+                        _sectionTitle(
+                          context.l10n.bodyCheckAttention,
+                          Icons.health_and_safety_rounded,
+                        ),
+                        _buildBodyCheckSummary(),
+                        _sectionTitle(
+                          context.l10n.todaysSchedule,
+                          Icons.schedule_rounded,
+                        ),
+                        _buildTodaySchedule(),
+                        _sectionTitle(
+                          context.l10n.recentImportantIncidents,
+                          Icons.event_note_rounded,
+                        ),
+                        _buildRecentIncidents(),
+                      ],
+                    ),
+                  ),
                 ),
-                _buildZoneSnapshot(children),
-                _sectionTitle(
-                  context.l10n.bodyCheckAttention,
-                  Icons.health_and_safety_rounded,
-                ),
-                _buildBodyCheckSummary(),
-                _sectionTitle(
-                  context.l10n.todaysSchedule,
-                  Icons.schedule_rounded,
-                ),
-                _buildTodaySchedule(),
-                _sectionTitle(
-                  context.l10n.recentImportantIncidents,
-                  Icons.event_note_rounded,
-                ),
-                _buildRecentIncidents(),
               ],
             ),
           );

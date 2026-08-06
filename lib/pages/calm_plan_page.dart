@@ -126,6 +126,7 @@ class _CalmPlanPageState extends State<CalmPlanPage> {
         }
 
         return ListView(
+          key: const PageStorageKey<String>('child-calm-plan'),
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 32),
           children: [
             _HeaderCard(color: color, text: _text),

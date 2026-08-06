@@ -569,6 +569,7 @@ class _VoiceLinesPageState extends State<VoiceLinesPage> {
               final lines = _linesForSnapshot(snapshot);
 
               return SingleChildScrollView(
+                key: const PageStorageKey<String>('voice-lines-child'),
                 child: Column(
                   children: [
                     _buildHeader(context),

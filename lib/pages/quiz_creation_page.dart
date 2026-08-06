@@ -549,6 +549,11 @@ class _QuizCreationPageState extends State<QuizCreationPage> {
         ),
       ),
       body: SingleChildScrollView(
+        key: PageStorageKey(
+          _isEditing
+              ? 'quiz-editor-${widget.existingQuiz!.id}'
+              : 'quiz-editor-new',
+        ),
         padding: const EdgeInsets.fromLTRB(18, 18, 18, 36),
         child: Center(
           child: ConstrainedBox(

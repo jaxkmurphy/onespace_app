@@ -6440,5 +6440,199 @@
         "type": "String"
       }
     }
+  },
+  "adminStatBodyChecks": "Body checks",
+  "@adminStatBodyChecks": {
+    "description": "Admin classroom details stat label for unchecked body check reports."
+  },
+  "adminStatCalmRequests": "Calm requests",
+  "@adminStatCalmRequests": {
+    "description": "Admin classroom details stat label for active calm support requests."
+  },
+  "adminStatHelperRequests": "Helper requests",
+  "@adminStatHelperRequests": {
+    "description": "Admin classroom details stat label for pending helper job requests."
+  },
+  "classroomFeaturesTitle": "Classroom features",
+  "@classroomFeaturesTitle": {
+    "description": "Admin classroom details section title for feature toggles."
+  },
+  "classroomFeaturesSummary": "Choose which tools are available in this classroom. {enabledCount}/{totalCount} currently enabled.",
+  "@classroomFeaturesSummary": {
+    "description": "Admin classroom details summary showing how many classroom features are enabled.",
+    "placeholders": {
+      "enabledCount": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "classroomFeaturesEnabledShort": "{enabledCount}/{totalCount} features enabled",
+  "@classroomFeaturesEnabledShort": {
+    "description": "Short classroom card label showing enabled feature count.",
+    "placeholders": {
+      "enabledCount": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "adminMiniStaffCount": "{count} staff",
+  "@adminMiniStaffCount": {
+    "description": "Short admin classroom card staff count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminMiniChildCount": "{count} children",
+  "@adminMiniChildCount": {
+    "description": "Short admin classroom card child count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminMiniAlertCount": "{count} alerts",
+  "@adminMiniAlertCount": {
+    "description": "Short admin classroom card alert count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "staffCalmPlanSubtitle": "Review calm support requests and manage calm tools.",
+  "@staffCalmPlanSubtitle": {
+    "description": "Staff dashboard subtitle for Calm Plan management."
+  },
+  "staffVoiceLinesSubtitle": "Manage the phrases children can use.",
+  "@staffVoiceLinesSubtitle": {
+    "description": "Staff dashboard subtitle for voice lines management."
+  },
+  "staffAssociationPairsSubtitle": "Create matching-pair learning packs.",
+  "@staffAssociationPairsSubtitle": {
+    "description": "Staff dashboard subtitle for Association Pairs management."
+  },
+  "staffNumberSequenceSubtitle": "Create number ordering challenge presets.",
+  "@staffNumberSequenceSubtitle": {
+    "description": "Staff dashboard subtitle for Number Sequence management."
+  },
+  "staffOddOneOutSubtitle": "Create visual odd-one-out reasoning packs.",
+  "@staffOddOneOutSubtitle": {
+    "description": "Staff dashboard subtitle for Odd One Out management."
+  },
+  "staffEmotionDetectiveSubtitle": "Create feelings and social reasoning packs.",
+  "@staffEmotionDetectiveSubtitle": {
+    "description": "Staff dashboard subtitle for Emotion Detective management."
+  },
+  "childAccess": "Child Access",
+  "@childAccess": {
+    "description": "Staff dashboard title for controlling child profile access."
+  },
+  "staffChildAccessSubtitle": "Pause or reopen access to child profiles.",
+  "@staffChildAccessSubtitle": {
+    "description": "Staff dashboard subtitle for child profile access control."
+  },
+  "staffDailyToolsSubtitle": "Fast access to the tools used during the day.",
+  "@staffDailyToolsSubtitle": {
+    "description": "Staff dashboard daily tools section subtitle."
+  },
+  "staffCommunicationSubtitle": "Record, review and support classroom needs.",
+  "@staffCommunicationSubtitle": {
+    "description": "Staff dashboard communication section subtitle."
+  },
+  "staffLearningSubtitle": "Create and support learning activities.",
+  "@staffLearningSubtitle": {
+    "description": "Staff dashboard learning section subtitle."
+  },
+  "staffAdminToolsSubtitle": "Classroom controls and staff-only tools.",
+  "@staffAdminToolsSubtitle": {
+    "description": "Staff dashboard staff/admin section subtitle."
+  },
+  "staffWelcome": "Welcome, {staffName}",
+  "@staffWelcome": {
+    "description": "Staff dashboard hero welcome message.",
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "staffToolsReady": "Your staff tools are ready.",
+  "@staffToolsReady": {
+    "description": "Staff dashboard hero fallback classroom message."
+  },
+  "staffAlertsJustNow": "Just now",
+  "@staffAlertsJustNow": {
+    "description": "Staff dashboard alert time label for now."
+  },
+  "staffAlertsOneMinuteAgo": "1 min ago",
+  "@staffAlertsOneMinuteAgo": {
+    "description": "Staff dashboard alert time label for one minute ago."
+  },
+  "staffAlertsMinutesAgo": "{count} min ago",
+  "@staffAlertsMinutesAgo": {
+    "description": "Staff dashboard alert time label for minutes ago.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "staffAlertsOneHourAgo": "1 hour ago",
+  "@staffAlertsOneHourAgo": {
+    "description": "Staff dashboard alert time label for one hour ago."
+  },
+  "staffAlertsHoursAgo": "{count} hours ago",
+  "@staffAlertsHoursAgo": {
+    "description": "Staff dashboard alert time label for hours ago.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "childProfilePausedMessage": "This profile is paused for now. Please talk to a teacher.",
+  "@childProfilePausedMessage": {
+    "description": "Message shown when a child's profile access is paused."
+  },
+  "childCalmToolsTitle": "My Calm Tools",
+  "@childCalmToolsTitle": {
+    "description": "Child dashboard title for Calm Plan tools."
+  },
+  "childCalmToolsSubtitle": "Choose what might help.",
+  "@childCalmToolsSubtitle": {
+    "description": "Child dashboard subtitle for Calm Plan tools."
+  },
+  "noGuidelinesMatchSearch": "No documents match this search.",
+  "@noGuidelinesMatchSearch": {
+    "description": "Guidelines empty state when no documents match the search."
+  },
+  "chooseStaffProfileForTools": "Choose a staff profile to open classroom tools.",
+  "@chooseStaffProfileForTools": {
+    "description": "Profiles page staff section subtitle."
+  },
+  "chooseChildProfileForSpace": "Choose your profile to enter your space.",
+  "@chooseChildProfileForSpace": {
+    "description": "Profiles page child section subtitle."
+  },
+  "profilePausedTalkToTeacher": "Paused - talk to a teacher",
+  "@profilePausedTalkToTeacher": {
+    "description": "Short label for a child profile paused by staff."
+  },
+  "profilePausedTitle": "Profile paused",
+  "@profilePausedTitle": {
+    "description": "Dialog title when a child tries to open a paused profile."
+  },
+  "manageProfilesAndAppOptions": "Manage profiles and app options.",
+  "@manageProfilesAndAppOptions": {
+    "description": "Profiles page admin actions section subtitle."
   }
 }

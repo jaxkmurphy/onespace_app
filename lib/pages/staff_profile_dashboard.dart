@@ -257,8 +257,8 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
           if (_isFeatureEnabled(ClassroomFeature.calmPlan))
             StaffDashboardFeatureCard(
               icon: Icons.spa_rounded,
-              title: 'Calm Plan',
-              subtitle: 'Review calm support requests and manage calm tools.',
+              title: l10n.calmPlan,
+              subtitle: l10n.staffCalmPlanSubtitle,
               color: const Color(0xFF26A69A),
               onTap: () {
                 Navigator.pushNamed(
@@ -306,7 +306,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             StaffDashboardFeatureCard(
               icon: Icons.record_voice_over_rounded,
               title: l10n.voiceLines,
-              subtitle: 'Manage the phrases children can use.',
+              subtitle: l10n.staffVoiceLinesSubtitle,
               color: const Color(0xFF7E57C2),
               onTap: () {
                 Navigator.pushNamed(
@@ -375,10 +375,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             StaffDashboardFeatureCard(
               icon: Icons.extension_rounded,
               title: gameText.associationPairs,
-              subtitle:
-                  gameText.isIrish
-                      ? 'Cruthaigh pacáistí péirí meaitseála.'
-                      : 'Create matching-pair learning packs.',
+              subtitle: l10n.staffAssociationPairsSubtitle,
               color: const Color(0xFF7E57C2),
               onTap: () {
                 Navigator.pushNamed(
@@ -395,10 +392,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             StaffDashboardFeatureCard(
               icon: Icons.pin_rounded,
               title: gameText.numberSequence,
-              subtitle:
-                  gameText.isIrish
-                      ? 'Cruthaigh dúshláin ordaithe uimhreacha.'
-                      : 'Create number ordering challenge presets.',
+              subtitle: l10n.staffNumberSequenceSubtitle,
               color: const Color(0xFF29B6F6),
               onTap: () {
                 Navigator.pushNamed(
@@ -415,10 +409,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             StaffDashboardFeatureCard(
               icon: Icons.psychology_alt_rounded,
               title: gameText.oddOneOut,
-              subtitle:
-                  gameText.isIrish
-                      ? 'Cruthaigh pacáistí réasúnaíochta don cheann corr.'
-                      : 'Create visual odd-one-out reasoning packs.',
+              subtitle: l10n.staffOddOneOutSubtitle,
               color: const Color(0xFF7E57C2),
               onTap: () {
                 Navigator.pushNamed(
@@ -435,10 +426,7 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
             StaffDashboardFeatureCard(
               icon: Icons.manage_search_rounded,
               title: gameText.emotionDetective,
-              subtitle:
-                  gameText.isIrish
-                      ? 'Cruthaigh pacáistí mothúchán agus réasúnaíochta sóisialta.'
-                      : 'Create feelings and social reasoning packs.',
+              subtitle: l10n.staffEmotionDetectiveSubtitle,
               color: const Color(0xFFEC6F91),
               onTap: () {
                 Navigator.pushNamed(
@@ -456,8 +444,8 @@ class _StaffProfileDashboardState extends State<StaffProfileDashboard> {
         final adminTools = <Widget>[
           StaffDashboardFeatureCard(
             icon: Icons.lock_person_rounded,
-            title: 'Child Access',
-            subtitle: 'Pause or reopen access to child profiles.',
+            title: l10n.childAccess,
+            subtitle: l10n.staffChildAccessSubtitle,
             color: const Color(0xFF455A64),
             onTap: _openChildAccess,
           ),
@@ -620,6 +608,9 @@ class _StaffDashboardBody extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
+            key: PageStorageKey<String>(
+              'staff-dashboard-${profile.teacherUid}-${profile.id}',
+            ),
             padding: const EdgeInsets.fromLTRB(16, 18, 16, 34),
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -651,29 +642,28 @@ class _StaffDashboardBody extends StatelessWidget {
                       _HubSection(
                         icon: Icons.today_rounded,
                         title: context.l10n.dailyTools,
-                        subtitle:
-                            'Fast access to the tools used during the day.',
+                        subtitle: context.l10n.staffDailyToolsSubtitle,
                         color: const Color(0xFF5E7CE2),
                         children: dailyTools,
                       ),
                       _HubSection(
                         icon: Icons.forum_rounded,
                         title: context.l10n.communication,
-                        subtitle: 'Record, review and support classroom needs.',
+                        subtitle: context.l10n.staffCommunicationSubtitle,
                         color: const Color(0xFF26A69A),
                         children: communicationTools,
                       ),
                       _HubSection(
                         icon: Icons.school_rounded,
                         title: context.l10n.learning,
-                        subtitle: 'Create and support learning activities.',
+                        subtitle: context.l10n.staffLearningSubtitle,
                         color: const Color(0xFF66BB6A),
                         children: learningTools,
                       ),
                       _HubSection(
                         icon: Icons.admin_panel_settings_rounded,
                         title: context.l10n.staffAdmin,
-                        subtitle: 'Classroom controls and staff-only tools.',
+                        subtitle: context.l10n.staffAdminToolsSubtitle,
                         color: const Color(0xFF455A64),
                         children: adminTools,
                       ),
@@ -748,7 +738,7 @@ class _StaffHeroCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome, ${profile.name}',
+                  context.l10n.staffWelcome(profile.name),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28,
@@ -758,7 +748,7 @@ class _StaffHeroCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   classroomName.isEmpty
-                      ? 'Your staff tools are ready.'
+                      ? context.l10n.staffToolsReady
                       : classroomName,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.88),
@@ -786,7 +776,9 @@ class _StaffHeroCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  profile.role.trim().isEmpty ? 'Staff' : profile.role,
+                  profile.role.trim().isEmpty
+                      ? context.l10n.staffLabel
+                      : profile.role,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
@@ -1145,19 +1137,19 @@ class _AttentionCalmCard extends StatelessWidget {
 
   const _AttentionCalmCard({required this.request, required this.onResolve});
 
-  String _timeLabel() {
+  String _timeLabel(BuildContext context) {
     final createdAt = request.createdAt;
-    if (createdAt == null) return 'Just now';
+    if (createdAt == null) return context.l10n.staffAlertsJustNow;
 
     final minutes = DateTime.now().difference(createdAt).inMinutes;
 
-    if (minutes < 1) return 'Just now';
-    if (minutes == 1) return '1 min ago';
-    if (minutes < 60) return '$minutes min ago';
+    if (minutes < 1) return context.l10n.staffAlertsJustNow;
+    if (minutes == 1) return context.l10n.staffAlertsOneMinuteAgo;
+    if (minutes < 60) return context.l10n.staffAlertsMinutesAgo(minutes);
 
     final hours = minutes ~/ 60;
-    if (hours == 1) return '1 hour ago';
-    return '$hours hours ago';
+    if (hours == 1) return context.l10n.staffAlertsOneHourAgo;
+    return context.l10n.staffAlertsHoursAgo(hours);
   }
 
   @override
@@ -1192,7 +1184,10 @@ class _AttentionCalmCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  context.l10n.staffAlertsCalmSelected(toolName, _timeLabel()),
+                  context.l10n.staffAlertsCalmSelected(
+                    toolName,
+                    _timeLabel(context),
+                  ),
                   style: TextStyle(
                     color: Colors.grey.shade700,
                     fontWeight: FontWeight.w700,

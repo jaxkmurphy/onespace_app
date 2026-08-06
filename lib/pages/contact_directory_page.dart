@@ -291,48 +291,59 @@ class _ContactListTabState extends State<_ContactListTab> {
         final filteredContacts = _filteredContacts(contacts);
 
         return ListView(
+          key: PageStorageKey('contact-directory-${widget.type.name}'),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
-            _ContactHeaderCard(
-              type: widget.type,
-              count: contacts.length,
-              onAdd: widget.onAdd,
-            ),
-            const SizedBox(height: 14),
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: context.l10n.searchContacts,
-                prefixIcon: const Icon(Icons.search_rounded),
-                suffixIcon:
-                    _searchController.text.isEmpty
-                        ? null
-                        : IconButton(
-                          tooltip: context.l10n.clear,
-                          onPressed: () {
-                            setState(() {
-                              _searchController.clear();
-                            });
-                          },
-                          icon: const Icon(Icons.clear_rounded),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1040),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _ContactHeaderCard(
+                      type: widget.type,
+                      count: contacts.length,
+                      onAdd: widget.onAdd,
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.searchContacts,
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        suffixIcon:
+                            _searchController.text.isEmpty
+                                ? null
+                                : IconButton(
+                                  tooltip: context.l10n.clear,
+                                  onPressed: () {
+                                    setState(() {
+                                      _searchController.clear();
+                                    });
+                                  },
+                                  icon: const Icon(Icons.clear_rounded),
+                                ),
+                        border: const OutlineInputBorder(),
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 14),
+                    if (contacts.isEmpty)
+                      _EmptyContactsCard(type: widget.type)
+                    else if (filteredContacts.isEmpty)
+                      _NoMatchingContactsCard()
+                    else
+                      ...filteredContacts.map(
+                        (contact) => _ContactCard(
+                          contact: contact,
+                          onEdit: () => widget.onEdit(contact),
+                          onDelete: () => widget.onDelete(contact),
                         ),
-                border: const OutlineInputBorder(),
-              ),
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: 14),
-            if (contacts.isEmpty)
-              _EmptyContactsCard(type: widget.type)
-            else if (filteredContacts.isEmpty)
-              _NoMatchingContactsCard()
-            else
-              ...filteredContacts.map(
-                (contact) => _ContactCard(
-                  contact: contact,
-                  onEdit: () => widget.onEdit(contact),
-                  onDelete: () => widget.onDelete(contact),
+                      ),
+                  ],
                 ),
               ),
+            ),
           ],
         );
       },
@@ -922,6 +933,9 @@ class _ContactDialogState extends State<_ContactDialog> {
       content: SizedBox(
         width: 560,
         child: SingleChildScrollView(
+          key: PageStorageKey(
+            'contact-dialog-${widget.contact?.id ?? widget.type.name}',
+          ),
           child: Column(
             children: [
               TextField(

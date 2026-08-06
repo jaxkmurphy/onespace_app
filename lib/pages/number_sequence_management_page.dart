@@ -217,10 +217,11 @@ class _NumberSequenceManagementPageState
               ),
             ),
             child: GridView.builder(
+              key: const PageStorageKey('number-sequence-management'),
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 430,
-                mainAxisExtent: 270,
+                mainAxisExtent: 330,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
@@ -265,97 +266,189 @@ class _ChallengeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0,
       clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 58,
-                  height: 58,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Icon(
-                    appIconForKey(challenge.iconName, fallbackKey: 'pin'),
-                    color: color,
-                    size: 32,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  tooltip: 'Delete challenge',
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete_outline_rounded),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Text(
-              challenge.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 6),
-            Expanded(
-              child: Text(
-                challenge.description.isEmpty
-                    ? 'Numbers 1-${challenge.maxNumber}'
-                    : challenge.description,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(26),
+        side: BorderSide(color: color.withValues(alpha: 0.28), width: 2),
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: 92,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [color, color.withValues(alpha: 0.72)],
               ),
             ),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                Chip(label: Text(challenge.active ? 'Active' : 'Inactive')),
-                Chip(label: Text('1-${challenge.maxNumber}')),
-                Chip(
-                  label: Text(challenge.timerEnabled ? 'Timer' : 'No timer'),
-                ),
-                Chip(
-                  label: Text(
-                    challenge.availableToAll
-                        ? 'Everyone'
-                        : '${challenge.assignedChildIds.length} selected',
-                  ),
-                ),
-              ],
+            child: Center(
+              child: Icon(
+                appIconForKey(challenge.iconName, fallbackKey: 'pin'),
+                color: Colors.white,
+                size: 52,
+              ),
             ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit_rounded),
-                  label: const Text('Edit'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: onAudience,
-                  icon: const Icon(Icons.groups_rounded),
-                  label: const Text('Audience'),
-                ),
-                FilledButton.tonalIcon(
-                  onPressed: onToggleActive,
-                  icon: Icon(
-                    challenge.active
-                        ? Icons.pause_circle_rounded
-                        : Icons.play_circle_rounded,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 16, 12, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          challenge.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        onSelected: (value) {
+                          if (value == 'delete') onDelete();
+                        },
+                        itemBuilder:
+                            (context) => [
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: Colors.red,
+                                  ),
+                                  title: Text(context.l10n.delete),
+                                ),
+                              ),
+                            ],
+                      ),
+                    ],
                   ),
-                  label: Text(challenge.active ? 'Inactive' : 'Active'),
-                ),
-              ],
+                  const SizedBox(height: 6),
+                  Text(
+                    challenge.description.isEmpty
+                        ? 'Numbers 1-${challenge.maxNumber}'
+                        : challenge.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                  const Spacer(),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _GamePackChip(
+                        icon:
+                            challenge.active
+                                ? Icons.check_circle_rounded
+                                : Icons.pause_circle_rounded,
+                        label: challenge.active ? 'Active' : 'Inactive',
+                        color: color,
+                      ),
+                      _GamePackChip(
+                        icon: Icons.pin_rounded,
+                        label: '1-${challenge.maxNumber}',
+                        color: color,
+                      ),
+                      _GamePackChip(
+                        icon:
+                            challenge.timerEnabled
+                                ? Icons.timer_rounded
+                                : Icons.timer_off_rounded,
+                        label: challenge.timerEnabled ? 'Timer' : 'No timer',
+                        color: color,
+                      ),
+                      _GamePackChip(
+                        icon:
+                            challenge.availableToAll
+                                ? Icons.groups_rounded
+                                : Icons.people_alt_rounded,
+                        label:
+                            challenge.availableToAll
+                                ? context.l10n.availableToEveryone
+                                : context.l10n.assignedChildCount(
+                                  challenge.assignedChildIds.length,
+                                ),
+                        color: color,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: onEdit,
+                          style: FilledButton.styleFrom(backgroundColor: color),
+                          icon: const Icon(Icons.edit_rounded),
+                          label: Text(context.l10n.edit),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton.filledTonal(
+                        tooltip: 'Audience',
+                        onPressed: onAudience,
+                        icon: const Icon(Icons.groups_rounded),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton.filledTonal(
+                        tooltip:
+                            challenge.active ? 'Set inactive' : 'Set active',
+                        onPressed: onToggleActive,
+                        icon: Icon(
+                          challenge.active
+                              ? Icons.pause_circle_rounded
+                              : Icons.play_circle_rounded,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GamePackChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _GamePackChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.11),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 17),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(color: color, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
       ),
     );
   }

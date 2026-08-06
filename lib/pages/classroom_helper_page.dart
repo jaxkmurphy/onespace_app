@@ -500,55 +500,72 @@ class _ClassroomHelperPageState extends State<ClassroomHelperPage> {
                         const <ClassroomHelperCompletionRequest>[];
 
                     return ListView(
+                      key: const PageStorageKey<String>(
+                        'classroom-helper-staff',
+                      ),
                       padding: const EdgeInsets.all(20),
                       children: [
-                        _HeroHeader(
-                          title: context.l10n.classroomHelperStaffTitle,
-                          subtitle: context.l10n.classroomHelperStaffIntro,
-                          icon: Icons.volunteer_activism_rounded,
-                        ),
-                        const SizedBox(height: 18),
-                        if (usingPreviewJobs)
-                          _StarterJobsBanner(
-                            isSaving: _isSavingDefaults,
-                            onSave: _saveStarterJobs,
+                        Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1040),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _HeroHeader(
+                                  title: context.l10n.classroomHelperStaffTitle,
+                                  subtitle:
+                                      context.l10n.classroomHelperStaffIntro,
+                                  icon: Icons.volunteer_activism_rounded,
+                                ),
+                                const SizedBox(height: 18),
+                                if (usingPreviewJobs)
+                                  _StarterJobsBanner(
+                                    isSaving: _isSavingDefaults,
+                                    onSave: _saveStarterJobs,
+                                  ),
+                                _PendingRequestsPanel(
+                                  requests: requests,
+                                  timeLabel: _timeLabel,
+                                  onConfirm: _confirmRequest,
+                                  onClear: _clearRequest,
+                                ),
+                                const SizedBox(height: 18),
+                                _AssignmentsPanel(
+                                  children: children,
+                                  assignments: assignments,
+                                  onClearAssignment: _clearAssignment,
+                                ),
+                                const SizedBox(height: 18),
+                                _JobLibraryPanel(
+                                  jobs: jobs,
+                                  isPreview: usingPreviewJobs,
+                                  children: children,
+                                  onAddJob: () => _showJobDialog(),
+                                  onEditJob: _showJobDialog,
+                                  onDeleteJob: _deleteJob,
+                                  onToggleJob: _toggleJob,
+                                  onAssignJob:
+                                      (job) => _assignJob(
+                                        job: job,
+                                        children: children,
+                                      ),
+                                ),
+                                const SizedBox(height: 18),
+                                _CompletedLogPanel(
+                                  stream:
+                                      widget.firestoreService
+                                          .getCurrentClassroomHelperCompletions(),
+                                  children: children,
+                                  selectedChildId: _completionChildFilter,
+                                  onFilterChanged:
+                                      (value) => setState(
+                                        () => _completionChildFilter = value,
+                                      ),
+                                  timeLabel: _timeLabel,
+                                ),
+                              ],
+                            ),
                           ),
-                        _PendingRequestsPanel(
-                          requests: requests,
-                          timeLabel: _timeLabel,
-                          onConfirm: _confirmRequest,
-                          onClear: _clearRequest,
-                        ),
-                        const SizedBox(height: 18),
-                        _AssignmentsPanel(
-                          children: children,
-                          assignments: assignments,
-                          onClearAssignment: _clearAssignment,
-                        ),
-                        const SizedBox(height: 18),
-                        _JobLibraryPanel(
-                          jobs: jobs,
-                          isPreview: usingPreviewJobs,
-                          children: children,
-                          onAddJob: () => _showJobDialog(),
-                          onEditJob: _showJobDialog,
-                          onDeleteJob: _deleteJob,
-                          onToggleJob: _toggleJob,
-                          onAssignJob:
-                              (job) => _assignJob(job: job, children: children),
-                        ),
-                        const SizedBox(height: 18),
-                        _CompletedLogPanel(
-                          stream:
-                              widget.firestoreService
-                                  .getCurrentClassroomHelperCompletions(),
-                          children: children,
-                          selectedChildId: _completionChildFilter,
-                          onFilterChanged:
-                              (value) => setState(
-                                () => _completionChildFilter = value,
-                              ),
-                          timeLabel: _timeLabel,
                         ),
                       ],
                     );

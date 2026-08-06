@@ -344,6 +344,7 @@ class _BodyCheckOverviewPageState extends State<BodyCheckOverviewPage> {
             final filteredReports = _filterAndSortReports(reports);
 
             return SingleChildScrollView(
+              key: const PageStorageKey<String>('body-check-overview'),
               padding: const EdgeInsets.all(18),
               child: Center(
                 child: ConstrainedBox(

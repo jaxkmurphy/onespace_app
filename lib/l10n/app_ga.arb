@@ -6440,5 +6440,199 @@
         "type": "String"
       }
     }
+  },
+  "adminStatBodyChecks": "Seiceálacha coirp",
+  "@adminStatBodyChecks": {
+    "description": "Admin classroom details stat label for unchecked body check reports."
+  },
+  "adminStatCalmRequests": "Iarratais suaimhnis",
+  "@adminStatCalmRequests": {
+    "description": "Admin classroom details stat label for active calm support requests."
+  },
+  "adminStatHelperRequests": "Iarratais chúntóra",
+  "@adminStatHelperRequests": {
+    "description": "Admin classroom details stat label for pending helper job requests."
+  },
+  "classroomFeaturesTitle": "Gnéithe an tseomra ranga",
+  "@classroomFeaturesTitle": {
+    "description": "Admin classroom details section title for feature toggles."
+  },
+  "classroomFeaturesSummary": "Roghnaigh na huirlisí atá ar fáil sa seomra ranga seo. Tá {enabledCount}/{totalCount} cumasaithe faoi láthair.",
+  "@classroomFeaturesSummary": {
+    "description": "Admin classroom details summary showing how many classroom features are enabled.",
+    "placeholders": {
+      "enabledCount": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "classroomFeaturesEnabledShort": "{enabledCount}/{totalCount} gné cumasaithe",
+  "@classroomFeaturesEnabledShort": {
+    "description": "Short classroom card label showing enabled feature count.",
+    "placeholders": {
+      "enabledCount": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "adminMiniStaffCount": "{count} ball foirne",
+  "@adminMiniStaffCount": {
+    "description": "Short admin classroom card staff count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminMiniChildCount": "{count} páiste",
+  "@adminMiniChildCount": {
+    "description": "Short admin classroom card child count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminMiniAlertCount": "{count} foláireamh",
+  "@adminMiniAlertCount": {
+    "description": "Short admin classroom card alert count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "staffCalmPlanSubtitle": "Athbhreithnigh iarratais tacaíochta suaimhnis agus bainistigh uirlisí suaimhnis.",
+  "@staffCalmPlanSubtitle": {
+    "description": "Staff dashboard subtitle for Calm Plan management."
+  },
+  "staffVoiceLinesSubtitle": "Bainistigh na frásaí is féidir le páistí a úsáid.",
+  "@staffVoiceLinesSubtitle": {
+    "description": "Staff dashboard subtitle for voice lines management."
+  },
+  "staffAssociationPairsSubtitle": "Cruthaigh pacáistí péirí meaitseála.",
+  "@staffAssociationPairsSubtitle": {
+    "description": "Staff dashboard subtitle for Association Pairs management."
+  },
+  "staffNumberSequenceSubtitle": "Cruthaigh dúshláin ordaithe uimhreacha.",
+  "@staffNumberSequenceSubtitle": {
+    "description": "Staff dashboard subtitle for Number Sequence management."
+  },
+  "staffOddOneOutSubtitle": "Cruthaigh pacáistí réasúnaíochta don cheann corr.",
+  "@staffOddOneOutSubtitle": {
+    "description": "Staff dashboard subtitle for Odd One Out management."
+  },
+  "staffEmotionDetectiveSubtitle": "Cruthaigh pacáistí mothúchán agus réasúnaíochta sóisialta.",
+  "@staffEmotionDetectiveSubtitle": {
+    "description": "Staff dashboard subtitle for Emotion Detective management."
+  },
+  "childAccess": "Rochtain Páistí",
+  "@childAccess": {
+    "description": "Staff dashboard title for controlling child profile access."
+  },
+  "staffChildAccessSubtitle": "Cuir rochtain ar phróifílí páistí ar sos nó oscail arís í.",
+  "@staffChildAccessSubtitle": {
+    "description": "Staff dashboard subtitle for child profile access control."
+  },
+  "staffDailyToolsSubtitle": "Rochtain thapa ar na huirlisí a úsáidtear i rith an lae.",
+  "@staffDailyToolsSubtitle": {
+    "description": "Staff dashboard daily tools section subtitle."
+  },
+  "staffCommunicationSubtitle": "Taifead, athbhreithnigh agus tabhair tacaíocht do riachtanais an tseomra ranga.",
+  "@staffCommunicationSubtitle": {
+    "description": "Staff dashboard communication section subtitle."
+  },
+  "staffLearningSubtitle": "Cruthaigh agus tacaigh le gníomhaíochtaí foghlama.",
+  "@staffLearningSubtitle": {
+    "description": "Staff dashboard learning section subtitle."
+  },
+  "staffAdminToolsSubtitle": "Rialuithe seomra ranga agus uirlisí don fhoireann amháin.",
+  "@staffAdminToolsSubtitle": {
+    "description": "Staff dashboard staff/admin section subtitle."
+  },
+  "staffWelcome": "Fáilte, {staffName}",
+  "@staffWelcome": {
+    "description": "Staff dashboard hero welcome message.",
+    "placeholders": {
+      "staffName": {
+        "type": "String"
+      }
+    }
+  },
+  "staffToolsReady": "Tá d’uirlisí foirne réidh.",
+  "@staffToolsReady": {
+    "description": "Staff dashboard hero fallback classroom message."
+  },
+  "staffAlertsJustNow": "Anois díreach",
+  "@staffAlertsJustNow": {
+    "description": "Staff dashboard alert time label for now."
+  },
+  "staffAlertsOneMinuteAgo": "1 nóim ó shin",
+  "@staffAlertsOneMinuteAgo": {
+    "description": "Staff dashboard alert time label for one minute ago."
+  },
+  "staffAlertsMinutesAgo": "{count} nóim ó shin",
+  "@staffAlertsMinutesAgo": {
+    "description": "Staff dashboard alert time label for minutes ago.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "staffAlertsOneHourAgo": "1 uair ó shin",
+  "@staffAlertsOneHourAgo": {
+    "description": "Staff dashboard alert time label for one hour ago."
+  },
+  "staffAlertsHoursAgo": "{count} uair ó shin",
+  "@staffAlertsHoursAgo": {
+    "description": "Staff dashboard alert time label for hours ago.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "childProfilePausedMessage": "Tá an phróifíl seo ar sos faoi láthair. Labhair le múinteoir, le do thoil.",
+  "@childProfilePausedMessage": {
+    "description": "Message shown when a child's profile access is paused."
+  },
+  "childCalmToolsTitle": "Mo Uirlisí Suaimhnis",
+  "@childCalmToolsTitle": {
+    "description": "Child dashboard title for Calm Plan tools."
+  },
+  "childCalmToolsSubtitle": "Roghnaigh rud a chabhróidh leat.",
+  "@childCalmToolsSubtitle": {
+    "description": "Child dashboard subtitle for Calm Plan tools."
+  },
+  "noGuidelinesMatchSearch": "Níl aon cháipéis ag teacht leis an gcuardach seo.",
+  "@noGuidelinesMatchSearch": {
+    "description": "Guidelines empty state when no documents match the search."
+  },
+  "chooseStaffProfileForTools": "Roghnaigh próifíl foirne chun uirlisí an tseomra ranga a oscailt.",
+  "@chooseStaffProfileForTools": {
+    "description": "Profiles page staff section subtitle."
+  },
+  "chooseChildProfileForSpace": "Roghnaigh do phróifíl chun dul isteach i do spás.",
+  "@chooseChildProfileForSpace": {
+    "description": "Profiles page child section subtitle."
+  },
+  "profilePausedTalkToTeacher": "Ar sos - labhair le múinteoir",
+  "@profilePausedTalkToTeacher": {
+    "description": "Short label for a child profile paused by staff."
+  },
+  "profilePausedTitle": "Próifíl ar sos",
+  "@profilePausedTitle": {
+    "description": "Dialog title when a child tries to open a paused profile."
+  },
+  "manageProfilesAndAppOptions": "Bainistigh próifílí agus roghanna na haipe.",
+  "@manageProfilesAndAppOptions": {
+    "description": "Profiles page admin actions section subtitle."
   }
 }

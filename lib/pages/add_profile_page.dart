@@ -193,6 +193,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          key: PageStorageKey(
+            isStaff ? 'add-staff-profile' : 'add-child-profile',
+          ),
           padding: const EdgeInsets.all(18),
           child: Center(
             child: ConstrainedBox(

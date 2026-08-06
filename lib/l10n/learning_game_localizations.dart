@@ -44,6 +44,7 @@ class LearningGameLocalizations {
       isIrish ? 'Ar fáil do chách' : 'Available to everyone';
 
   String get playAgain => isIrish ? 'Arís' : 'Play again';
+  String get tapToPlay => isIrish ? 'Tapáil le himirt' : 'Tap to play';
   String get back => isIrish ? 'Ar ais' : 'Back';
   String get finish => isIrish ? 'Críochnaigh' : 'Finish';
   String get restart => isIrish ? 'Atosaigh' : 'Restart';

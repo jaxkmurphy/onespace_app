@@ -376,6 +376,7 @@ class _WordPackEditorPageState extends State<WordPackEditorPage> {
               ),
             ),
             child: ListView(
+              key: PageStorageKey('word-pack-editor-${_pack.id}'),
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               children: [
                 _buildHeader(words.length),

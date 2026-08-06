@@ -721,6 +721,9 @@ class _CalmingSoundsPageState extends State<CalmingSoundsPage> {
                                 child: Text(context.l10n.soundPlaybackFailed),
                               )
                               : SingleChildScrollView(
+                                key: const PageStorageKey<String>(
+                                  'calming-sounds-child',
+                                ),
                                 child: Center(
                                   child: Column(
                                     children: [

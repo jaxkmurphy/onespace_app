@@ -142,6 +142,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          key: PageStorageKey(
+            _isClassroomMode ? 'app-settings' : 'account-settings',
+          ),
           padding: const EdgeInsets.all(18),
           child: Center(
             child: ConstrainedBox(

@@ -246,6 +246,7 @@ class _WordLearningPageState extends State<WordLearningPage> {
               ),
             ),
             child: GridView.builder(
+              key: const PageStorageKey('word-learning-pack-grid'),
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 430,

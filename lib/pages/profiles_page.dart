@@ -178,14 +178,12 @@ class _ProfilesPageState extends State<ProfilesPage> {
         context: context,
         builder:
             (context) => AlertDialog(
-              title: const Text('Profile paused'),
-              content: const Text(
-                'This profile is paused for now. Please talk to a teacher.',
-              ),
+              title: Text(context.l10n.profilePausedTitle),
+              content: Text(context.l10n.childProfilePausedMessage),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
+                  child: Text(context.l10n.ok),
                 ),
               ],
             ),
@@ -386,6 +384,7 @@ class _ProfilesBody extends StatelessWidget {
         ),
       ),
       child: SingleChildScrollView(
+        key: const PageStorageKey<String>('profiles-page'),
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 34),
         child: Center(
           child: ConstrainedBox(
@@ -403,7 +402,7 @@ class _ProfilesBody extends StatelessWidget {
                 _ProfilesSection(
                   icon: Icons.badge_rounded,
                   title: context.l10n.staffProfiles,
-                  subtitle: 'Choose a staff profile to open classroom tools.',
+                  subtitle: context.l10n.chooseStaffProfileForTools,
                   color: colourScheme.primary,
                   emptyMessage: context.l10n.noStaffProfilesFound,
                   children:
@@ -424,7 +423,7 @@ class _ProfilesBody extends StatelessWidget {
                 _ProfilesSection(
                   icon: Icons.child_care_rounded,
                   title: context.l10n.childProfiles,
-                  subtitle: 'Choose your profile to enter your space.',
+                  subtitle: context.l10n.chooseChildProfileForSpace,
                   color: const Color(0xFF26A69A),
                   emptyMessage: context.l10n.noChildProfilesShort,
                   children:
@@ -438,7 +437,7 @@ class _ProfilesBody extends StatelessWidget {
                             subtitle:
                                 enabled
                                     ? context.l10n.ageValue(child.age)
-                                    : 'Paused - talk to a teacher',
+                                    : context.l10n.profilePausedTalkToTeacher,
                             icon:
                                 enabled
                                     ? Icons.child_care_rounded
@@ -737,7 +736,7 @@ class _AdminActionsCard extends StatelessWidget {
           _SectionHeader(
             icon: Icons.admin_panel_settings_rounded,
             title: context.l10n.adminActions,
-            subtitle: 'Manage profiles and app options.',
+            subtitle: context.l10n.manageProfilesAndAppOptions,
             color: colourScheme.primary,
           ),
           const SizedBox(height: 16),

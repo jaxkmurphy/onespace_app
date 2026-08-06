@@ -355,10 +355,7 @@ class _GuidelinesPageState extends State<GuidelinesPage> {
           ),
           const SizedBox(height: 12),
           Text(
-            _t(
-              'No documents match this search.',
-              'Níl aon cháipéis ag teacht leis an gcuardach seo.',
-            ),
+            context.l10n.noGuidelinesMatchSearch,
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
@@ -415,6 +412,7 @@ class _GuidelinesPageState extends State<GuidelinesPage> {
             }
 
             return ListView(
+              key: const PageStorageKey<String>('guidelines'),
               padding: const EdgeInsets.all(18),
               children: [
                 _GuidelinesHeader(

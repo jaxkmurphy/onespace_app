@@ -114,150 +114,191 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               final classroomLimit = school?.classroomLimit ?? 3;
 
               return ListView(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                key: const PageStorageKey<String>('admin-dashboard'),
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
                 children: [
                   Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Theme.of(context).colorScheme.primaryContainer
+                                .withValues(alpha: 0.32),
+                            Theme.of(context).colorScheme.surface,
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      school?.name ?? widget.schoolName,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 54,
+                                  height: 54,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.primaryContainer,
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                  child: Icon(
+                                    Icons.school_rounded,
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        school?.name ?? widget.schoolName,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
+                                      const SizedBox(height: 4),
+                                      Wrap(
+                                        spacing: 14,
+                                        runSpacing: 4,
+                                        children: [
+                                          Text(
+                                            context.l10n.schoolCodeValue(
+                                              school?.schoolCode ??
+                                                  context.l10n.loading,
+                                            ),
+                                          ),
+                                          Text(
+                                            context.l10n.classroomsUsed(
+                                              classrooms.length,
+                                              classroomLimit,
+                                            ),
+                                          ),
+                                          Text(
+                                            context.l10n.statusValue(
+                                              (school?.active ?? true)
+                                                  ? context.l10n.active
+                                                  : context.l10n.inactive,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (schoolSnapshot.connectionState ==
+                                    ConnectionState.waiting)
+                                  const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
                                     ),
-                                    const SizedBox(height: 4),
-                                    Wrap(
-                                      spacing: 14,
-                                      runSpacing: 4,
-                                      children: [
-                                        Text(
-                                          context.l10n.schoolCodeValue(
-                                            school?.schoolCode ??
-                                                context.l10n.loading,
-                                          ),
-                                        ),
-                                        Text(
-                                          context.l10n.classroomsUsed(
-                                            classrooms.length,
-                                            classroomLimit,
-                                          ),
-                                        ),
-                                        Text(
-                                          context.l10n.statusValue(
-                                            (school?.active ?? true)
-                                                ? context.l10n.active
-                                                : context.l10n.inactive,
-                                          ),
-                                        ),
-                                      ],
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            FutureBuilder<SchoolAdminOverview>(
+                              future: _firestoreService.getSchoolAdminOverview(
+                                widget.schoolId,
+                              ),
+                              builder: (context, overviewSnapshot) {
+                                if (!overviewSnapshot.hasData) {
+                                  return const SizedBox.shrink();
+                                }
+
+                                final overview = overviewSnapshot.data!;
+
+                                return Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    _AdminStatChip(
+                                      icon: Icons.meeting_room_outlined,
+                                      label: context.l10n.activeClassrooms,
+                                      value:
+                                          overview.activeClassrooms.toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.archive_outlined,
+                                      label: context.l10n.inactiveClassrooms,
+                                      value:
+                                          overview.inactiveClassrooms
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.badge_outlined,
+                                      label: context.l10n.staffProfiles,
+                                      value:
+                                          overview.totalStaffProfiles
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.child_care_outlined,
+                                      label: context.l10n.childProfiles,
+                                      value:
+                                          overview.totalChildProfiles
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.pending_actions_rounded,
+                                      label: context.l10n.adminStatBodyChecks,
+                                      value:
+                                          overview.uncheckedBodyChecks
+                                              .toString(),
+                                      isAlert: overview.uncheckedBodyChecks > 0,
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.notifications_active_outlined,
+                                      label: context.l10n.adminStatCalmRequests,
+                                      value:
+                                          overview.activeCalmRequests
+                                              .toString(),
+                                      isAlert: overview.activeCalmRequests > 0,
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.volunteer_activism_outlined,
+                                      label:
+                                          context.l10n.adminStatHelperRequests,
+                                      value:
+                                          overview.pendingHelperRequests
+                                              .toString(),
+                                      isAlert:
+                                          overview.pendingHelperRequests > 0,
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.badge_outlined,
+                                      label: context.l10n.staffContacts,
+                                      value:
+                                          overview.totalStaffContacts
+                                              .toString(),
+                                    ),
+                                    _AdminStatChip(
+                                      icon: Icons.family_restroom_outlined,
+                                      label: context.l10n.guardianContacts,
+                                      value:
+                                          overview.totalGuardianContacts
+                                              .toString(),
                                     ),
                                   ],
-                                ),
-                              ),
-                              if (schoolSnapshot.connectionState ==
-                                  ConnectionState.waiting)
-                                const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          FutureBuilder<SchoolAdminOverview>(
-                            future: _firestoreService.getSchoolAdminOverview(
-                              widget.schoolId,
+                                );
+                              },
                             ),
-                            builder: (context, overviewSnapshot) {
-                              if (!overviewSnapshot.hasData) {
-                                return const SizedBox.shrink();
-                              }
-
-                              final overview = overviewSnapshot.data!;
-
-                              return Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  _AdminStatChip(
-                                    icon: Icons.meeting_room_outlined,
-                                    label: context.l10n.activeClassrooms,
-                                    value: overview.activeClassrooms.toString(),
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.archive_outlined,
-                                    label: context.l10n.inactiveClassrooms,
-                                    value:
-                                        overview.inactiveClassrooms.toString(),
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.badge_outlined,
-                                    label: context.l10n.staffProfiles,
-                                    value:
-                                        overview.totalStaffProfiles.toString(),
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.child_care_outlined,
-                                    label: context.l10n.childProfiles,
-                                    value:
-                                        overview.totalChildProfiles.toString(),
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.pending_actions_rounded,
-                                    label: 'Body checks',
-                                    value:
-                                        overview.uncheckedBodyChecks.toString(),
-                                    isAlert: overview.uncheckedBodyChecks > 0,
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.notifications_active_outlined,
-                                    label: 'Calm requests',
-                                    value:
-                                        overview.activeCalmRequests.toString(),
-                                    isAlert: overview.activeCalmRequests > 0,
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.volunteer_activism_outlined,
-                                    label: 'Helper requests',
-                                    value:
-                                        overview.pendingHelperRequests
-                                            .toString(),
-                                    isAlert: overview.pendingHelperRequests > 0,
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.badge_outlined,
-                                    label: context.l10n.staffContacts,
-                                    value:
-                                        overview.totalStaffContacts.toString(),
-                                  ),
-                                  _AdminStatChip(
-                                    icon: Icons.family_restroom_outlined,
-                                    label: context.l10n.guardianContacts,
-                                    value:
-                                        overview.totalGuardianContacts
-                                            .toString(),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -391,7 +432,7 @@ class _AdminActionCard extends StatelessWidget {
       elevation: 0,
       color: colourScheme.secondaryContainer.withValues(alpha: 0.45),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -489,7 +530,7 @@ class _ClassroomListCard extends StatelessWidget {
               ? colourScheme.surfaceContainerHighest.withValues(alpha: 0.55)
               : null,
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(14),
@@ -550,7 +591,10 @@ class _ClassroomListCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '${classroom.enabledFeatures.length}/${ClassroomFeature.values.length} features enabled',
+                      context.l10n.classroomFeaturesEnabledShort(
+                        classroom.enabledFeatures.length,
+                        ClassroomFeature.values.length,
+                      ),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colourScheme.outline,
                       ),
@@ -578,15 +622,21 @@ class _ClassroomListCard extends StatelessWidget {
                           children: [
                             _MiniStatusPill(
                               icon: Icons.badge_outlined,
-                              label: '${health.staffProfiles} staff',
+                              label: context.l10n.adminMiniStaffCount(
+                                health.staffProfiles,
+                              ),
                             ),
                             _MiniStatusPill(
                               icon: Icons.child_care_outlined,
-                              label: '${health.childProfiles} children',
+                              label: context.l10n.adminMiniChildCount(
+                                health.childProfiles,
+                              ),
                             ),
                             _MiniStatusPill(
                               icon: Icons.notifications_active_outlined,
-                              label: '${health.totalAlerts} alerts',
+                              label: context.l10n.adminMiniAlertCount(
+                                health.totalAlerts,
+                              ),
                               isAlert: health.totalAlerts > 0,
                             ),
                           ],

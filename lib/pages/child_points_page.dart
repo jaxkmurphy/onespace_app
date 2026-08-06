@@ -45,6 +45,7 @@ class ChildPointsPage extends StatelessWidget {
                     final isWide = constraints.maxWidth >= 780;
 
                     return SingleChildScrollView(
+                      key: const PageStorageKey<String>('child-points'),
                       padding: const EdgeInsets.all(18),
                       child: Center(
                         child: ConstrainedBox(

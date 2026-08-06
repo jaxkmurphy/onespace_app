@@ -244,78 +244,91 @@ class _RequestsTabState extends State<_RequestsTab> {
                 .toList();
 
         return ListView(
+          key: const PageStorageKey<String>('calm-plan-requests'),
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 36),
           children: [
-            _StaffCalmHeader(
-              color: color,
-              icon: Icons.notifications_active_rounded,
-              title: context.l10n.calmSupportRequestsTitle,
-              subtitle: context.l10n.calmSupportRequestsSubtitle,
-            ),
-            const SizedBox(height: 18),
-            if (childOptions.isNotEmpty) ...[
-              _ChildRequestFilter(
-                selectedChildId: effectiveChildId,
-                childOptions: childOptions,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedChildId = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 18),
-            ],
-            _SectionTitle(
-              title: context.l10n.activeRequests,
-              subtitle:
-                  active.isEmpty
-                      ? context.l10n.noActiveCalmRequests
-                      : context.l10n.calmRequestsWaiting(active.length),
-            ),
-            const SizedBox(height: 10),
-            if (active.isEmpty)
-              _EmptyCard(
-                icon: Icons.check_circle_rounded,
-                text: context.l10n.allCalmRequestsResolved,
-              )
-            else
-              ...active.map(
-                (request) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _RequestCard(
-                    request: request,
-                    color: color,
-                    showResolveButton: true,
-                    onResolve: () => widget.onResolve(request),
-                  ),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1040),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _StaffCalmHeader(
+                      color: color,
+                      icon: Icons.notifications_active_rounded,
+                      title: context.l10n.calmSupportRequestsTitle,
+                      subtitle: context.l10n.calmSupportRequestsSubtitle,
+                    ),
+                    const SizedBox(height: 18),
+                    if (childOptions.isNotEmpty) ...[
+                      _ChildRequestFilter(
+                        selectedChildId: effectiveChildId,
+                        childOptions: childOptions,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedChildId = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 18),
+                    ],
+                    _SectionTitle(
+                      title: context.l10n.activeRequests,
+                      subtitle:
+                          active.isEmpty
+                              ? context.l10n.noActiveCalmRequests
+                              : context.l10n.calmRequestsWaiting(active.length),
+                    ),
+                    const SizedBox(height: 10),
+                    if (active.isEmpty)
+                      _EmptyCard(
+                        icon: Icons.check_circle_rounded,
+                        text: context.l10n.allCalmRequestsResolved,
+                      )
+                    else
+                      ...active.map(
+                        (request) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _RequestCard(
+                            request: request,
+                            color: color,
+                            showResolveButton: true,
+                            onResolve: () => widget.onResolve(request),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 18),
+                    _SectionTitle(
+                      title: context.l10n.recentSupportHistory,
+                      subtitle:
+                          history.isEmpty
+                              ? context.l10n.resolvedRequestsAppearHere
+                              : context.l10n.resolvedCalmRequestCount(
+                                history.length,
+                              ),
+                    ),
+                    const SizedBox(height: 10),
+                    if (history.isEmpty)
+                      _EmptyCard(
+                        icon: Icons.history_rounded,
+                        text: context.l10n.noResolvedCalmRequests,
+                      )
+                    else
+                      ...history.map(
+                        (request) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _RequestCard(
+                            request: request,
+                            color: color,
+                            showResolveButton: false,
+                            onResolve: null,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            const SizedBox(height: 18),
-            _SectionTitle(
-              title: context.l10n.recentSupportHistory,
-              subtitle:
-                  history.isEmpty
-                      ? context.l10n.resolvedRequestsAppearHere
-                      : context.l10n.resolvedCalmRequestCount(history.length),
             ),
-            const SizedBox(height: 10),
-            if (history.isEmpty)
-              _EmptyCard(
-                icon: Icons.history_rounded,
-                text: context.l10n.noResolvedCalmRequests,
-              )
-            else
-              ...history.map(
-                (request) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _RequestCard(
-                    request: request,
-                    color: color,
-                    showResolveButton: false,
-                    onResolve: null,
-                  ),
-                ),
-              ),
           ],
         );
       },
@@ -414,6 +427,7 @@ class _ToolsTab extends StatelessWidget {
             );
 
         return ListView(
+          key: const PageStorageKey<String>('calm-plan-tools'),
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 36),
           children: [
             _StaffCalmHeader(

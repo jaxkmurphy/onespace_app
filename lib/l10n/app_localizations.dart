@@ -8497,6 +8497,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete \"{name}\" from this classroom? This also removes the uploaded file.'**
   String deleteCalmingSoundMessage(String name);
+
+  /// Admin classroom details stat label for unchecked body check reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Body checks'**
+  String get adminStatBodyChecks;
+
+  /// Admin classroom details stat label for active calm support requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm requests'**
+  String get adminStatCalmRequests;
+
+  /// Admin classroom details stat label for pending helper job requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper requests'**
+  String get adminStatHelperRequests;
+
+  /// Admin classroom details section title for feature toggles.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom features'**
+  String get classroomFeaturesTitle;
+
+  /// Admin classroom details summary showing how many classroom features are enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which tools are available in this classroom. {enabledCount}/{totalCount} currently enabled.'**
+  String classroomFeaturesSummary(int enabledCount, int totalCount);
+
+  /// Short classroom card label showing enabled feature count.
+  ///
+  /// In en, this message translates to:
+  /// **'{enabledCount}/{totalCount} features enabled'**
+  String classroomFeaturesEnabledShort(int enabledCount, int totalCount);
+
+  /// Short admin classroom card staff count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} staff'**
+  String adminMiniStaffCount(int count);
+
+  /// Short admin classroom card child count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} children'**
+  String adminMiniChildCount(int count);
+
+  /// Short admin classroom card alert count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} alerts'**
+  String adminMiniAlertCount(int count);
+
+  /// Staff dashboard subtitle for Calm Plan management.
+  ///
+  /// In en, this message translates to:
+  /// **'Review calm support requests and manage calm tools.'**
+  String get staffCalmPlanSubtitle;
+
+  /// Staff dashboard subtitle for voice lines management.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the phrases children can use.'**
+  String get staffVoiceLinesSubtitle;
+
+  /// Staff dashboard subtitle for Association Pairs management.
+  ///
+  /// In en, this message translates to:
+  /// **'Create matching-pair learning packs.'**
+  String get staffAssociationPairsSubtitle;
+
+  /// Staff dashboard subtitle for Number Sequence management.
+  ///
+  /// In en, this message translates to:
+  /// **'Create number ordering challenge presets.'**
+  String get staffNumberSequenceSubtitle;
+
+  /// Staff dashboard subtitle for Odd One Out management.
+  ///
+  /// In en, this message translates to:
+  /// **'Create visual odd-one-out reasoning packs.'**
+  String get staffOddOneOutSubtitle;
+
+  /// Staff dashboard subtitle for Emotion Detective management.
+  ///
+  /// In en, this message translates to:
+  /// **'Create feelings and social reasoning packs.'**
+  String get staffEmotionDetectiveSubtitle;
+
+  /// Staff dashboard title for controlling child profile access.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Access'**
+  String get childAccess;
+
+  /// Staff dashboard subtitle for child profile access control.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause or reopen access to child profiles.'**
+  String get staffChildAccessSubtitle;
+
+  /// Staff dashboard daily tools section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast access to the tools used during the day.'**
+  String get staffDailyToolsSubtitle;
+
+  /// Staff dashboard communication section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record, review and support classroom needs.'**
+  String get staffCommunicationSubtitle;
+
+  /// Staff dashboard learning section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and support learning activities.'**
+  String get staffLearningSubtitle;
+
+  /// Staff dashboard staff/admin section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Classroom controls and staff-only tools.'**
+  String get staffAdminToolsSubtitle;
+
+  /// Staff dashboard hero welcome message.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {staffName}'**
+  String staffWelcome(String staffName);
+
+  /// Staff dashboard hero fallback classroom message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your staff tools are ready.'**
+  String get staffToolsReady;
+
+  /// Staff dashboard alert time label for now.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get staffAlertsJustNow;
+
+  /// Staff dashboard alert time label for one minute ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 min ago'**
+  String get staffAlertsOneMinuteAgo;
+
+  /// Staff dashboard alert time label for minutes ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String staffAlertsMinutesAgo(int count);
+
+  /// Staff dashboard alert time label for one hour ago.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour ago'**
+  String get staffAlertsOneHourAgo;
+
+  /// Staff dashboard alert time label for hours ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hours ago'**
+  String staffAlertsHoursAgo(int count);
+
+  /// Message shown when a child's profile access is paused.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile is paused for now. Please talk to a teacher.'**
+  String get childProfilePausedMessage;
+
+  /// Child dashboard title for Calm Plan tools.
+  ///
+  /// In en, this message translates to:
+  /// **'My Calm Tools'**
+  String get childCalmToolsTitle;
+
+  /// Child dashboard subtitle for Calm Plan tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what might help.'**
+  String get childCalmToolsSubtitle;
+
+  /// Guidelines empty state when no documents match the search.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents match this search.'**
+  String get noGuidelinesMatchSearch;
+
+  /// Profiles page staff section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a staff profile to open classroom tools.'**
+  String get chooseStaffProfileForTools;
+
+  /// Profiles page child section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your profile to enter your space.'**
+  String get chooseChildProfileForSpace;
+
+  /// Short label for a child profile paused by staff.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused - talk to a teacher'**
+  String get profilePausedTalkToTeacher;
+
+  /// Dialog title when a child tries to open a paused profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile paused'**
+  String get profilePausedTitle;
+
+  /// Profiles page admin actions section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage profiles and app options.'**
+  String get manageProfilesAndAppOptions;
 }
 
 class _AppLocalizationsDelegate

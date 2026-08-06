@@ -421,6 +421,7 @@ class _AssociationPairsPageState extends State<AssociationPairsPage> {
     const color = Color(0xFF7E57C2);
 
     return ListView(
+      key: const PageStorageKey<String>('association-pairs-pack-list'),
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 32),
       children: [
         _buildHeroHeader(
@@ -444,15 +445,25 @@ class _AssociationPairsPageState extends State<AssociationPairsPage> {
           ),
         ],
         const SizedBox(height: 18),
-        ..._packs.map(
-          (pack) => Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: _PackChoiceCard(
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 410,
+            mainAxisExtent: 292,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: _packs.length,
+          itemBuilder: (context, index) {
+            final pack = _packs[index];
+
+            return _PackChoiceCard(
               pack: pack,
               color: color,
               onTap: () => _selectPack(pack),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
@@ -584,6 +595,7 @@ class _AssociationPairsPageState extends State<AssociationPairsPage> {
     if (pack == null) return _buildPackPicker();
 
     return ListView(
+      key: const PageStorageKey<String>('association-pairs-game'),
       padding: const EdgeInsets.fromLTRB(18, 10, 18, 28),
       children: [
         Center(
@@ -684,8 +696,8 @@ class _PackChoiceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.96),
             borderRadius: BorderRadius.circular(28),
             border: Border.all(color: color.withValues(alpha: 0.18), width: 2),
             boxShadow: [
@@ -696,52 +708,74 @@ class _PackChoiceCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Row(
+          child: Column(
             children: [
               Container(
-                width: 62,
-                height: 62,
+                width: double.infinity,
+                height: 78,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(22),
+                  gradient: LinearGradient(
+                    colors: [color, color.withValues(alpha: 0.72)],
+                  ),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(25),
+                  ),
                 ),
                 child: Icon(
                   appIconForKey(pack.iconName, fallbackKey: 'puzzle'),
-                  color: color,
-                  size: 34,
+                  color: Colors.white,
+                  size: 44,
                 ),
               ),
-              const SizedBox(width: 16),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pack.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 21,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    if (description.isNotEmpty) ...[
-                      const SizedBox(height: 5),
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    children: [
                       Text(
-                        description,
+                        pack.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontWeight: FontWeight.w700,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      if (description.isNotEmpty) ...[
+                        const SizedBox(height: 5),
+                        Text(
+                          description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                      const Spacer(),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 9),
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          LearningGameLocalizations.of(context).tapToPlay,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
                     ],
-                  ],
+                  ),
                 ),
               ),
-              const SizedBox(width: 10),
-              Icon(Icons.play_circle_fill_rounded, color: color, size: 42),
             ],
           ),
         ),

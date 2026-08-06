@@ -167,6 +167,7 @@ class _SchoolSettingsPageState extends State<SchoolSettingsPage> {
               : school == null
               ? Center(child: Text(context.l10n.schoolNotFound))
               : SingleChildScrollView(
+                key: const PageStorageKey('school-settings'),
                 padding: const EdgeInsets.all(16),
                 child: Center(
                   child: ConstrainedBox(

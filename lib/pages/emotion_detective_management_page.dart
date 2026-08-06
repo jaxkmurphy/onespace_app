@@ -324,6 +324,7 @@ class _EmotionDetectiveManagementPageState
             final packs = snapshot.data!;
 
             return ListView(
+              key: const PageStorageKey('emotion-detective-management'),
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               children: [
                 _buildHeader(),
@@ -337,7 +338,7 @@ class _EmotionDetectiveManagementPageState
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 430,
-                          mainAxisExtent: 250,
+                          mainAxisExtent: 315,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
                         ),
@@ -474,73 +475,159 @@ class _PackSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0,
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(26),
+        side: BorderSide(color: color.withValues(alpha: 0.28), width: 2),
+      ),
       child: InkWell(
         onTap: onOpen,
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 58,
-                    height: 58,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Icon(
-                      appIconForKey(pack.iconName, fallbackKey: 'mood_smile'),
-                      color: color,
-                      size: 32,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    tooltip: 'Delete pack',
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete_outline_rounded),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Text(
-                pack.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
+        child: Column(
+          children: [
+            Container(
+              height: 92,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [color, color.withValues(alpha: 0.72)],
                 ),
               ),
-              const SizedBox(height: 6),
-              Expanded(
-                child: Text(
-                  pack.description.isEmpty
-                      ? 'Social-emotional case pack'
-                      : pack.description,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+              child: Center(
+                child: Icon(
+                  appIconForKey(pack.iconName, fallbackKey: 'mood_smile'),
+                  color: Colors.white,
+                  size: 52,
                 ),
               ),
-              Wrap(
-                spacing: 8,
-                children: [
-                  Chip(label: Text(pack.active ? 'Active' : 'Inactive')),
-                  Chip(
-                    label: Text(
-                      pack.availableToAll
-                          ? 'Everyone'
-                          : '${pack.assignedChildIds.length} selected',
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 16, 12, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            pack.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                        PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'delete') onDelete();
+                          },
+                          itemBuilder:
+                              (context) => [
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    leading: const Icon(
+                                      Icons.delete_outline_rounded,
+                                      color: Colors.red,
+                                    ),
+                                    title: Text(context.l10n.delete),
+                                  ),
+                                ),
+                              ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    Text(
+                      pack.description.isEmpty
+                          ? 'Social-emotional case pack'
+                          : pack.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.grey.shade700),
+                    ),
+                    const Spacer(),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _GamePackChip(
+                          icon:
+                              pack.active
+                                  ? Icons.check_circle_rounded
+                                  : Icons.pause_circle_rounded,
+                          label: pack.active ? 'Active' : 'Inactive',
+                          color: color,
+                        ),
+                        _GamePackChip(
+                          icon:
+                              pack.availableToAll
+                                  ? Icons.groups_rounded
+                                  : Icons.people_alt_rounded,
+                          label:
+                              pack.availableToAll
+                                  ? context.l10n.availableToEveryone
+                                  : context.l10n.assignedChildCount(
+                                    pack.assignedChildIds.length,
+                                  ),
+                          color: color,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: onOpen,
+                        style: FilledButton.styleFrom(backgroundColor: color),
+                        icon: const Icon(Icons.edit_rounded),
+                        label: Text(context.l10n.edit),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _GamePackChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _GamePackChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.11),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 17),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(color: color, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -575,6 +662,7 @@ class _EmotionDetectivePackEditorPage extends StatelessWidget {
       appBar: AppBar(title: Text(pack.title)),
       body: SafeArea(
         child: ListView(
+          key: PageStorageKey('emotion-detective-pack-editor-${pack.id}'),
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
           children: [
             _PackPanel(

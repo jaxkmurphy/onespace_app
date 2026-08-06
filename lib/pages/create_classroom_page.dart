@@ -119,110 +119,117 @@ class _CreateClassroomPageState extends State<CreateClassroomPage> {
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.createClassroom)),
       body: SingleChildScrollView(
+        key: const PageStorageKey('create-classroom'),
         padding: const EdgeInsets.all(16),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Text(
-                    context.l10n.classroomDetails,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.classroomName,
-                      hintText: context.l10n.classroomNameHint,
-                      border: const OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return context.l10n.enterClassroomName;
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: _codeController,
-                    textCapitalization: TextCapitalization.characters,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.classroomCode,
-                      hintText: context.l10n.classroomCodeHint,
-                      border: const OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return context.l10n.enterClassroomCode;
-                      }
-
-                      if (value.trim().length < 3) {
-                        return context.l10n.classroomCodeMinLength;
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: _pinController,
-                    keyboardType: TextInputType.number,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.classroomPin,
-                      hintText: context.l10n.classroomPinHint,
-                      border: const OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return context.l10n.enterClassroomPin;
-                      }
-
-                      if (value.trim().length < 4) {
-                        return context.l10n.classroomPinMinLength;
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon:
-                          _isSaving
-                              ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                              : const Icon(Icons.save),
-                      label: Text(
-                        _isSaving
-                            ? context.l10n.saving
-                            : context.l10n.createClassroom,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        context.l10n.classroomDetails,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      onPressed: _isSaving ? null : _saveClassroom,
-                    ),
+
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.classroomName,
+                          hintText: context.l10n.classroomNameHint,
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return context.l10n.enterClassroomName;
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      TextFormField(
+                        controller: _codeController,
+                        textCapitalization: TextCapitalization.characters,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.classroomCode,
+                          hintText: context.l10n.classroomCodeHint,
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return context.l10n.enterClassroomCode;
+                          }
+
+                          if (value.trim().length < 3) {
+                            return context.l10n.classroomCodeMinLength;
+                          }
+
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      TextFormField(
+                        controller: _pinController,
+                        keyboardType: TextInputType.number,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.classroomPin,
+                          hintText: context.l10n.classroomPinHint,
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return context.l10n.enterClassroomPin;
+                          }
+
+                          if (value.trim().length < 4) {
+                            return context.l10n.classroomPinMinLength;
+                          }
+
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon:
+                              _isSaving
+                                  ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                  : const Icon(Icons.save),
+                          label: Text(
+                            _isSaving
+                                ? context.l10n.saving
+                                : context.l10n.createClassroom,
+                          ),
+                          onPressed: _isSaving ? null : _saveClassroom,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

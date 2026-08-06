@@ -743,6 +743,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
             return LayoutBuilder(
               builder: (context, constraints) {
                 return CustomScrollView(
+                  key: const PageStorageKey<String>('media-library'),
                   slivers: [
                     SliverToBoxAdapter(
                       child: Padding(

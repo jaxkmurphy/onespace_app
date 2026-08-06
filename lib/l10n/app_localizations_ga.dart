@@ -4986,4 +4986,147 @@ class AppLocalizationsGa extends AppLocalizations {
   String deleteCalmingSoundMessage(String name) {
     return 'Scrios \"$name\" ón seomra ranga seo? Bainfear an comhad uaslódáilte freisin.';
   }
+
+  @override
+  String get adminStatBodyChecks => 'Seiceálacha coirp';
+
+  @override
+  String get adminStatCalmRequests => 'Iarratais suaimhnis';
+
+  @override
+  String get adminStatHelperRequests => 'Iarratais chúntóra';
+
+  @override
+  String get classroomFeaturesTitle => 'Gnéithe an tseomra ranga';
+
+  @override
+  String classroomFeaturesSummary(int enabledCount, int totalCount) {
+    return 'Roghnaigh na huirlisí atá ar fáil sa seomra ranga seo. Tá $enabledCount/$totalCount cumasaithe faoi láthair.';
+  }
+
+  @override
+  String classroomFeaturesEnabledShort(int enabledCount, int totalCount) {
+    return '$enabledCount/$totalCount gné cumasaithe';
+  }
+
+  @override
+  String adminMiniStaffCount(int count) {
+    return '$count ball foirne';
+  }
+
+  @override
+  String adminMiniChildCount(int count) {
+    return '$count páiste';
+  }
+
+  @override
+  String adminMiniAlertCount(int count) {
+    return '$count foláireamh';
+  }
+
+  @override
+  String get staffCalmPlanSubtitle =>
+      'Athbhreithnigh iarratais tacaíochta suaimhnis agus bainistigh uirlisí suaimhnis.';
+
+  @override
+  String get staffVoiceLinesSubtitle =>
+      'Bainistigh na frásaí is féidir le páistí a úsáid.';
+
+  @override
+  String get staffAssociationPairsSubtitle =>
+      'Cruthaigh pacáistí péirí meaitseála.';
+
+  @override
+  String get staffNumberSequenceSubtitle =>
+      'Cruthaigh dúshláin ordaithe uimhreacha.';
+
+  @override
+  String get staffOddOneOutSubtitle =>
+      'Cruthaigh pacáistí réasúnaíochta don cheann corr.';
+
+  @override
+  String get staffEmotionDetectiveSubtitle =>
+      'Cruthaigh pacáistí mothúchán agus réasúnaíochta sóisialta.';
+
+  @override
+  String get childAccess => 'Rochtain Páistí';
+
+  @override
+  String get staffChildAccessSubtitle =>
+      'Cuir rochtain ar phróifílí páistí ar sos nó oscail arís í.';
+
+  @override
+  String get staffDailyToolsSubtitle =>
+      'Rochtain thapa ar na huirlisí a úsáidtear i rith an lae.';
+
+  @override
+  String get staffCommunicationSubtitle =>
+      'Taifead, athbhreithnigh agus tabhair tacaíocht do riachtanais an tseomra ranga.';
+
+  @override
+  String get staffLearningSubtitle =>
+      'Cruthaigh agus tacaigh le gníomhaíochtaí foghlama.';
+
+  @override
+  String get staffAdminToolsSubtitle =>
+      'Rialuithe seomra ranga agus uirlisí don fhoireann amháin.';
+
+  @override
+  String staffWelcome(String staffName) {
+    return 'Fáilte, $staffName';
+  }
+
+  @override
+  String get staffToolsReady => 'Tá d’uirlisí foirne réidh.';
+
+  @override
+  String get staffAlertsJustNow => 'Anois díreach';
+
+  @override
+  String get staffAlertsOneMinuteAgo => '1 nóim ó shin';
+
+  @override
+  String staffAlertsMinutesAgo(int count) {
+    return '$count nóim ó shin';
+  }
+
+  @override
+  String get staffAlertsOneHourAgo => '1 uair ó shin';
+
+  @override
+  String staffAlertsHoursAgo(int count) {
+    return '$count uair ó shin';
+  }
+
+  @override
+  String get childProfilePausedMessage =>
+      'Tá an phróifíl seo ar sos faoi láthair. Labhair le múinteoir, le do thoil.';
+
+  @override
+  String get childCalmToolsTitle => 'Mo Uirlisí Suaimhnis';
+
+  @override
+  String get childCalmToolsSubtitle => 'Roghnaigh rud a chabhróidh leat.';
+
+  @override
+  String get noGuidelinesMatchSearch =>
+      'Níl aon cháipéis ag teacht leis an gcuardach seo.';
+
+  @override
+  String get chooseStaffProfileForTools =>
+      'Roghnaigh próifíl foirne chun uirlisí an tseomra ranga a oscailt.';
+
+  @override
+  String get chooseChildProfileForSpace =>
+      'Roghnaigh do phróifíl chun dul isteach i do spás.';
+
+  @override
+  String get profilePausedTalkToTeacher => 'Ar sos - labhair le múinteoir';
+
+  @override
+  String get profilePausedTitle => 'Próifíl ar sos';
+
+  @override
+  String get manageProfilesAndAppOptions =>
+      'Bainistigh próifílí agus roghanna na haipe.';
 }

@@ -450,6 +450,9 @@ class _ClassroomDetailsPageState extends State<ClassroomDetailsPage> {
               : classroom == null
               ? Center(child: Text(context.l10n.classroomNotFound))
               : SingleChildScrollView(
+                key: PageStorageKey<String>(
+                  'classroom-details-${widget.classroomId}',
+                ),
                 padding: const EdgeInsets.all(16),
                 child: Center(
                   child: ConstrainedBox(
@@ -810,19 +813,19 @@ class _ClassroomOverviewCard extends StatelessWidget {
                     ),
                     _ClassroomStatChip(
                       icon: Icons.pending_actions_rounded,
-                      label: 'Body checks',
+                      label: context.l10n.adminStatBodyChecks,
                       value: health.uncheckedBodyChecks.toString(),
                       isAlert: health.uncheckedBodyChecks > 0,
                     ),
                     _ClassroomStatChip(
                       icon: Icons.notifications_active_outlined,
-                      label: 'Calm requests',
+                      label: context.l10n.adminStatCalmRequests,
                       value: health.activeCalmRequests.toString(),
                       isAlert: health.activeCalmRequests > 0,
                     ),
                     _ClassroomStatChip(
                       icon: Icons.volunteer_activism_outlined,
-                      label: 'Helper requests',
+                      label: context.l10n.adminStatHelperRequests,
                       value: health.pendingHelperRequests.toString(),
                       isAlert: health.pendingHelperRequests > 0,
                     ),
@@ -898,7 +901,7 @@ class _ClassroomOverviewCard extends StatelessWidget {
                 ),
                 _QuickActionButton(
                   icon: Icons.spa_rounded,
-                  label: 'Calm Plan',
+                  label: context.l10n.calmPlan,
                   onPressed: onOpenCalmPlan,
                 ),
                 _QuickActionButton(
@@ -920,7 +923,7 @@ class _ClassroomOverviewCard extends StatelessWidget {
   }
 }
 
-class _FeatureSettingsCard extends StatelessWidget {
+class _FeatureSettingsCard extends StatefulWidget {
   final Set<ClassroomFeature> enabledFeatures;
   final bool isSaving;
   final void Function(ClassroomFeature feature, bool enabled) onFeatureChanged;
@@ -932,9 +935,22 @@ class _FeatureSettingsCard extends StatelessWidget {
   });
 
   @override
+  State<_FeatureSettingsCard> createState() => _FeatureSettingsCardState();
+}
+
+class _FeatureSettingsCardState extends State<_FeatureSettingsCard> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
-    final enabledCount = enabledFeatures.length;
+    final enabledCount = widget.enabledFeatures.length;
     final totalCount = ClassroomFeature.values.length;
 
     return Card(
@@ -963,20 +979,23 @@ class _FeatureSettingsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Classroom features',
+                        context.l10n.classroomFeaturesTitle,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        'Choose which tools are available in this classroom. $enabledCount/$totalCount currently enabled.',
+                        context.l10n.classroomFeaturesSummary(
+                          enabledCount,
+                          totalCount,
+                        ),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
                   ),
                 ),
-                if (isSaving)
+                if (widget.isSaving)
                   const SizedBox(
                     width: 20,
                     height: 20,
@@ -996,31 +1015,41 @@ class _FeatureSettingsCard extends StatelessWidget {
                 ),
               ),
               constraints: const BoxConstraints(maxHeight: 430),
-              child: ListView.separated(
-                shrinkWrap: true,
-                primary: false,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                itemCount: ClassroomFeature.values.length,
-                separatorBuilder:
-                    (_, __) => Divider(
-                      height: 1,
-                      indent: 72,
-                      color: colourScheme.outlineVariant.withValues(alpha: 0.5),
-                    ),
-                itemBuilder: (context, index) {
-                  final feature = ClassroomFeature.values[index];
+              child: Scrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                child: ListView.separated(
+                  controller: _scrollController,
+                  primary: false,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: ClassroomFeature.values.length,
+                  separatorBuilder:
+                      (_, __) => Divider(
+                        height: 1,
+                        indent: 72,
+                        color: colourScheme.outlineVariant.withValues(
+                          alpha: 0.5,
+                        ),
+                      ),
+                  itemBuilder: (context, index) {
+                    final feature = ClassroomFeature.values[index];
 
-                  return SwitchListTile(
-                    value: enabledFeatures.contains(feature),
-                    onChanged:
-                        isSaving
-                            ? null
-                            : (enabled) => onFeatureChanged(feature, enabled),
-                    title: Text(feature.adminLabel),
-                    subtitle: Text(feature.adminDescription),
-                    secondary: Icon(_iconForFeature(feature)),
-                  );
-                },
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: SwitchListTile(
+                        value: widget.enabledFeatures.contains(feature),
+                        onChanged:
+                            widget.isSaving
+                                ? null
+                                : (enabled) =>
+                                    widget.onFeatureChanged(feature, enabled),
+                        title: Text(feature.adminLabel),
+                        subtitle: Text(feature.adminDescription),
+                        secondary: Icon(_iconForFeature(feature)),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
