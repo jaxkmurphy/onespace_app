@@ -233,7 +233,7 @@ class _StudentQuizListPageState extends State<StudentQuizListPage> {
           padding: const EdgeInsets.fromLTRB(16, 18, 16, 36),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 410,
-            mainAxisExtent: 295,
+            mainAxisExtent: 322,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
@@ -431,7 +431,7 @@ class _ChildQuizCard extends StatelessWidget {
                         quiz.description.isEmpty
                             ? context.l10n.tapToStartQuiz
                             : quiz.description,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey.shade700),
@@ -474,14 +474,18 @@ class _ChildQuizCard extends StatelessWidget {
                               color: Colors.white,
                             ),
                             const SizedBox(width: 6),
-                            Text(
-                              hasPlayed
-                                  ? context.l10n.playAgain
-                                  : context.l10n.letsPlay,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 16,
+                            Flexible(
+                              child: Text(
+                                hasPlayed
+                                    ? context.l10n.playAgain
+                                    : context.l10n.letsPlay,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ],

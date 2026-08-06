@@ -30,10 +30,7 @@ class StaffDashboardFeatureCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(
-            color: accent.withValues(alpha: 0.18),
-            width: 1.5,
-          ),
+          side: BorderSide(color: accent.withValues(alpha: 0.18), width: 1.5),
         ),
         child: InkWell(
           onTap: onTap,
@@ -42,10 +39,7 @@ class StaffDashboardFeatureCard extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  colourScheme.surface,
-                  accent.withValues(alpha: 0.08),
-                ],
+                colors: [colourScheme.surface, accent.withValues(alpha: 0.08)],
               ),
             ),
             child: Padding(
@@ -56,13 +50,13 @@ class StaffDashboardFeatureCard extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        width: 52,
-                        height: 52,
+                        width: 48,
+                        height: 48,
                         decoration: BoxDecoration(
                           color: accent.withValues(alpha: 0.14),
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child: Icon(icon, size: 28, color: accent),
+                        child: Icon(icon, size: 26, color: accent),
                       ),
                       const Spacer(),
                       Container(
@@ -80,7 +74,7 @@ class StaffDashboardFeatureCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   Text(
                     title,
                     maxLines: 2,
@@ -90,14 +84,14 @@ class StaffDashboardFeatureCard extends StatelessWidget {
                     ),
                   ),
                   if (subtitle != null) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 5),
                     Text(
                       subtitle!,
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: colourScheme.onSurfaceVariant,
-                        height: 1.2,
+                        height: 1.15,
                       ),
                     ),
                   ],

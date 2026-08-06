@@ -1444,7 +1444,7 @@ class _HubSection extends StatelessWidget {
                 itemCount: children.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: adjustedColumns,
-                  mainAxisExtent: 166,
+                  mainAxisExtent: 214,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),

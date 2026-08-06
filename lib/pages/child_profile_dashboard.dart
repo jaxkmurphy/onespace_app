@@ -39,6 +39,7 @@ class ChildProfileDashboard extends StatefulWidget {
 
 class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   final ClassroomSessionService _session = ClassroomSessionService.instance;
+  final ScrollController _dashboardScrollController = ScrollController();
 
   late ChildProfile profile;
   late Color backgroundColor;
@@ -143,6 +144,8 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
     subscription?.cancel().catchError((Object error, StackTrace stackTrace) {
       debugPrint('Could not cancel child profile listener cleanly: $error');
     });
+
+    _dashboardScrollController.dispose();
 
     super.dispose();
   }
@@ -616,6 +619,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
                     ),
                     child: SafeArea(
                       child: SingleChildScrollView(
+                        controller: _dashboardScrollController,
                         key: PageStorageKey<String>(
                           'child-dashboard-${profile.teacherUid}-${profile.id}',
                         ),
@@ -765,7 +769,7 @@ class _DashboardSection extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: columns,
-                  mainAxisExtent: 134,
+                  mainAxisExtent: 154,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),
