@@ -221,7 +221,7 @@ class _NumberSequenceManagementPageState
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 100),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 430,
-                mainAxisExtent: 330,
+                mainAxisExtent: 315,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
@@ -309,10 +309,44 @@ class _ChallengeCard extends StatelessWidget {
                       ),
                       PopupMenuButton<String>(
                         onSelected: (value) {
-                          if (value == 'delete') onDelete();
+                          switch (value) {
+                            case 'audience':
+                              onAudience();
+                              break;
+                            case 'toggle':
+                              onToggleActive();
+                              break;
+                            case 'delete':
+                              onDelete();
+                              break;
+                          }
                         },
                         itemBuilder:
                             (context) => [
+                              PopupMenuItem(
+                                value: 'audience',
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: const Icon(Icons.groups_rounded),
+                                  title: const Text('Audience'),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'toggle',
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Icon(
+                                    challenge.active
+                                        ? Icons.pause_circle_rounded
+                                        : Icons.play_circle_rounded,
+                                  ),
+                                  title: Text(
+                                    challenge.active
+                                        ? 'Set inactive'
+                                        : 'Set active',
+                                  ),
+                                ),
+                              ),
                               PopupMenuItem(
                                 value: 'delete',
                                 child: ListTile(
@@ -343,24 +377,9 @@ class _ChallengeCard extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       _GamePackChip(
-                        icon:
-                            challenge.active
-                                ? Icons.check_circle_rounded
-                                : Icons.pause_circle_rounded,
-                        label: challenge.active ? 'Active' : 'Inactive',
-                        color: color,
-                      ),
-                      _GamePackChip(
                         icon: Icons.pin_rounded,
-                        label: '1-${challenge.maxNumber}',
-                        color: color,
-                      ),
-                      _GamePackChip(
-                        icon:
-                            challenge.timerEnabled
-                                ? Icons.timer_rounded
-                                : Icons.timer_off_rounded,
-                        label: challenge.timerEnabled ? 'Timer' : 'No timer',
+                        label:
+                            '1-${challenge.maxNumber} · ${challenge.timerEnabled ? 'Timer' : 'No timer'}',
                         color: color,
                       ),
                       _GamePackChip(
@@ -387,23 +406,6 @@ class _ChallengeCard extends StatelessWidget {
                           style: FilledButton.styleFrom(backgroundColor: color),
                           icon: const Icon(Icons.edit_rounded),
                           label: Text(context.l10n.edit),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton.filledTonal(
-                        tooltip: 'Audience',
-                        onPressed: onAudience,
-                        icon: const Icon(Icons.groups_rounded),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton.filledTonal(
-                        tooltip:
-                            challenge.active ? 'Set inactive' : 'Set active',
-                        onPressed: onToggleActive,
-                        icon: Icon(
-                          challenge.active
-                              ? Icons.pause_circle_rounded
-                              : Icons.play_circle_rounded,
                         ),
                       ),
                     ],

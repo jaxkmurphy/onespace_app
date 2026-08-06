@@ -40,6 +40,7 @@ class ChildProfileDashboard extends StatefulWidget {
 class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
   final ClassroomSessionService _session = ClassroomSessionService.instance;
   final ScrollController _dashboardScrollController = ScrollController();
+  double _lastDashboardScrollOffset = 0;
 
   late ChildProfile profile;
   late Color backgroundColor;
@@ -161,6 +162,45 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
             ),
       ),
     );
+  }
+
+  void _rememberDashboardScrollOffset() {
+    if (!_dashboardScrollController.hasClients) return;
+    _lastDashboardScrollOffset = _dashboardScrollController.offset;
+  }
+
+  void _restoreDashboardScrollOffset() {
+    if (!_dashboardScrollController.hasClients) return;
+
+    final maxOffset = _dashboardScrollController.position.maxScrollExtent;
+    final targetOffset = _lastDashboardScrollOffset.clamp(0.0, maxOffset);
+
+    _dashboardScrollController.jumpTo(targetOffset);
+  }
+
+  Future<void> _pushNamedKeepingScroll(
+    String routeName, {
+    Object? arguments,
+  }) async {
+    _rememberDashboardScrollOffset();
+
+    await Navigator.pushNamed(context, routeName, arguments: arguments);
+
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _restoreDashboardScrollOffset();
+    });
+  }
+
+  Future<void> _pushKeepingScroll(Route<void> route) async {
+    _rememberDashboardScrollOffset();
+
+    await Navigator.push(context, route);
+
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _restoreDashboardScrollOffset();
+    });
   }
 
   List<Color> get _backgroundGradient {
@@ -295,8 +335,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childCircleTimeSubtitle,
           color: const Color(0xFF7E57C2),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/circle-time',
               arguments: {'teacherUid': profile.teacherUid, 'child': profile},
             );
@@ -309,7 +348,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childScheduleSubtitle,
           color: const Color(0xFF42A5F5),
           onTap: () {
-            Navigator.pushNamed(context, '/childSchedule');
+            _pushNamedKeepingScroll('/childSchedule');
           },
         ),
       if (_isFeatureEnabled(ClassroomFeature.whenThen))
@@ -319,8 +358,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childWhenThenSubtitle,
           color: const Color(0xFFFFA726),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/when-then-child',
               arguments: {
                 'firestoreService': widget.firestoreService,
@@ -336,8 +374,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childClassroomHelperSubtitle,
           color: const Color(0xFFFFB300),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/classroom-helper',
               arguments: {
                 'firestoreService': widget.firestoreService,
@@ -358,8 +395,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childZonesSubtitle,
           color: const Color(0xFF26A69A),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/zone-select',
               arguments: {'child': profile},
             );
@@ -372,8 +408,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childBodyCheckSubtitle,
           color: const Color(0xFFEF5350),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/body-check',
               arguments: {
                 'firestoreService': widget.firestoreService,
@@ -389,8 +424,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childCalmingSoundsSubtitle,
           color: const Color(0xFF5C6BC0),
           onTap: () {
-            Navigator.push(
-              context,
+            _pushKeepingScroll(
               MaterialPageRoute(
                 builder:
                     (_) => CalmingSoundsPage(
@@ -407,8 +441,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childCalmToolsSubtitle,
           color: const Color(0xFF26A69A),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/calm-plan',
               arguments: {
                 'firestoreService': widget.firestoreService,
@@ -424,8 +457,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childVoiceLinesSubtitle,
           color: const Color(0xFF29B6F6),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/voice-lines',
               arguments: {
                 'firestoreService': widget.firestoreService,
@@ -448,7 +480,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childPointsSubtitle,
           color: const Color(0xFFFFB300),
           onTap: () {
-            Navigator.pushNamed(context, '/child-points', arguments: profile);
+            _pushNamedKeepingScroll('/child-points', arguments: profile);
           },
         ),
       if (_isFeatureEnabled(ClassroomFeature.quizzes))
@@ -458,8 +490,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childQuizSubtitle,
           color: const Color(0xFFAB47BC),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/student-quiz-list',
               arguments: {
                 'firestoreService': widget.firestoreService,
@@ -475,8 +506,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: gameText.matchThings,
           color: const Color(0xFF7E57C2),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/association-pairs',
               arguments: {
                 'child': profile,
@@ -492,8 +522,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: gameText.tapNumbersInOrder,
           color: const Color(0xFF29B6F6),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/number-sequence',
               arguments: {
                 'child': profile,
@@ -509,8 +538,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childWordPracticeSubtitle,
           color: const Color(0xFF66BB6A),
           onTap: () {
-            Navigator.push(
-              context,
+            _pushKeepingScroll(
               MaterialPageRoute(
                 builder:
                     (_) => ChildWordLearningPage(
@@ -528,8 +556,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: gameText.findOddOne,
           color: const Color(0xFF7E57C2),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/odd-one-out',
               arguments: {
                 'child': profile,
@@ -545,8 +572,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: gameText.thinkAboutFeelings,
           color: const Color(0xFFEC6F91),
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            _pushNamedKeepingScroll(
               '/emotion-detective',
               arguments: {
                 'child': profile,
@@ -562,7 +588,7 @@ class _ChildProfileDashboardState extends State<ChildProfileDashboard> {
           subtitle: l10n.childTimerSubtitle,
           color: const Color(0xFFFF7043),
           onTap: () {
-            Navigator.pushNamed(context, '/visual-timer');
+            _pushNamedKeepingScroll('/visual-timer');
           },
         ),
     ];
